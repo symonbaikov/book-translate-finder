@@ -1,0 +1,33 @@
+{
+  "name": "@btf/infrastructure",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "typecheck": "tsc --build",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "db:generate": "echo 'wired in Phase 1.2 with Drizzle (docs/plan.md §1.2)' && exit 1",
+    "db:migrate": "echo 'wired in Phase 1.2 with Drizzle (docs/plan.md §1.2)' && exit 1",
+    "db:seed": "echo 'wired in Phase 1.2 (docs/plan.md §1.2)' && exit 1"
+  },
+  "dependencies": {
+    "@btf/application": "workspace:*",
+    "@btf/domain": "workspace:*",
+    "pino": "^9.5.0",
+    "pino-pretty": "^11.3.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@testcontainers/postgresql": "^10.13.2",
+    "@testcontainers/redis": "^10.13.2",
+    "@types/node": "^20.14.0",
+    "testcontainers": "^10.13.2",
+    "typescript": "^5.6.3"
+  }
+}

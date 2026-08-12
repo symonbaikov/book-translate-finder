@@ -1,0 +1,39 @@
+name: book-translate-finder-dev
+
+# Development only: Postgres + Redis for `pnpm dev` running api/worker/web on the host.
+# The self-host production compose (all services, `docker/app.Dockerfile`) lands in Phase 1.6 —
+# see docs/architecture.md §9 and docs/plan.md §1.6.
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: btf
+      POSTGRES_PASSWORD: btf_dev_password
+      POSTGRES_DB: btf
+    ports:
+      - '127.0.0.1:5432:5432'
+    volumes:
+      - btf_dev_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U btf -d btf']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:6379:6379'
+    volumes:
+      - btf_dev_redisdata:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  btf_dev_pgdata:
+  btf_dev_redisdata:

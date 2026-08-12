@@ -1,0 +1,32 @@
+{
+  "name": "@btf/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --env-file=../../.env src/main.ts",
+    "build": "tsc --build",
+    "start": "node dist/main.js",
+    "typecheck": "tsc --build",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@btf/application": "workspace:*",
+    "@btf/contracts": "workspace:*",
+    "@btf/domain": "workspace:*",
+    "@btf/infrastructure": "workspace:*",
+    "@nestjs/common": "^10.4.4",
+    "@nestjs/core": "^10.4.4",
+    "@nestjs/platform-fastify": "^10.4.4",
+    "fastify": "^4.28.1",
+    "pino": "^9.5.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.3"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "name": "book-translate-finder",
+  "private": true,
+  "version": "0.0.0",
+  "license": "MIT",
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter \"./apps/*\" run dev",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "pnpm -r --workspace-concurrency=4 run typecheck",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run --project unit --project contract",
+    "test:unit": "vitest run --project unit",
+    "test:contract": "vitest run --project contract",
+    "test:integration": "vitest run --project integration",
+    "test:e2e": "pnpm --filter @btf/web run e2e",
+    "test:watch": "vitest",
+    "build": "pnpm -r --filter \"./packages/*\" run build && pnpm -r --filter \"./apps/*\" run build",
+    "db:generate": "pnpm --filter @btf/infrastructure run db:generate",
+    "db:migrate": "pnpm --filter @btf/infrastructure run db:migrate",
+    "db:seed": "pnpm --filter @btf/infrastructure run db:seed",
+    "sync": "pnpm --filter @btf/worker run sync",
+    "boundaries": "depcruise --config .dependency-cruiser.mjs packages apps",
+    "clean": "pnpm -r run clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "@types/node": "^20.14.0",
+    "dependency-cruiser": "^16.4.2",
+    "eslint": "^9.13.0",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.11.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.11.0",
+    "vitest": "^2.1.4"
+  }
+}

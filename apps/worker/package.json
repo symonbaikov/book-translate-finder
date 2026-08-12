@@ -1,0 +1,25 @@
+{
+  "name": "@btf/worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --env-file=../../.env src/main.ts",
+    "build": "tsc --build",
+    "start": "node dist/main.js",
+    "typecheck": "tsc --build",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "sync": "tsx src/cli/sync.ts"
+  },
+  "dependencies": {
+    "@btf/application": "workspace:*",
+    "@btf/domain": "workspace:*",
+    "@btf/infrastructure": "workspace:*",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.3"
+  }
+}
