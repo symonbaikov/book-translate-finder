@@ -201,7 +201,9 @@ export class SyncWorkFromSource implements UseCase<
         editionId,
         type: providerEdition.link.type,
         url: providerEdition.link.url,
-        provider: ProviderId.create(source),
+        // A link's actual legal origin can differ from the adapter that surfaced it — see the
+        // `link.provider` doc comment on ProviderEdition.
+        provider: ProviderId.create(providerEdition.link.provider ?? source),
         rightsStatus: providerEdition.rightsSignal,
         verifiedAt: this.deps.clock.now(),
       });

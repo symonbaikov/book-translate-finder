@@ -3,6 +3,7 @@ import type {
   CachePort,
   ProviderEdition,
   ProviderWork,
+  RightsStatus,
   SearchQuery,
 } from '@btf/domain';
 import { ProviderId } from '@btf/domain';
@@ -10,6 +11,16 @@ import type { ResilientFetcher } from '../http/resilient-fetch.js';
 
 const SEARCH_CACHE_TTL_SECONDS = 60 * 60; // 1h — matches docs/architecture.md §6 hot-response TTLs
 const EDITIONS_CACHE_TTL_SECONDS = 6 * 60 * 60; // 6h — editions change less often than search rankings
+const AVAILABILITY_CACHE_TTL_SECONDS = 6 * 60 * 60; // 6h — same order as editions; lending status isn't second-to-second
+/** `/api/volumes/brief` accepts a pipe-separated request list — kept well under any practical
+ * URL-length limit, same order of magnitude as editions.json's own `limit=50`. */
+const AVAILABILITY_BATCH_SIZE = 50;
+/**
+ * Caps single-edition lookups triggered by an `ocaid:`-only availability match (see
+ * `fetchEditions`'s second pass). A work's `ia` list can carry dozens of scans of the very same
+ * copy — bounding this keeps one popular work's sync from firing dozens of extra HTTP requests.
+ */
+const MAX_EXTRA_AVAILABILITY_EDITIONS = 5;
 
 interface OpenLibrarySearchDoc {
   key: string;
@@ -18,6 +29,9 @@ interface OpenLibrarySearchDoc {
   language?: string[];
   edition_count?: number;
   first_publish_year?: number;
+  /** Internet Archive identifiers for every digitized copy of this *work*, across all editions —
+   * unlike `editions.json`, not capped to a handful of records. See `fetchWorkIaIds`. */
+  ia?: string[];
 }
 
 interface OpenLibrarySearchResponse {
@@ -38,6 +52,19 @@ interface OpenLibraryEditionEntry {
 
 interface OpenLibraryEditionsResponse {
   entries?: OpenLibraryEditionEntry[];
+}
+
+/** `/api/volumes/brief/json/...` — docs/plan.md §2 research: undocumented on openlibrary.org's
+ * own developer pages beyond a short mention, verified live against real ISBNs/OLIDs instead. */
+interface AvailabilityItem {
+  match?: 'exact' | 'similar';
+  status?: 'full access' | 'lendable' | 'checked out' | 'restricted' | string;
+  'ol-edition-id'?: string;
+  itemURL?: string;
+}
+
+interface AvailabilityResponse {
+  [requestKey: string]: { items?: AvailabilityItem[] } | undefined;
 }
 
 function extractYear(publishDate: string | undefined): number | null {
@@ -64,6 +91,10 @@ function mapSearchDoc(doc: OpenLibrarySearchDoc): ProviderWork {
   };
 }
 
+function editionOlid(entry: OpenLibraryEditionEntry): string {
+  return entry.key.replace('/books/', '');
+}
+
 function mapEditionEntry(entry: OpenLibraryEditionEntry): ProviderEdition {
   return {
     externalId: entry.key,
@@ -75,12 +106,45 @@ function mapEditionEntry(entry: OpenLibraryEditionEntry): ProviderEdition {
     year: extractYear(entry.publish_date),
     isbn13: entry.isbn_13?.[0] ?? null,
     isbn10: entry.isbn_10?.[0] ?? null,
-    // Open Library's editions.json has no reliable per-edition public-vs-lending signal (unlike
-    // search.json's work-level `ebook_access`, which doesn't tell us about a specific edition) —
-    // 'unknown' is the honest answer, not a guess (docs/legal-policy.md §3: absence of a clear
-    // signal is never treated as permission). No `link` either, for the same reason.
+    // Overwritten below from the availability lookup when it has a confident, exact-match
+    // answer for this specific edition. editions.json alone has no reliable per-edition
+    // public-vs-lending signal (docs/legal-policy.md §3: absence of a clear signal is never
+    // treated as permission), so 'unknown'/no link is the honest default in the meantime.
     rightsSignal: 'unknown',
   };
+}
+
+/**
+ * Maps one availability item to a rights signal + link, or `null` when the status doesn't imply
+ * a legal link at all (`restricted`, or anything undocumented). `internet-archive` — not
+ * `open-library` — is the link's provider identity: the content is actually hosted and legally
+ * vetted by Internet Archive (which runs Open Library), matching docs/legal-policy.md §3 rule 2
+ * ("Internet Archive отдаёт метку открытого доступа (не lending) → public_domain") and the
+ * `download` allowlist in И-1, which lists `internet-archive`, not `open-library`.
+ */
+function mapAvailability(item: AvailabilityItem): {
+  rightsSignal: RightsStatus;
+  link: { type: 'download' | 'borrow'; url: string; provider: string };
+} | null {
+  if (!item.itemURL) return null;
+
+  switch (item.status) {
+    case 'full access':
+      return {
+        rightsSignal: 'public_domain',
+        link: { type: 'download', url: item.itemURL, provider: 'internet-archive' },
+      };
+    case 'lendable':
+    case 'checked out':
+      // Still legal to *try* to borrow even while checked out by someone else (docs/legal-policy.md
+      // И-2/И-4) — the reader joins IA's own waitlist, that's not our concern to model.
+      return {
+        rightsSignal: 'copyrighted',
+        link: { type: 'borrow', url: item.itemURL, provider: 'internet-archive' },
+      };
+    default:
+      return null;
+  }
 }
 
 /**
@@ -130,9 +194,122 @@ export class OpenLibraryProvider implements BookMetadataProvider {
     if (!res.ok) throw new Error(`Open Library editions failed with status ${res.status}`);
 
     const data = (await res.json()) as OpenLibraryEditionsResponse;
-    const results = (data.entries ?? []).map(mapEditionEntry);
+    const entries = data.entries ?? [];
+    const editions = entries.map(mapEditionEntry);
+    const knownOlids = new Set(entries.map(editionOlid));
 
-    await this.cache.set(cacheKey, results, EDITIONS_CACHE_TTL_SECONDS);
-    return results;
+    // `ocaid:` request keys (the Internet Archive identifier — confirmed live: the endpoint
+    // accepts `ocaid:`, not `ia:`, despite the field being named `ia` on search.json's own docs)
+    // alongside the fetched editions' own `olid:` keys. A heavily-reprinted classic can have
+    // hundreds of editions (docs/plan.md §2 finding: live-verified against "1984", 536 total),
+    // and editions.json's ordering has no relationship to which ones are actually lendable, so
+    // the batch of 50 we just fetched can easily miss every one of them. The work's own `ia` list
+    // (from search.json, not capped like editions.json) doesn't have that blind spot.
+    const iaIds = await this.fetchWorkIaIds(externalWorkId);
+    const requestKeys = [
+      ...entries.map((e) => `olid:${editionOlid(e)}`),
+      ...iaIds.map((id) => `ocaid:${id}`),
+    ];
+    const availability = await this.fetchAvailability(requestKeys);
+
+    for (let i = 0; i < editions.length; i++) {
+      const olid = editionOlid(entries[i]!);
+      const item = availability.get(olid);
+      if (!item) continue;
+      const mapped = mapAvailability(item);
+      if (!mapped) continue;
+      editions[i] = { ...editions[i]!, rightsSignal: mapped.rightsSignal, link: mapped.link };
+    }
+
+    // An `ocaid:`-sourced match can point at an edition outside the fetched batch entirely — fetch
+    // that specific edition directly (capped, see MAX_EXTRA_AVAILABILITY_EDITIONS) rather than
+    // silently dropping a real, confirmed deep link just because it wasn't among the first 50.
+    let extraFetched = 0;
+    for (const [olid, item] of availability) {
+      if (knownOlids.has(olid) || extraFetched >= MAX_EXTRA_AVAILABILITY_EDITIONS) continue;
+      const mapped = mapAvailability(item);
+      if (!mapped) continue;
+      const extra = await this.fetchSingleEdition(olid);
+      extraFetched += 1;
+      if (!extra) continue;
+      editions.push({ ...extra, rightsSignal: mapped.rightsSignal, link: mapped.link });
+      knownOlids.add(olid);
+    }
+
+    await this.cache.set(cacheKey, editions, EDITIONS_CACHE_TTL_SECONDS);
+    return editions;
+  }
+
+  /**
+   * The `ia` field is a search-index projection, not a stored work property, so it's only
+   * reachable through `search.json` — scoped to this exact work via `key:` so it stays a
+   * single-document lookup, not a re-run of the original text search.
+   */
+  private async fetchWorkIaIds(workId: string): Promise<string[]> {
+    const cacheKey = `provider:open-library:work-ia:${workId}`;
+    const cached = await this.cache.get<string[]>(cacheKey);
+    if (cached) return cached;
+
+    const url = `https://openlibrary.org/search.json?${new URLSearchParams({
+      q: `key:${workId}`,
+      fields: 'key,ia',
+      limit: '1',
+    })}`;
+    const res = await this.fetcher.fetch(url, { headers: { 'User-Agent': this.userAgent } });
+    if (!res.ok) return []; // best-effort — same reasoning as fetchAvailability
+
+    const data = (await res.json()) as OpenLibrarySearchResponse;
+    const ia = data.docs?.[0]?.ia ?? [];
+    await this.cache.set(cacheKey, ia, EDITIONS_CACHE_TTL_SECONDS);
+    return ia;
+  }
+
+  /**
+   * Looks up lending/availability status for a batch of `olid:`/`ocaid:` request keys
+   * (docs/plan.md §2 finding — verified live: `/api/volumes/brief/json/olid:A|ocaid:B|...`;
+   * `ia:` looks plausible but silently returns `{}` for every request), keyed in the result
+   * by `ol-edition-id` regardless of which kind of key was used to find it. Only `match: 'exact'`
+   * items are kept — the API can otherwise answer a request with a *different* edition's
+   * availability instead of "no data for this one" (`match: 'similar'`), which would misattribute
+   * one edition's lending status to another. Batched (`AVAILABILITY_BATCH_SIZE`) rather than one
+   * request per key — the same etiquette reasoning as `editions.json`'s own `limit=50`.
+   */
+  private async fetchAvailability(requestKeys: string[]): Promise<Map<string, AvailabilityItem>> {
+    const result = new Map<string, AvailabilityItem>();
+    if (requestKeys.length === 0) return result;
+
+    const cacheKey = `provider:open-library:availability:${requestKeys.slice().sort().join(',')}`;
+    const cached = await this.cache.get<[string, AvailabilityItem][]>(cacheKey);
+    if (cached) return new Map(cached);
+
+    for (let i = 0; i < requestKeys.length; i += AVAILABILITY_BATCH_SIZE) {
+      const batch = requestKeys.slice(i, i + AVAILABILITY_BATCH_SIZE);
+      const url = `https://openlibrary.org/api/volumes/brief/json/${batch.join('|')}`;
+
+      const res = await this.fetcher.fetch(url, { headers: { 'User-Agent': this.userAgent } });
+      if (!res.ok) continue; // best-effort — a failed availability lookup shouldn't fail the whole sync
+
+      const data = (await res.json()) as AvailabilityResponse;
+      for (const key of batch) {
+        const items = data[key]?.items ?? [];
+        const exact = items.find((item) => item.match === 'exact' && item['ol-edition-id']);
+        if (exact) result.set(exact['ol-edition-id']!, exact);
+      }
+    }
+
+    await this.cache.set(cacheKey, [...result.entries()], AVAILABILITY_CACHE_TTL_SECONDS);
+    return result;
+  }
+
+  /** Single-edition fallback for an availability match outside the fetched editions.json batch.
+   * `/books/{OLID}.json`'s shape is field-compatible with `editions.json`'s own entries (same
+   * key names — verified live), so `mapEditionEntry` handles both. */
+  private async fetchSingleEdition(olid: string): Promise<ProviderEdition | null> {
+    const url = `https://openlibrary.org/books/${olid}.json`;
+    const res = await this.fetcher.fetch(url, { headers: { 'User-Agent': this.userAgent } });
+    if (!res.ok) return null; // best-effort — same reasoning as fetchAvailability
+
+    const entry = (await res.json()) as OpenLibraryEditionEntry;
+    return mapEditionEntry(entry);
   }
 }

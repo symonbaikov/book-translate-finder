@@ -33,6 +33,26 @@ function makeFetcherReturning(body: unknown, status = 200): ResilientFetcher {
   };
 }
 
+/** Routes each call by matching a substring against the request URL — lets a single test mock
+ * both the editions.json call and the availability lookup with different bodies. */
+function makeFetcherRouting(routes: [string, unknown][]): ResilientFetcher {
+  return {
+    fetch: vi.fn(async (url: string) => {
+      const match = routes.find(([substring]) => url.includes(substring));
+      if (!match) throw new Error(`No mock route for ${url}`);
+      return new Response(JSON.stringify(match[1]), { status: 200 });
+    }),
+  };
+}
+
+function editionEntry(olid: string, overrides: Record<string, unknown> = {}) {
+  return { key: `/books/${olid}`, title: 'Test Edition', ...overrides };
+}
+
+/** `fetchEditions` always looks up the work's `ia` list — route it explicitly in every test that
+ * doesn't care about that path, so `makeFetcherRouting`'s unmatched-route guard doesn't fire. */
+const NO_IA_ROUTE: [string, unknown] = ['search.json', { docs: [{ ia: [] }] }];
+
 describe('OpenLibraryProvider.searchWorks', () => {
   it('maps a real Open Library search response into ProviderWork DTOs', async () => {
     const fixture = readFixture('open-library-search-classic.json');
@@ -115,6 +135,8 @@ describe('OpenLibraryProvider.fetchEditions', () => {
   });
 
   it('caches editions per work id', async () => {
+    // Same generic body for every call: editions.json sees {entries: []}, and the ia lookup
+    // (also always fired) sees the same shape, which has no `docs` — an empty ia list.
     const fetcher = makeFetcherReturning({ entries: [] });
     const provider = new OpenLibraryProvider(fetcher, makeInMemoryCache(), 'test-agent');
 
@@ -122,6 +144,218 @@ describe('OpenLibraryProvider.fetchEditions', () => {
     await provider.fetchEditions('/works/OL1W');
     await provider.fetchEditions('/works/OL2W');
 
+    // 2 network calls per uncached work id (editions.json + the work-ia lookup), 0 for the
+    // repeated call — see fetchWorkIaIds's doc comment for why the ia lookup can't be skipped.
+    expect(fetcher.fetch).toHaveBeenCalledTimes(4);
+  });
+});
+
+describe('OpenLibraryProvider.fetchEditions availability (Open Library Lending)', () => {
+  it('maps an exact "full access" match to a public-domain download link from internet-archive', async () => {
+    const fetcher = makeFetcherRouting([
+      ['editions.json', { entries: [editionEntry('OL1M')] }],
+      [
+        '/api/volumes/brief/json/',
+        {
+          'olid:OL1M': {
+            items: [
+              {
+                match: 'exact',
+                status: 'full access',
+                'ol-edition-id': 'OL1M',
+                itemURL: 'https://archive.org/details/foo',
+              },
+            ],
+          },
+        },
+      ],
+      NO_IA_ROUTE,
+    ]);
+    const provider = new OpenLibraryProvider(fetcher, makeInMemoryCache(), 'test-agent');
+
+    const [edition] = await provider.fetchEditions('/works/OL1W');
+
+    expect(edition?.rightsSignal).toBe('public_domain');
+    expect(edition?.link).toEqual({
+      type: 'download',
+      url: 'https://archive.org/details/foo',
+      provider: 'internet-archive',
+    });
+  });
+
+  it.each(['lendable', 'checked out'])(
+    'maps an exact "%s" match to a copyrighted borrow link from internet-archive',
+    async (status) => {
+      const fetcher = makeFetcherRouting([
+        ['editions.json', { entries: [editionEntry('OL2M')] }],
+        [
+          '/api/volumes/brief/json/',
+          {
+            'olid:OL2M': {
+              items: [
+                {
+                  match: 'exact',
+                  status,
+                  'ol-edition-id': 'OL2M',
+                  itemURL: 'https://archive.org/details/bar',
+                },
+              ],
+            },
+          },
+        ],
+        NO_IA_ROUTE,
+      ]);
+      const provider = new OpenLibraryProvider(fetcher, makeInMemoryCache(), 'test-agent');
+
+      const [edition] = await provider.fetchEditions('/works/OL2W');
+
+      expect(edition?.rightsSignal).toBe('copyrighted');
+      expect(edition?.link).toEqual({
+        type: 'borrow',
+        url: 'https://archive.org/details/bar',
+        provider: 'internet-archive',
+      });
+    },
+  );
+
+  it('leaves the edition at "unknown" with no link when the status is "restricted"', async () => {
+    const fetcher = makeFetcherRouting([
+      ['editions.json', { entries: [editionEntry('OL3M')] }],
+      [
+        '/api/volumes/brief/json/',
+        {
+          'olid:OL3M': {
+            items: [
+              {
+                match: 'exact',
+                status: 'restricted',
+                'ol-edition-id': 'OL3M',
+                itemURL: 'https://archive.org/details/baz',
+              },
+            ],
+          },
+        },
+      ],
+      NO_IA_ROUTE,
+    ]);
+    const provider = new OpenLibraryProvider(fetcher, makeInMemoryCache(), 'test-agent');
+
+    const [edition] = await provider.fetchEditions('/works/OL3W');
+
+    expect(edition?.rightsSignal).toBe('unknown');
+    expect(edition?.link).toBeUndefined();
+  });
+
+  it('never attributes a "similar" match to the edition — only an exact match counts', async () => {
+    const fetcher = makeFetcherRouting([
+      ['editions.json', { entries: [editionEntry('OL4M')] }],
+      [
+        '/api/volumes/brief/json/',
+        {
+          'olid:OL4M': {
+            items: [
+              {
+                match: 'similar',
+                status: 'full access',
+                'ol-edition-id': 'OL9999M',
+                itemURL: 'https://archive.org/details/other-edition',
+              },
+            ],
+          },
+        },
+      ],
+      NO_IA_ROUTE,
+    ]);
+    const provider = new OpenLibraryProvider(fetcher, makeInMemoryCache(), 'test-agent');
+
+    const [edition] = await provider.fetchEditions('/works/OL4W');
+
+    expect(edition?.rightsSignal).toBe('unknown');
+    expect(edition?.link).toBeUndefined();
+  });
+
+  it('does not call the availability endpoint at all when there are no editions and no ia ids', async () => {
+    const fetcher = makeFetcherReturning({ entries: [] });
+    const provider = new OpenLibraryProvider(fetcher, makeInMemoryCache(), 'test-agent');
+
+    await provider.fetchEditions('/works/OL5W');
+
+    // editions.json + the work-ia lookup — no request keys left over for /api/volumes/brief.
     expect(fetcher.fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('fetches and appends an edition outside the batch when only its ocaid has an exact match', async () => {
+    const fetcher = makeFetcherRouting([
+      ['editions.json', { entries: [editionEntry('OL5M')] }], // fetched batch, no availability of its own
+      ['search.json', { docs: [{ ia: ['scan001'] }] }],
+      [
+        '/api/volumes/brief/json/',
+        {
+          'olid:OL5M': {},
+          'ocaid:scan001': {
+            items: [
+              {
+                match: 'exact',
+                status: 'full access',
+                'ol-edition-id': 'OL6M', // not in the fetched batch at all
+                itemURL: 'https://archive.org/details/scan001',
+              },
+            ],
+          },
+        },
+      ],
+      [
+        '/books/OL6M.json',
+        editionEntry('OL6M', { title: 'Extra Edition', languages: [{ key: '/languages/eng' }] }),
+      ],
+    ]);
+    const provider = new OpenLibraryProvider(fetcher, makeInMemoryCache(), 'test-agent');
+
+    const editions = await provider.fetchEditions('/works/OL5W');
+
+    expect(editions).toHaveLength(2);
+    const extra = editions.find((e) => e.externalId === '/books/OL6M');
+    expect(extra).toMatchObject({
+      title: 'Extra Edition',
+      language: 'eng',
+      rightsSignal: 'public_domain',
+      link: {
+        type: 'download',
+        url: 'https://archive.org/details/scan001',
+        provider: 'internet-archive',
+      },
+    });
+  });
+
+  it('caps how many out-of-batch editions it fetches per sync (MAX_EXTRA_AVAILABILITY_EDITIONS)', async () => {
+    const extraOlids = ['OLX1M', 'OLX2M', 'OLX3M', 'OLX4M', 'OLX5M', 'OLX6M'];
+    const availabilityItems: Record<string, { items: unknown[] }> = {};
+    for (const [i, olid] of extraOlids.entries()) {
+      availabilityItems[`ocaid:scan${i}`] = {
+        items: [
+          {
+            match: 'exact',
+            status: 'full access',
+            'ol-edition-id': olid,
+            itemURL: `https://archive.org/details/scan${i}`,
+          },
+        ],
+      };
+    }
+    const fetcher = makeFetcherRouting([
+      ['editions.json', { entries: [] }],
+      ['search.json', { docs: [{ ia: extraOlids.map((_, i) => `scan${i}`) }] }],
+      ['/api/volumes/brief/json/', availabilityItems],
+      [
+        '/books/',
+        editionEntry('OLXNM', { title: 'Extra', languages: [{ key: '/languages/eng' }] }),
+      ],
+    ]);
+    const provider = new OpenLibraryProvider(fetcher, makeInMemoryCache(), 'test-agent');
+
+    const editions = await provider.fetchEditions('/works/OL6W');
+
+    // 6 exact matches found, but only MAX_EXTRA_AVAILABILITY_EDITIONS (5) get fetched and appended.
+    expect(editions).toHaveLength(5);
   });
 });
