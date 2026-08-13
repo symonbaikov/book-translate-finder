@@ -7,6 +7,7 @@ import {
   SourceLink,
 } from '@btf/domain';
 import { describe, expect, it } from 'vitest';
+import { CACHE_KEY_VERSION } from '../../src/cache-key-version.js';
 import { InMemoryCache } from '../../../domain/test/fakes/in-memory-cache.js';
 import { InMemoryEditionRepository } from '../../../domain/test/fakes/in-memory-edition-repository.js';
 import { InMemorySourceLinkRepository } from '../../../domain/test/fakes/in-memory-source-link-repository.js';
@@ -100,7 +101,7 @@ describe('GetEditionLinks', () => {
     expect(await cache.get(editionLinksCacheKey('work-1', 'e1'))).not.toBeNull();
 
     // A prefix-based invalidation of the owning work must be able to reach this key.
-    await cache.deleteByPrefix('v1:work:work-1');
+    await cache.deleteByPrefix(`${CACHE_KEY_VERSION}:work:work-1`);
     expect(await cache.get(editionLinksCacheKey('work-1', 'e1'))).toBeNull();
   });
 });

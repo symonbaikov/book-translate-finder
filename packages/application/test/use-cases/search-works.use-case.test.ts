@@ -1,5 +1,6 @@
 import type { WorkSearchHit, WorkSearchPort } from '@btf/domain';
 import { describe, expect, it } from 'vitest';
+import { CACHE_KEY_VERSION } from '../../src/cache-key-version.js';
 import { FixedClock } from '../../../domain/test/fakes/fixed-clock.js';
 import { InMemoryCache } from '../../../domain/test/fakes/in-memory-cache.js';
 import { InMemoryJobQueue } from '../../../domain/test/fakes/in-memory-job-queue.js';
@@ -104,6 +105,6 @@ describe('SearchWorks', () => {
 
   it('exposes the same cache key a backfill consumer would need to invalidate/populate', () => {
     const key = searchResultsCacheKey('War and Peace', 20);
-    expect(key).toMatch(/^v1:search:[0-9a-f]{64}:20$/);
+    expect(key).toMatch(new RegExp(`^${CACHE_KEY_VERSION}:search:[0-9a-f]{64}:20$`));
   });
 });

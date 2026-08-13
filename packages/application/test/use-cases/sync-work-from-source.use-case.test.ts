@@ -20,6 +20,7 @@ import type {
 } from '@btf/domain';
 import { InvalidInputError, ProviderId } from '@btf/domain';
 import { describe, expect, it } from 'vitest';
+import { CACHE_KEY_VERSION } from '../../src/cache-key-version.js';
 import {
   SyncWorkFromSource,
   type SyncWorkFromSourceDeps,
@@ -159,6 +160,10 @@ class FakeBookMetadataProvider implements BookMetadataProvider {
   async fetchEditions(externalWorkId: string): Promise<ProviderEdition[]> {
     return this.editionsByExternalId[externalWorkId] ?? [];
   }
+
+  async fetchWorkDetails(): Promise<{ description: string | null; coverUrl: string | null }> {
+    return { description: 'A test description.', coverUrl: 'https://covers.example.org/w1.jpg' };
+  }
 }
 
 // Realistic Open Library shapes — three-letter ISO 639-2/B codes, exactly what tripped up the
@@ -170,12 +175,14 @@ const PROVIDER_WORK: ProviderWork = {
   languages: ['eng', 'rus'],
   firstPublishedYear: 1869,
   editionCount: 2,
+  coverUrl: null,
 };
 
 const RUSSIAN_EDITION: ProviderEdition = {
   externalId: '/books/OL1M',
   title: 'Война и мир',
   language: 'rus',
+  coverUrl: null,
   translator: null,
   translatedFrom: null,
   publisher: 'Ru Publisher',
@@ -189,6 +196,7 @@ const ENGLISH_EDITION: ProviderEdition = {
   externalId: '/books/OL2M',
   title: 'War and Peace',
   language: 'eng',
+  coverUrl: null,
   translator: 'Aylmer Maude',
   translatedFrom: 'rus',
   publisher: 'Penguin Classics',
@@ -208,6 +216,7 @@ const GOOGLE_BOOKS_PROVIDER_WORK: ProviderWork = {
   languages: ['en'],
   firstPublishedYear: 1900, // wrong — open-library's 1869 above is correct
   editionCount: 1,
+  coverUrl: null,
 };
 
 // Same natural-key-determining fields as ENGLISH_EDITION (language/publisher/year/title/isbn —
@@ -217,6 +226,7 @@ const GOOGLE_BOOKS_ENGLISH_EDITION: ProviderEdition = {
   externalId: 'gb-book-1',
   title: 'War and Peace',
   language: 'eng',
+  coverUrl: null,
   translator: 'Wrong Translator',
   translatedFrom: null,
   publisher: 'Penguin Classics',
@@ -403,11 +413,11 @@ describe('SyncWorkFromSource', () => {
     const useCase = new SyncWorkFromSource(deps);
 
     const result = await useCase.execute({ source: 'open-library', query: 'War and Peace' });
-    await cache.set(`v1:work:${result.workId}:card`, 'stale', 60);
+    await cache.set(`${CACHE_KEY_VERSION}:work:${result.workId}:card`, 'stale', 60);
 
     await useCase.execute({ source: 'open-library', query: 'War and Peace' });
 
-    expect(await cache.get(`v1:work:${result.workId}:card`)).toBeNull();
+    expect(await cache.get(`${CACHE_KEY_VERSION}:work:${result.workId}:card`)).toBeNull();
   });
 
   describe('source-priority metadata conflicts (docs/architecture.md §5)', () => {

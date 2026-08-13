@@ -11,6 +11,8 @@ function toDomain(row: typeof work.$inferSelect): Work {
     originalLanguage: LanguageCode.create(row.originalLanguage),
     author: row.author,
     firstPublishedYear: row.firstPublishedYear,
+    description: row.description,
+    coverUrl: row.coverUrl,
     syncedAt: row.syncedAt,
   });
 }
@@ -52,6 +54,8 @@ export class PgWorkRepository implements WorkRepository {
         originalLanguage: entity.originalLanguage.value,
         author: entity.author,
         firstPublishedYear: entity.firstPublishedYear,
+        description: entity.description,
+        coverUrl: entity.coverUrl,
         naturalKey: entity.naturalKey,
         syncedAt: entity.syncedAt,
       })
@@ -65,6 +69,8 @@ export class PgWorkRepository implements WorkRepository {
           originalLanguage: entity.originalLanguage.value,
           author: entity.author,
           firstPublishedYear: entity.firstPublishedYear,
+          description: entity.description,
+          coverUrl: entity.coverUrl,
           syncedAt: entity.syncedAt,
         },
       });

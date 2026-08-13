@@ -67,12 +67,14 @@ export class PgWorkSearchAdapter implements WorkSearchPort {
         originalTitle: string;
         author: string;
         firstPublishedYear: number | null;
+        coverUrl: string | null;
       }>(sql`
         SELECT
           "id",
           "original_title" AS "originalTitle",
           "author",
           "first_published_year" AS "firstPublishedYear",
+          "cover_url" AS "coverUrl",
           GREATEST(
             similarity("original_title", ${query}),
             similarity("author", ${query}),
@@ -103,6 +105,7 @@ export class PgWorkSearchAdapter implements WorkSearchPort {
       originalTitle: row.originalTitle,
       author: row.author,
       firstPublishedYear: row.firstPublishedYear,
+      coverUrl: row.coverUrl,
     }));
   }
 }

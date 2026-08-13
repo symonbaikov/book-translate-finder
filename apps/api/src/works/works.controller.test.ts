@@ -22,6 +22,8 @@ const CARD: GetWorkCardOutput = {
   originalLanguage: 'ru',
   author: 'Leo Tolstoy',
   firstPublishedYear: 1869,
+  description: null,
+  coverUrl: null,
   translatedLanguages: ['en'],
   editionCount: 2,
   sources: ['open-library'],

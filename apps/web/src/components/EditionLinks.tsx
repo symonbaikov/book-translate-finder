@@ -40,7 +40,12 @@ export function EditionLinks({ editionId }: { editionId: string }) {
         {state.kind === 'loaded' ? 'Hide links' : 'Show links'}
       </button>
       <div aria-live="polite">
-        {state.kind === 'loading' && <p className="muted">Loading links…</p>}
+        {state.kind === 'loading' && (
+          <div style={{ marginTop: '0.6rem' }} aria-label="Loading links">
+            <div className="skeleton skeleton--text" style={{ width: '55%' }} />
+            <div className="skeleton skeleton--text" style={{ width: '40%' }} />
+          </div>
+        )}
         {state.kind === 'error' && <p className="error-box">{state.message}</p>}
         {state.kind === 'loaded' && <LinkList links={state.links} />}
       </div>

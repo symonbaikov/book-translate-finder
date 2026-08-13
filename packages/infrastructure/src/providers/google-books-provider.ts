@@ -20,6 +20,8 @@ interface GoogleBooksVolume {
     publishedDate?: string;
     publisher?: string;
     industryIdentifiers?: { type: string; identifier: string }[];
+    description?: string;
+    imageLinks?: { thumbnail?: string; smallThumbnail?: string };
   };
   saleInfo?: { saleability?: string; buyLink?: string };
 }
@@ -32,6 +34,13 @@ function extractYear(publishedDate: string | undefined): number | null {
   if (!publishedDate) return null;
   const match = /^(\d{4})/.exec(publishedDate);
   return match ? Number(match[1]) : null;
+}
+
+function coverUrl(volume: GoogleBooksVolume): string | null {
+  const links = volume.volumeInfo?.imageLinks;
+  // Google serves these over http by default; upgrade so covers load on an https page.
+  const url = links?.thumbnail ?? links?.smallThumbnail ?? null;
+  return url ? url.replace(/^http:/, 'https:') : null;
 }
 
 function findIsbn(volume: GoogleBooksVolume, type: 'ISBN_13' | 'ISBN_10'): string | null {
@@ -55,6 +64,7 @@ function mapVolumeToProviderWork(volume: GoogleBooksVolume): ProviderWork {
     languages: info.language ? [info.language] : [],
     firstPublishedYear: extractYear(info.publishedDate),
     editionCount: 1,
+    coverUrl: coverUrl(volume),
   };
 }
 
@@ -67,6 +77,7 @@ function mapVolumeToProviderEdition(volume: GoogleBooksVolume): ProviderEdition 
     externalId: volume.id,
     title: info.title ?? '',
     language: info.language ?? 'und',
+    coverUrl: coverUrl(volume),
     // Google Books doesn't expose a distinct translator credit field.
     translator: null,
     translatedFrom: null,
@@ -141,5 +152,31 @@ export class GoogleBooksProvider implements BookMetadataProvider {
 
     await this.cache.set(cacheKey, results, VOLUME_CACHE_TTL_SECONDS);
     return results;
+  }
+
+  async fetchWorkDetails(externalWorkId: string): Promise<{
+    description: string | null;
+    coverUrl: string | null;
+  }> {
+    const cacheKey = `provider:google-books:volume-details:${externalWorkId}`;
+    const cached = await this.cache.get<{ description: string | null; coverUrl: string | null }>(
+      cacheKey,
+    );
+    if (cached) return cached;
+
+    const url = this.withKey(
+      new URL(`https://www.googleapis.com/books/v1/volumes/${encodeURIComponent(externalWorkId)}`),
+    );
+    const res = await this.fetcher.fetch(url.toString());
+    // Best-effort by port contract: missing details must not fail the sync.
+    if (!res.ok) return { description: null, coverUrl: null };
+
+    const volume = (await res.json()) as GoogleBooksVolume;
+    const details = {
+      description: volume.volumeInfo?.description ?? null,
+      coverUrl: coverUrl(volume),
+    };
+    await this.cache.set(cacheKey, details, VOLUME_CACHE_TTL_SECONDS);
+    return details;
   }
 }

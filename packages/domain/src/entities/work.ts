@@ -8,6 +8,10 @@ export interface CreateWorkParams {
   originalLanguage: LanguageCode;
   author: string;
   firstPublishedYear: number | null;
+  /** Work-level blurb from the source, when it has one — display-only, never part of identity. */
+  description?: string | null;
+  /** Cover image URL from the source, when it has one — display-only, never part of identity. */
+  coverUrl?: string | null;
   syncedAt: Date;
 }
 
@@ -24,6 +28,8 @@ export class Work {
     readonly originalLanguage: LanguageCode,
     readonly author: string,
     readonly firstPublishedYear: number | null,
+    readonly description: string | null,
+    readonly coverUrl: string | null,
     readonly naturalKey: string,
     readonly syncedAt: Date,
   ) {}
@@ -43,6 +49,8 @@ export class Work {
       params.originalLanguage,
       author,
       params.firstPublishedYear,
+      params.description?.trim() || null,
+      params.coverUrl?.trim() || null,
       computeWorkNaturalKey(title, author),
       params.syncedAt,
     );
@@ -56,6 +64,8 @@ export class Work {
       this.originalLanguage,
       this.author,
       this.firstPublishedYear,
+      this.description,
+      this.coverUrl,
       this.naturalKey,
       syncedAt,
     );

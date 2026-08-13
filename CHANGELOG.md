@@ -18,6 +18,13 @@ them before the API starts).
 
 ### Added
 
+- Book covers (work hero + per-edition thumbnails, from the sources' cover services) and a work
+  description block on the book card; covers also shown in search results. New nullable
+  `coverUrl` fields across the API and `description` on the work card (migration 0004).
+- Loading skeletons: shimmering result-card stand-ins during search/background sync (with a
+  pulsing-dots indicator), a route-level skeleton for the book page, and skeleton lines while an
+  edition's links load. Result cards cascade in with a fade-in-up animation; all animation is
+  disabled under `prefers-reduced-motion`.
 - Cross-language search: a work stored under its original-language title (e.g. «Мастер и
   Маргарита») is now findable by the title of any of its translations ("Master and Margarita") —
   search matches edition titles too, backed by a new trigram index (migration 0003). Found live:
@@ -40,6 +47,12 @@ them before the API starts).
   CONTRIBUTING/CODE_OF_CONDUCT/issue and PR templates.
 
 ### Fixed
+
+- Response-cache keys are now versioned through a single `CACHE_KEY_VERSION` constant (bumped to
+  `v2`). Found live: adding `coverUrl` to the editions response left pre-change entries cached,
+  the use case returned them verbatim, and the controller's output validation correctly refused
+  to serve them — 500s until the keys were flushed by hand. A version bump makes that
+  self-healing, exactly as docs/architecture.md §6 always intended the `v1` prefix to work.
 
 - Source HTTP client timeout raised 5s → 25s: real Open Library latency (up to 22s)
   was killing requests that would have completed successfully.

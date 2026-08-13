@@ -20,6 +20,8 @@ export interface CreateEditionParams {
   publisher?: string | null;
   year?: number | null;
   isbn?: Isbn | null;
+  /** Cover image URL from the source, when it has one — display-only, never part of the natural key. */
+  coverUrl?: string | null;
 }
 
 /** Immutable, same rationale as `Work` (docs/rules.md §3). */
@@ -34,6 +36,7 @@ export class Edition {
     readonly publisher: string | null,
     readonly year: number | null,
     readonly isbn: Isbn | null,
+    readonly coverUrl: string | null,
     readonly naturalKey: string,
   ) {}
 
@@ -66,6 +69,7 @@ export class Edition {
       publisher,
       year,
       isbn,
+      params.coverUrl?.trim() || null,
       naturalKey,
     );
   }

@@ -25,7 +25,9 @@ describe('SearchResponseSchema', () => {
   it('accepts a found response', () => {
     const result = SearchResponseSchema.safeParse({
       status: 'found',
-      results: [{ id: 'w1', originalTitle: 'x', author: 'y', firstPublishedYear: 1900 }],
+      results: [
+        { id: 'w1', originalTitle: 'x', author: 'y', firstPublishedYear: 1900, coverUrl: null },
+      ],
     });
     expect(result.success).toBe(true);
   });

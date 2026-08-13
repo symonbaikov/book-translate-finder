@@ -24,6 +24,7 @@ import {
   type WorkRepository,
 } from '@btf/domain';
 import type { UseCase } from '../use-case.js';
+import { CACHE_KEY_VERSION } from '../cache-key-version.js';
 
 export interface SyncWorkFromSourceInput {
   /** Key into the `providers` map this use case was constructed with — see docs/rules.md §1 Open/Closed. */
@@ -81,6 +82,7 @@ export class SyncWorkFromSource implements UseCase<
       }
 
       const providerEditions = await provider.fetchEditions(topMatch.externalId);
+      const workDetails = await provider.fetchWorkDetails(topMatch.externalId);
 
       const result = await this.deps.unitOfWork.runInTransaction(async () => {
         const author = topMatch.authorNames.join(', ') || 'Unknown';
@@ -103,6 +105,8 @@ export class SyncWorkFromSource implements UseCase<
               originalLanguage,
               author,
               firstPublishedYear: topMatch.firstPublishedYear,
+              description: workDetails.description,
+              coverUrl: workDetails.coverUrl ?? topMatch.coverUrl,
               syncedAt: this.deps.clock.now(),
             })
           : // A higher-priority source already owns this work's metadata (docs/architecture.md
@@ -123,7 +127,7 @@ export class SyncWorkFromSource implements UseCase<
           }
         }
 
-        await this.deps.cache.deleteByPrefix(`v1:work:${work.id}`);
+        await this.deps.cache.deleteByPrefix(`${CACHE_KEY_VERSION}:work:${work.id}`);
 
         return { workId: work.id, editionsSynced, linksSynced };
       });
@@ -187,6 +191,7 @@ export class SyncWorkFromSource implements UseCase<
           publisher,
           year,
           isbn,
+          coverUrl: providerEdition.coverUrl,
         })
       : (await this.deps.editionRepository.findById(editionId))!;
     await this.deps.editionRepository.save(edition);

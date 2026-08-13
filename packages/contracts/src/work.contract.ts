@@ -7,6 +7,8 @@ export const WorkCardResponseSchema = z.object({
   originalLanguage: z.string(),
   author: z.string(),
   firstPublishedYear: z.number().int().nullable(),
+  description: z.string().nullable(),
+  coverUrl: z.string().url().nullable(),
   translatedLanguages: z.array(z.string()),
   editionCount: z.number().int().nonnegative(),
   sources: z.array(z.string()),
@@ -31,6 +33,7 @@ export const EditionSummarySchema = z.object({
   publisher: z.string().nullable(),
   year: z.number().int().nullable(),
   isbn: z.string().nullable(),
+  coverUrl: z.string().url().nullable(),
   /** Legal source links this edition has — lets the client surface availability on the list itself. */
   linkCount: z.number().int().nonnegative(),
 });

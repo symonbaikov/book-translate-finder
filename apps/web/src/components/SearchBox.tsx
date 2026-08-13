@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { SearchHit } from '@btf/contracts';
 import Link from 'next/link';
 import { ApiRequestError, searchWorks } from '../lib/api-client';
+import { CoverImage, CoverSkeleton } from './CoverImage';
 
 type SearchState =
   | { kind: 'idle' }
@@ -99,21 +100,59 @@ export function SearchBox() {
   );
 }
 
+/** Shimmering stand-ins shaped like real result cards — the list "arrives" instead of flashing
+ * from a bare status line into content. */
+function ResultSkeletons({ count }: { count: number }) {
+  return (
+    <ul style={{ listStyle: 'none', padding: 0, margin: 0 }} aria-hidden="true">
+      {Array.from({ length: count }, (_, i) => (
+        <li key={i} className="card">
+          <div className="media-row">
+            <CoverSkeleton />
+            <div className="media-row__body">
+              <div className="skeleton skeleton--text" style={{ width: '60%' }} />
+              <div className="skeleton skeleton--text" style={{ width: '35%' }} />
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function SearchingIndicator({ text }: { text: string }) {
+  return (
+    <div>
+      <p className="muted" style={{ marginBottom: '1rem' }}>
+        {text}
+        <span className="searching-dots" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </span>
+      </p>
+      <ResultSkeletons count={3} />
+    </div>
+  );
+}
+
 function SearchResults({ state, onRetry }: { state: SearchState; onRetry: () => void }) {
   switch (state.kind) {
     case 'idle':
       return null;
     case 'loading':
-      return <p className="muted">Searching…</p>;
+      return <SearchingIndicator text="Searching" />;
     case 'pending':
       // A first-time sync of a popular book legitimately takes a while (several sequential
       // source requests) — after ~30s of silence, say so instead of looking frozen.
       return (
-        <p className="muted">
-          {state.attempt < 10
-            ? 'Not in our database yet — checking the sources…'
-            : 'Still searching: the first request for a book gathers data from the sources, which can take up to a couple of minutes…'}
-        </p>
+        <SearchingIndicator
+          text={
+            state.attempt < 10
+              ? 'Not in our database yet — checking the sources'
+              : 'Still searching: the first request for a book gathers data from the sources, which can take up to a couple of minutes'
+          }
+        />
       );
     case 'not_found':
       return <p>Nothing found. Try refining the title or author.</p>;
@@ -137,13 +176,18 @@ function SearchResults({ state, onRetry }: { state: SearchState; onRetry: () => 
       return (
         <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
           {state.results.map((hit) => (
-            <li key={hit.id} className="card">
-              <Link href={`/works/${hit.id}`}>
-                <strong>{hit.originalTitle}</strong>
-              </Link>
-              <div className="muted">
-                {hit.author}
-                {hit.firstPublishedYear ? `, ${hit.firstPublishedYear}` : ''}
+            <li key={hit.id} className="card animate-in">
+              <div className="media-row">
+                <CoverImage src={hit.coverUrl} alt="" width={56} height={84} />
+                <div className="media-row__body">
+                  <Link href={`/works/${hit.id}`}>
+                    <strong>{hit.originalTitle}</strong>
+                  </Link>
+                  <div className="muted">
+                    {hit.author}
+                    {hit.firstPublishedYear ? `, ${hit.firstPublishedYear}` : ''}
+                  </div>
+                </div>
               </div>
             </li>
           ))}

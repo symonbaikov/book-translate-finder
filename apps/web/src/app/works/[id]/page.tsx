@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import type { EditionSummary } from '@btf/contracts';
+import { CoverImage } from '../../../components/CoverImage';
 import { EditionLinks } from '../../../components/EditionLinks';
 import { getWorkCard, listEditions } from '../../../lib/api-client';
 import { languageName } from '../../../lib/language-names';
@@ -44,16 +45,33 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
       <p>
         <a href="/">← New search</a>
       </p>
-      <h1>{work.originalTitle}</h1>
-      <p className="muted">
-        {work.author}
-        {work.firstPublishedYear ? `, ${work.firstPublishedYear}` : ''} · original:{' '}
-        {languageName(work.originalLanguage)}
-      </p>
-      {work.sources.length > 0 && (
-        <p className="muted" style={{ fontSize: '0.85em' }}>
-          Data sources: {work.sources.join(', ')}
-        </p>
+      <div className="media-row animate-in" style={{ marginTop: '1rem' }}>
+        <CoverImage
+          src={work.coverUrl}
+          alt={`Cover of ${work.originalTitle}`}
+          width={128}
+          height={192}
+          priority
+        />
+        <div className="media-row__body">
+          <h1 style={{ marginTop: 0 }}>{work.originalTitle}</h1>
+          <p className="muted">
+            {work.author}
+            {work.firstPublishedYear ? `, ${work.firstPublishedYear}` : ''} · original:{' '}
+            {languageName(work.originalLanguage)}
+          </p>
+          {work.sources.length > 0 && (
+            <p className="muted" style={{ fontSize: '0.85em' }}>
+              Data sources: {work.sources.join(', ')}
+            </p>
+          )}
+        </div>
+      </div>
+      {work.description && (
+        <section aria-labelledby="about-heading" style={{ marginTop: '1.5rem' }}>
+          <h2 id="about-heading">About this book</h2>
+          <p style={{ whiteSpace: 'pre-line' }}>{work.description}</p>
+        </section>
       )}
 
       <section aria-labelledby="translations-heading" style={{ marginTop: '1.5rem' }}>
@@ -109,21 +127,26 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
 
 function EditionCard({ edition }: { edition: EditionSummary }) {
   return (
-    <div className="card">
-      <strong>{edition.title}</strong>
-      {edition.linkCount > 0 && (
-        <span className="badge badge--positive" style={{ marginLeft: '0.5rem' }}>
-          sources available
-        </span>
-      )}
-      <div className="muted">
-        {languageName(edition.language)}
-        {edition.publisher ? ` · ${edition.publisher}` : ''}
-        {edition.year ? ` · ${edition.year}` : ''}
-        {edition.translator ? ` · translated by ${edition.translator}` : ''}
-        {edition.isbn ? ` · ISBN ${edition.isbn}` : ''}
+    <div className="card animate-in">
+      <div className="media-row">
+        <CoverImage src={edition.coverUrl} alt="" width={56} height={84} />
+        <div className="media-row__body">
+          <strong>{edition.title}</strong>
+          {edition.linkCount > 0 && (
+            <span className="badge badge--positive" style={{ marginLeft: '0.5rem' }}>
+              sources available
+            </span>
+          )}
+          <div className="muted">
+            {languageName(edition.language)}
+            {edition.publisher ? ` · ${edition.publisher}` : ''}
+            {edition.year ? ` · ${edition.year}` : ''}
+            {edition.translator ? ` · translated by ${edition.translator}` : ''}
+            {edition.isbn ? ` · ISBN ${edition.isbn}` : ''}
+          </div>
+          <EditionLinks editionId={edition.id} />
+        </div>
       </div>
-      <EditionLinks editionId={edition.id} />
     </div>
   );
 }

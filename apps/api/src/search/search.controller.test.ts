@@ -18,7 +18,13 @@ describe('SearchController', () => {
     const searchWorks = makeSearchWorks({
       status: 'found',
       results: [
-        { id: 'w1', originalTitle: 'War and Peace', author: 'Tolstoy', firstPublishedYear: 1869 },
+        {
+          id: 'w1',
+          originalTitle: 'War and Peace',
+          author: 'Tolstoy',
+          firstPublishedYear: 1869,
+          coverUrl: null,
+        },
       ],
     });
     const controller = new SearchController(searchWorks);

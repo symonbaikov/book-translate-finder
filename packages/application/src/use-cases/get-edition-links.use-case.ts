@@ -5,6 +5,7 @@ import {
   type SourceLinkRepository,
 } from '@btf/domain';
 import type { UseCase } from '../use-case.js';
+import { CACHE_KEY_VERSION } from '../cache-key-version.js';
 
 export interface GetEditionLinksInput {
   editionId: string;
@@ -31,13 +32,13 @@ export interface GetEditionLinksDeps {
 const LINKS_TTL_SECONDS = 6 * 60 * 60;
 
 /**
- * Keyed under the owning work's `v1:work:{workId}` prefix (not `v1:edition:{id}`) so the single
- * `cache.deleteByPrefix('v1:work:{id}')` call `SyncWorkFromSource` already does on every
+ * Keyed under the owning work's versioned `work:{workId}` prefix (not `edition:{id}`) so the single
+ * `cache.deleteByPrefix` call `SyncWorkFromSource` already does on every
  * successful sync (docs/architecture.md §6) invalidates this too, without a second invalidation
  * path to keep in sync.
  */
 export function editionLinksCacheKey(workId: string, editionId: string): string {
-  return `v1:work:${workId}:edition:${editionId}:links`;
+  return `${CACHE_KEY_VERSION}:work:${workId}:edition:${editionId}:links`;
 }
 
 /**

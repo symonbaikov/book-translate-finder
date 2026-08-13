@@ -21,12 +21,23 @@ export interface ProviderWork {
   languages: string[];
   firstPublishedYear: number | null;
   editionCount: number;
+  /** Cover image URL when the source's search result carries one — cheap preview-quality signal;
+   * `fetchWorkDetails` is the authoritative source at sync time. */
+  coverUrl: string | null;
+}
+
+/** Work-level facts that need their own source request beyond the search hit (docs/architecture.md §2.2). */
+export interface ProviderWorkDetails {
+  description: string | null;
+  coverUrl: string | null;
 }
 
 export interface ProviderEdition {
   externalId: string;
   title: string;
   language: string;
+  /** Cover image URL for this specific edition, when the source has one. */
+  coverUrl: string | null;
   translator: string | null;
   /** The language this edition was translated from, when the source states it — see Edition.translatedFrom. */
   translatedFrom: string | null;
@@ -70,4 +81,10 @@ export interface BookMetadataProvider {
   readonly id: ProviderId;
   searchWorks(query: SearchQuery): Promise<ProviderWork[]>;
   fetchEditions(externalWorkId: string): Promise<ProviderEdition[]>;
+  /**
+   * Work-level description and cover — a separate call because sources keep them on the work
+   * record, not in search results or edition lists. Best-effort: a provider that cannot answer
+   * returns nulls rather than failing the sync.
+   */
+  fetchWorkDetails(externalWorkId: string): Promise<ProviderWorkDetails>;
 }

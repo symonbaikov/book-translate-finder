@@ -66,6 +66,7 @@ describe('GoogleBooksProvider.searchWorks', () => {
         languages: ['en'],
         firstPublishedYear: 2007,
         editionCount: 1,
+        coverUrl: null,
       },
     ]);
   });
@@ -120,6 +121,7 @@ describe('GoogleBooksProvider.fetchEditions', () => {
         externalId: 'abc123',
         title: 'War and Peace',
         language: 'en',
+        coverUrl: null,
         translator: null,
         translatedFrom: null,
         publisher: 'Penguin Classics',

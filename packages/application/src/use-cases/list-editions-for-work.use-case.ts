@@ -6,6 +6,7 @@ import {
   type WorkRepository,
 } from '@btf/domain';
 import type { UseCase } from '../use-case.js';
+import { CACHE_KEY_VERSION } from '../cache-key-version.js';
 
 export interface ListEditionsForWorkInput {
   workId: string;
@@ -22,6 +23,7 @@ export interface EditionSummaryDto {
   publisher: string | null;
   year: number | null;
   isbn: string | null;
+  coverUrl: string | null;
   /** How many legal source links this edition has — lets the list surface "where to get it"
    * upfront instead of hiding it behind a per-edition expand (Phase 3 live-UX finding). */
   linkCount: number;
@@ -42,7 +44,7 @@ export interface ListEditionsForWorkDeps {
 const EDITIONS_TTL_SECONDS = 60 * 60;
 
 export function editionsCacheKey(workId: string, language?: string, year?: number): string {
-  return `v1:work:${workId}:editions:${language ?? ''}:${year ?? ''}`;
+  return `${CACHE_KEY_VERSION}:work:${workId}:editions:${language ?? ''}:${year ?? ''}`;
 }
 
 /** `GET /api/works/:id/editions?language=&year=` (docs/architecture.md §4). */
@@ -83,6 +85,7 @@ export class ListEditionsForWork implements UseCase<
         publisher: edition.publisher,
         year: edition.year,
         isbn: edition.isbn?.value ?? null,
+        coverUrl: edition.coverUrl,
         linkCount: linkCounts.get(edition.id) ?? 0,
       })),
     };

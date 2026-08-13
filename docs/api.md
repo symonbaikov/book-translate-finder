@@ -33,7 +33,8 @@ curl 'http://localhost:3001/api/search?q=Мастер%20и%20Маргарита%
       "id": "0198…",
       "originalTitle": "Мастер и Маргарита",
       "author": "Михаил Афанасьевич Булгаков",
-      "firstPublishedYear": 1966
+      "firstPublishedYear": 1966,
+      "coverUrl": "https://covers.openlibrary.org/b/id/12947486-L.jpg"
     }
   ]
 }
@@ -59,6 +60,8 @@ curl 'http://localhost:3001/api/works/<workId>'
   "originalLanguage": "en",
   "author": "Михаил Афанасьевич Булгаков",
   "firstPublishedYear": 1966,
+  "description": "*The Master and Margarita* is a novel by Mikhail Bulgakov…",
+  "coverUrl": "https://covers.openlibrary.org/b/id/12947486-L.jpg",
   "translatedLanguages": ["de", "es", "it", "pl", "pt", "ru", "zh"],
   "editionCount": 30,
   "sources": ["open-library"]
@@ -90,6 +93,7 @@ The work's editions list with optional filters.
       "publisher": "Feltrinelli",
       "year": 2016,
       "isbn": "9788807900143",
+      "coverUrl": "https://covers.openlibrary.org/b/id/8305834-L.jpg",
       "linkCount": 1
     }
   ]

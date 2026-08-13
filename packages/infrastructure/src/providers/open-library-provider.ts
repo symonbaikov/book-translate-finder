@@ -29,6 +29,7 @@ interface OpenLibrarySearchDoc {
   language?: string[];
   edition_count?: number;
   first_publish_year?: number;
+  cover_i?: number;
   /** Internet Archive identifiers for every digitized copy of this *work*, across all editions —
    * unlike `editions.json`, not capped to a handful of records. See `fetchWorkIaIds`. */
   ia?: string[];
@@ -48,6 +49,7 @@ interface OpenLibraryEditionEntry {
   publish_date?: string;
   isbn_10?: string[];
   isbn_13?: string[];
+  covers?: number[];
 }
 
 interface OpenLibraryEditionsResponse {
@@ -63,8 +65,19 @@ interface AvailabilityItem {
   itemURL?: string;
 }
 
+/** `/works/{id}.json` — `description` is a plain string on some records and `{value}` on others
+ * (both shapes confirmed live). */
+interface OpenLibraryWorkResponse {
+  description?: string | { value?: string };
+  covers?: number[];
+}
+
 interface AvailabilityResponse {
   [requestKey: string]: { items?: AvailabilityItem[] } | undefined;
+}
+
+function coverIdToUrl(coverId: number | undefined): string | null {
+  return coverId ? `https://covers.openlibrary.org/b/id/${coverId}-L.jpg` : null;
 }
 
 function extractYear(publishDate: string | undefined): number | null {
@@ -88,6 +101,7 @@ function mapSearchDoc(doc: OpenLibrarySearchDoc): ProviderWork {
     languages: doc.language ?? [],
     firstPublishedYear: doc.first_publish_year ?? null,
     editionCount: doc.edition_count ?? 0,
+    coverUrl: coverIdToUrl(doc.cover_i),
   };
 }
 
@@ -100,6 +114,7 @@ function mapEditionEntry(entry: OpenLibraryEditionEntry): ProviderEdition {
     externalId: entry.key,
     title: entry.title ?? '',
     language: entry.languages?.[0]?.key.replace('/languages/', '') ?? 'und',
+    coverUrl: coverIdToUrl(entry.covers?.[0]),
     translator: extractTranslator(entry),
     translatedFrom: entry.translated_from?.[0]?.key.replace('/languages/', '') ?? null,
     publisher: entry.publishers?.[0] ?? null,
@@ -170,7 +185,7 @@ export class OpenLibraryProvider implements BookMetadataProvider {
 
     const url = `https://openlibrary.org/search.json?${new URLSearchParams({
       q: query.text,
-      fields: 'key,title,author_name,language,edition_count,first_publish_year',
+      fields: 'key,title,author_name,language,edition_count,first_publish_year,cover_i',
       limit: String(query.limit ?? 5),
     })}`;
 
@@ -238,6 +253,32 @@ export class OpenLibraryProvider implements BookMetadataProvider {
 
     await this.cache.set(cacheKey, editions, EDITIONS_CACHE_TTL_SECONDS);
     return editions;
+  }
+
+  async fetchWorkDetails(externalWorkId: string): Promise<{
+    description: string | null;
+    coverUrl: string | null;
+  }> {
+    const cacheKey = `provider:open-library:work-details:${externalWorkId}`;
+    const cached = await this.cache.get<{ description: string | null; coverUrl: string | null }>(
+      cacheKey,
+    );
+    if (cached) return cached;
+
+    const url = `https://openlibrary.org${externalWorkId}.json`;
+    const res = await this.fetcher.fetch(url, { headers: { 'User-Agent': this.userAgent } });
+    // Best-effort by port contract: a missing/failing work record must not fail the sync.
+    if (!res.ok) return { description: null, coverUrl: null };
+
+    const data = (await res.json()) as OpenLibraryWorkResponse;
+    const description =
+      typeof data.description === 'string' ? data.description : (data.description?.value ?? null);
+    const details = {
+      description,
+      coverUrl: coverIdToUrl(data.covers?.[0]),
+    };
+    await this.cache.set(cacheKey, details, EDITIONS_CACHE_TTL_SECONDS);
+    return details;
   }
 
   /**

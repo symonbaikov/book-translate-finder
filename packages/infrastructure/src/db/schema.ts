@@ -48,6 +48,8 @@ export const work = pgTable(
       .references(() => language.code),
     author: text('author').notNull(),
     firstPublishedYear: integer('first_published_year'),
+    description: text('description'),
+    coverUrl: text('cover_url'),
     naturalKey: varchar('natural_key', { length: 64 }).notNull(),
     syncedAt: timestamp('synced_at', { withTimezone: true }).notNull(),
   },
@@ -73,6 +75,7 @@ export const edition = pgTable(
     publisher: text('publisher'),
     year: integer('year'),
     isbn13: varchar('isbn13', { length: 13 }),
+    coverUrl: text('cover_url'),
     naturalKey: varchar('natural_key', { length: 64 }).notNull(),
   },
   (table) => [

@@ -7,7 +7,7 @@ under copyright.
 
 The project is designed for self-hosting: deploy your own copy on your own server or home NAS.
 
-![Book card: translation languages, editions, legal links](docs/images/work-card.png)
+![Book card: cover, description, translation languages, editions, legal links](docs/images/work-card.png)
 
 ## Legal policy
 

@@ -1,6 +1,7 @@
 // Phase 1.3 adds the first real use case. `SearchWorks`, `GetWorkCard`, `EnqueueSourceSync`, etc.
 // land with the API surface in Phase 1.4 — see docs/plan.md.
 export type { UseCase } from './use-case.js';
+export { CACHE_KEY_VERSION } from './cache-key-version.js';
 
 export {
   SyncWorkFromSource,

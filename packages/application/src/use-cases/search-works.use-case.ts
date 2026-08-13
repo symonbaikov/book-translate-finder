@@ -7,6 +7,7 @@ import {
   type WorkSearchPort,
 } from '@btf/domain';
 import type { UseCase } from '../use-case.js';
+import { CACHE_KEY_VERSION } from '../cache-key-version.js';
 
 export interface SearchWorksInput {
   query: string;
@@ -42,12 +43,12 @@ function queryHash(query: string): string {
 
 /** Shared with the backfill queue consumer (apps/worker) so it writes the exact key this reads. */
 export function searchResultsCacheKey(query: string, limit: number): string {
-  return `v1:search:${queryHash(query)}:${limit}`;
+  return `${CACHE_KEY_VERSION}:search:${queryHash(query)}:${limit}`;
 }
 
 /** Shared with the backfill queue consumer — it sets this after a backfill attempt finds nothing. */
 export function searchNegativeCacheKey(query: string): string {
-  return `v1:search:negative:${queryHash(query)}`;
+  return `${CACHE_KEY_VERSION}:search:negative:${queryHash(query)}`;
 }
 
 function dateStamp(now: Date): string {

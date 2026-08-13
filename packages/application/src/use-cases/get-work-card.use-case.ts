@@ -6,6 +6,7 @@ import {
   type WorkRepository,
 } from '@btf/domain';
 import type { UseCase } from '../use-case.js';
+import { CACHE_KEY_VERSION } from '../cache-key-version.js';
 
 export interface GetWorkCardInput {
   workId: string;
@@ -17,6 +18,8 @@ export interface GetWorkCardOutput {
   originalLanguage: string;
   author: string;
   firstPublishedYear: number | null;
+  description: string | null;
+  coverUrl: string | null;
   translatedLanguages: string[];
   editionCount: number;
   /** Every distinct source that has contributed data to this work (docs/architecture.md §5) —
@@ -36,7 +39,7 @@ export interface GetWorkCardDeps {
 const CARD_TTL_SECONDS = 60 * 60;
 
 export function workCacheKey(workId: string): string {
-  return `v1:work:${workId}:card`;
+  return `${CACHE_KEY_VERSION}:work:${workId}:card`;
 }
 
 /** `GET /api/works/:id` (docs/architecture.md §4). */
@@ -69,6 +72,8 @@ export class GetWorkCard implements UseCase<GetWorkCardInput, GetWorkCardOutput>
       originalLanguage: work.originalLanguage.value,
       author: work.author,
       firstPublishedYear: work.firstPublishedYear,
+      description: work.description,
+      coverUrl: work.coverUrl,
       translatedLanguages,
       editionCount: editions.length,
       sources,

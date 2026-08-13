@@ -13,6 +13,7 @@ export const SearchHitSchema = z.object({
   originalTitle: z.string(),
   author: z.string(),
   firstPublishedYear: z.number().int().nullable(),
+  coverUrl: z.string().url().nullable(),
 });
 
 /**

@@ -1,6 +1,10 @@
 import type { BookMetadataProvider, ProviderEdition, ProviderWork, SearchQuery } from '@btf/domain';
 import { ProviderId } from '@btf/domain';
-import { SyncWorkFromSource, type SyncWorkFromSourceDeps } from '@btf/application';
+import {
+  CACHE_KEY_VERSION,
+  SyncWorkFromSource,
+  type SyncWorkFromSourceDeps,
+} from '@btf/application';
 import { RedisContainer, type StartedRedisContainer } from '@testcontainers/redis';
 import { Redis } from 'ioredis';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
@@ -24,6 +28,10 @@ class FakeBookMetadataProvider implements BookMetadataProvider {
   async searchWorks(_query: SearchQuery): Promise<ProviderWork[]> {
     return this.works;
   }
+  async fetchWorkDetails(): Promise<{ description: string | null; coverUrl: string | null }> {
+    return { description: null, coverUrl: null };
+  }
+
   async fetchEditions(externalWorkId: string): Promise<ProviderEdition[]> {
     return this.editionsByExternalId[externalWorkId] ?? [];
   }
@@ -36,12 +44,14 @@ const PROVIDER_WORK: ProviderWork = {
   languages: ['eng', 'rus'],
   firstPublishedYear: 1869,
   editionCount: 2,
+  coverUrl: null,
 };
 
 const RUSSIAN_EDITION: ProviderEdition = {
   externalId: '/books/OL1M',
   title: 'Война и мир',
   language: 'rus',
+  coverUrl: null,
   translator: null,
   translatedFrom: null,
   publisher: 'Ru Publisher',
@@ -55,6 +65,7 @@ const ENGLISH_EDITION: ProviderEdition = {
   externalId: '/books/OL2M',
   title: 'War and Peace',
   language: 'eng',
+  coverUrl: null,
   translator: 'Aylmer Maude',
   translatedFrom: 'rus',
   publisher: 'Penguin Classics',
@@ -154,12 +165,14 @@ describe('SyncWorkFromSource (real Postgres + Redis)', () => {
     const useCase = new SyncWorkFromSource(deps);
     const result = await useCase.execute({ source: 'open-library', query: 'War and Peace' });
 
-    await deps.cache.set(`v1:work:${result.workId}:card`, { stale: true }, 3600);
-    expect(await deps.cache.get(`v1:work:${result.workId}:card`)).toEqual({ stale: true });
+    await deps.cache.set(`${CACHE_KEY_VERSION}:work:${result.workId}:card`, { stale: true }, 3600);
+    expect(await deps.cache.get(`${CACHE_KEY_VERSION}:work:${result.workId}:card`)).toEqual({
+      stale: true,
+    });
 
     await useCase.execute({ source: 'open-library', query: 'War and Peace' });
 
-    expect(await deps.cache.get(`v1:work:${result.workId}:card`)).toBeNull();
+    expect(await deps.cache.get(`${CACHE_KEY_VERSION}:work:${result.workId}:card`)).toBeNull();
   });
 
   it('rolls back every write when something fails mid-transaction — no partial state in Postgres', async () => {
@@ -179,6 +192,9 @@ describe('SyncWorkFromSource (real Postgres + Redis)', () => {
       },
       async fetchEditions() {
         throw new Error('simulated provider failure');
+      },
+      async fetchWorkDetails() {
+        return { description: null, coverUrl: null };
       },
     };
     deps.providers = new Map([['open-library', throwingProvider]]);
