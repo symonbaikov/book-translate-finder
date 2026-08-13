@@ -1,0 +1,55 @@
+{
+  "numFound": 29,
+  "start": 0,
+  "numFoundExact": true,
+  "num_found": 29,
+  "documentation_url": "https://openlibrary.org/dev/docs/api/search",
+  "q": "Thinking, Fast and Slow Daniel Kahneman",
+  "offset": null,
+  "docs": [
+    {
+      "author_name": ["Daniel Kahneman", "Daniel Kahneman"],
+      "ebook_access": "borrowable",
+      "edition_count": 35,
+      "first_publish_year": 2011,
+      "key": "/works/OL15992072W",
+      "language": ["pol", "kor", "tur", "chi", "ger", "eng", "dut"],
+      "title": "Thinking, fast and slow"
+    },
+    {
+      "author_name": ["Jacqueline Allan"],
+      "ebook_access": "no_ebook",
+      "edition_count": 2,
+      "first_publish_year": 2018,
+      "key": "/works/OL25742643W",
+      "language": ["eng"],
+      "title": "A Macat Analysis of Daniel Kahneman's Thinking, Fast and Slow"
+    },
+    {
+      "author_name": ["Gloria J. Russell"],
+      "ebook_access": "no_ebook",
+      "edition_count": 1,
+      "first_publish_year": 2022,
+      "key": "/works/OL28067455W",
+      "language": ["eng"],
+      "title": "Thinking Fast and Slow by Daniel Kahneman"
+    },
+    {
+      "author_name": ["Instaread Summaries"],
+      "ebook_access": "no_ebook",
+      "edition_count": 1,
+      "first_publish_year": 2016,
+      "key": "/works/OL20250041W",
+      "title": "Summary of Thinking, Fast and Slow"
+    },
+    {
+      "author_name": ["Book Tigers"],
+      "ebook_access": "no_ebook",
+      "edition_count": 1,
+      "first_publish_year": 2023,
+      "key": "/works/OL36392250W",
+      "language": ["eng"],
+      "title": "WORKBOOK for Thinking, Fast and Slow by Daniel Kahneman"
+    }
+  ]
+}

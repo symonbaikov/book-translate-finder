@@ -1,0 +1,77 @@
+{
+  "numFound": 151,
+  "start": 0,
+  "numFoundExact": true,
+  "num_found": 151,
+  "documentation_url": "https://openlibrary.org/dev/docs/api/search",
+  "q": "The Picture of Dorian Gray Oscar Wilde",
+  "offset": null,
+  "docs": [
+    {
+      "author_name": ["Oscar Wilde"],
+      "ebook_access": "public",
+      "edition_count": 3012,
+      "first_publish_year": 1890,
+      "key": "/works/OL8193416W",
+      "language": [
+        "heb",
+        "por",
+        "und",
+        "ara",
+        "rum",
+        "spa",
+        "yid",
+        "chi",
+        "dut",
+        "arm",
+        "jpn",
+        "cze",
+        "rus",
+        "ukr",
+        "fin",
+        "eng",
+        "ita",
+        "ger",
+        "fre",
+        "cos"
+      ],
+      "title": "The Picture of Dorian Gray"
+    },
+    {
+      "author_name": ["Jill Nevile"],
+      "ebook_access": "borrowable",
+      "edition_count": 1,
+      "first_publish_year": 1989,
+      "key": "/works/OL15853206W",
+      "language": ["eng"],
+      "title": "The picture of Dorian Gray, Oscar Wilde"
+    },
+    {
+      "author_name": ["Oscar Wilde", "Gary Schmidgall", "Peter Raby"],
+      "ebook_access": "borrowable",
+      "edition_count": 18,
+      "first_publish_year": 1962,
+      "key": "/works/OL118853W",
+      "language": ["eng"],
+      "title": "The picture of Dorian Gray, and selected stories"
+    },
+    {
+      "author_name": ["SparkNotes"],
+      "ebook_access": "borrowable",
+      "edition_count": 1,
+      "first_publish_year": 2007,
+      "key": "/works/OL29257621W",
+      "language": ["eng"],
+      "title": "The picture of Dorian Gray, Oscar Wilde"
+    },
+    {
+      "author_name": ["Ian Culbard"],
+      "ebook_access": "borrowable",
+      "edition_count": 2,
+      "first_publish_year": 2008,
+      "key": "/works/OL11967131W",
+      "language": ["eng"],
+      "title": "Oscar Wilde's The picture of Dorian Gray"
+    }
+  ]
+}

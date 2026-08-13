@@ -44,30 +44,39 @@ README и лицензия проекта (MIT) сразу объявляют э
 
 ```ts
 // packages/domain/src/policy/link-policy.ts
-const DOWNLOAD_ALLOWLIST = ['gutenberg', 'internet-archive', 'wikisource', 'standard-ebooks'] as const;
-const DENYLIST_HOSTS = ['libgen', 'annas-archive', 'z-lib', 'zlibrary', 'sci-hub'] as const;
+const DOWNLOAD_ALLOWLIST = new Set(['gutenberg', 'internet-archive', 'wikisource', 'standard-ebooks']);
+// Full registrable domains, not bare fragments — a fragment like "libgen" would false-positive
+// on an unrelated domain that merely starts with it (e.g. a hypothetical "libgenuine-authors.com").
+const DENYLIST_DOMAINS = ['libgen.rs', 'libgen.is', 'annas-archive.org', 'z-lib.io', 'sci-hub.se', /* … */];
 
 export function assertLinkAllowed(candidate: LinkCandidate): SourceLink {
-  if (DENYLIST_HOSTS.some((h) => candidate.host.includes(h))) {
-    throw new ForbiddenSourceError(candidate.host);      // И-3
+  const hostname = new URL(candidate.url).hostname.toLowerCase(); // auto-normalizes punycode/case
+  if (DENYLIST_DOMAINS.some((d) => hostname === d || hostname.endsWith(`.${d}`))) {
+    throw new ForbiddenSourceError(hostname);             // И-3, robust to subdomain evasion
   }
   if (candidate.type === 'download') {
-    if (!DOWNLOAD_ALLOWLIST.includes(candidate.provider)) throw new IllegalDownloadLinkError(...);
+    if (!DOWNLOAD_ALLOWLIST.has(candidate.provider.value)) throw new IllegalDownloadLinkError(...);
     if (candidate.rightsStatus !== 'public_domain' && candidate.rightsStatus !== 'open_license') {
       throw new IllegalDownloadLinkError(...);           // И-1
     }
   }
-  return SourceLink.create(candidate);                    // rightsStatus обязателен → И-4
+  return SourceLink.unsafeCreateForPolicyUse(candidate);  // rightsStatus обязателен → И-4
 }
 ```
 
-Ключевые свойства реализации:
+Ключевые свойства реализации (реализовано и покрыто тестами в Фазе 1.1,
+`packages/domain/src/policy/link-policy.ts`):
 
-- Конструктор `SourceLink` приватный — сущность создаётся только через политику.
+- Конструктор `SourceLink` приватный — сущность создаётся только через политику
+  (`unsafeCreateForPolicyUse`, не экспортируется из публичного API пакета).
 - `rightsStatus` — обязательное поле сущности, а не опциональная метка. Ссылка без статуса
   физически непредставима в типах.
-- Денилист проверяется по нормализованному хосту (punycode, нижний регистр, без поддоменного
-  обхода), а не по подстроке URL целиком.
+- Денилист — полные регистрируемые домены, а не короткие фрагменты (подстрочное совпадение по
+  фрагменту даёт ложные срабатывания на случайно похожих доменах). Проверка — точное совпадение
+  хоста или хост оканчивается на `.{домен}` (защита от поддоменного обхода), сам хост берётся из
+  `URL.hostname`, что уже нормализует регистр и punycode.
+- `buy`/`borrow` не завязаны на `rightsStatus` (покупка или библиотечное заимствование легальны
+  независимо от статуса), только `download` — единственный тип, который policy-гейтит по статусу.
 
 ### 2.2 Проверки в пайплайне
 

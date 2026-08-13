@@ -1,0 +1,68 @@
+{
+  "numFound": 8,
+  "start": 0,
+  "numFoundExact": true,
+  "num_found": 8,
+  "documentation_url": "https://openlibrary.org/dev/docs/api/search",
+  "q": "The Shadow of the Wind Carlos Ruiz Zafon",
+  "offset": null,
+  "docs": [
+    {
+      "author_name": ["Carlos Ruiz Zafón"],
+      "ebook_access": "borrowable",
+      "edition_count": 99,
+      "first_publish_year": 2001,
+      "key": "/works/OL278437W",
+      "language": [
+        "por",
+        "chi",
+        "ita",
+        "gre",
+        "eng",
+        "pol",
+        "jpn",
+        "cmn",
+        "spa",
+        "fre",
+        "ger",
+        "nor"
+      ],
+      "title": "La sombra del viento"
+    },
+    {
+      "author_name": ["Carlos Ruiz Zafón"],
+      "ebook_access": "borrowable",
+      "edition_count": 19,
+      "first_publish_year": 2016,
+      "key": "/works/OL17599106W",
+      "language": ["dut", "fre", "ita", "eng", "spa"],
+      "title": "El laberinto de los espíritus"
+    },
+    {
+      "author_name": ["Carlos Ruiz Zafón"],
+      "ebook_access": "no_ebook",
+      "edition_count": 1,
+      "first_publish_year": 2009,
+      "key": "/works/OL36433603W",
+      "title": "The Shadow of the Wind"
+    },
+    {
+      "author_name": ["Carlos Ruiz Zafón"],
+      "ebook_access": "no_ebook",
+      "edition_count": 5,
+      "first_publish_year": 2021,
+      "key": "/works/OL25344415W",
+      "language": ["eng"],
+      "title": "City of Mist"
+    },
+    {
+      "author_name": ["Carlos Ruiz Zafón"],
+      "ebook_access": "no_ebook",
+      "edition_count": 1,
+      "first_publish_year": 2024,
+      "key": "/works/OL38121319W",
+      "language": ["eng"],
+      "title": "Shadow of the Wind"
+    }
+  ]
+}

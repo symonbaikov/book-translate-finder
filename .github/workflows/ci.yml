@@ -58,6 +58,18 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
 
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      # Scoped to packages/domain (≥90%, docs/rules.md §5) — the only package with real tested
+      # logic as of Phase 1.1. Expands as application/infrastructure/apps earn tested logic too.
+      - run: pnpm test:coverage
+
   test-integration:
     runs-on: ubuntu-latest
     steps:
@@ -84,7 +96,7 @@ jobs:
   ci:
     if: always()
     runs-on: ubuntu-latest
-    needs: [lint, boundaries, typecheck, test, test-integration, build]
+    needs: [lint, boundaries, typecheck, test, coverage, test-integration, build]
     steps:
       - name: Check all required jobs succeeded
         run: |

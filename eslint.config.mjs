@@ -54,9 +54,23 @@ export default tseslint.config(
         {
           patterns: [
             {
-              group: ['node:fs', 'fs', 'node:net', 'node:http', 'node:https', 'node:crypto'],
+              group: ['node:fs', 'fs', 'node:net', 'node:http', 'node:https'],
               message:
-                'domain/application must not touch I/O or non-deterministic APIs directly — go through a port (docs/rules.md §3).',
+                'domain/application must not touch I/O directly — go through a port (docs/rules.md §3).',
+            },
+          ],
+          paths: [
+            {
+              name: 'node:crypto',
+              importNames: [
+                'randomUUID',
+                'randomBytes',
+                'randomInt',
+                'randomFillSync',
+                'getRandomValues',
+              ],
+              message:
+                'Non-deterministic — use the IdGenerator port (docs/rules.md §3), never call it directly from domain/application. `createHash` for deterministic natural-key hashing is allowed.',
             },
           ],
         },
