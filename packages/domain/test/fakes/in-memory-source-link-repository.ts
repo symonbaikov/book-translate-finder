@@ -15,6 +15,16 @@ export class InMemorySourceLinkRepository implements SourceLinkRepository {
     return [...this.byId.values()].filter((l) => l.editionId === editionId);
   }
 
+  async countByEditionIds(editionIds: readonly string[]): Promise<Map<string, number>> {
+    const wanted = new Set(editionIds);
+    const counts = new Map<string, number>();
+    for (const link of this.byId.values()) {
+      if (!wanted.has(link.editionId)) continue;
+      counts.set(link.editionId, (counts.get(link.editionId) ?? 0) + 1);
+    }
+    return counts;
+  }
+
   async save(link: SourceLink): Promise<void> {
     const key = compositeKey(link);
     const existingId = this.idByCompositeKey.get(key);

@@ -62,7 +62,12 @@ export function buildApiContext(env: ApiEnv): ApiContext {
     externalRefRepository,
     cache,
   });
-  const listEditionsForWork = new ListEditionsForWork({ workRepository, editionRepository, cache });
+  const listEditionsForWork = new ListEditionsForWork({
+    workRepository,
+    editionRepository,
+    sourceLinkRepository,
+    cache,
+  });
   const getEditionLinks = new GetEditionLinks({ editionRepository, sourceLinkRepository, cache });
   const enqueueSourceSync = new EnqueueSourceSync({ idempotencyStore, syncQueue, clock });
 

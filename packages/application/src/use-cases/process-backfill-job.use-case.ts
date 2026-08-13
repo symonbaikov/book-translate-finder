@@ -22,11 +22,25 @@ export interface ProcessBackfillJobDeps {
 }
 
 /**
+ * Thrown when no source synced and at least one failed transiently (provider down, rate limited,
+ * timed out). Deliberately an exception, not a `not_found` result: the queue consumer must let it
+ * propagate so the queue's own retry-with-backoff re-runs the job — live testing in Phase 3 found
+ * that swallowing it into `not_found` "completed" the job, and the completed job's deterministic
+ * id then blocked every retry of the same query for the rest of the day.
+ */
+export class BackfillSourcesUnavailableError extends Error {
+  constructor(query: string) {
+    super(`Backfill for ${JSON.stringify(query)}: no source synced and at least one errored`);
+    this.name = 'BackfillSourcesUnavailableError';
+  }
+}
+
+/**
  * Backfill queue consumer (ADR-0003) — the async half of `GET /api/search`'s `pending` response.
  * Tries every registered source until one succeeds. Only marks the 24h negative cache
  * (`markSearchNotFound`) when every source came back a clean `not_found`; if any source errored
- * (provider down, rate limited), the query is left uncached so a later identical miss gets a
- * fresh attempt instead of being permanently written off by a transient failure.
+ * (provider down, rate limited), throws `BackfillSourcesUnavailableError` so the queue retries
+ * the job instead of a transient failure being recorded as a final answer.
  */
 export class ProcessBackfillJob implements UseCase<
   ProcessBackfillJobInput,
@@ -47,9 +61,11 @@ export class ProcessBackfillJob implements UseCase<
       }
     }
 
-    if (allNotFound) {
-      await markSearchNotFound(this.deps.cache, input.query);
+    if (!allNotFound) {
+      throw new BackfillSourcesUnavailableError(input.query);
     }
+
+    await markSearchNotFound(this.deps.cache, input.query);
     return { status: 'not_found' };
   }
 }

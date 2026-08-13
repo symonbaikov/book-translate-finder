@@ -3,6 +3,7 @@ import { InMemoryCache } from '../../../domain/test/fakes/in-memory-cache.js';
 import { searchNegativeCacheKey } from '../../src/use-cases/search-works.use-case.js';
 import type { SyncWorkFromSourceOutput } from '../../src/use-cases/sync-work-from-source.use-case.js';
 import {
+  BackfillSourcesUnavailableError,
   ProcessBackfillJob,
   type ProcessBackfillJobDeps,
   type SourceSyncRunner,
@@ -55,7 +56,7 @@ describe('ProcessBackfillJob', () => {
     expect(await cache.get(searchNegativeCacheKey('Nonexistent Book'))).toBe(true);
   });
 
-  it('does not mark the negative cache when a source errored (transient failure)', async () => {
+  it('throws (so the queue retries) and skips the negative cache when a source errored', async () => {
     const cache = new InMemoryCache();
     const runner = makeRunner({
       'open-library': { status: 'error', error: 'timeout' },
@@ -68,9 +69,11 @@ describe('ProcessBackfillJob', () => {
     };
     const useCase = new ProcessBackfillJob(deps);
 
-    const result = await useCase.execute({ query: 'Some Book' });
-
-    expect(result).toEqual({ status: 'not_found' });
+    // A transient provider failure must FAIL the job, not complete it as not_found — a completed
+    // job's deterministic id blocks every retry of the same query (found live in Phase 3).
+    await expect(useCase.execute({ query: 'Some Book' })).rejects.toThrow(
+      BackfillSourcesUnavailableError,
+    );
     expect(await cache.get(searchNegativeCacheKey('Some Book'))).toBeNull();
   });
 

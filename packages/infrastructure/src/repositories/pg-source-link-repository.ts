@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { count, eq, inArray } from 'drizzle-orm';
 import {
   isLinkType,
   isRightsStatus,
@@ -39,6 +39,16 @@ export class PgSourceLinkRepository implements SourceLinkRepository {
   async findByEditionId(editionId: string): Promise<SourceLink[]> {
     const rows = await this.q.select().from(sourceLink).where(eq(sourceLink.editionId, editionId));
     return rows.map(toDomain);
+  }
+
+  async countByEditionIds(editionIds: readonly string[]): Promise<Map<string, number>> {
+    if (editionIds.length === 0) return new Map();
+    const rows = await this.q
+      .select({ editionId: sourceLink.editionId, links: count() })
+      .from(sourceLink)
+      .where(inArray(sourceLink.editionId, [...editionIds]))
+      .groupBy(sourceLink.editionId);
+    return new Map(rows.map((row) => [row.editionId, Number(row.links)]));
   }
 
   async save(link: SourceLink): Promise<void> {

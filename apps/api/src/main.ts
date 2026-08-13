@@ -48,6 +48,21 @@ async function bootstrap(): Promise<void> {
   app.useGlobalFilters(new UnhandledErrorFilter(logger), new DomainErrorFilter(logger));
   app.enableCors({ origin: env.NODE_ENV === 'development' ? true : env.PUBLIC_URL });
 
+  // Standard security headers on every response (docs/plan.md Phase 3 security audit). This is a
+  // pure JSON API: nosniff stops content-type confusion, DENY stops framing, the restrictive CSP
+  // is a hard backstop should any response ever be rendered as a document, and no-referrer keeps
+  // instance URLs out of outbound requests. HSTS is deliberately absent — TLS termination is the
+  // reverse proxy's job (docker/Caddyfile sets it when the tls profile is on).
+  app
+    .getHttpAdapter()
+    .getInstance()
+    .addHook('onSend', async (_req, reply) => {
+      void reply.header('X-Content-Type-Options', 'nosniff');
+      void reply.header('X-Frame-Options', 'DENY');
+      void reply.header('Referrer-Policy', 'no-referrer');
+      void reply.header('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'");
+    });
+
   // docs/architecture.md §4: search/works/editions/sync live under /api; health checks stay
   // unprefixed (§7), matching the usual container-orchestrator convention.
   app.setGlobalPrefix('api', { exclude: ['health/live', 'health/ready'] });

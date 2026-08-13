@@ -2,6 +2,7 @@ import {
   NotFoundError,
   type CachePort,
   type EditionRepository,
+  type SourceLinkRepository,
   type WorkRepository,
 } from '@btf/domain';
 import type { UseCase } from '../use-case.js';
@@ -21,6 +22,9 @@ export interface EditionSummaryDto {
   publisher: string | null;
   year: number | null;
   isbn: string | null;
+  /** How many legal source links this edition has — lets the list surface "where to get it"
+   * upfront instead of hiding it behind a per-edition expand (Phase 3 live-UX finding). */
+  linkCount: number;
 }
 
 export interface ListEditionsForWorkOutput {
@@ -31,6 +35,7 @@ export interface ListEditionsForWorkOutput {
 export interface ListEditionsForWorkDeps {
   workRepository: WorkRepository;
   editionRepository: EditionRepository;
+  sourceLinkRepository: SourceLinkRepository;
   cache: CachePort;
 }
 
@@ -63,6 +68,9 @@ export class ListEditionsForWork implements UseCase<
       if (input.year !== undefined && edition.year !== input.year) return false;
       return true;
     });
+    const linkCounts = await this.deps.sourceLinkRepository.countByEditionIds(
+      filtered.map((edition) => edition.id),
+    );
 
     const output: ListEditionsForWorkOutput = {
       workId: input.workId,
@@ -75,6 +83,7 @@ export class ListEditionsForWork implements UseCase<
         publisher: edition.publisher,
         year: edition.year,
         isbn: edition.isbn?.value ?? null,
+        linkCount: linkCounts.get(edition.id) ?? 0,
       })),
     };
 

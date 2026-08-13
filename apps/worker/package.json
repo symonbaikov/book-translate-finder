@@ -9,7 +9,8 @@
     "start": "node dist/main.js",
     "typecheck": "tsc --build",
     "clean": "rm -rf dist *.tsbuildinfo",
-    "sync": "tsx --env-file=../../.env src/cli/sync.ts"
+    "sync": "tsx --env-file=../../.env src/cli/sync.ts",
+    "seed:catalog": "tsx --env-file=../../.env src/cli/seed-catalog.ts"
   },
   "dependencies": {
     "@btf/application": "workspace:*",

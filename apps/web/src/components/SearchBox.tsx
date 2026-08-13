@@ -11,11 +11,18 @@ type SearchState =
   | { kind: 'found'; results: SearchHit[] }
   | { kind: 'pending'; attempt: number }
   | { kind: 'not_found' }
+  | { kind: 'timed_out' }
   | { kind: 'error'; message: string };
 
-/** Caps the lazy-backfill poll loop (ADR-0003) — a "reasonable timeout" per docs/plan.md §1.5,
- * not an infinite wait. ~8 attempts at the server's own pollAfterMs (3s) is ~24s. */
-const MAX_POLL_ATTEMPTS = 8;
+/**
+ * Caps the lazy-backfill poll loop (ADR-0003) — a "reasonable timeout" per docs/plan.md §1.5,
+ * not an infinite wait. 30 attempts at 3s ≈ 90s: live testing in Phase 3 found a first-time sync
+ * of a heavily-reprinted book makes several sequential source requests at ~9–22s each (observed
+ * real Open Library latency, docs/research/coverage-phase0.md), so the previous ~24s cap gave up
+ * on syncs that were about to succeed. Giving up here is not a dead end either — `timed_out`
+ * renders a retry button, and the backfill keeps running server-side regardless.
+ */
+const MAX_POLL_ATTEMPTS = 30;
 
 export function SearchBox() {
   const [query, setQuery] = useState('');
@@ -33,11 +40,7 @@ export function SearchBox() {
       } else if (result.status === 'not_found') {
         setState({ kind: 'not_found' });
       } else if (attempt >= MAX_POLL_ATTEMPTS) {
-        setState({
-          kind: 'error',
-          message:
-            'Поиск в источниках занимает необычно много времени. Попробуйте обновить страницу позже.',
-        });
+        setState({ kind: 'timed_out' });
       } else {
         setState({ kind: 'pending', attempt });
       }
@@ -57,12 +60,16 @@ export function SearchBox() {
     return () => clearTimeout(timer);
   }, [state, query, runSearch]);
 
-  function handleSubmit(event: React.FormEvent): void {
-    event.preventDefault();
+  const startSearch = useCallback(() => {
     const trimmed = query.trim();
     if (!trimmed) return;
     setState({ kind: 'loading' });
     void runSearch(trimmed, 0);
+  }, [query, runSearch]);
+
+  function handleSubmit(event: React.FormEvent): void {
+    event.preventDefault();
+    startSearch();
   }
 
   return (
@@ -87,22 +94,44 @@ export function SearchBox() {
       </form>
 
       <div aria-live="polite" style={{ marginTop: '1.5rem' }}>
-        <SearchResults state={state} />
+        <SearchResults state={state} onRetry={startSearch} />
       </div>
     </div>
   );
 }
 
-function SearchResults({ state }: { state: SearchState }) {
+function SearchResults({ state, onRetry }: { state: SearchState; onRetry: () => void }) {
   switch (state.kind) {
     case 'idle':
       return null;
     case 'loading':
       return <p className="muted">Ищем…</p>;
     case 'pending':
-      return <p className="muted">Не нашли в своей базе — ищем в источниках…</p>;
+      // A first-time sync of a popular book legitimately takes a while (several sequential
+      // source requests) — after ~30s of silence, say so instead of looking frozen.
+      return (
+        <p className="muted">
+          {state.attempt < 10
+            ? 'Не нашли в своей базе — ищем в источниках…'
+            : 'Всё ещё ищем: первый запрос книги собирает данные из источников, это может занять до пары минут…'}
+        </p>
+      );
     case 'not_found':
       return <p>Ничего не найдено. Попробуйте уточнить название или автора.</p>;
+    case 'timed_out':
+      return (
+        <div className="error-box">
+          <p style={{ margin: 0 }}>
+            Источники сейчас отвечают медленно, и мы пока не получили данные. Сбор мог уже
+            завершиться в фоне — попробуйте ещё раз.
+          </p>
+          <p style={{ margin: '0.75rem 0 0' }}>
+            <button type="button" onClick={onRetry}>
+              Попробовать ещё раз
+            </button>
+          </p>
+        </div>
+      );
     case 'error':
       return <p className="error-box">{state.message}</p>;
     case 'found':

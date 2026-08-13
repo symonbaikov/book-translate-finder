@@ -2,10 +2,27 @@ import { notFound } from 'next/navigation';
 import type { EditionSummary } from '@btf/contracts';
 import { EditionLinks } from '../../../components/EditionLinks';
 import { getWorkCard, listEditions } from '../../../lib/api-client';
+import { languageName } from '../../../lib/language-names';
 
 interface WorkPageProps {
   params: { id: string };
   searchParams: { language?: string; year?: string };
+}
+
+/**
+ * Editions with legal links first (the product's core promise — "where to get the text" must not
+ * hide behind expanding editions one by one), then grouped by language name, newest first inside
+ * a group. Phase 3 live-UX finding.
+ */
+function sortEditions(editions: EditionSummary[]): EditionSummary[] {
+  return [...editions].sort((a, b) => {
+    const aHasLinks = a.linkCount > 0 ? 0 : 1;
+    const bHasLinks = b.linkCount > 0 ? 0 : 1;
+    if (aHasLinks !== bHasLinks) return aHasLinks - bHasLinks;
+    const byLanguage = languageName(a.language).localeCompare(languageName(b.language), 'ru');
+    if (byLanguage !== 0) return byLanguage;
+    return (b.year ?? 0) - (a.year ?? 0);
+  });
 }
 
 export default async function WorkPage({ params, searchParams }: WorkPageProps) {
@@ -17,6 +34,10 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
     ...(searchParams.language ? { language: searchParams.language } : {}),
     ...(yearFilter !== undefined && !Number.isNaN(yearFilter) ? { year: yearFilter } : {}),
   });
+  const editions = sortEditions(editionsResult.editions);
+  const languageOptions = [...new Set([work.originalLanguage, ...work.translatedLanguages])].sort(
+    (a, b) => languageName(a).localeCompare(languageName(b), 'ru'),
+  );
 
   return (
     <main id="main-content" className="container">
@@ -27,7 +48,7 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
       <p className="muted">
         {work.author}
         {work.firstPublishedYear ? `, ${work.firstPublishedYear}` : ''} · оригинал:{' '}
-        {work.originalLanguage}
+        {languageName(work.originalLanguage)}
       </p>
       {work.sources.length > 0 && (
         <p className="muted" style={{ fontSize: '0.85em' }}>
@@ -38,7 +59,7 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
       <section aria-labelledby="translations-heading" style={{ marginTop: '1.5rem' }}>
         <h2 id="translations-heading">Переведено на</h2>
         {work.translatedLanguages.length > 0 ? (
-          <p>{work.translatedLanguages.join(', ')}</p>
+          <p>{work.translatedLanguages.map(languageName).join(', ')}</p>
         ) : (
           <p className="muted">Переводов пока не найдено.</p>
         )}
@@ -46,19 +67,20 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
 
       <section aria-labelledby="editions-heading" style={{ marginTop: '2rem' }}>
         <h2 id="editions-heading">
-          Издания ({editionsResult.editions.length} из {work.editionCount})
+          Издания ({editions.length} из {work.editionCount})
         </h2>
 
         <form method="get" className="filters" style={{ marginBottom: '1rem' }}>
           <div className="field">
             <label htmlFor="language-filter">Язык</label>
-            <input
-              id="language-filter"
-              name="language"
-              defaultValue={searchParams.language ?? ''}
-              placeholder="напр. en"
-              maxLength={2}
-            />
+            <select id="language-filter" name="language" defaultValue={searchParams.language ?? ''}>
+              <option value="">Все языки</option>
+              {languageOptions.map((code) => (
+                <option key={code} value={code}>
+                  {languageName(code)}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="field">
             <label htmlFor="year-filter">Год</label>
@@ -75,12 +97,10 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
           )}
         </form>
 
-        {editionsResult.editions.length === 0 ? (
+        {editions.length === 0 ? (
           <p className="muted">Изданий с такими фильтрами не найдено.</p>
         ) : (
-          editionsResult.editions.map((edition) => (
-            <EditionCard key={edition.id} edition={edition} />
-          ))
+          editions.map((edition) => <EditionCard key={edition.id} edition={edition} />)
         )}
       </section>
     </main>
@@ -91,8 +111,23 @@ function EditionCard({ edition }: { edition: EditionSummary }) {
   return (
     <div className="card">
       <strong>{edition.title}</strong>
+      {edition.linkCount > 0 && (
+        <span
+          style={{
+            marginLeft: '0.5rem',
+            fontSize: '0.8em',
+            padding: '0.1rem 0.5rem',
+            borderRadius: '1rem',
+            background: 'var(--badge-bg, #e6f4ea)',
+            color: 'var(--badge-fg, #1e7e34)',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          есть источники
+        </span>
+      )}
       <div className="muted">
-        {edition.language}
+        {languageName(edition.language)}
         {edition.publisher ? ` · ${edition.publisher}` : ''}
         {edition.year ? ` · ${edition.year}` : ''}
         {edition.translator ? ` · перевод: ${edition.translator}` : ''}

@@ -15,6 +15,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           Перейти к содержимому
         </a>
         {children}
+        <footer className="container" style={{ marginTop: '3rem', paddingBottom: '2rem' }}>
+          <p className="muted" style={{ fontSize: '0.85em' }}>
+            Только легальные источники: прямое скачивание — исключительно для public domain и
+            открытых лицензий; книги под авторским правом — покупка или библиотечное заимствование.
+            Каждая ссылка несёт явный правовой статус.
+          </p>
+        </footer>
       </body>
     </html>
   );

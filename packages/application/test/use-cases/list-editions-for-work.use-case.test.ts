@@ -1,7 +1,15 @@
-import { Edition, LanguageCode, NotFoundError, Work } from '@btf/domain';
+import {
+  assertLinkAllowed,
+  Edition,
+  LanguageCode,
+  NotFoundError,
+  ProviderId,
+  Work,
+} from '@btf/domain';
 import { describe, expect, it } from 'vitest';
 import { InMemoryCache } from '../../../domain/test/fakes/in-memory-cache.js';
 import { InMemoryEditionRepository } from '../../../domain/test/fakes/in-memory-edition-repository.js';
+import { InMemorySourceLinkRepository } from '../../../domain/test/fakes/in-memory-source-link-repository.js';
 import { InMemoryWorkRepository } from '../../../domain/test/fakes/in-memory-work-repository.js';
 import {
   ListEditionsForWork,
@@ -11,9 +19,15 @@ import {
 function makeDeps() {
   const workRepository = new InMemoryWorkRepository();
   const editionRepository = new InMemoryEditionRepository();
+  const sourceLinkRepository = new InMemorySourceLinkRepository();
   const cache = new InMemoryCache();
-  const deps: ListEditionsForWorkDeps = { workRepository, editionRepository, cache };
-  return { deps, workRepository, editionRepository, cache };
+  const deps: ListEditionsForWorkDeps = {
+    workRepository,
+    editionRepository,
+    sourceLinkRepository,
+    cache,
+  };
+  return { deps, workRepository, editionRepository, sourceLinkRepository, cache };
 }
 
 async function seed(
@@ -121,6 +135,7 @@ describe('ListEditionsForWork', () => {
     const emptyDeps: ListEditionsForWorkDeps = {
       workRepository: new InMemoryWorkRepository(),
       editionRepository: new InMemoryEditionRepository(),
+      sourceLinkRepository: new InMemorySourceLinkRepository(),
       cache,
     };
     const cachedUseCase = new ListEditionsForWork(emptyDeps);
@@ -129,5 +144,29 @@ describe('ListEditionsForWork', () => {
 
     expect(enResult.editions.map((e) => e.id)).toEqual(['e1', 'e2']);
     expect(frResult.editions.map((e) => e.id)).toEqual(['e3']);
+  });
+
+  it("reports each edition's legal-link count so the list can surface availability upfront", async () => {
+    const { deps, workRepository, editionRepository, sourceLinkRepository } = makeDeps();
+    await seed(workRepository, editionRepository);
+    await sourceLinkRepository.save(
+      assertLinkAllowed({
+        id: 'link-1',
+        editionId: 'e1',
+        type: 'borrow',
+        url: 'https://openlibrary.org/books/OL1M/x/borrow',
+        provider: ProviderId.create('internet-archive'),
+        rightsStatus: 'copyrighted',
+        verifiedAt: new Date('2026-01-01T00:00:00Z'),
+      }),
+    );
+    const useCase = new ListEditionsForWork(deps);
+
+    const result = await useCase.execute({ workId: 'work-1' });
+
+    const byId = new Map(result.editions.map((e) => [e.id, e.linkCount]));
+    expect(byId.get('e1')).toBe(1);
+    expect(byId.get('e2')).toBe(0);
+    expect(byId.get('e3')).toBe(0);
   });
 });

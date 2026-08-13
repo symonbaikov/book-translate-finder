@@ -32,8 +32,8 @@ const DEFAULTS: Required<BullMqQueueOptions> = {
  * hyphen-delimited instead, e.g. `sync-{source}-{workId}-{date}`; docs updated to match.
  *
  * No separate physical "dead letter queue" — BullMQ's own failed-job set already serves that
- * purpose (`removeOnFail: false` keeps failed jobs inspectable/retriable instead of vanishing),
- * which is simpler than standing up a second queue for the same data.
+ * purpose (failed jobs are retained for an hour before aging out — see the comment on the
+ * `removeOnFail` option below), which is simpler than standing up a second queue for the same data.
  *
  * BullMQ requires its Redis connection to have `maxRetriesPerRequest: null` — reusing the
  * connection `RedisCache` uses (which sets a finite retry count for cache purposes) would be
@@ -60,8 +60,15 @@ export class BullMqQueue implements JobQueuePort {
       jobId,
       attempts: this.options.attempts,
       backoff: { type: 'exponential', delay: this.options.backoffDelayMs },
-      removeOnComplete: { age: 24 * 60 * 60 },
-      removeOnFail: false,
+      // Both removals are deliberately aggressive because BullMQ's jobId dedup counts *retained*
+      // completed/failed jobs, not just in-flight ones — live testing in Phase 3 found a
+      // completed backfill (whose date-scoped id lived for 24h under the old `age` setting)
+      // silently blocked every re-enqueue of the same query for the rest of the day. Dedup is
+      // only wanted while a job is queued/active/delayed (docs/rules.md §2.3); durable history
+      // lives in Postgres `sync_log`, not in Redis. Failed jobs stay inspectable for an hour
+      // (short-term dead letter), then age out so a later identical request self-heals.
+      removeOnComplete: true,
+      removeOnFail: { age: 60 * 60 },
     });
   }
 

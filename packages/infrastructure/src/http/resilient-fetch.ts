@@ -10,7 +10,12 @@ import {
 } from 'cockatiel';
 
 export interface ResilientFetchOptions {
-  /** docs/research/coverage-phase0.md found Open Library latency up to 22s under load — 5s is a starting point, tune per source. */
+  /**
+   * docs/research/coverage-phase0.md found Open Library latency up to 22s under load, and live
+   * testing during Phase 3 saw *successful* responses at ~9s — the original 5s default killed
+   * every attempt of a request that would have succeeded, burning all retries on a working API.
+   * 25s covers the observed worst case; callers with a genuinely fast source can tune it down.
+   */
   timeoutMs?: number;
   retryAttempts?: number;
   /** How long the circuit stays open before allowing a trial request through. */
@@ -20,7 +25,7 @@ export interface ResilientFetchOptions {
 }
 
 const DEFAULTS: Required<ResilientFetchOptions> = {
-  timeoutMs: 5_000,
+  timeoutMs: 25_000,
   retryAttempts: 3,
   circuitBreakerHalfOpenAfterMs: 30_000,
   consecutiveFailuresBeforeOpen: 5,

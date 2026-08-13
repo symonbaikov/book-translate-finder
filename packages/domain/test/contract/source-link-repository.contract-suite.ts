@@ -82,5 +82,32 @@ export function runSourceLinkRepositoryContractTests(
 
       expect(await repo.findByEditionId('edition-1')).toHaveLength(2);
     });
+
+    it('countByEditionIds() returns per-edition counts, omitting editions with zero links', async () => {
+      const repo = createRepository();
+      await options.ensureEditionExists?.('edition-2');
+      await repo.save(makeLink({ id: 'link-1' }));
+      await repo.save(
+        makeLink({
+          id: 'link-2',
+          type: 'buy',
+          provider: ProviderId.create('amazon'),
+          url: 'https://amazon.com/dp/xyz',
+          rightsStatus: 'copyrighted',
+        }),
+      );
+
+      const counts = await repo.countByEditionIds(['edition-1', 'edition-2', 'edition-missing']);
+
+      expect(counts.get('edition-1')).toBe(2);
+      expect(counts.has('edition-2')).toBe(false);
+      expect(counts.has('edition-missing')).toBe(false);
+    });
+
+    it('countByEditionIds() with an empty id list returns an empty map', async () => {
+      const repo = createRepository();
+      await repo.save(makeLink());
+      expect((await repo.countByEditionIds([])).size).toBe(0);
+    });
   });
 }

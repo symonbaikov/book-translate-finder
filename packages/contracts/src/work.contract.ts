@@ -31,6 +31,8 @@ export const EditionSummarySchema = z.object({
   publisher: z.string().nullable(),
   year: z.number().int().nullable(),
   isbn: z.string().nullable(),
+  /** Legal source links this edition has — lets the client surface availability on the list itself. */
+  linkCount: z.number().int().nonnegative(),
 });
 
 export type EditionSummary = z.infer<typeof EditionSummarySchema>;

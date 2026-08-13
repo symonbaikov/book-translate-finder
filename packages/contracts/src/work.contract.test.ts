@@ -64,6 +64,7 @@ describe('EditionsResponseSchema', () => {
           publisher: 'Nauka',
           year: 1869,
           isbn: null,
+          linkCount: 0,
         },
       ],
     });
