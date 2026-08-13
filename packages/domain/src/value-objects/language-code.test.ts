@@ -14,11 +14,30 @@ describe('LanguageCode', () => {
   });
 
   it('rejects an unknown code', () => {
-    expect(() => LanguageCode.create('xx')).toThrow(/Unknown ISO 639-1/);
+    expect(() => LanguageCode.create('xx')).toThrow(/Unknown ISO 639-1\/639-2/);
   });
 
-  it('rejects a three-letter (ISO 639-2) code', () => {
-    expect(() => LanguageCode.create('eng')).toThrow();
+  it('rejects a three-letter code with no known ISO 639-2/B mapping (e.g. "und"/"mul")', () => {
+    expect(() => LanguageCode.create('und')).toThrow();
+    expect(() => LanguageCode.create('mul')).toThrow();
+  });
+
+  it.each([
+    ['eng', 'en'],
+    ['rus', 'ru'],
+    ['ger', 'de'], // bibliographic (/B) form — what Open Library/MARC actually send
+    ['fre', 'fr'],
+    ['chi', 'zh'],
+    ['jpn', 'ja'],
+  ])(
+    'accepts and normalizes an ISO 639-2/B three-letter code: %s -> %s',
+    (threeLetterCode, expectedTwoLetterCode) => {
+      expect(LanguageCode.create(threeLetterCode).value).toBe(expectedTwoLetterCode);
+    },
+  );
+
+  it('an ISO 639-1 code and its ISO 639-2/B equivalent produce equal value objects', () => {
+    expect(LanguageCode.create('en').equals(LanguageCode.create('eng'))).toBe(true);
   });
 
   it('two instances of the same code are equal', () => {

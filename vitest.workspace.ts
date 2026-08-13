@@ -18,6 +18,7 @@ export default defineWorkspace([
         'packages/*/src/**/*.test.ts',
         'apps/*/src/**/*.test.ts',
         'packages/*/test/fakes/**/*.test.ts',
+        'packages/*/test/use-cases/**/*.test.ts',
       ],
       exclude: ['**/node_modules/**', '**/dist/**', '**/*.integration.test.ts'],
       environment: 'node',

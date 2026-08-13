@@ -233,7 +233,7 @@ UNIQUE (idempotency_key.key, idempotency_key.endpoint)
 ## 5. Поток синхронизации
 
 ```
-POST /api/sync/:source  ──► EnqueueSourceSync ──► BullMQ (jobId = source:target:bucket)
+POST /api/sync/:source  ──► EnqueueSourceSync ──► BullMQ (jobId = source-target-bucket)
                                                         │
                 cron RefreshStaleWorks ──────────────────┤
                                                         ▼

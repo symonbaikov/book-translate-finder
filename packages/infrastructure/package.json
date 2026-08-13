@@ -19,10 +19,14 @@
   "dependencies": {
     "@btf/application": "workspace:*",
     "@btf/domain": "workspace:*",
+    "bullmq": "^5.28.1",
+    "cockatiel": "^3.2.1",
     "drizzle-orm": "^0.36.4",
+    "ioredis": "^5.4.1",
     "pino": "^9.5.0",
     "pino-pretty": "^11.3.0",
     "postgres": "^3.4.5",
+    "uuid": "^11.0.3",
     "zod": "^3.23.8"
   },
   "devDependencies": {

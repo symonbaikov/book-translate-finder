@@ -1,3 +1,10 @@
-// Phase 1.0 skeleton: only the UseCase marker interface exists. Real use cases (SearchWorks,
-// SyncWorkFromSource, EnqueueSourceSync, ...) land in Phase 1.1-1.4 — see docs/plan.md.
+// Phase 1.3 adds the first real use case. `SearchWorks`, `GetWorkCard`, `EnqueueSourceSync`, etc.
+// land with the API surface in Phase 1.4 — see docs/plan.md.
 export type { UseCase } from './use-case.js';
+
+export {
+  SyncWorkFromSource,
+  type SyncWorkFromSourceDeps,
+  type SyncWorkFromSourceInput,
+  type SyncWorkFromSourceOutput,
+} from './use-cases/sync-work-from-source.use-case.js';

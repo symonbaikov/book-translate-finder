@@ -1,11 +1,7 @@
-// Phase 1.2: adds the Postgres client factory, schema, and repository adapters for the
-// idempotency-critical ports. `PgUnitOfWork` is deliberately NOT implemented yet — a naive
-// wrapper around `db.transaction()` that doesn't also route repository calls through the same
-// transaction handle would silently fail to provide the atomicity docs/rules.md §2.3 promises.
-// That needs a transaction-context mechanism (Queryable type / AsyncLocalStorage) validated
-// against a real multi-repository flow — building it now, with nothing to test it against,
-// risks shipping something that looks correct but isn't. Lands in Phase 1.3 with
-// `SyncWorkFromSource`. HTTP source clients and BullMQ wiring are also Phase 1.3.
+// Phase 1.2 added the Postgres client factory, schema, and repository adapters for the
+// idempotency-critical ports. Phase 1.3 adds real cross-repository transactions
+// (`PgUnitOfWork` + transaction-context, docs/rules.md §2.3), HTTP source provider adapters, and
+// BullMQ queue wiring.
 export { baseEnvSchema, loadEnv, type BaseEnv } from './config/base-env.schema.js';
 export {
   createLogger,
@@ -13,8 +9,26 @@ export {
   type CreateLoggerOptions,
 } from './logging/create-logger.js';
 
-export { createDb, type Db, type DbHandle } from './db/client.js';
+export { createDb, type Db, type DbHandle, type Queryable, type Tx } from './db/client.js';
+export { PgUnitOfWork } from './db/pg-unit-of-work.js';
 export * as schema from './db/schema.js';
+
+export { createRedisClient } from './cache/redis-client.js';
+export { RedisCache } from './cache/redis-cache.js';
+
+export {
+  createResilientFetcher,
+  type ResilientFetcher,
+  type ResilientFetchOptions,
+} from './http/resilient-fetch.js';
+
+export { GoogleBooksProvider } from './providers/google-books-provider.js';
+export { OpenLibraryProvider } from './providers/open-library-provider.js';
+
+export { Uuid7Generator } from './id/uuid7-generator.js';
+export { SystemClock } from './time/system-clock.js';
+
+export { BullMqQueue, type BullMqQueueOptions } from './queue/bullmq-queue.js';
 
 export { PgEditionRepository } from './repositories/pg-edition-repository.js';
 export { PgExternalRefRepository } from './repositories/pg-external-ref-repository.js';

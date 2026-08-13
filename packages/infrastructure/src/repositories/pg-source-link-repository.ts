@@ -7,6 +7,7 @@ import {
   type SourceLinkRepository,
 } from '@btf/domain';
 import type { Db } from '../db/client.js';
+import { resolveDb } from '../db/transaction-context.js';
 import { sourceLink } from '../db/schema.js';
 
 function toDomain(row: typeof sourceLink.$inferSelect): SourceLink {
@@ -30,13 +31,18 @@ function toDomain(row: typeof sourceLink.$inferSelect): SourceLink {
 export class PgSourceLinkRepository implements SourceLinkRepository {
   constructor(private readonly db: Db) {}
 
+  /** Resolves to the ambient transaction if PgUnitOfWork.runInTransaction is active, else the pool. */
+  private get q() {
+    return resolveDb(this.db);
+  }
+
   async findByEditionId(editionId: string): Promise<SourceLink[]> {
-    const rows = await this.db.select().from(sourceLink).where(eq(sourceLink.editionId, editionId));
+    const rows = await this.q.select().from(sourceLink).where(eq(sourceLink.editionId, editionId));
     return rows.map(toDomain);
   }
 
   async save(link: SourceLink): Promise<void> {
-    await this.db
+    await this.q
       .insert(sourceLink)
       .values({
         id: link.id,

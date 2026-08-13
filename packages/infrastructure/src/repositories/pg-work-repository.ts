@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { LanguageCode, Work, type WorkRepository } from '@btf/domain';
 import type { Db } from '../db/client.js';
+import { resolveDb } from '../db/transaction-context.js';
 import { work } from '../db/schema.js';
 
 function toDomain(row: typeof work.$inferSelect): Work {
@@ -17,18 +18,23 @@ function toDomain(row: typeof work.$inferSelect): Work {
 export class PgWorkRepository implements WorkRepository {
   constructor(private readonly db: Db) {}
 
+  /** Resolves to the ambient transaction if `PgUnitOfWork.runInTransaction` is active, else the pool. */
+  private get q() {
+    return resolveDb(this.db);
+  }
+
   async findByNaturalKey(naturalKey: string): Promise<Work | null> {
-    const [row] = await this.db.select().from(work).where(eq(work.naturalKey, naturalKey)).limit(1);
+    const [row] = await this.q.select().from(work).where(eq(work.naturalKey, naturalKey)).limit(1);
     return row ? toDomain(row) : null;
   }
 
   async findById(id: string): Promise<Work | null> {
-    const [row] = await this.db.select().from(work).where(eq(work.id, id)).limit(1);
+    const [row] = await this.q.select().from(work).where(eq(work.id, id)).limit(1);
     return row ? toDomain(row) : null;
   }
 
   async save(entity: Work): Promise<void> {
-    await this.db
+    await this.q
       .insert(work)
       .values({
         id: entity.id,

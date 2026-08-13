@@ -1,13 +1,19 @@
 import { and, eq } from 'drizzle-orm';
 import type { IdempotencyRecord, IdempotencyStore } from '@btf/domain';
 import type { Db } from '../db/client.js';
+import { resolveDb } from '../db/transaction-context.js';
 import { idempotencyKey } from '../db/schema.js';
 
 export class PgIdempotencyStore implements IdempotencyStore {
   constructor(private readonly db: Db) {}
 
+  /** Resolves to the ambient transaction if PgUnitOfWork.runInTransaction is active, else the pool. */
+  private get q() {
+    return resolveDb(this.db);
+  }
+
   async find(key: string, endpoint: string): Promise<IdempotencyRecord | null> {
-    const [row] = await this.db
+    const [row] = await this.q
       .select()
       .from(idempotencyKey)
       .where(and(eq(idempotencyKey.key, key), eq(idempotencyKey.endpoint, endpoint)))
@@ -25,7 +31,7 @@ export class PgIdempotencyStore implements IdempotencyStore {
   }
 
   async save(record: IdempotencyRecord): Promise<void> {
-    await this.db
+    await this.q
       .insert(idempotencyKey)
       .values({
         key: record.key,

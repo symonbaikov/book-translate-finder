@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { Edition, type EditionRepository, Isbn, LanguageCode } from '@btf/domain';
 import type { Db } from '../db/client.js';
+import { resolveDb } from '../db/transaction-context.js';
 import { edition } from '../db/schema.js';
 
 function toDomain(row: typeof edition.$inferSelect): Edition {
@@ -20,8 +21,13 @@ function toDomain(row: typeof edition.$inferSelect): Edition {
 export class PgEditionRepository implements EditionRepository {
   constructor(private readonly db: Db) {}
 
+  /** Resolves to the ambient transaction if PgUnitOfWork.runInTransaction is active, else the pool. */
+  private get q() {
+    return resolveDb(this.db);
+  }
+
   async findByNaturalKey(naturalKey: string): Promise<Edition | null> {
-    const [row] = await this.db
+    const [row] = await this.q
       .select()
       .from(edition)
       .where(eq(edition.naturalKey, naturalKey))
@@ -30,17 +36,17 @@ export class PgEditionRepository implements EditionRepository {
   }
 
   async findById(id: string): Promise<Edition | null> {
-    const [row] = await this.db.select().from(edition).where(eq(edition.id, id)).limit(1);
+    const [row] = await this.q.select().from(edition).where(eq(edition.id, id)).limit(1);
     return row ? toDomain(row) : null;
   }
 
   async findByWorkId(workId: string): Promise<Edition[]> {
-    const rows = await this.db.select().from(edition).where(eq(edition.workId, workId));
+    const rows = await this.q.select().from(edition).where(eq(edition.workId, workId));
     return rows.map(toDomain);
   }
 
   async save(entity: Edition): Promise<void> {
-    await this.db
+    await this.q
       .insert(edition)
       .values({
         id: entity.id,

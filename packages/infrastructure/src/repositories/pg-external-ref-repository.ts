@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import type { ExternalRefEntityType, ExternalRefRepository } from '@btf/domain';
 import type { ExternalRef } from '@btf/domain';
 import type { Db } from '../db/client.js';
+import { resolveDb } from '../db/transaction-context.js';
 import { externalRef } from '../db/schema.js';
 
 function isEntityType(value: string): value is ExternalRefEntityType {
@@ -12,10 +13,15 @@ function isEntityType(value: string): value is ExternalRefEntityType {
 export class PgExternalRefRepository implements ExternalRefRepository {
   constructor(private readonly db: Db) {}
 
+  /** Resolves to the ambient transaction if PgUnitOfWork.runInTransaction is active, else the pool. */
+  private get q() {
+    return resolveDb(this.db);
+  }
+
   async findBySourceAndExternalId(
     ref: ExternalRef,
   ): Promise<{ entityType: ExternalRefEntityType; entityId: string } | null> {
-    const [row] = await this.db
+    const [row] = await this.q
       .select()
       .from(externalRef)
       .where(
@@ -30,7 +36,7 @@ export class PgExternalRefRepository implements ExternalRefRepository {
   }
 
   async save(ref: ExternalRef, entityType: ExternalRefEntityType, entityId: string): Promise<void> {
-    await this.db
+    await this.q
       .insert(externalRef)
       .values({
         // This is the one repository where the entity has no application-visible id of its own

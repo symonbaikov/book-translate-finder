@@ -1,3 +1,4 @@
+import type { LinkType } from '../value-objects/link-type.js';
 import type { ProviderId } from '../value-objects/provider-id.js';
 
 export interface SearchQuery {
@@ -38,6 +39,15 @@ export interface ProviderEdition {
    * an absent/`unknown` signal here is always treated as not-yet-known, never as permission.
    */
   rightsSignal: 'public_domain' | 'open_license' | 'unknown';
+  /**
+   * A candidate source link the provider found for this edition, if any (e.g. Google Books'
+   * `saleInfo.buyLink`). Not every provider has one — Open Library's metadata alone doesn't
+   * confidently establish a legal download URL (docs/legal-policy.md §3), so
+   * `OpenLibraryProvider` omits this rather than guess. The use case still runs whatever is
+   * supplied through `LinkPolicy` (docs/architecture.md §2.2) — a provider offering a link is
+   * not the same as that link being allowed.
+   */
+  link?: { type: LinkType; url: string };
 }
 
 /**
