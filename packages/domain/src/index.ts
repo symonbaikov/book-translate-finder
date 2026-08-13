@@ -38,6 +38,15 @@ export {
 } from './policy/source-priority.js';
 
 export {
+  BOOKSTORES,
+  WORLDWIDE,
+  bookstoresForCountry,
+  supportedBookstoreCountries,
+  type Bookstore,
+  type CountryCode,
+} from './policy/bookstore-catalog.js';
+
+export {
   type BookMetadataProvider,
   type ProviderEdition,
   type ProviderWork,

@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import type { EditionSummary } from '@btf/contracts';
+import { CountrySelector } from '../../../components/CountrySelector';
 import { CoverImage } from '../../../components/CoverImage';
 import { EditionLinks } from '../../../components/EditionLinks';
 import { getWorkCard, listEditions } from '../../../lib/api-client';
@@ -87,6 +88,10 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
         <h2 id="editions-heading">
           Editions ({editions.length} of {work.editionCount})
         </h2>
+
+        <div style={{ marginBottom: '1rem' }}>
+          <CountrySelector />
+        </div>
 
         <form method="get" className="filters" style={{ marginBottom: '1rem' }}>
           <div className="field">

@@ -7,8 +7,10 @@ export {
 export { ApiErrorResponseSchema, type ApiErrorResponse } from './error.contract.js';
 
 export {
+  EditionLinksQuerySchema,
   EditionLinksResponseSchema,
   SourceLinkSchema,
+  type EditionLinksQuery,
   type EditionLinksResponse,
   type SourceLinkDto,
 } from './edition-links.contract.js';

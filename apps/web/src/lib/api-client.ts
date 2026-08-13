@@ -88,8 +88,12 @@ export async function listEditions(
   return EditionsResponseSchema.parse(await res.json());
 }
 
-export async function getEditionLinks(editionId: string): Promise<EditionLinksResponse> {
+export async function getEditionLinks(
+  editionId: string,
+  country?: string | null,
+): Promise<EditionLinksResponse> {
   const url = new URL(`/api/editions/${encodeURIComponent(editionId)}/links`, apiBaseUrl());
+  if (country) url.searchParams.set('country', country);
   const res = await fetch(url, { cache: 'no-store' });
   if (!res.ok) throw new ApiRequestError(await parseErrorBody(res), res.status);
   return EditionLinksResponseSchema.parse(await res.json());

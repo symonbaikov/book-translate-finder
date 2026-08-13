@@ -105,8 +105,23 @@ in the list without expanding each edition).
 
 ## GET /api/editions/:id/links
 
-The edition's legal links. Every link carries an explicit `rightsStatus` — the client must never
-infer legality from the mere presence of a link ([legal-policy.md](legal-policy.md)).
+Legal links for the edition. Every link carries an explicit `rightsStatus` — the client must
+never infer legality from the mere existence of a link ([legal-policy.md](legal-policy.md)).
+
+| Parameter | Type   | Description                                                      |
+| --------- | ------ | ---------------------------------------------------------------- |
+| `country` | string | ISO 3166-1 alpha-2. Selects which bookstores to offer. Optional. |
+
+The response has two separate lists. `links` are links **discovered from sources** (downloads,
+library lending). `bookstores` are ISBN **lookups** in shops serving `country` (plus worldwide
+ones), built from a static catalog of URL templates — see
+[bookstore-catalog.ts](../packages/domain/src/policy/bookstore-catalog.ts). We never fetch those
+shops, so a bookstore entry is **not** a stock or price check: it is a link to the shop's own
+search for that ISBN. Editions without an ISBN return an empty `bookstores` list.
+
+```bash
+curl 'http://localhost:3001/api/editions/<editionId>/links?country=GB'
+```
 
 ```json
 {
@@ -117,6 +132,15 @@ infer legality from the mere presence of a link ([legal-policy.md](legal-policy.
       "provider": "internet-archive",
       "rightsStatus": "copyrighted",
       "url": "https://openlibrary.org/books/OL…/borrow"
+    }
+  ],
+  "bookstores": [
+    {
+      "type": "buy",
+      "provider": "waterstones",
+      "providerName": "Waterstones",
+      "rightsStatus": "copyrighted",
+      "url": "https://www.waterstones.com/books/search/term/9780140447934"
     }
   ]
 }

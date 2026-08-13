@@ -23,6 +23,9 @@ tests (details — [docs/legal-policy.md](docs/legal-policy.md)):
 - Data is taken only from the sources' official APIs (Open Library, Google Books), respecting
   their rate limits and terms of use.
 
+Purchase links point to bookstores' own ISBN lookups and carry **no affiliate tags**; if that
+ever changes, I-5 requires disclosing it in the UI.
+
 PRs violating this policy are closed without discussion — see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Self-hosting

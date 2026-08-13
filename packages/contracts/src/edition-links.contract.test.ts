@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { EditionLinksResponseSchema } from './edition-links.contract.js';
+import { EditionLinksQuerySchema, EditionLinksResponseSchema } from './edition-links.contract.js';
 
 describe('EditionLinksResponseSchema', () => {
   it('accepts links with an explicit rightsStatus per link (docs/legal-policy.md)', () => {
@@ -19,6 +19,7 @@ describe('EditionLinksResponseSchema', () => {
           url: 'https://books.google.com/books?id=1',
         },
       ],
+      bookstores: [],
     });
     expect(result.success).toBe(true);
   });
@@ -42,6 +43,7 @@ describe('EditionLinksResponseSchema', () => {
           url: 'https://x.example/1',
         },
       ],
+      bookstores: [],
     });
     expect(result.success).toBe(false);
   });
@@ -52,5 +54,23 @@ describe('EditionLinksResponseSchema', () => {
       links: [{ type: 'download', provider: 'x', rightsStatus: 'unknown', url: 'not-a-url' }],
     });
     expect(result.success).toBe(false);
+  });
+});
+
+describe('EditionLinksQuerySchema', () => {
+  it('accepts a 2-letter country code', () => {
+    expect(EditionLinksQuerySchema.parse({ country: 'GB' })).toEqual({ country: 'GB' });
+  });
+
+  it('treats an empty country as "not specified" — a cleared <select> is not an error', () => {
+    expect(EditionLinksQuerySchema.parse({ country: '' }).country).toBeUndefined();
+  });
+
+  it('accepts an absent country', () => {
+    expect(EditionLinksQuerySchema.parse({}).country).toBeUndefined();
+  });
+
+  it('still rejects a malformed country code', () => {
+    expect(EditionLinksQuerySchema.safeParse({ country: 'GBR' }).success).toBe(false);
   });
 });

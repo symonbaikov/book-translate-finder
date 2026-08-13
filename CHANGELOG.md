@@ -18,6 +18,15 @@ them before the API starts).
 
 ### Added
 
+- Bookstore purchase links with a country filter. The reader picks the country they shop in and
+  every edition's link panel offers that country's bookstores (plus worldwide ones) as ISBN
+  lookups — Waterstones/Blackwell's/Bookshop.org UK for GB, Thalia/Hugendubel for DE,
+  Лабиринт/Читай-город/Ozon for RU, and so on across 13 countries. Built from a static catalog of
+  URL templates in the domain, so no API key and no scraping is involved (there is no open API
+  that answers "who sells this ISBN in country X"). These are lookups, not stock checks — the UI
+  says so plainly, since we never fetch the shops. No affiliate tags: every URL is clean, and a
+  test enforces that.
+
 - Book covers (work hero + per-edition thumbnails, from the sources' cover services) and a work
   description block on the book card; covers also shown in search results. New nullable
   `coverUrl` fields across the API and `description` on the work card (migration 0004).
