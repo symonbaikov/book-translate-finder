@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "external_ref_entity_id_idx" ON "external_ref" USING btree ("entity_id");

@@ -138,6 +138,10 @@ export const externalRef = pgTable(
   (table) => [
     unique('external_ref_source_external_key').on(table.sourceName, table.externalId),
     check('external_ref_entity_type_check', sql`${table.entityType} IN ('work', 'edition')`),
+    // `findSourcesForEntity` (Phase 2, docs/plan.md §Фаза 2) filters by entity_id — without this,
+    // it's a full table scan; confirmed live via EXPLAIN ANALYZE at 66k synthetic rows (6.3ms and
+    // climbing linearly with table size, called on every uncached GetWorkCard request).
+    index('external_ref_entity_id_idx').on(table.entityId),
   ],
 );
 

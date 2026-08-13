@@ -15,6 +15,13 @@
       "when": 1786580405189,
       "tag": "0001_trigram_indexes",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1786634120922,
+      "tag": "0002_exotic_the_leader",
+      "breakpoints": true
     }
   ]
 }
