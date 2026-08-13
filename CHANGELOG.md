@@ -1,42 +1,57 @@
 # Changelog
 
-Формат: [Keep a Changelog](https://keepachangelog.com/ru/1.1.0/). Миграции БД, ломающие обратную
-совместимость, помечаются **[BREAKING MIGRATION]** — таких пока нет: все миграции аддитивные,
-обновление `docker compose pull && up -d` безопасно (сервис `migrate` применяет их до старта API).
+Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Database migrations that break
+backward compatibility are marked **[BREAKING MIGRATION]** — there are none so far: all migrations
+are additive, updating with `docker compose pull && up -d` is safe (the `migrate` service applies
+them before the API starts).
 
 ## [Unreleased]
 
-### Добавлено
+### Changed
 
-- Open Library Lending: реальные ссылки «взять в библиотеке»/«скачать» с archive.org, с явным
-  правовым статусом на каждой ссылке.
-- Приоритет источников при конфликте полей метаданных; источники данных видны на карточке книги.
-- `linkCount` в `GET /api/works/:id/editions` и бейдж «есть источники» в списке изданий.
-- Человекочитаемые названия языков в UI (вместо ISO-кодов), фильтр изданий выпадающим списком,
-  сортировка изданий: с источниками — первыми.
-- `pnpm db:seed:catalog` — наполнение свежей инсталляции курируемым ядром популярных книг.
-- Security-заголовки на всех ответах API; документация API ([docs/api.md](docs/api.md));
-  CONTRIBUTING/CODE_OF_CONDUCT/шаблоны issue и PR.
+- The entire UI and all project documentation switched from Russian to English. Russian remains
+  only where it is literal data (book titles in examples and tests, the `name_ru` column of the
+  language table, seed queries in the books' original languages).
 
-### Исправлено
+### Added
 
-- Таймаут HTTP-клиента источников поднят 5с → 25с: реальная латентность Open Library (до 22с)
-  убивала запросы, которые бы успешно завершились.
-- Транзиентная ошибка источника при фоновом наполнении больше не блокирует повтор того же
-  поискового запроса до конца дня (завершённые/упавшие задачи очереди не удерживают дедупликацию).
-- Два пробела в индексах БД, найденные нагрузочным тестом на 50k книг: trigram-поиск не
-  использовал GIN-индекс (~4× ускорение), выборка источников работы шла seq scan (~60×).
+- Cross-language search: a work stored under its original-language title (e.g. «Мастер и
+  Маргарита») is now findable by the title of any of its translations ("Master and Margarita") —
+  search matches edition titles too, backed by a new trigram index (migration 0003). Found live:
+  without this, an English query looped forever in `pending` because the backfill deduplicated
+  into a work the search still could not see.
 
-### Известные проблемы
+- Open Library Lending: real "borrow from library"/"download" links from archive.org, with an
+  explicit rights status on every link.
+- Source priority for metadata field conflicts; data sources are visible on the book card.
+- `linkCount` in `GET /api/works/:id/editions` and a "has sources" badge in the editions list.
+- Human-readable language names in the UI (instead of ISO codes), an editions filter as a
+  dropdown, editions sorting: those with sources first.
+- `pnpm db:seed:catalog` — seeding a fresh installation with a curated core of popular books.
+- Security headers on all API responses; API documentation ([docs/api.md](docs/api.md));
+  CONTRIBUTING/CODE_OF_CONDUCT/issue and PR templates.
 
-- `pnpm audit`: уязвимости в транзитивных зависимостях NestJS 10 / Fastify 4 / Next 14 /
-  drizzle-orm 0.36; исправления требуют мажорных апгрейдов фреймворков — выделенная задача
-  миграции, не разовый override (см. docs/plan.md, Фаза 3).
-- Эвристика определения языка оригинала (по самому раннему изданию в выборке) может ошибаться
-  для классики, чьи ранние издания не попали в выборку источника.
+### Fixed
+
+- Source HTTP client timeout raised 5s → 25s: real Open Library latency (up to 22s)
+  was killing requests that would have completed successfully.
+- A transient source error during background backfill no longer blocks retrying the same
+  search query until the end of the day (completed jobs are retained for only 60 seconds — long
+  enough for jobId deduplication to absorb the UI's 3-second poll loop, which briefly caused
+  back-to-back duplicate syncs, short enough that a deliberate retry a minute later works).
+- Two gaps in DB indexes found by a load test on 50k books: trigram search was not
+  using the GIN index (~4x speedup), work sources lookup was doing a seq scan (~60x).
+
+### Known issues
+
+- `pnpm audit`: vulnerabilities in transitive dependencies of NestJS 10 / Fastify 4 / Next 14 /
+  drizzle-orm 0.36; fixes require major framework upgrades — a dedicated migration task,
+  not a one-off override (see docs/plan.md, Phase 3).
+- The original-language detection heuristic (based on the earliest edition in the sample) can be
+  wrong for classics whose early editions did not make it into the source's sample.
 
 ## [0.1.0] — 2026-08-13
 
-Первый работающий MVP: поиск с ленивым наполнением из Open Library / Google Books,
-нормализованная база (Postgres), карточка книги с изданиями и легальными ссылками, self-hosting
-через Docker Compose c образами из GHCR.
+First working MVP: search with lazy backfill from Open Library / Google Books,
+a normalized database (Postgres), a book card with editions and legal links, self-hosting
+via Docker Compose with images from GHCR.

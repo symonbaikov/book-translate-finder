@@ -1,80 +1,79 @@
 # CLAUDE.md
 
-Инструкции для Claude Code и любого агента/разработчика, работающего в этом репозитории.
+Instructions for Claude Code and any agent/developer working in this repository.
 
-## Что за проект
+## What this project is
 
-**BookTranslate Finder** — открытый агрегатор переводов книг. Пользователь вводит название и
-автора, сервис отвечает: на какие языки книга переводилась, какие издания существуют и где
-получить текст **легально** — прямое скачивание для public domain, диплинк на покупку или
-библиотечное заимствование для книг под авторским правом.
+**BookTranslate Finder** is an open book translation aggregator. The user enters a title and
+author, and the service answers: which languages the book has been translated into, which
+editions exist, and where to get the text **legally** — direct download for public domain works,
+a deep link to purchase, or library borrowing for books under copyright.
 
-Ценность не в данных (они уже открыты: Open Library, Google Books, WorldCat, Index Translationum),
-а в **агрегации, нормализации и человеческом UX** поверх разрозненных источников.
+The value is not in the data (it is already open: Open Library, Google Books, WorldCat, Index
+Translationum), but in **aggregation, normalization, and human UX** on top of scattered sources.
 
-Проект open-source и рассчитан на **self-hosting**: любой человек должен разворачивать свою
-копию тремя командами через Docker Compose. Это влияет на решения — конфигурация только через
-`.env`, миграции автоматические, ключи платных источников опциональны, а пустая база у свежей
-инсталляции наполняется лениво по первым запросам.
+The project is open-source and designed for **self-hosting**: anyone should be able to deploy
+their own copy with three commands via Docker Compose. This shapes decisions — configuration
+only via `.env`, automatic migrations, optional keys for paid sources, and a fresh
+installation's empty database fills lazily on first requests.
 
-Исходный бриф: [BookTranslate_Finder_Plan.pdf](docs/source/BookTranslate_Finder_Plan.pdf) →
-разложен по документам ниже.
+Original brief: [BookTranslate_Finder_Plan.pdf](docs/source/BookTranslate_Finder_Plan.pdf) →
+broken down into the documents below.
 
-## Главный инвариант проекта (нарушать нельзя)
+## The project's main invariant (must not be violated)
 
-Никакого скрейпинга и никаких ссылок на теневые библиотеки (Library Genesis, Anna's Archive,
-Z-Library и подобные) — ни как источник данных, ни как источник ссылок. Прямая ссылка на
-скачивание допустима **только** для public domain / открытой лицензии из allowlist провайдеров.
-Это архитектурное решение и юридический риск, а не пожелание — см. [docs/legal-policy.md](docs/legal-policy.md).
-Правило закреплено в доменном коде и покрыто тестами; при конфликте с любой другой задачей —
-побеждает это правило.
+No scraping and no links to shadow libraries (Library Genesis, Anna's Archive,
+Z-Library, and the like) — neither as a data source nor as a link source. A direct download
+link is allowed **only** for public domain / open-license works from the provider allowlist.
+This is an architectural decision and a legal risk, not a preference — see [docs/legal-policy.md](docs/legal-policy.md).
+The rule is enforced in the domain code and covered by tests; in a conflict with any other
+task, this rule wins.
 
-## Документация
+## Documentation
 
-| Файл                                         | Назначение                                              |
-| -------------------------------------------- | ------------------------------------------------------- |
-| [docs/plan.md](docs/plan.md)                 | Фазы работ, задачи, Definition of Done, критерии успеха |
-| [docs/architecture.md](docs/architecture.md) | Слои Clean Architecture, модули, порты, схема БД, API   |
-| [docs/rules.md](docs/rules.md)               | SOLID, идемпотентность, правила кода, тестов, коммитов  |
-| [docs/legal-policy.md](docs/legal-policy.md) | Легальная политика как исполняемые инварианты           |
-| [docs/adr/](docs/adr/)                       | Architecture Decision Records                           |
+| File                                         | Purpose                                                   |
+| -------------------------------------------- | --------------------------------------------------------- |
+| [docs/plan.md](docs/plan.md)                 | Work phases, tasks, Definition of Done, success criteria  |
+| [docs/architecture.md](docs/architecture.md) | Clean Architecture layers, modules, ports, DB schema, API |
+| [docs/rules.md](docs/rules.md)               | SOLID, idempotency, code, testing, and commit rules       |
+| [docs/legal-policy.md](docs/legal-policy.md) | Legal policy as executable invariants                     |
+| [docs/adr/](docs/adr/)                       | Architecture Decision Records                             |
 
-Перед изменением кода прочитай `docs/rules.md`. Перед добавлением слоя/модуля — `docs/architecture.md`.
+Before changing code, read `docs/rules.md`. Before adding a layer/module — `docs/architecture.md`.
 
-## Стек
+## Stack
 
-TypeScript (strict) · Next.js + React (web) · NestJS на Fastify (API) · PostgreSQL + Drizzle ORM ·
-Redis · BullMQ (фоновые джобы) · Docker Compose (локально) · GitHub Actions (CI/CD) ·
-Vitest + Testcontainers + Playwright (тесты).
+TypeScript (strict) · Next.js + React (web) · NestJS on Fastify (API) · PostgreSQL + Drizzle ORM ·
+Redis · BullMQ (background jobs) · Docker Compose (local) · GitHub Actions (CI/CD) ·
+Vitest + Testcontainers + Playwright (tests).
 
-## Структура репозитория
+## Repository structure
 
 ```
 apps/
-  web/            Next.js — поиск, карточка книги, список изданий и ссылок
-  api/            NestJS/Fastify — REST, rate limiting, композиция зависимостей
-  worker/         BullMQ-воркеры — синхронизация источников, импорт выгрузок
+  web/            Next.js — search, book card, editions and links list
+  api/            NestJS/Fastify — REST, rate limiting, dependency composition
+  worker/         BullMQ workers — source synchronization, dump imports
 packages/
-  domain/         Сущности, value objects, доменные правила, ПОРТЫ. Ноль внешних зависимостей
-  application/    Use cases (интеракторы). Зависят только от domain
-  infrastructure/ Адаптеры: Postgres, Redis, HTTP-клиенты источников, очереди
-  contracts/      Zod-схемы и DTO, общие для web и api
-docs/             Документация проекта
-docker/           Compose-файлы, Dockerfile'ы
+  domain/         Entities, value objects, domain rules, PORTS. Zero external dependencies
+  application/    Use cases (interactors). Depend only on domain
+  infrastructure/ Adapters: Postgres, Redis, source HTTP clients, queues
+  contracts/      Zod schemas and DTOs shared by web and api
+docs/             Project documentation
+docker/           Compose files, Dockerfiles
 ```
 
-Направление зависимостей строго внутрь: `apps → infrastructure → application → domain`.
-`domain` не импортирует ничего из проекта, кроме себя.
+Dependency direction is strictly inward: `apps → infrastructure → application → domain`.
+`domain` imports nothing from the project except itself.
 
-## Команды
+## Commands
 
-> Статус: репозиторий на этапе Фазы 0 — скелет ещё не создан. Команды ниже являются
-> **контрактом**: при инициализации монорепо они должны заработать именно в этом виде.
-> Не изобретай альтернативные имена скриптов — правь этот список, если контракт меняется.
+> The commands below are a **contract**: they work exactly in this form and are verified live at
+> every phase. Do not invent alternative script names — edit this list if the contract changes.
 
-Пакетный менеджер — **pnpm** (workspaces).
+The package manager is **pnpm** (workspaces).
 
-### Запуск
+### Running
 
 ```bash
 pnpm install
@@ -96,20 +95,20 @@ pnpm db:migrate && pnpm db:seed
 pnpm dev
 ```
 
-`pnpm dev` поднимает web (`http://localhost:3000`), api (`http://localhost:3001`) и worker
-параллельно. Отдельно: `pnpm --filter @btf/web dev`, `pnpm --filter @btf/api dev`,
+`pnpm dev` starts web (`http://localhost:3000`), api (`http://localhost:3001`), and worker
+in parallel. Individually: `pnpm --filter @btf/web dev`, `pnpm --filter @btf/api dev`,
 `pnpm --filter @btf/worker dev`.
 
-apps/api и apps/worker читают корневой `.env` напрямую (`tsx --env-file=../../.env`). apps/web —
-Next.js-приложение и читает переменные окружения только из **своей собственной** директории
-(`apps/web/.env.local`), не из корня монорепо — это ограничение самого Next.js, а не решение
-проекта. Разово:
+apps/api and apps/worker read the root `.env` directly (`tsx --env-file=../../.env`). apps/web
+is a Next.js application and reads environment variables only from its **own** directory
+(`apps/web/.env.local`), not from the monorepo root — this is a limitation of Next.js itself,
+not a project decision. One-time:
 
 ```bash
 cp apps/web/.env.example apps/web/.env.local
 ```
 
-### Качество кода
+### Code quality
 
 ```bash
 pnpm lint
@@ -123,7 +122,7 @@ pnpm typecheck
 pnpm format
 ```
 
-### Тесты
+### Tests
 
 ```bash
 pnpm test
@@ -141,9 +140,9 @@ pnpm test:integration
 pnpm test:e2e
 ```
 
-`test:integration` поднимает Postgres и Redis через Testcontainers — нужен работающий Docker.
+`test:integration` starts Postgres and Redis via Testcontainers — a running Docker is required.
 
-### База данных
+### Database
 
 ```bash
 pnpm db:generate
@@ -157,30 +156,30 @@ pnpm db:migrate
 pnpm db:seed
 ```
 
-Наполнение пустой базы курируемым ядром популярных книг (идемпотентно, `--limit=N` для быстрой
-проверки; требует работающих Postgres/Redis и доступа к Open Library):
+Seeding an empty database with a curated core of popular books (idempotent, `--limit=N` for a
+quick check; requires running Postgres/Redis and access to Open Library):
 
 ```bash
 pnpm db:seed:catalog
 ```
 
-### Синхронизация источников (ручной запуск)
+### Source synchronization (manual run)
 
 ```bash
 pnpm sync -- --source=open-library --work=<workId>
 ```
 
-### Сборка
+### Build
 
 ```bash
 pnpm build
 ```
 
-### Self-hosting (целевой сценарий для пользователей проекта)
+### Self-hosting (the target scenario for the project's users)
 
-Разворачивание чужой копии — три команды, без сборки из исходников и без ручных миграций.
-Корневой `docker-compose.yml` тянет готовые образы из GHCR; миграции выполняет отдельный
-one-shot сервис `migrate`.
+Deploying someone else's copy is three commands, with no building from source and no manual
+migrations. The root `docker-compose.yml` pulls prebuilt images from GHCR; migrations are run
+by a separate one-shot `migrate` service.
 
 ```bash
 cp .env.example .env
@@ -194,29 +193,29 @@ docker compose up -d
 docker compose logs -f api
 ```
 
-Обновление версии:
+Updating the version:
 
 ```bash
 docker compose pull && docker compose up -d
 ```
 
-Бэкап базы:
+Database backup:
 
 ```bash
 docker compose exec -T postgres pg_dump -U btf btf | gzip > backup-$(date +%F).sql.gz
 ```
 
-Детали топологии, переменных окружения и решения проблемы холодной базы —
-[architecture.md §9](docs/architecture.md#9-развёртывание-и-self-hosting) и
+Details on the topology, environment variables, and the cold-database problem solution —
+[architecture.md §9](docs/architecture.md#9-deployment-and-self-hosting) and
 [ADR-0003](docs/adr/0003-lazy-backfill.md).
 
-## Правила работы агента в этом репозитории
+## Agent workflow rules in this repository
 
-- Начинай с `docs/plan.md`: определи текущую фазу и не выходи за её объём без явной просьбы.
-- Не добавляй зависимость в `packages/domain`. Никогда.
-- Любой внешний источник данных подключается только через порт в `domain` и адаптер в
-  `infrastructure`. Прямой вызов `fetch` из use case — ошибка ревью.
-- Любая операция записи, вызываемая джобой или ретраем, должна быть идемпотентной
-  (см. раздел «Идемпотентность» в `docs/rules.md`). Новый `INSERT` без стратегии конфликта — ошибка ревью.
-- Секреты и ключи источников — только через переменные окружения, `.env` не коммитится.
-- Ответ пользователю на русском; код, комментарии в коде, коммиты и идентификаторы — на английском.
+- Start with `docs/plan.md`: identify the current phase and do not go beyond its scope without an explicit request.
+- Do not add a dependency to `packages/domain`. Ever.
+- Any external data source is connected only through a port in `domain` and an adapter in
+  `infrastructure`. A direct `fetch` call from a use case is a review error.
+- Any write operation invoked by a job or a retry must be idempotent
+  (see the "Idempotency" section in `docs/rules.md`). A new `INSERT` without a conflict strategy is a review error.
+- Secrets and source API keys — only via environment variables; `.env` is not committed.
+- Respond to the user in Russian; code, code comments, commits, identifiers, documentation, and all UI text — in English.

@@ -1,46 +1,45 @@
-# Легальная политика проекта
+# Project Legal Policy
 
-Это единственная часть системы, где архитектурная ошибка создаёт реальный риск — блокировку
-хостинга и юридические претензии. Поэтому правила ниже зафиксированы как **исполняемые
-инварианты кода**, а не как пожелания в README.
+This is the only part of the system where an architectural mistake creates real risk — hosting
+takedowns and legal claims. That is why the rules below are fixed as **executable code
+invariants**, not as wishes in a README.
 
-Приоритет: при конфликте этих правил с любой продуктовой или технической задачей — побеждают
-эти правила.
-
----
-
-## 1. Инварианты
-
-**И-1. Прямое скачивание — только public domain или явная открытая лицензия.**
-Ссылка типа `download` допустима, если провайдер входит в allowlist (Project Gutenberg,
-Internet Archive, Wikisource, Standard Ebooks) **и** правовой статус издания —
-`public_domain` либо `open_license`.
-
-**И-2. Для произведений под авторским правом — только диплинки.**
-Покупка у ритейлера/издателя (`buy`) или легальное библиотечное заимствование
-(`borrow`: Libby/OverDrive, Open Library Lending). Никогда — прямая ссылка на файл.
-
-**И-3. Никакого скрейпинга и никаких теневых библиотек.**
-Library Genesis, Anna's Archive, Z-Library и подобные не используются ни как источник данных,
-ни как источник ссылок, ни как зеркало. Парсинг HTML сайтов вместо их официальных API запрещён.
-
-**И-4. Правовой статус каждой ссылки явно виден пользователю.**
-В UI и в ответе API каждая ссылка помечена как «public domain» / «покупка» / «библиотека».
-Пользователь не должен быть введён в заблуждение относительно природы ссылки.
-
-**И-5. Политика декларируется публично.**
-README и лицензия проекта (MIT) сразу объявляют эту политику — это снижает репутационный риск
-и предотвращает неверные PR от контрибьюторов.
+Priority: if these rules conflict with any product or technical task, these rules win.
 
 ---
 
-## 2. Как инварианты закреплены в коде
+## 1. Invariants
 
-### 2.1 Доменная политика `LinkPolicy`
+**I-1. Direct download — only public domain or an explicit open license.**
+A `download` link is allowed only if the provider is in the allowlist (Project Gutenberg,
+Internet Archive, Wikisource, Standard Ebooks) **and** the edition's rights status is
+`public_domain` or `open_license`.
 
-Единственное место в системе, где принимается решение о допустимости ссылки. Живёт в
-`packages/domain`. Ни один адаптер, контроллер или React-компонент не имеет права создать
-`SourceLink` в обход неё.
+**I-2. For copyrighted works — deeplinks only.**
+Purchase from a retailer/publisher (`buy`) or legal library lending
+(`borrow`: Libby/OverDrive, Open Library Lending). Never a direct link to a file.
+
+**I-3. No scraping and no shadow libraries.**
+Library Genesis, Anna's Archive, Z-Library and the like are not used as a data source, as a
+link source, or as a mirror. Parsing website HTML instead of using their official APIs is forbidden.
+
+**I-4. The legal status of every link is explicitly visible to the user.**
+In the UI and in the API response, every link is labeled as "public domain" / "purchase" /
+"library". The user must not be misled about the nature of a link.
+
+**I-5. The policy is declared publicly.**
+The README and the project license (MIT) announce this policy up front — this reduces
+reputational risk and prevents misguided PRs from contributors.
+
+---
+
+## 2. How the invariants are enforced in code
+
+### 2.1 The `LinkPolicy` domain policy
+
+The single place in the system where the admissibility of a link is decided. Lives in
+`packages/domain`. No adapter, controller, or React component is allowed to create a
+`SourceLink` bypassing it.
 
 ```ts
 // packages/domain/src/policy/link-policy.ts
@@ -52,91 +51,92 @@ const DENYLIST_DOMAINS = ['libgen.rs', 'libgen.is', 'annas-archive.org', 'z-lib.
 export function assertLinkAllowed(candidate: LinkCandidate): SourceLink {
   const hostname = new URL(candidate.url).hostname.toLowerCase(); // auto-normalizes punycode/case
   if (DENYLIST_DOMAINS.some((d) => hostname === d || hostname.endsWith(`.${d}`))) {
-    throw new ForbiddenSourceError(hostname);             // И-3, robust to subdomain evasion
+    throw new ForbiddenSourceError(hostname);             // I-3, robust to subdomain evasion
   }
   if (candidate.type === 'download') {
     if (!DOWNLOAD_ALLOWLIST.has(candidate.provider.value)) throw new IllegalDownloadLinkError(...);
     if (candidate.rightsStatus !== 'public_domain' && candidate.rightsStatus !== 'open_license') {
-      throw new IllegalDownloadLinkError(...);           // И-1
+      throw new IllegalDownloadLinkError(...);           // I-1
     }
   }
-  return SourceLink.unsafeCreateForPolicyUse(candidate);  // rightsStatus обязателен → И-4
+  return SourceLink.unsafeCreateForPolicyUse(candidate);  // rightsStatus is mandatory → I-4
 }
 ```
 
-Ключевые свойства реализации (реализовано и покрыто тестами в Фазе 1.1,
+Key properties of the implementation (implemented and covered by tests in Phase 1.1,
 `packages/domain/src/policy/link-policy.ts`):
 
-- Конструктор `SourceLink` приватный — сущность создаётся только через политику
-  (`unsafeCreateForPolicyUse`, не экспортируется из публичного API пакета).
-- `rightsStatus` — обязательное поле сущности, а не опциональная метка. Ссылка без статуса
-  физически непредставима в типах.
-- Денилист — полные регистрируемые домены, а не короткие фрагменты (подстрочное совпадение по
-  фрагменту даёт ложные срабатывания на случайно похожих доменах). Проверка — точное совпадение
-  хоста или хост оканчивается на `.{домен}` (защита от поддоменного обхода), сам хост берётся из
-  `URL.hostname`, что уже нормализует регистр и punycode.
-- `buy`/`borrow` не завязаны на `rightsStatus` (покупка или библиотечное заимствование легальны
-  независимо от статуса), только `download` — единственный тип, который policy-гейтит по статусу.
+- The `SourceLink` constructor is private — the entity is created only through the policy
+  (`unsafeCreateForPolicyUse` is not exported from the package's public API).
+- `rightsStatus` is a mandatory entity field, not an optional label. A link without a status
+  is physically unrepresentable in the types.
+- The denylist consists of full registrable domains, not short fragments (substring matching on
+  a fragment yields false positives on coincidentally similar domains). The check is an exact
+  host match or the host ending with `.{domain}` (protection against subdomain evasion); the
+  host itself comes from `URL.hostname`, which already normalizes case and punycode.
+- `buy`/`borrow` are not tied to `rightsStatus` (purchase or library lending is legal
+  regardless of status); only `download` is the one type the policy gates by status.
 
-### 2.2 Проверки в пайплайне
+### 2.2 Checks in the pipeline
 
-| Место             | Проверка                                                                 |
-| ----------------- | ------------------------------------------------------------------------ |
-| Адаптер источника | Кандидаты в ссылки проходят `assertLinkAllowed` до записи в БД           |
-| БД                | `CHECK`-ограничение: `type='download' AND is_legal_free=false` запрещено |
-| API-ответ         | Схема `contracts` требует `rightsStatus` у каждой ссылки                 |
-| CI                | Тесты политики + запрет на добавление хостов в allowlist без ADR         |
+| Place          | Check                                                                      |
+| -------------- | -------------------------------------------------------------------------- |
+| Source adapter | Link candidates pass `assertLinkAllowed` before being written to the DB    |
+| DB             | `CHECK` constraint: `type='download' AND is_legal_free=false` is forbidden |
+| API response   | The `contracts` schema requires `rightsStatus` on every link               |
+| CI             | Policy tests + ban on adding hosts to the allowlist without an ADR         |
 
-### 2.3 Обязательные тесты
+### 2.3 Mandatory tests
 
-- Ссылка на любой хост из денилиста → `ForbiddenSourceError`, включая варианты с поддоменом,
-  редиректом в query-параметре и punycode-написанием.
-- `type='download'` для `rightsStatus='copyrighted'` → ошибка.
-- `type='download'` от провайдера вне allowlist → ошибка даже при `public_domain`.
-- Каждая ссылка в ответе API имеет непустой `rightsStatus`.
-- Снапшот-тест на содержимое `DOWNLOAD_ALLOWLIST` и `DENYLIST_HOSTS`: изменение списка ломает
-  тест и требует осознанного обновления вместе с ADR.
+- A link to any denylisted host → `ForbiddenSourceError`, including variants with a subdomain,
+  a redirect in a query parameter, and punycode spelling.
+- `type='download'` with `rightsStatus='copyrighted'` → error.
+- `type='download'` from a provider outside the allowlist → error even with `public_domain`.
+- Every link in an API response has a non-empty `rightsStatus`.
+- Snapshot test on the contents of `DOWNLOAD_ALLOWLIST` and `DENYLIST_HOSTS`: changing the list
+  breaks the test and requires a deliberate update together with an ADR.
 
 ---
 
-## 3. Определение правового статуса
+## 3. Determining rights status
 
 `rightsStatus ∈ { public_domain, open_license, copyrighted, unknown }`.
 
-Правила присвоения:
+Assignment rules:
 
-1. Издание найдено в Project Gutenberg / Standard Ebooks / Wikisource → `public_domain`.
-2. Internet Archive отдаёт метку открытого доступа (не lending) → `public_domain`.
-3. Источник сообщает открытую лицензию (CC BY, CC0 и т.п.) → `open_license`.
-4. Явных признаков нет → `unknown`.
+1. The edition is found in Project Gutenberg / Standard Ebooks / Wikisource → `public_domain`.
+2. Internet Archive reports an open-access label (not lending) → `public_domain`.
+3. The source reports an open license (CC BY, CC0, etc.) → `open_license`.
+4. No explicit signals → `unknown`.
 
-**`unknown` трактуется как `copyrighted`.** Ссылка на скачивание для `unknown` не создаётся
-никогда. Отсутствие данных — не разрешение.
+**`unknown` is treated as `copyrighted`.** A download link is never created for `unknown`.
+Absence of data is not permission.
 
-Замечание о сроках: срок охраны различается по юрисдикциям (жизнь автора + 70 лет в ЕС/РФ,
-иное правило в США). Проект **не вычисляет** public domain самостоятельно по году смерти автора —
-он опирается на статус, объявленный источником из allowlist. Собственный расчёт срока охраны
-без юридической консультации запрещён.
-
----
-
-## 4. Правила использования источников
-
-- Работать только с официальными API и официальными выгрузками (dumps), в рамках их ToS.
-- Соблюдать объявленные rate limits; при `429` — экспоненциальный бэкофф, а не обход лимита.
-- Идентифицировать себя: `User-Agent: BookTranslateFinder/<version> (<contact-url>)`.
-- Хранить и показывать атрибуцию источника там, где этого требует его лицензия.
-- Не перепубликовывать полные тексты книг — проект хранит **метаданные и ссылки**, не контент.
-- Обложки: показывать по URL источника согласно его правилам, не проксировать и не хранить
-  копии без разрешения.
+A note on terms: the term of protection differs across jurisdictions (life of the author + 70
+years in the EU/Russia, a different rule in the US). The project does **not** compute public
+domain status on its own from the author's year of death — it relies on the status declared by
+an allowlisted source. Rolling our own term-of-protection calculation without legal counsel is
+forbidden.
 
 ---
 
-## 5. Процесс изменения политики
+## 4. Rules for using sources
 
-- Расширение `DOWNLOAD_ALLOWLIST`, изменение `DENYLIST_HOSTS` или правил §3 — только через ADR
-  с обоснованием, и только отдельным PR, не смешанным с функциональностью.
-- PR, добавляющий интеграцию с теневой библиотекой, закрывается без обсуждения; правило
-  дублируется в `CONTRIBUTING.md` (Фаза 3).
-- Обнаруженная в проде ссылка, нарушающая И-1/И-2/И-3, — инцидент: ссылка отключается
-  немедленно, затем добавляется тест, который делает повторение невозможным.
+- Work only with official APIs and official dumps, within their ToS.
+- Respect declared rate limits; on `429` — exponential backoff, not limit evasion.
+- Identify ourselves: `User-Agent: BookTranslateFinder/<version> (<contact-url>)`.
+- Store and display source attribution wherever the source's license requires it.
+- Do not republish full book texts — the project stores **metadata and links**, not content.
+- Covers: display via the source's URL according to its rules; do not proxy or store copies
+  without permission.
+
+---
+
+## 5. Policy change process
+
+- Extending `DOWNLOAD_ALLOWLIST`, changing `DENYLIST_HOSTS` or the rules of §3 — only via an ADR
+  with justification, and only in a separate PR, not mixed with feature work.
+- A PR adding an integration with a shadow library is closed without discussion; the rule is
+  duplicated in `CONTRIBUTING.md` (Phase 3).
+- A link found in production that violates I-1/I-2/I-3 is an incident: the link is disabled
+  immediately, then a test is added that makes recurrence impossible.

@@ -1,7 +1,7 @@
 import { expect, request as playwrightRequest, test } from '@playwright/test';
 
 /**
- * "Поиск → карточка → ссылки" (docs/rules.md §5). Seeds its own data via `POST /api/sync/:source`
+ * "Search → card → links" (docs/rules.md §5). Seeds its own data via `POST /api/sync/:source`
  * (the same admin endpoint `docs/architecture.md §4` documents) instead of assuming the DB
  * already has the book — makes the suite deterministic against a freshly-migrated database, the
  * same way a self-hosted install would start empty (docs/adr/0003-lazy-backfill.md).
@@ -49,24 +49,24 @@ test('search finds a known book, opens its card, and shows the edition-links blo
 }) => {
   await page.goto('/');
 
-  await page.getByLabel('Название и автор книги').fill(BOOK_QUERY);
-  await page.getByRole('button', { name: 'Искать' }).click();
+  await page.getByLabel('Book title and author').fill(BOOK_QUERY);
+  await page.getByRole('button', { name: 'Search' }).click();
 
   const resultLink = page.getByRole('link', { name: BOOK_TITLE });
   await expect(resultLink).toBeVisible({ timeout: 15_000 });
   await resultLink.click();
 
   await expect(page.getByRole('heading', { name: BOOK_TITLE })).toBeVisible();
-  await expect(page.getByText('Переведено на')).toBeVisible();
+  await expect(page.getByText('Translated into')).toBeVisible();
 
-  const firstLinksButton = page.getByRole('button', { name: 'Показать ссылки' }).first();
+  const firstLinksButton = page.getByRole('button', { name: 'Show links' }).first();
   await firstLinksButton.click();
 
   // Either real links render or the explicit empty state does — both prove the block resolved;
   // the point is that it's neither stuck loading nor showing an error.
   await expect(
     page
-      .getByText('Легальных ссылок для этого издания пока нет.')
+      .getByText('No legal links for this edition yet.')
       .or(page.locator('a[target="_blank"]').first()),
   ).toBeVisible({ timeout: 10_000 });
 });

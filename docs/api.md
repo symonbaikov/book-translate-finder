@@ -1,23 +1,24 @@
-# Публичное API
+# Public API
 
-REST API инстанса BookTranslate Finder. Все ответы — JSON; формы запросов и ответов — это
-дословно Zod-схемы из [packages/contracts](../packages/contracts/src/) (они же валидируют вход
-на сервере и типизируют клиент, расхождение невозможно по построению). Базовый префикс — `/api`.
+The REST API of a BookTranslate Finder instance. All responses are JSON; request and response
+shapes are literally the Zod schemas from [packages/contracts](../packages/contracts/src/) (they
+also validate input on the server and type the client, so divergence is impossible by
+construction). The base prefix is `/api`.
 
-Аутентификации для чтения нет — публичные эндпоинты предназначены для UI и внешних потребителей.
-Rate limit: 60 запросов в минуту с клиента (превышение → `429` с заголовками `x-ratelimit-*` и
-`retry-after`).
+There is no authentication for reads — the public endpoints are intended for the UI and external
+consumers. Rate limit: 60 requests per minute per client (exceeding it → `429` with
+`x-ratelimit-*` and `retry-after` headers).
 
 ## GET /api/search
 
-Поиск произведения по названию и автору (полнотекстовый, устойчив к опечаткам — trigram).
+Search for a work by title and author (full-text, typo-tolerant — trigram).
 
-| Параметр | Тип    | Описание                              |
-| -------- | ------ | ------------------------------------- |
-| `q`      | string | Запрос, 1–200 символов. Обязательный. |
-| `limit`  | int    | 1–50, по умолчанию 20.                |
+| Parameter | Type   | Description                        |
+| --------- | ------ | ---------------------------------- |
+| `q`       | string | Query, 1–200 characters. Required. |
+| `limit`   | int    | 1–50, default 20.                  |
 
-Три формы ответа, различаются полем `status` (ленивое наполнение базы,
+Three response shapes, distinguished by the `status` field (lazy database backfill,
 [ADR-0003](adr/0003-lazy-backfill.md)):
 
 ```bash
@@ -38,13 +39,14 @@ curl 'http://localhost:3001/api/search?q=Мастер%20и%20Маргарита%
 }
 ```
 
-- `{"status": "pending", "pollAfterMs": 3000}` — в своей базе нет, фоновая синхронизация из
-  источников запущена; повторите запрос через `pollAfterMs`. HTTP-статус `202`.
-- `{"status": "not_found"}` — источники тоже ничего не нашли (результат кэшируется на 24 часа).
+- `{"status": "pending", "pollAfterMs": 3000}` — not in the local database, background
+  synchronization from the sources has been started; repeat the request after `pollAfterMs`.
+  HTTP status `202`.
+- `{"status": "not_found"}` — the sources found nothing either (the result is cached for 24 hours).
 
 ## GET /api/works/:id
 
-Карточка произведения: языки переводов, число изданий, источники данных.
+Work card: translation languages, edition count, data sources.
 
 ```bash
 curl 'http://localhost:3001/api/works/<workId>'
@@ -63,17 +65,17 @@ curl 'http://localhost:3001/api/works/<workId>'
 }
 ```
 
-`404` с телом `{"status": 404, "code": "not_found", "title": "…"}` для неизвестного id
-(единый формат ошибок — во всех эндпоинтах).
+`404` with body `{"status": 404, "code": "not_found", "title": "…"}` for an unknown id
+(a unified error format across all endpoints).
 
 ## GET /api/works/:id/editions
 
-Список изданий произведения с необязательными фильтрами.
+The work's editions list with optional filters.
 
-| Параметр   | Тип    | Описание                      |
-| ---------- | ------ | ----------------------------- |
-| `language` | string | ISO 639-1 код, например `ru`. |
-| `year`     | int    | Год издания.                  |
+| Parameter  | Type   | Description                |
+| ---------- | ------ | -------------------------- |
+| `language` | string | ISO 639-1 code, e.g. `ru`. |
+| `year`     | int    | Publication year.          |
 
 ```json
 {
@@ -94,13 +96,13 @@ curl 'http://localhost:3001/api/works/<workId>'
 }
 ```
 
-`linkCount` — сколько легальных ссылок есть у издания (чтобы клиент мог показать доступность
-списком, не раскрывая каждое издание).
+`linkCount` — how many legal links the edition has (so the client can show availability
+in the list without expanding each edition).
 
 ## GET /api/editions/:id/links
 
-Легальные ссылки издания. Каждая ссылка несёт явный `rightsStatus` — клиент никогда не должен
-выводить легальность из самого факта наличия ссылки ([legal-policy.md](legal-policy.md)).
+The edition's legal links. Every link carries an explicit `rightsStatus` — the client must never
+infer legality from the mere presence of a link ([legal-policy.md](legal-policy.md)).
 
 ```json
 {
@@ -116,17 +118,17 @@ curl 'http://localhost:3001/api/works/<workId>'
 }
 ```
 
-- `type`: `download` (только public domain / открытая лицензия из allowlist) · `buy` · `borrow`.
+- `type`: `download` (public domain / open license from the allowlist only) · `buy` · `borrow`.
 - `rightsStatus`: `public_domain` · `open_license` · `copyrighted` · `unknown`.
 
 ## POST /api/sync/:source
 
-Административный эндпоинт: поставить синхронизацию произведения из источника в очередь
-(выполняет её apps/worker асинхронно). Источники: `open-library`, `google-books`.
+Administrative endpoint: enqueue synchronization of a work from a source
+(apps/worker executes it asynchronously). Sources: `open-library`, `google-books`.
 
-Заголовки: `X-Admin-Token: <ADMIN_TOKEN из .env>` и `Idempotency-Key: <любой уникальный ключ>`
-(повтор с тем же ключом и телом вернёт сохранённый ответ с `replayed: true`, ничего не поставив
-в очередь повторно).
+Headers: `X-Admin-Token: <ADMIN_TOKEN from .env>` and `Idempotency-Key: <any unique key>`
+(a repeat with the same key and body returns the stored response with `replayed: true`, without
+enqueueing anything again).
 
 ```bash
 curl -X POST 'http://localhost:3001/api/sync/open-library' \
@@ -142,5 +144,5 @@ curl -X POST 'http://localhost:3001/api/sync/open-library' \
 
 ## Health
 
-- `GET /health/live` — процесс жив.
-- `GET /health/ready` — жив и видит Postgres и Redis (для оркестраторов и внешних мониторингов).
+- `GET /health/live` — the process is alive.
+- `GET /health/ready` — alive and can see Postgres and Redis (for orchestrators and external monitoring).

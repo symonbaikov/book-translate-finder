@@ -61,11 +61,11 @@ services:
       # inside this compose network the real services are named `postgres`/`redis`.
       DATABASE_URL: postgres://btf:${POSTGRES_PASSWORD}@postgres:5432/btf
       REDIS_URL: redis://redis:6379
-      # .env's own default is `development` (correct for `pnpm dev`, docs/rules.md "Запуск") —
+      # .env's own default is `development` (correct for `pnpm dev`, docs/rules.md "Running") —
       # this compose always runs a production deployment regardless of what's in .env. Matters
       # for real behavior, not just labeling: apps/api only restricts CORS to PUBLIC_URL and
       # switches pino to structured JSON (vs. pretty-printed) when NODE_ENV is `production`
-      # (found live, docs/plan.md §1.6 — the "три команды" flow would otherwise self-host with
+      # (found live, docs/plan.md §1.6 — the "three commands" flow would otherwise self-host with
       # CORS wide open).
       NODE_ENV: production
     ports:

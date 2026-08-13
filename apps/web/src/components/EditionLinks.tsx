@@ -24,8 +24,7 @@ export function EditionLinks({ editionId }: { editionId: string }) {
       const result = await getEditionLinks(editionId);
       setState({ kind: 'loaded', links: result.links });
     } catch (error) {
-      const message =
-        error instanceof ApiRequestError ? error.message : 'Не удалось загрузить ссылки.';
+      const message = error instanceof ApiRequestError ? error.message : 'Failed to load links.';
       setState({ kind: 'error', message });
     }
   }
@@ -37,10 +36,10 @@ export function EditionLinks({ editionId }: { editionId: string }) {
         onClick={() => void handleToggle()}
         aria-expanded={state.kind === 'loaded'}
       >
-        {state.kind === 'loaded' ? 'Скрыть ссылки' : 'Показать ссылки'}
+        {state.kind === 'loaded' ? 'Hide links' : 'Show links'}
       </button>
       <div aria-live="polite">
-        {state.kind === 'loading' && <p className="muted">Загружаем ссылки…</p>}
+        {state.kind === 'loading' && <p className="muted">Loading links…</p>}
         {state.kind === 'error' && <p className="error-box">{state.message}</p>}
         {state.kind === 'loaded' && <LinkList links={state.links} />}
       </div>
@@ -50,7 +49,7 @@ export function EditionLinks({ editionId }: { editionId: string }) {
 
 function LinkList({ links }: { links: SourceLinkDto[] }) {
   if (links.length === 0) {
-    return <p className="muted">Легальных ссылок для этого издания пока нет.</p>;
+    return <p className="muted">No legal links for this edition yet.</p>;
   }
 
   return (

@@ -1,16 +1,16 @@
-# Кодекс поведения
+# Code of Conduct
 
-Проект следует [Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct/),
-версия 2.1.
+The project follows the [Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct/),
+version 2.1.
 
-Коротко:
+In short:
 
-- Мы уважаем всех участников независимо от опыта, происхождения и взглядов.
-- Конструктивная критика кода — да; переход на личности, харассмент, троллинг — нет.
-- Разногласия решаются аргументами и ссылками на документацию проекта, а не давлением.
+- We respect all participants regardless of experience, background, and views.
+- Constructive criticism of code — yes; personal attacks, harassment, trolling — no.
+- Disagreements are resolved with arguments and references to the project documentation, not pressure.
 
-О нарушениях сообщайте мейнтейнеру через GitHub (issue с пометкой `conduct` или личным
-сообщением). Все жалобы рассматриваются конфиденциально. Мейнтейнеры оставляют за собой право
-удалять комментарии, коммиты и закрывать участие, нарушающее этот кодекс.
+Report violations to the maintainer via GitHub (an issue labeled `conduct` or a direct
+message). All complaints are reviewed confidentially. Maintainers reserve the right to
+remove comments and commits and to terminate participation that violates this code.
 
-Полный текст на русском: <https://www.contributor-covenant.org/ru/version/2/1/code_of_conduct/>
+Full text: <https://www.contributor-covenant.org/version/2/1/code_of_conduct/>

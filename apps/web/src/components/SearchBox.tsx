@@ -46,8 +46,7 @@ export function SearchBox() {
       }
     } catch (error) {
       if (requestId !== requestIdRef.current) return;
-      const message =
-        error instanceof ApiRequestError ? error.message : 'Не удалось выполнить поиск.';
+      const message = error instanceof ApiRequestError ? error.message : 'Search failed.';
       setState({ kind: 'error', message });
     }
   }, []);
@@ -76,19 +75,19 @@ export function SearchBox() {
     <div>
       <form onSubmit={handleSubmit}>
         <div className="field">
-          <label htmlFor="search-query">Название и автор книги</label>
+          <label htmlFor="search-query">Book title and author</label>
           <input
             id="search-query"
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Например: Война и мир Толстой"
+            placeholder="e.g. War and Peace Tolstoy"
             autoComplete="off"
           />
         </div>
         <p style={{ marginTop: '0.75rem' }}>
           <button type="submit" disabled={state.kind === 'loading' || !query.trim()}>
-            Искать
+            Search
           </button>
         </p>
       </form>
@@ -105,29 +104,29 @@ function SearchResults({ state, onRetry }: { state: SearchState; onRetry: () => 
     case 'idle':
       return null;
     case 'loading':
-      return <p className="muted">Ищем…</p>;
+      return <p className="muted">Searching…</p>;
     case 'pending':
       // A first-time sync of a popular book legitimately takes a while (several sequential
       // source requests) — after ~30s of silence, say so instead of looking frozen.
       return (
         <p className="muted">
           {state.attempt < 10
-            ? 'Не нашли в своей базе — ищем в источниках…'
-            : 'Всё ещё ищем: первый запрос книги собирает данные из источников, это может занять до пары минут…'}
+            ? 'Not in our database yet — checking the sources…'
+            : 'Still searching: the first request for a book gathers data from the sources, which can take up to a couple of minutes…'}
         </p>
       );
     case 'not_found':
-      return <p>Ничего не найдено. Попробуйте уточнить название или автора.</p>;
+      return <p>Nothing found. Try refining the title or author.</p>;
     case 'timed_out':
       return (
         <div className="error-box">
           <p style={{ margin: 0 }}>
-            Источники сейчас отвечают медленно, и мы пока не получили данные. Сбор мог уже
-            завершиться в фоне — попробуйте ещё раз.
+            The sources are responding slowly and we have no data yet. The background sync may have
+            already finished — try again.
           </p>
           <p style={{ margin: '0.75rem 0 0' }}>
             <button type="button" onClick={onRetry}>
-              Попробовать ещё раз
+              Try again
             </button>
           </p>
         </div>

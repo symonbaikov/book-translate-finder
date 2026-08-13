@@ -60,14 +60,18 @@ export class BullMqQueue implements JobQueuePort {
       jobId,
       attempts: this.options.attempts,
       backoff: { type: 'exponential', delay: this.options.backoffDelayMs },
-      // Both removals are deliberately aggressive because BullMQ's jobId dedup counts *retained*
-      // completed/failed jobs, not just in-flight ones — live testing in Phase 3 found a
-      // completed backfill (whose date-scoped id lived for 24h under the old `age` setting)
-      // silently blocked every re-enqueue of the same query for the rest of the day. Dedup is
-      // only wanted while a job is queued/active/delayed (docs/rules.md §2.3); durable history
-      // lives in Postgres `sync_log`, not in Redis. Failed jobs stay inspectable for an hour
-      // (short-term dead letter), then age out so a later identical request self-heals.
-      removeOnComplete: true,
+      // Both removal windows are deliberately short because BullMQ's jobId dedup counts
+      // *retained* completed/failed jobs, not just in-flight ones — live testing in Phase 3
+      // found a completed backfill (whose date-scoped id lived for 24h under the original `age`
+      // setting) silently blocked every re-enqueue of the same query for the rest of the day.
+      // But `removeOnComplete: true` (immediate) overshot: the web UI polls a pending search
+      // every 3s and each poll re-enqueues, so once jobs completed faster than the poll interval
+      // the dedup stopped absorbing the loop — observed live as 11 back-to-back syncs of the
+      // same work in 40 seconds. 60s keeps a completed job just long enough to absorb a polling
+      // session, short enough that a deliberate user retry a minute later still works. Durable
+      // history lives in Postgres `sync_log`, not in Redis. Failed jobs stay inspectable for an
+      // hour (short-term dead letter), then age out so a later identical request self-heals.
+      removeOnComplete: { age: 60 },
       removeOnFail: { age: 60 * 60 },
     });
   }

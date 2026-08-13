@@ -1,828 +1,869 @@
-# План реализации BookTranslate Finder
+# BookTranslate Finder Implementation Plan
 
-План разложен на фазы из исходного брифа с добавлением технического каркаса, без которого
-Clean Architecture и идемпотентность не получится соблюсти «потом». Каждая фаза заканчивается
-проверяемым результатом.
+The plan is broken into phases from the original brief, with the addition of the technical
+scaffolding without which Clean Architecture and idempotency cannot be retrofitted "later".
+Each phase ends with a verifiable result.
 
-Связанные документы: [architecture.md](architecture.md) · [rules.md](rules.md) ·
+Related documents: [architecture.md](architecture.md) · [rules.md](rules.md) ·
 [legal-policy.md](legal-policy.md).
 
-**Обозначения:** ✅ сделано · 🚧 в работе · ⬜ не начато · 🚫 заблокировано внешним ограничением
-(не решение срезать объём — причина зафиксирована рядом с пунктом). Текущий статус проекта:
-**Фаза 1 (MVP) завершена целиком** — 0, 1.0–1.6 все закрыты (гипотеза подтверждена, см.
-[coverage-phase0.md](research/coverage-phase0.md)). **Фаза 2 частично закрыта**: задачи
-#67–69 (Open Library Lending, приоритет источников, нагрузочное тестирование) сделаны и
-проверены вживую; WorldCat/Index Translationum/AWS CI-CD заблокированы внешними ограничениями,
-задокументировано честно в разделе «Блокеры» Фазы 2, не подменено тихо. **Фаза 3 закрыта в
-пределах достижимого без живого владельца**: документы open-source, API-документация, seed
-популярного ядра, аудит безопасности и живое UX-тестирование с исправлениями — сделаны;
-мониторинг на реальном трафике, тест обновления N→N+1 (нет выпущенных версий) и само открытие
-репозитория/релиз/анонс — за человеком (помечены 🚫 с причинами в разделе Фазы 3).
+**Legend:** ✅ done · 🚧 in progress · ⬜ not started · 🚫 blocked by an external constraint
+(not a decision to cut scope — the reason is recorded next to the item). Current project status:
+**Phase 1 (MVP) is fully complete** — 0, 1.0–1.6 all closed (hypothesis confirmed, see
+[coverage-phase0.md](research/coverage-phase0.md)). **Phase 2 is partially closed**: tasks
+#67–69 (Open Library Lending, source priority, load testing) are done and
+verified live; WorldCat/Index Translationum/AWS CI-CD are blocked by external constraints,
+documented honestly in the "Blockers" section of Phase 2, not silently swapped out. **Phase 3 is
+closed to the extent achievable without a live owner**: open-source documents, API documentation,
+seeding the popular core, security audit, and live UX testing with fixes — done;
+monitoring on real traffic, the N→N+1 upgrade test (no released versions exist), and the actual
+repository opening/release/announcement — up to a human (marked 🚫 with reasons in the Phase 3 section).
 
 ---
 
-## Обзор
+## Overview
 
-| Фаза | Название            | Оценка     | Главный результат                                                   |
-| ---- | ------------------- | ---------- | ------------------------------------------------------------------- |
-| 0    | Прототип-разведка   | 1–2 недели | Доказано, что открытых API хватает для продукта                     |
-| 1.0  | Каркас монорепо     | 3–5 дней   | Слои, границы, CI, Docker — до первой бизнес-логики                 |
-| 1    | MVP                 | 3–4 недели | Своя нормализованная БД, синхронизация, UI, Docker-деплой           |
-| 2    | Расширение покрытия | 3–5 недель | WorldCat, Index Translationum, диплинки заимствования, CI/CD на AWS |
-| 3    | Публичный запуск    | 2–3 недели | Open-source релиз, документация, мониторинг                         |
+| Phase | Name               | Estimate  | Main result                                                      |
+| ----- | ------------------ | --------- | ---------------------------------------------------------------- |
+| 0     | Scouting prototype | 1–2 weeks | Proven that open APIs are sufficient for the product             |
+| 1.0   | Monorepo skeleton  | 3–5 days  | Layers, boundaries, CI, Docker — before any business logic       |
+| 1     | MVP                | 3–4 weeks | Own normalized DB, synchronization, UI, Docker deployment        |
+| 2     | Coverage expansion | 3–5 weeks | WorldCat, Index Translationum, borrowing deeplinks, CI/CD on AWS |
+| 3     | Public launch      | 2–3 weeks | Open-source release, documentation, monitoring                   |
 
-Приоритет — Фазы 0 и 1: они проверяют гипотезу и дают работающий MVP без источников, требующих
-долгого согласования доступа.
+Priority goes to Phases 0 and 1: they validate the hypothesis and deliver a working MVP without
+sources that require lengthy access negotiations.
 
 ---
 
-## Фаза 0 · Прототип-разведка (1–2 недели)
+## Phase 0 · Scouting prototype (1–2 weeks)
 
-**Цель:** проверить гипотезу на минимальном UI без своей БД. Главный вопрос — достаточно ли
-полны и полезны данные Open Library и Google Books, чтобы продукт имел смысл.
+**Goal:** validate the hypothesis with a minimal UI and no database of our own. The main question —
+are Open Library and Google Books data complete and useful enough for the product to make sense.
 
-**Чем эта фаза отличается от остальных:** здесь допустимо срезать углы. Прототип живёт в
-`prototype/`, не проходит проверку границ слоёв и **выбрасывается** в конце Фазы 1. Единственное
-правило, которое действует и здесь, — легальная политика.
+**How this phase differs from the rest:** cutting corners is allowed here. The prototype lives in
+`prototype/`, does not pass layer-boundary checks, and is **thrown away** at the end of Phase 1.
+The only rule that applies here too is the legal policy.
 
-### Задачи
+### Tasks
 
-- ✅ `prototype/` — страница поиска на Next.js. **Не «без бэкенда» буквально**: у Open Library
-  нет CORS-заголовков, прямой `fetch()` из браузера блокируется — добавлен минимальный
-  same-origin proxy-роут внутри того же приложения (без БД, без очередей, без отдельного
-  сервиса). См. находку в `coverage-phase0.md`.
-- ✅ Тонкая обёртка над Open Library API (search + editions + languages) — с поправкой:
-  используется только полнотекстовый запрос, field-scoped (`title:`/`author:`) резко занижает
-  полноту из-за плохой дедупликации `work`-записей у Open Library.
-- ✅ Тонкая обёртка над Google Books API (метаданные, ISBN, ссылка на покупку) — количественно не
-  проверена: анонимная дневная квота была исчерпана в рабочем окружении до содержательного
-  тестирования.
-- ✅ Вывод списка языков перевода и ссылок на archive.org для изданий со сканом (поле `ocaid`).
-  Gutenberg не подключался — Open Library оказалось достаточно для проверки гипотезы.
-- ✅ Ручная разметка правового статуса ссылок (заготовка будущей `LinkPolicy`): статус
-  `has_archive_scan` вместо `public_domain` — присутствие скана на archive.org не равно
-  публичному домену (IA хостит и книги под controlled digital lending), это осознанное решение,
-  не недосмотр.
+- ✅ `prototype/` — a Next.js search page. **Not literally "no backend"**: Open Library
+  has no CORS headers, direct `fetch()` from the browser is blocked — a minimal
+  same-origin proxy route was added inside the same app (no DB, no queues, no separate
+  service). See the finding in `coverage-phase0.md`.
+- ✅ Thin wrapper over the Open Library API (search + editions + languages) — with a correction:
+  only the full-text query is used; field-scoped (`title:`/`author:`) drastically undercounts
+  recall due to Open Library's poor deduplication of `work` records.
+- ✅ Thin wrapper over the Google Books API (metadata, ISBN, purchase link) — not quantitatively
+  verified: the anonymous daily quota was exhausted in the working environment before any
+  meaningful testing.
+- ✅ Display of the translation-language list and archive.org links for editions with a scan
+  (the `ocaid` field). Gutenberg was not integrated — Open Library proved sufficient to test the
+  hypothesis.
+- ✅ Manual labeling of link legal status (a precursor of the future `LinkPolicy`): status
+  `has_archive_scan` instead of `public_domain` — the presence of a scan on archive.org does not
+  equal public domain (IA also hosts books under controlled digital lending); a deliberate
+  decision, not an oversight.
 
-### Разведка данных (главная ценность фазы)
+### Data scouting (the main value of the phase)
 
-- ✅ Выборка из 50 книг: 20 классика/public domain, 20 современных бестселлеров,
-  10 нишевых нон-фикшн, с разбросом оригинальных языков (не только английский).
-- ✅ Для каждой зафиксировано: сколько языков перевода нашлось, сколько изданий; ISBN и
-  переводчик — на подвыборке из 18 книг (см. ниже).
-- ✅ Результат записан в [coverage-phase0.md](research/coverage-phase0.md).
-- ✅ Замерены лимиты и латентность обоих API, формы ответов сохранены как фикстуры в
-  [research/fixtures/](research/fixtures/) — включая фикстуру самой ошибки Google Books 429.
-- ✅ Оценено качество поля «переводчик»: на уровне издания дырявое (12.2% из 853 изданий), но на
-  уровне произведения — 17 из 18 проверенных книг имеют хотя бы одно издание с переводчиком.
+- ✅ A sample of 50 books: 20 classics/public domain, 20 modern bestsellers,
+  10 niche non-fiction, with a spread of original languages (not only English).
+- ✅ For each, recorded: how many translation languages were found, how many editions; ISBN and
+  translator — on a subsample of 18 books (see below).
+- ✅ The result is recorded in [coverage-phase0.md](research/coverage-phase0.md).
+- ✅ Limits and latency of both APIs measured, response shapes saved as fixtures in
+  [research/fixtures/](research/fixtures/) — including a fixture of the Google Books 429 error itself.
+- ✅ Quality of the "translator" field assessed: patchy at the edition level (12.2% of 853
+  editions), but at the work level — 17 of 18 checked books have at least one edition with a
+  translator.
 
 ### Definition of Done
 
-- [x] Кликабельный прототип: ввод «название + автор» → список языков и ссылок (проверено вживую,
-      включая рабочую ссылку на archive.org).
-- [x] Отчёт `coverage-phase0.md` с числами по 50 книгам.
-- [x] Решение по цели «≥ 70 % известных книг находят ≥ 3 перевода»: **цель перевыполнена** —
-      50/50 (100%), медиана 16 языков на книгу — но выборка состоит из заведомо известных книг,
-      решение принято с этой оговоркой (см. отчёт). WorldCat/Index Translationum остаются в
-      Фазе 2, экстренного включения в MVP не требуется.
-- [x] Сохранён набор фикстур ответов источников.
+- [x] Clickable prototype: enter "title + author" → list of languages and links (verified live,
+      including a working archive.org link).
+- [x] `coverage-phase0.md` report with numbers across the 50 books.
+- [x] Decision on the goal "≥ 70 % of well-known books find ≥ 3 translations": **goal exceeded** —
+      50/50 (100%), a median of 16 languages per book — but the sample consists of deliberately
+      well-known books; the decision was made with that caveat (see the report). WorldCat/Index
+      Translationum remain in Phase 2; no emergency inclusion in the MVP is required.
+- [x] A set of source-response fixtures saved.
 
-Фаза 0 закрыта 2026-08-13.
+Phase 0 closed 2026-08-13.
 
-### Выход/стоп-условие
+### Exit/stop condition
 
-Стоп-условие не сработало: медиана языков перевода — 16, при пороге останова < 2. Ниша и план
-подтверждены без изменений.
+The stop condition did not fire: the median of translation languages is 16, against a stop
+threshold of < 2. The niche and the plan are confirmed without changes.
 
-### Находки, влияющие на реализацию Фазы 1 (важно не потерять)
+### Findings affecting Phase 1 implementation (important not to lose)
 
-- **`OpenLibraryProvider` (§1.3) использует только полнотекстовый поисковый запрос**, никогда
-  `title:`/`author:` field-scoped — иначе полнота падает в разы (см. методологию в отчёте).
-- **Ретраи с backoff и circuit breaker на Open Library — не опциональное улучшение, а условие
-  вообще получить полный ответ**: при наивном последовательном опросе (1 запрос/сек, без ретраев)
-  76% запросов падали с `ECONNRESET`/timeout. Стоит перепроверить с обычного (не общего
-  облачного) IP перед тем как закладывать точные цифры в SLA Фазы 3.
-- **`GOOGLE_BOOKS_API_KEY` обязателен уже для разработки**, не только для self-host прода —
-  анонимная квота истощена почти сразу.
-- **`translated_from` (язык оригинала конкретного издания) — самостоятельный сигнал «это
-  перевод»**, отдельный от имени переводчика и заполнен чаще него; стоит использовать в модели
-  данных Фазы 1.1 наравне с полем переводчика, а не только как его резерв.
-- Гипотеза подтверждена **для заведомо известных книг**; полнота на длинном хвосте нишевых
-  запросов не измерена — разовая недорогая задача на начало Фазы 1, не блокирует старт.
+- **`OpenLibraryProvider` (§1.3) uses only the plain full-text search query**, never
+  `title:`/`author:` field-scoped — otherwise recall drops several-fold (see the methodology in
+  the report).
+- **Retries with backoff and a circuit breaker on Open Library are not an optional improvement but
+  a precondition for getting a complete response at all**: with naive sequential polling
+  (1 request/sec, no retries) 76% of requests failed with `ECONNRESET`/timeout. Worth re-checking
+  from a regular (not shared cloud) IP before baking exact numbers into the Phase 3 SLA.
+- **`GOOGLE_BOOKS_API_KEY` is mandatory already for development**, not only for self-host prod —
+  the anonymous quota is exhausted almost immediately.
+- **`translated_from` (the original language of a specific edition) is an independent
+  "this is a translation" signal**, separate from the translator's name and populated more often;
+  it should be used in the Phase 1.1 data model on par with the translator field, not only as its
+  fallback.
+- The hypothesis is confirmed **for deliberately well-known books**; recall on the long tail of
+  niche queries was not measured — a one-off, inexpensive task for the start of Phase 1, does not
+  block the start.
 
 ---
 
-## Фаза 1.0 · Каркас монорепо (3–5 дней)
+## Phase 1.0 · Monorepo skeleton (3–5 days)
 
-**Цель:** создать структуру, в которой правила из `rules.md` соблюдаются автоматически.
-Делается **до** бизнес-логики: границы слоёв, добавленные задним числом, не приживаются.
+**Goal:** create a structure in which the rules from `rules.md` are enforced automatically.
+Done **before** business logic: layer boundaries added after the fact never stick.
 
-### Задачи
+### Tasks
 
 - ✅ pnpm workspaces: `apps/{web,api,worker}`, `packages/{domain,application,infrastructure,contracts}`.
-- ✅ TypeScript strict + `noUncheckedIndexedAccess` + `exactOptionalPropertyTypes`, общий
-  `tsconfig.base.json`, project references (`apps/web` — отдельно, свой tsconfig под Next.js).
-- ✅ ESLint + Prettier; **проверка границ импортов** (`pnpm boundaries` → dependency-cruiser):
-  `domain` без зависимостей, `application` не видит `infrastructure`, `web` не видит
-  `infrastructure`/`application`/`domain`. Проверено экспериментом: намеренное нарушение
-  (`application` → `infrastructure`, с объявленной зависимостью) падает; `eslint-plugin-boundaries`
-  не резолвил такие импорты в этом стеке и был исключён (см. [ADR-0001](adr/0001-clean-architecture-monorepo.md)).
-- ✅ Vitest: unit + contract + integration-проекты, Testcontainers для Postgres/Redis (проверено
-  живым прогоном — реально поднимает контейнеры).
+- ✅ TypeScript strict + `noUncheckedIndexedAccess` + `exactOptionalPropertyTypes`, shared
+  `tsconfig.base.json`, project references (`apps/web` — separate, its own tsconfig for Next.js).
+- ✅ ESLint + Prettier; **import-boundary checking** (`pnpm boundaries` → dependency-cruiser):
+  `domain` has no dependencies, `application` does not see `infrastructure`, `web` does not see
+  `infrastructure`/`application`/`domain`. Verified by experiment: a deliberate violation
+  (`application` → `infrastructure`, with the dependency declared) fails; `eslint-plugin-boundaries`
+  could not resolve such imports in this stack and was ruled out (see [ADR-0001](adr/0001-clean-architecture-monorepo.md)).
+- ✅ Vitest: unit + contract + integration projects, Testcontainers for Postgres/Redis (verified
+  with a live run — it really spins up containers).
 - ✅ `docker/docker-compose.dev.yml`: Postgres, Redis, healthcheck. `docker/app.Dockerfile` —
-  параметризованный multi-stage build для api/worker (`pnpm deploy`), собран и проверен вживую
-  для обоих приложений.
-- ✅ Слой конфигурации: Zod-схема окружения (`loadEnv`/`baseEnvSchema` в infrastructure, свои
-  расширения в api/worker/web), падение на старте при невалидном конфиге с читаемым списком
-  всех ошибок сразу (проверено), `.env.example`.
-- ✅ Скелет NestJS на Fastify: `/health/live`, `/health/ready`, pino с `correlationId`
-  (`X-Correlation-Id` из запроса или сгенерированный), глобальный фильтр доменных ошибок
-  (`DomainError` → 400/404/409, всё остальное → непрозрачный 500).
-- ✅ CI на GitHub Actions: `lint → boundaries → typecheck → test → test:integration → build`,
-  сводная джоба `ci` как единая точка для required-статуса.
-- ✅ Скрипты из «контракта команд» в [CLAUDE.md](../CLAUDE.md) работают (проверены вживую, включая
-  `pnpm dev` для всех трёх приложений одновременно).
+  a parameterized multi-stage build for api/worker (`pnpm deploy`), built and verified live
+  for both apps.
+- ✅ Configuration layer: Zod environment schema (`loadEnv`/`baseEnvSchema` in infrastructure, own
+  extensions in api/worker/web), fail-fast on startup with an invalid config showing a readable
+  list of all errors at once (verified), `.env.example`.
+- ✅ NestJS-on-Fastify skeleton: `/health/live`, `/health/ready`, pino with `correlationId`
+  (`X-Correlation-Id` from the request or generated), a global domain-error filter
+  (`DomainError` → 400/404/409, everything else → an opaque 500).
+- ✅ CI on GitHub Actions: `lint → boundaries → typecheck → test → test:integration → build`,
+  a summary `ci` job as the single point for the required status.
+- ✅ The scripts from the "command contract" in [CLAUDE.md](../CLAUDE.md) work (verified live,
+  including `pnpm dev` for all three apps simultaneously).
 
 ### Definition of Done
 
-- [x] `pnpm install && pnpm dev` поднимает три приложения локально (api :3001, worker, web —
-      проверено живым прогоном, включая health-эндпоинты и рендер страницы).
-- [x] Умышленный импорт из `infrastructure` в `application` роняет CI (`pnpm boundaries`).
-- [x] `pnpm test:integration` поднимает контейнеры (Postgres + Redis через Testcontainers) и
-      проходит.
+- [x] `pnpm install && pnpm dev` brings up the three apps locally (api :3001, worker, web —
+      verified with a live run, including health endpoints and page render).
+- [x] A deliberate import from `infrastructure` into `application` fails CI (`pnpm boundaries`).
+- [x] `pnpm test:integration` spins up containers (Postgres + Redis via Testcontainers) and
+      passes.
 
-Фаза 1.0 закрыта 2026-08-12. `db:generate`/`db:migrate`/`db:seed` и `pnpm sync` — намеренные
-заглушки с понятным сообщением до Фазы 1.2/1.3, не «пустые» реализации.
+Phase 1.0 closed 2026-08-12. `db:generate`/`db:migrate`/`db:seed` and `pnpm sync` are deliberate
+stubs with a clear message until Phase 1.2/1.3, not "empty" implementations.
 
 ---
 
-## Фаза 1 · MVP (3–4 недели)
+## Phase 1 · MVP (3–4 weeks)
 
-**Цель:** своя нормализованная база вместо запросов к API на лету. Работающий сервис,
-задеплоенный в Docker-контейнере.
+**Goal:** our own normalized database instead of on-the-fly API queries. A working service,
+deployed in a Docker container.
 
-### 1.1 Домен и модель данных ✅ (закрыто 2026-08-13)
+### 1.1 Domain and data model ✅ (closed 2026-08-13)
 
-- ✅ Сущности `Work`, `Edition`, `SourceLink`, VO `Isbn`, `LanguageCode`, `RightsStatus`, `LinkType`,
-  `ProviderId`, `ExternalRef`. `Edition` дополнена полем `translatedFrom` сверх исходного плана —
-  находка Фазы 0 показала, что оно заполнено чаще, чем имя переводчика (16.4% против 12.2%
-  изданий), и является самостоятельным сигналом «это перевод».
-- ✅ `normalizeText()` и вычисление natural keys (sha256 через `node:crypto` `createHash`,
-  детерминированность — под 40+ табличными тестами). Табличный тест на кириллице поймал
-  реальный баг: NFKD-декомпозиция превращает «й» в «и»+bréve, наивный strip всех combining marks
-  ломает кириллицу — исправлено ограничением strip только для латинских диакритик.
-- ✅ `LinkPolicy` со всеми инвариантами и тестами из [legal-policy.md](legal-policy.md) (24 теста).
-  Денилист уточнён по ходу реализации: полные домены + exact-or-subdomain матчинг вместо коротких
-  фрагментов — фрагментный подход даёт ложные срабатывания на случайно похожих доменах.
-- ✅ Правила слияния изданий и приоритета источников при конфликте полей (`resolveFieldConflict`,
-  параметризовано по категории поля — метаданные vs обложка).
-- ✅ Порты: репозитории, `BookMetadataProvider`, `UnitOfWork`, `CachePort`, `JobQueuePort`,
-  `Clock`, `IdGenerator`, `IdempotencyStore` — узкие, по одному файлу, без лишних методов.
-- ✅ In-memory реализации + общий contract-test-suite для `WorkRepository`, `EditionRepository`,
-  `SourceLinkRepository`, `ExternalRefRepository`, `IdempotencyStore` (upsert-семантика проверена
-  явно: повторный `save()` с новым id обновляет поля, но сохраняет исходный id — как
-  `ON CONFLICT DO UPDATE` в реальной БД). Простые фейки без отдельных contract-suite — для
+- ✅ Entities `Work`, `Edition`, `SourceLink`, VOs `Isbn`, `LanguageCode`, `RightsStatus`, `LinkType`,
+  `ProviderId`, `ExternalRef`. `Edition` was extended with a `translatedFrom` field beyond the
+  original plan — a Phase 0 finding showed it is populated more often than the translator's name
+  (16.4% vs 12.2% of editions) and is an independent "this is a translation" signal.
+- ✅ `normalizeText()` and natural-key computation (sha256 via `node:crypto` `createHash`,
+  determinism — under 40+ table-driven tests). A table-driven test on Cyrillic caught a real bug:
+  NFKD decomposition turns «й» into «и» + breve, and naively stripping all combining marks
+  breaks Cyrillic — fixed by restricting the strip to Latin diacritics only.
+- ✅ `LinkPolicy` with all invariants and tests from [legal-policy.md](legal-policy.md) (24 tests).
+  The denylist was refined during implementation: full domains + exact-or-subdomain matching
+  instead of short fragments — the fragment approach produces false positives on coincidentally
+  similar domains.
+- ✅ Edition merge rules and source priority on field conflicts (`resolveFieldConflict`,
+  parameterized by field category — metadata vs cover).
+- ✅ Ports: repositories, `BookMetadataProvider`, `UnitOfWork`, `CachePort`, `JobQueuePort`,
+  `Clock`, `IdGenerator`, `IdempotencyStore` — narrow, one per file, no extraneous methods.
+- ✅ In-memory implementations + a shared contract-test suite for `WorkRepository`, `EditionRepository`,
+  `SourceLinkRepository`, `ExternalRefRepository`, `IdempotencyStore` (upsert semantics verified
+  explicitly: a repeated `save()` with a new id updates the fields but keeps the original id — like
+  `ON CONFLICT DO UPDATE` in a real DB). Simple fakes without dedicated contract suites — for
   `CachePort`, `JobQueuePort`, `Clock`, `IdGenerator`.
-- ✅ Побочный, но важный результат: обнаружен и закрыт пробел в тулинге Фазы 1.0 — покрытие
-  тестами вообще не было настроено (`@vitest/coverage-v8` не был установлен). Добавлено,
-  `pnpm test:coverage` проверяет `packages/domain` на ≥90% (сейчас 100%/99.3% branch), подключено
-  в CI отдельной джобой. Пороги пока scoped на domain — расширять по мере появления
-  протестированной логики в остальных пакетах, не раньше.
+- ✅ A side result, but an important one: a gap in the Phase 1.0 tooling was found and closed —
+  test coverage was not configured at all (`@vitest/coverage-v8` was not installed). Added;
+  `pnpm test:coverage` checks `packages/domain` at ≥90% (currently 100%/99.3% branch), wired into
+  CI as a separate job. Thresholds are scoped to domain for now — to be widened as tested logic
+  appears in the other packages, not before.
 
-### 1.2 Хранилище ✅ (закрыто 2026-08-13)
+### 1.2 Storage ✅ (closed 2026-08-13)
 
-- ✅ Drizzle-схема: `work`, `edition`, `source_link`, `language`, `external_ref`, `sync_log`,
-  `idempotency_key`. Все id/reference-колонки — `text`, не нативный Postgres `uuid`: находка
-  прямо в процессе — `IdGenerator`-порт из Фазы 1.1 явно не требует конкретного формата, а
-  contract-suite намеренно использует короткие читаемые id вроде `"work-1"`; нативный `uuid`
-  такие отклоняет (`invalid input syntax for type uuid`), поймано интеграционным тестом.
-- ✅ Уникальные ограничения по natural key и `(source_name, external_id)`, плюс составной ключ
-  `source_link (edition_id, provider, type, url_hash)` и PK `idempotency_key (key, endpoint)`.
-- ✅ `CHECK`-ограничение на нелегальные комбинации `type`/`is_legal_free`, плюс CHECK на все
-  текстовые enum-подобные поля (`rights_status`, `entity_type`, `status`) — защита на уровне
-  хранилища, независимая от доменного кода.
-- ✅ Индексы: trigram (GIN, `gin_trgm_ops`) по `original_title`/`author` — добавлены вручную
-  через `drizzle-kit generate --custom`, Drizzle не поддерживает этот operator class нативно;
-  `(work_id, language)`; partial unique по ISBN-13.
-- ✅ Первая миграция (`drizzle/0000_*.sql` + `0001_trigram_indexes.sql`), сид справочника языков
-  из `LANGUAGE_NAMES` домена (`pnpm db:seed`, идемпотентно — проверено повторным запуском).
-- ✅ Postgres-реализации репозиториев (`Pg{Work,Edition,SourceLink,ExternalRef,SyncLog}Repository`,
-  `PgIdempotencyStore`) с `ON CONFLICT DO UPDATE`, где `id` намеренно исключён из `SET` —
-  конфликтующая запись сохраняет исходный id, как и обычный insert не в SET. **Contract-suite из
-  Фазы 1.1 переиспользованы буквально**, без переписывания под Postgres — ровно то, ради чего
-  они создавались. Тест «двойной прогон не создаёт дублей» (docs/rules.md §2.6) — не отдельный
-  тест, а прямое следствие того, что контракт-suite это уже проверяет и теперь гоняется против
-  настоящей БД через Testcontainers (26 тестов, включая harness).
-- ✅ Побочная находка: две contract-suite (`Edition`, `SourceLink`) пришлось расширить
-  опциональным хуком (`ensureWorkExists`/`ensureEditionExists`, no-op по умолчанию) — in-memory
-  фейк не проверяет ссылочную целостность, а реальный FK на `edition.work_id`/
-  `source_link.edition_id` требует существования родительской записи. Хук — заготовка родительской
-  строки только для интеграционных прогонов, in-memory тесты Фазы 1.1 не изменились по поведению.
-- ⬜ **`PgUnitOfWork` осознанно не реализован** в этой фазе. Наивная обёртка вокруг
-  `db.transaction()`, не пробрасывающая транзакционный handle в репозитории внутри `work()`,
-  выглядела бы рабочей, но не давала бы настоящей атомарности — хуже, чем открыто отложить.
-  Нужен механизм transaction-context (тип `Queryable` у репозиториев + `AsyncLocalStorage` или
-  явный scope-объект), который стоит проектировать вместе с реальным многотабличным сценарием
-  (`SyncWorkFromSource`, §1.3), а не вслепую.
+- ✅ Drizzle schema: `work`, `edition`, `source_link`, `language`, `external_ref`, `sync_log`,
+  `idempotency_key`. All id/reference columns are `text`, not native Postgres `uuid`: a finding
+  made right in the process — the `IdGenerator` port from Phase 1.1 deliberately does not require
+  a specific format, and the contract suite intentionally uses short readable ids like `"work-1"`;
+  native `uuid` rejects those (`invalid input syntax for type uuid`), caught by an integration test.
+- ✅ Unique constraints on the natural key and `(source_name, external_id)`, plus a composite key
+  `source_link (edition_id, provider, type, url_hash)` and PK `idempotency_key (key, endpoint)`.
+- ✅ A `CHECK` constraint on illegal `type`/`is_legal_free` combinations, plus CHECKs on all
+  text enum-like fields (`rights_status`, `entity_type`, `status`) — storage-level protection,
+  independent of the domain code.
+- ✅ Indexes: trigram (GIN, `gin_trgm_ops`) on `original_title`/`author` — added manually
+  via `drizzle-kit generate --custom`, Drizzle does not support this operator class natively;
+  `(work_id, language)`; partial unique on ISBN-13.
+- ✅ The first migration (`drizzle/0000_*.sql` + `0001_trigram_indexes.sql`), seeding the language
+  reference table from the domain's `LANGUAGE_NAMES` (`pnpm db:seed`, idempotent — verified by a
+  repeat run).
+- ✅ Postgres repository implementations (`Pg{Work,Edition,SourceLink,ExternalRef,SyncLog}Repository`,
+  `PgIdempotencyStore`) with `ON CONFLICT DO UPDATE`, where `id` is deliberately excluded from
+  `SET` — a conflicting record keeps its original id, just like a regular insert not in SET.
+  **The contract suites from Phase 1.1 were reused literally**, without rewriting for Postgres —
+  exactly what they were created for. The "double run creates no duplicates" test
+  (docs/rules.md §2.6) is not a separate test but a direct consequence of the contract suite
+  already checking this and now running against a real DB via Testcontainers (26 tests, including
+  the harness).
+- ✅ A side finding: two contract suites (`Edition`, `SourceLink`) had to be extended with an
+  optional hook (`ensureWorkExists`/`ensureEditionExists`, no-op by default) — the in-memory
+  fake does not check referential integrity, while the real FK on `edition.work_id`/
+  `source_link.edition_id` requires the parent record to exist. The hook is a parent-row
+  precursor only for integration runs; the Phase 1.1 in-memory tests are behaviorally unchanged.
+- ⬜ **`PgUnitOfWork` deliberately not implemented** in this phase. A naive wrapper around
+  `db.transaction()` that does not pass the transactional handle to the repositories inside
+  `work()` would look functional but would provide no real atomicity — worse than openly
+  deferring. A transaction-context mechanism is needed (a `Queryable` type on the repositories +
+  `AsyncLocalStorage` or an explicit scope object), which should be designed together with a real
+  multi-table scenario (`SyncWorkFromSource`, §1.3), not blindly.
 
-### 1.3 Источники и синхронизация ✅ частично (закрыто 2026-08-13, Cron/backfill отложены в 1.4)
+### 1.3 Sources and synchronization ✅ partially (closed 2026-08-13, Cron/backfill deferred to 1.4)
 
-- ✅ **`PgUnitOfWork` + transaction-context** (отложено из §1.2, реализовано здесь вместе с первым
-  реальным многотабличным сценарием, как и планировалось): `AsyncLocalStorage<Queryable>`
-  (`transaction-context.ts`) + `resolveDb(fallback)`; каждый `Pg*Repository` получил приватный
-  геттер `private get q() { return resolveDb(this.db); }` и все запросы теперь идут через `this.q`,
-  а не напрямую через `this.db`. `PgUnitOfWork.runInTransaction` оборачивает `db.transaction(tx =>
-runWithTransactionContext(tx, work))` — репозитории прозрачно участвуют в транзакции, не зная о
-  ней явно. Проверено интеграционными тестами напрямую на atomicity (commit, rollback, изоляция
-  вне транзакции) и косвенно — полным прогоном `SyncWorkFromSource` против настоящего Postgres.
-- ✅ `RedisCache implements CachePort`: `SCAN`+`UNLINK` для `deleteByPrefix` (не `KEYS`+`DEL` —
-  блокирующая операция на проде), TTL через `SET ... PX`. 6 интеграционных тестов, включая
-  реальное истечение TTL.
-- ✅ HTTP resilience toolkit (`createResilientFetcher`): cockatiel `retry` (экспоненциальный
-  backoff со встроенным джиттером) + `circuitBreaker` (ConsecutiveBreaker) + `timeout`
-  (Aggressive), скомпонованы через `wrap()`. Ретраятся только 5xx — 4xx считается «сам запрос
-  неверный», ретрай не поможет. Все 6 тестов — против настоящего локального HTTP-сервера, не
-  мокнутого `fetch`, потому что таймауты/ретраи/circuit-breaker state — это ровно то, что мок не
-  может честно проверить.
-- ✅ `OpenLibraryProvider`: только plain-text поиск (`q: query.text`), никогда не field-scoped
-  (`title:`/`author:`) — прямое следствие находки Фазы 0. Кэш на уровне адаптера (1ч поиск, 6ч
-  издания) через `CachePort`. `rightsSignal` всегда `'unknown'` — честно: `editions.json` не даёт
-  надёжного per-edition сигнала о правах, наличие `ocaid` само по себе не доказывает public domain.
-  Smoke-протестирован против живого Open Library API отдельно от unit-тестов на реальных фикстурах.
-- ✅ `GoogleBooksProvider`: у Google Books нет группировки «work» — каждый результат поиска
-  маппится в `ProviderWork` с одним подразумеваемым изданием, `fetchEditions` перезапрашивает
-  именно этот volume. Извлекает ISBN-13/10 и `link: { type: 'buy', url }`, когда
+- ✅ **`PgUnitOfWork` + transaction-context** (deferred from §1.2, implemented here together with
+  the first real multi-table scenario, as planned): `AsyncLocalStorage<Queryable>`
+  (`transaction-context.ts`) + `resolveDb(fallback)`; each `Pg*Repository` gained a private
+  getter `private get q() { return resolveDb(this.db); }` and all queries now go through `this.q`,
+  not directly through `this.db`. `PgUnitOfWork.runInTransaction` wraps `db.transaction(tx =>
+runWithTransactionContext(tx, work))` — repositories participate in the transaction transparently,
+  without knowing about it explicitly. Verified by integration tests directly for atomicity
+  (commit, rollback, isolation outside the transaction) and indirectly — by a full
+  `SyncWorkFromSource` run against a real Postgres.
+- ✅ `RedisCache implements CachePort`: `SCAN`+`UNLINK` for `deleteByPrefix` (not `KEYS`+`DEL` — a
+  blocking operation in production), TTL via `SET ... PX`. 6 integration tests, including a real
+  TTL expiry.
+- ✅ HTTP resilience toolkit (`createResilientFetcher`): cockatiel `retry` (exponential
+  backoff with built-in jitter) + `circuitBreaker` (ConsecutiveBreaker) + `timeout`
+  (Aggressive), composed via `wrap()`. Only 5xx are retried — a 4xx means "the request itself is
+  wrong", a retry will not help. All 6 tests run against a real local HTTP server, not a mocked
+  `fetch`, because timeouts/retries/circuit-breaker state are exactly what a mock cannot honestly
+  verify.
+- ✅ `OpenLibraryProvider`: plain-text search only (`q: query.text`), never field-scoped
+  (`title:`/`author:`) — a direct consequence of the Phase 0 finding. Adapter-level cache (1h
+  search, 6h editions) via `CachePort`. `rightsSignal` is always `'unknown'` — honestly:
+  `editions.json` gives no reliable per-edition rights signal, and the presence of `ocaid` by
+  itself does not prove public domain. Smoke-tested against the live Open Library API separately
+  from the unit tests on real fixtures.
+- ✅ `GoogleBooksProvider`: Google Books has no "work" grouping — each search result
+  maps to a `ProviderWork` with one implied edition; `fetchEditions` re-fetches
+  exactly that volume. Extracts ISBN-13/10 and `link: { type: 'buy', url }` when
   `saleInfo.saleability === 'FOR_SALE'`.
-- ✅ Use case `SyncWorkFromSource`: поиск top-match → издания провайдера → внутри
-  `unitOfWork.runInTransaction`: resolve/create `Work` (external_ref → potом natural key) →
-  на каждое издание resolve/create `Edition` так же, **skip (не fail)** на непарсящемся
-  языке/ISBN → попытка `assertLinkAllowed` для ссылки от провайдера, skip при `DomainError`
-  (провайдер предложил — не значит что `LinkPolicy` разрешит), rethrow на прочих ошибках →
-  инвалидация кэша по префиксу `v1:work:{id}` → запись `sync_log` (при ошибке — уже вне
-  транзакции, чтобы аудиторский след пережил rollback). 7 unit-тестов на локальных фейках + 4
-  интеграционных против настоящих Postgres/Redis, включая явную проверку rollback.
-- ✅ BullMQ: `BullMqQueue implements JobQueuePort`, детерминированный `jobId` = дедуп-ключ
-  (повторный `enqueue` с тем же `jobId`, пока задача waiting/active/delayed — no-op). Отдельная
-  физическая DLQ не заводилась — `removeOnFail: false` уже держит упавшие задачи inspectable, это
-  проще, чем вторая очередь ради тех же данных. 4 интеграционных теста, включая реального BullMQ
-  worker и явную проверку DLQ-инспекции.
-- ✅ **Побочная находка, важная**: BullMQ **не принимает `:` в `jobId`** (`Custom Id cannot contain
-":"`, поймано интеграционным тестом при попытке использовать уже задокументированный формат
-  `sync:{source}:{workId}:{date}`). Конвенция везде поменяна на дефисы:
-  `sync-{source}-{workId}-{date}`. Обновлено во всех местах, где формат был задокументирован:
-  `docs/rules.md` §2.3 (добавлено пояснение про ограничение BullMQ), `docs/architecture.md` §5,
+- ✅ Use case `SyncWorkFromSource`: search top-match → provider editions → inside
+  `unitOfWork.runInTransaction`: resolve/create `Work` (external_ref → then natural key) →
+  for each edition resolve/create `Edition` likewise, **skip (not fail)** on an unparsable
+  language/ISBN → attempt `assertLinkAllowed` for the provider's link, skip on `DomainError`
+  (the provider offering it does not mean `LinkPolicy` allows it), rethrow on other errors →
+  cache invalidation by prefix `v1:work:{id}` → write `sync_log` (on error — outside the
+  transaction, so the audit trail survives a rollback). 7 unit tests on local fakes + 4
+  integration tests against real Postgres/Redis, including an explicit rollback check.
+- ✅ BullMQ: `BullMqQueue implements JobQueuePort`, deterministic `jobId` = dedup key
+  (a repeated `enqueue` with the same `jobId` while the job is waiting/active/delayed is a no-op).
+  No separate physical DLQ was created — `removeOnFail: false` already keeps failed jobs
+  inspectable, which is simpler than a second queue for the same data. 4 integration tests,
+  including a real BullMQ worker and an explicit DLQ-inspection check.
+- ✅ **A side finding, an important one**: BullMQ **does not accept `:` in `jobId`** (`Custom Id cannot contain
+":"`, caught by an integration test when trying to use the already documented format
+  `sync:{source}:{workId}:{date}`). The convention was changed everywhere to dashes:
+  `sync-{source}-{workId}-{date}`. Updated everywhere the format was documented:
+  `docs/rules.md` §2.3 (with an explanation of the BullMQ limitation added), `docs/architecture.md` §5,
   `docs/adr/0002-idempotency-strategy.md`, `docs/adr/0003-lazy-backfill.md`. `BullMqQueue.enqueue`
-  дополнительно валидирует и кидает понятный `InvalidInputError`, а не даёт всплыть внутренней
-  ошибке BullMQ.
-- ✅ **Побочная находка, критичная для покрытия данных**: Open Library отдаёт языки в ISO 639-2/B
-  (трёхбуквенный «библиографический» код — `eng`, `rus`, `ger`, `fre`, `chi`...), а
-  `LanguageCode` из Фазы 1.1 понимал только двухбуквенный ISO 639-1. Без фикса **почти все**
-  издания Open Library молча пропускались бы как «непарсящийся язык». Пойман не тестом на
-  придуманных данных, а тем, что тесты `SyncWorkFromSource` с самого начала писались на реальных
-  трёхбуквенных фикстурах — прямое подтверждение практики «тестировать на реалистичных данных»,
-  а не на удобных двухбуквенных заглушках. Исправлено: `iso-639-2-to-1.ts` — таблица ~87
-  соответствий, `LanguageCode.create()` сначала пробует `LANGUAGE_NAMES` (2 буквы), затем эту
-  таблицу, иначе бросает `InvalidInputError`.
-- ✅ Дедупликация изданий: `computeEditionNaturalKey` (язык, издатель, год, название) уже
-  существовала с Фазы 1.1 — использована как есть в `SyncWorkFromSource`, ISBN-13 участвует в
-  ключе, когда распознан.
-- ⬜ **Cron `RefreshStaleWorks` и Lazy backfill queue ([ADR-0003](adr/0003-lazy-backfill.md))
-  осознанно отложены в §1.4.** Оба нуждаются в работающем composition root `apps/worker`
-  (реальный реестр провайдеров, собранный из конфига, плюс BullMQ repeatable-job scheduling),
-  которого пока нет — строить их в изоляции сейчас означало бы непротестированные заготовки. Та же
-  логика, что откладывала `PgUnitOfWork` из §1.2 в §1.3: правильная фаза для механизма — та, где
-  есть первый реальный сценарий, на котором его можно осмысленно проверить.
-- 📝 Известный, задокументированный воркэраунд: unit-тесты `SyncWorkFromSource` определяют
-  локальные фейки прямо в тестовом файле (`packages/application/test/use-cases/`), а не
-  переиспользуют `packages/domain/test/fakes/*` — при первой попытке импорт по цепочке
-  `application/test → domain/test/fakes → domain/src` (единственный случай двойного хопа между
-  пакетами в проекте на тот момент) падал в Vite с ошибкой резолва модуля. Отдельно, в процессе
-  финальной проверки контракта команд, обнаружилось, что часть тестовых директорий домена
-  (`packages/domain/test/fakes/*.js`/`*.d.ts`) содержала осевшие с более раннего `tsc`-прогона
-  скомпилированные артефакты прямо рядом с `.ts`-исходниками — они перехватывали резолв раньше
-  `.ts`-файлов и ломали contract-тесты домена тем же способом. Артефакты удалены, `pnpm test`
-  снова зелёный по всем 29 файлам; вероятно это была настоящая причина и того более раннего сбоя
-  тоже, но локальные фейки в `SyncWorkFromSource`-тестах не переделывались обратно — рабочее и
-  осознанное решение, трогать не стали.
+  additionally validates and throws a clear `InvalidInputError` instead of letting BullMQ's
+  internal error bubble up.
+- ✅ **A side finding, critical for data coverage**: Open Library returns languages in ISO 639-2/B
+  (the three-letter "bibliographic" code — `eng`, `rus`, `ger`, `fre`, `chi`...), while the
+  `LanguageCode` from Phase 1.1 understood only two-letter ISO 639-1. Without the fix, **almost
+  all** Open Library editions would silently be skipped as "unparsable language". Caught not by a
+  test on invented data, but by the fact that the `SyncWorkFromSource` tests were written from the
+  start on real three-letter fixtures — direct confirmation of the practice of "testing on
+  realistic data", not on convenient two-letter stubs. Fixed: `iso-639-2-to-1.ts` — a table of
+  ~87 mappings; `LanguageCode.create()` first tries `LANGUAGE_NAMES` (2 letters), then this
+  table, otherwise throws `InvalidInputError`.
+- ✅ Edition deduplication: `computeEditionNaturalKey` (language, publisher, year, title) already
+  existed since Phase 1.1 — used as is in `SyncWorkFromSource`; ISBN-13 participates in the key
+  when recognized.
+- ⬜ **The `RefreshStaleWorks` Cron and the lazy backfill queue ([ADR-0003](adr/0003-lazy-backfill.md))
+  deliberately deferred to §1.4.** Both need a working `apps/worker` composition root
+  (a real provider registry assembled from config, plus BullMQ repeatable-job scheduling),
+  which does not yet exist — building them in isolation now would mean untested scaffolding. The
+  same logic that deferred `PgUnitOfWork` from §1.2 to §1.3: the right phase for a mechanism is
+  the one with the first real scenario it can be meaningfully verified against.
+- 📝 A known, documented workaround: the `SyncWorkFromSource` unit tests define
+  local fakes right in the test file (`packages/application/test/use-cases/`) rather than reusing
+  `packages/domain/test/fakes/*` — on the first attempt the import chain
+  `application/test → domain/test/fakes → domain/src` (the only case of a double hop between
+  packages in the project at that time) failed in Vite with a module-resolution error. Separately,
+  during the final check of the command contract, it turned out that some domain test directories
+  (`packages/domain/test/fakes/*.js`/`*.d.ts`) contained compiled artifacts left over from an
+  earlier `tsc` run right next to the `.ts` sources — they intercepted resolution ahead of the
+  `.ts` files and broke the domain contract tests in the same way. The artifacts were removed,
+  `pnpm test` is green again across all 29 files; this was probably the real cause of that earlier
+  failure too, but the local fakes in the `SyncWorkFromSource` tests were not converted back — a
+  working and deliberate decision, left untouched.
 
-### 1.4 API ✅ (закрыто 2026-08-13)
+### 1.4 API ✅ (closed 2026-08-13)
 
-- ✅ Zod-схемы в `packages/contracts` для всей поверхности API (`search`, `work`, `edition-links`,
-  `sync`, общий `error`), с табличными unit-тестами на каждую.
-- ✅ Домен: `WorkSearchPort` (Postgres-специфичный ранжированный поиск — сознательно отдельный
-  порт от `WorkRepository`, docs/rules.md §1 ISP) и `WorkRepository.findStale()` для Cron.
-  Реализация — `PgWorkSearchAdapter` на `similarity()`/`gin_trgm_ops` (индексы уже были с Фазы
-  1.2) плюс `ILIKE`-фолбэк для коротких запросов, где триграммное сходство слишком слабое.
-- ✅ Use cases в `packages/application`: `SearchWorks` (lazy backfill, ADR-0003), `GetWorkCard`,
-  `ListEditionsForWork`, `GetEditionLinks` (все — с Redis-кэшем через `CachePort`, TTL из
+- ✅ Zod schemas in `packages/contracts` for the entire API surface (`search`, `work`, `edition-links`,
+  `sync`, shared `error`), with table-driven unit tests for each.
+- ✅ Domain: `WorkSearchPort` (Postgres-specific ranked search — deliberately a separate
+  port from `WorkRepository`, docs/rules.md §1 ISP) and `WorkRepository.findStale()` for the Cron.
+  Implementation — `PgWorkSearchAdapter` on `similarity()`/`gin_trgm_ops` (indexes already existed
+  since Phase 1.2) plus an `ILIKE` fallback for short queries where trigram similarity is too weak.
+- ✅ Use cases in `packages/application`: `SearchWorks` (lazy backfill, ADR-0003), `GetWorkCard`,
+  `ListEditionsForWork`, `GetEditionLinks` (all — with a Redis cache via `CachePort`, TTLs from
   docs/architecture.md §4), `EnqueueSourceSync` (Idempotency-Key, docs/rules.md §2.4),
-  `RefreshStaleWorks` (Cron), `ProcessBackfillJob` (консьюмер очереди `backfill`).
-- ✅ `apps/worker`: composition root (`buildWorkerContext`) регистрирует оба провайдера
-  (`open-library`, `google-books` — Google Books работает и без ключа, просто с более низким
-  лимитом, docs/architecture.md §9.2, поэтому не исключается из реестра), три BullMQ `Worker`
-  (`sync`, `backfill` — с меньшей concurrency, ADR-0003, `cron-refresh-stale-works` —
-  `upsertJobScheduler`, ежедневно, что комфортно перекрывает требование «не реже раза в
-  неделю»). `pnpm sync -- --source=<name> --work=<workId>` (был затычкой с Фазы 1.0) наконец
-  реализован по-настоящему.
+  `RefreshStaleWorks` (Cron), `ProcessBackfillJob` (consumer of the `backfill` queue).
+- ✅ `apps/worker`: composition root (`buildWorkerContext`) registers both providers
+  (`open-library`, `google-books` — Google Books works even without a key, just with a lower
+  limit, docs/architecture.md §9.2, so it is not excluded from the registry), three BullMQ `Worker`s
+  (`sync`, `backfill` — with lower concurrency, ADR-0003, `cron-refresh-stale-works` —
+  `upsertJobScheduler`, daily, which comfortably exceeds the "at least once a
+  week" requirement). `pnpm sync -- --source=<name> --work=<workId>` (a stub since Phase 1.0) is
+  finally implemented for real.
 - ✅ `apps/api`: `SearchController`, `WorksController`, `EditionsController`, `SyncController`
-  (guard на `X-Admin-Token` через новый `UnauthorizedError` — 401 — в доменной иерархии ошибок,
-  та же `DomainErrorFilter`, что и остальные коды). DI — `@Global() InfrastructureModule`,
-  собирающий use case'ы один раз при старте (`buildApiContext`), тот же паттерн composition
-  root, что и в `apps/worker` (Фаза 1.3). Redis-backed rate limiting (`@fastify/rate-limit`,
-  60 запросов/мин на IP).
-- ✅ `POST /api/sync/:source`: только ставит задачу в ту же очередь `sync`, что и Cron — сам
-  `SyncWorkFromSource` в API-процессе никогда не запускается (docs/architecture.md §5, диаграмма
-  потока). Это потребовало на ходу переделать первый черновик `SyncResponseSchema` (изначально
-  ошибочно смоделированный как синхронный ответ с результатами синка) на `{status: 'queued',
+  (a guard on `X-Admin-Token` via a new `UnauthorizedError` — 401 — in the domain error
+  hierarchy, the same `DomainErrorFilter` as the other codes). DI — a `@Global() InfrastructureModule`
+  assembling the use cases once at startup (`buildApiContext`), the same composition-root
+  pattern as in `apps/worker` (Phase 1.3). Redis-backed rate limiting (`@fastify/rate-limit`,
+  60 requests/min per IP).
+- ✅ `POST /api/sync/:source`: only enqueues a job into the same `sync` queue as the Cron — the
+  `SyncWorkFromSource` itself never runs in the API process (docs/architecture.md §5, the flow
+  diagram). This required reworking, on the fly, the first draft of `SyncResponseSchema` (initially
+  mistakenly modeled as a synchronous response with sync results) into `{status: 'queued',
 jobId, replayed}`.
-- ✅ Полный цикл ADR-0003 проверен вживую против реального Open Library + Postgres + Redis:
-  промах поиска → `202 pending` → воркер реально синкает книгу → повторный запрос → `200 found`
-  (docs/plan.md — «первый в жизни инсталляции запрос» из Definition of Done ADR-0003).
-- 🐛 **Четыре реальные находки, пойманные только живым прогоном** (не тестами, не тайпчеком —
-  ловится только когда реальный HTTP-запрос идёт через реальный процесс):
-  1. Забыт `app.setGlobalPrefix('api', ...)` — все роуты висели без `/api`.
-  2. **NestJS переворачивает массив глобальных фильтров исключений** (`filters.reverse()` в
-     `RouterExceptionFilters`) перед сопоставлением — значит из двух `app.useGlobalFilters(A, B)`
-     первым проверяется **B**, не A. Порядок `useGlobalFilters(DomainErrorFilter,
-UnhandledErrorFilter)` — интуитивно правильный на вид — на деле означал, что
-     catch-all `UnhandledErrorFilter` (`@Catch()` без аргументов матчит всё) перехватывал
-     `NotFoundError`/`ConflictError`/`UnauthorizedError` раньше специфичного
-     `DomainErrorFilter`, превращая честные 404/409/401 в общий 500. Порядок исправлен на
-     `(catch-all, специфичный)`; добавлен явный тест на маппинг кодов в статусы.
-  3. `UnhandledErrorFilter`, ловя абсолютно всё (`@Catch()`), заодно проглатывал собственные
-     исключения Nest (`NotFoundException` на несуществующий роут) и ошибки Fastify-плагинов
-     (`@fastify/rate-limit` кидает обычный `Error` с полем `statusCode`, не `HttpException`) —
-     оба случая превращались в 500 вместо честных 404/429. Фильтр научили распознавать оба
-     случая явно и транслировать их реальный статус.
-  4. **Триграммный порог поиска 0.1 был слишком мягким**: запрос на несуществующую книгу («The
-     Little Prince Saint-Exupery») находил «The Hobbit» с похожестью 0.1025 — исключительно из-за
-     общего слова «The». Поднят до 0.3 (собственный дефолт `pg_trgm`), добавлен
-     регрессионный интеграционный тест на этот конкретный случай.
-- 📝 **Известное ограничение, не бага**: поиск сравнивает запрос только с `work.original_title`/
-  `author` (оригинальным языком произведения), не с переводными названиями изданий. Живой тест
-  на «Le petit prince» / запрос «The Little Prince» (0.237 сходства — ниже нового порога 0.3)
-  показал: пока задача не синкнута, это выглядит как обычный `pending`, что честно и не ломает
-  контракт — но после успешного синка запрос на англоязычное название всё ещё не находит
-  французскую оригинальную работу по одному лишь триграммному сходству заголовка/автора. Полное
-  решение (индексировать также `edition.title` по всем языкам) — заметно больший объём работы,
-  сознательно отложено в Фазу 2, а не встроено сейчас незаметно.
-- 📝 `ProcessBackfillJob` помечает 24-часовой негативный кэш (ADR-0003) только когда **все**
-  зарегистрированные источники вернули чистый `not_found` — если хоть один вернул `error`
-  (таймаут, недоступность), кэш не выставляется, чтобы временный сбой не заморозил результат на
-  сутки. Осознанный компромисс, а не полная модель повторных попыток per-source.
-- ⬜ **Генерация OpenAPI из Zod-схем не сделана** — сознательно отложено: рабочий, живо
-  проверенный контракт важнее документационного артефакта в конце и без того большой фазы;
-  Zod-схемы уже являются машиночитаемым источником истины и могут быть прогнаны через
-  `zod-to-openapi` в любой момент без изменения самого API.
+- ✅ The full ADR-0003 cycle verified live against the real Open Library + Postgres + Redis:
+  search miss → `202 pending` → the worker actually syncs the book → repeated request → `200 found`
+  (docs/plan.md — the "first-ever request of an installation" from the ADR-0003 Definition of Done).
+- 🐛 **Four real findings caught only by a live run** (not by tests, not by typechecking —
+  only catchable when a real HTTP request goes through a real process):
+  1. `app.setGlobalPrefix('api', ...)` was forgotten — all routes were mounted without `/api`.
+  2. **NestJS reverses the array of global exception filters** (`filters.reverse()` in
+     `RouterExceptionFilters`) before matching — meaning of two `app.useGlobalFilters(A, B)`,
+     **B** is checked first, not A. The order `useGlobalFilters(DomainErrorFilter,
+UnhandledErrorFilter)` — intuitively correct-looking — in practice meant that the
+     catch-all `UnhandledErrorFilter` (`@Catch()` with no arguments matches everything) intercepted
+     `NotFoundError`/`ConflictError`/`UnauthorizedError` before the specific
+     `DomainErrorFilter`, turning honest 404/409/401 into a generic 500. The order was fixed to
+     `(catch-all, specific)`; an explicit test for the code-to-status mapping was added.
+  3. `UnhandledErrorFilter`, catching absolutely everything (`@Catch()`), also swallowed Nest's
+     own exceptions (`NotFoundException` for a nonexistent route) and Fastify plugin errors
+     (`@fastify/rate-limit` throws a plain `Error` with a `statusCode` field, not an `HttpException`) —
+     both cases turned into a 500 instead of honest 404/429. The filter was taught to recognize
+     both cases explicitly and translate their real status.
+  4. **The trigram search threshold of 0.1 was too lenient**: a query for a nonexistent book ("The
+     Little Prince Saint-Exupery") matched "The Hobbit" with a similarity of 0.1025 — solely due
+     to the shared word "The". Raised to 0.3 (the `pg_trgm` default itself); a
+     regression integration test for this specific case was added.
+- 📝 **A known limitation, not a bug**: search compares the query only against `work.original_title`/
+  `author` (the work's original language), not against translated edition titles. A live test
+  on «Le petit prince» / query "The Little Prince" (0.237 similarity — below the new 0.3 threshold)
+  showed: until the job is synced, this looks like a regular `pending`, which is honest and does
+  not break the contract — but after a successful sync, a query for the English title still fails
+  to find the French original work on trigram title/author similarity alone. The full
+  solution (also indexing `edition.title` across all languages) is a notably larger amount of
+  work, deliberately deferred to Phase 2 rather than quietly bolted on now.
+- 📝 `ProcessBackfillJob` sets the 24-hour negative cache (ADR-0003) only when **all**
+  registered sources returned a clean `not_found` — if even one returned `error`
+  (timeout, unavailability), the cache is not set, so a transient failure does not freeze the
+  result for a day. A deliberate compromise, not a full per-source retry model.
+- ⬜ **OpenAPI generation from the Zod schemas not done** — deliberately deferred: a working,
+  live-verified contract matters more than a documentation artifact at the end of an already
+  large phase; the Zod schemas are already the machine-readable source of truth and can be run
+  through `zod-to-openapi` at any moment without changing the API itself.
 
-### 1.5 Web ✅ (закрыто 2026-08-13)
+### 1.5 Web ✅ (closed 2026-08-13)
 
-- ✅ `apps/web/src/lib/api-client.ts` — единственная точка входа в API: каждый ответ валидируется
-  Zod-схемой из `@btf/contracts` до попадания на страницу (docs/architecture.md §2.5 — apps/web
-  не знает про источники данных и бизнес-правила, только про свой API). `getWorkCard` возвращает
-  `null` на `404` (осознанное решение — вызывающая страница сама решает, как это показать), любой
-  другой не-2xx бросает `ApiRequestError`.
-- ✅ Страница поиска (`/`): клиентский компонент `SearchBox` — ввод, список кандидатов
-  (`GET /api/search`), состояния `idle`/`loading`/`found`/`not_found`/`error`; результат — ссылка
-  на карточку.
-- ✅ Состояние `202 pending` (ADR-0003, «ищем в источниках…») с опросом каждые `pollAfterMs` от
-  сервера и разумным таймаутом — до 8 попыток (~24 с), после чего явное сообщение вместо
-  бесконечного опроса. Гонка устаревших ответов исключена счётчиком `requestId`.
-- ✅ Карточка книги `/works/[id]` — **SSR** (Server Component, `fetch(..., {cache:'no-store'})`):
-  языки перевода, список изданий, фильтр по языку/году через `<form method="get">` и
-  `searchParams` (работает без JS, URL — источник истины для фильтра). `notFound()` на
-  несуществующий `workId`.
-- ✅ Блок ссылок (`EditionLinks`, клиентский, разворачивается по клику — не тянет ссылки для всех
-  изданий сразу, только когда пользователь их запросил) — бейджи `public domain` / `открытая
-лицензия` / `защищено авторским правом` / `статус не определён`, подписи типа ссылки «Скачать» /
-  «Купить» / «Взять в библиотеке» (требование И-4). Состояния загрузки/ошибки/явного «ссылок пока
-  нет» — не путается с ошибкой.
-- ✅ a11y по минимуму: `<label htmlFor>` у всех полей, `aria-live="polite"` на результатах поиска
-  и блоке ссылок, `aria-expanded` на кнопке-раскрывашке, skip-link к `#main-content`,
-  светлая/тёмная тема через `prefers-color-scheme`.
-- ✅ Playwright e2e (`apps/web/e2e`, `pnpm test:e2e`) — сценарий «поиск → карточка → ссылки»
-  (docs/rules.md §5). Сам **создаёт себе данные** через `POST /api/sync/:source` (тот же
-  документированный admin-эндпоинт) вместо того чтобы полагаться на заранее заполненную БД —
-  детерминированно и на свежей базе тоже. Прогнан вживую дважды: один раз когда книга уже была
-  в базе (мгновенный путь), один раз с нуля на новой книге («Matilda») с реально работающим
-  `apps/worker`, чтобы доказать, что цикл опроса в `beforeAll` не просто совпадает с уже готовыми
-  данными.
-- ✅ Живая проверка в браузере (см. ниже) поверх настоящего стека api+worker+Postgres+Redis:
-  поиск, карточка с 41 реальным изданием «The Hobbit», фильтр по языку (4 из 41 для `ru`),
-  раскрытие блока ссылок с честным «ссылок пока нет» (реальных данных о ссылках ещё нет —
-  `LinkPolicy`/провайдеры пока не отдают заполненные ссылки на большинстве изданий), 404-страница.
-- 🐛 **Побочные находки, не связанные напрямую с Веб-фазой, но пойманные при живой проверке
-  полного дев-флоу «с нуля»**:
-  1. `apps/web`'ов относительные импорты (`'../lib/api-client.js'`) не собирались вебпаком Next —
-     `moduleResolution: "Bundler"` у `apps/web/tsconfig.json` (в отличие от `NodeNext` у всех
-     остальных пакетов) не работает с явным `.js`-расширением у ещё не скомпилированных
-     `.tsx`-файлов; `tsc --noEmit` при этом молчал (проходил), ловится только реальным
-     `next build`. Все внутренние импорты `apps/web` переведены на путь без расширения.
-  2. **Задокументированный в CLAUDE.md порядок запуска (`pnpm install` → `docker compose up -d` →
-     `pnpm dev`) был на самом деле нерабочим с самой Фазы 1.0** — нигде не было шага
-     `cp .env.example .env`, а `pnpm db:migrate`/`db:seed`/`pnpm sync` не грузили `.env` вовсе
-     (`tsx` без `--env-file`). Плюс отдельная проблема: Next.js читает env-файлы только из
-     **своей собственной** директории (`apps/web/.env.local`), не из корня монорепо — переменная
-     `NEXT_PUBLIC_API_URL` из корневого `.env` до `apps/web` физически не доходит. Всё
-     обнаружено не тестами, а попыткой честно повторить документированный флоу с нуля. Исправлено:
-     `db:migrate`/`db:seed` — `tsx --env-file-if-exists=../../.env` (не падает, если файла нет —
-     важно для прод/CI, где переменные уже в окружении); `pnpm sync` — `tsx --env-file=../../.env`
-     (строго, как у `dev`); добавлен трекаемый `apps/web/.env.example`; CLAUDE.md и `.env.example`
-     обновлены с недостающими шагами.
-  3. `.gitignore` не покрывал `.env.local` (только `.env.*.local` — с обязательной точкой между
-     `.env` и `.local`, паттерн Next.js `.env*.local` отличается на один символ) — `apps/web`'ов
-     локальный env-файл едва не попал бы в git. Исправлено вместе с находкой №2.
+- ✅ `apps/web/src/lib/api-client.ts` — the single entry point into the API: every response is
+  validated by a Zod schema from `@btf/contracts` before reaching a page (docs/architecture.md §2.5 —
+  apps/web knows nothing about data sources and business rules, only about its own API).
+  `getWorkCard` returns `null` on `404` (a deliberate decision — the calling page decides how to
+  present it), any other non-2xx throws `ApiRequestError`.
+- ✅ Search page (`/`): the `SearchBox` client component — input, candidate list
+  (`GET /api/search`), states `idle`/`loading`/`found`/`not_found`/`error`; a result is a link
+  to the card.
+- ✅ The `202 pending` state (ADR-0003, "searching the sources…") with polling every `pollAfterMs`
+  as directed by the server and a sensible timeout — up to 8 attempts (~24 s), after which an
+  explicit message instead of infinite polling. Races of stale responses ruled out with a
+  `requestId` counter.
+- ✅ Book card `/works/[id]` — **SSR** (Server Component, `fetch(..., {cache:'no-store'})`):
+  translation languages, edition list, language/year filter via `<form method="get">` and
+  `searchParams` (works without JS, the URL is the source of truth for the filter). `notFound()`
+  for a nonexistent `workId`.
+- ✅ The links block (`EditionLinks`, client-side, expands on click — it does not fetch links for
+  all editions at once, only when the user asks) — badges `public domain` / `open license` /
+  `copyrighted` / `status undetermined`, link-type labels "Download" /
+  "Buy" / "Borrow from library" (requirement I-4). Loading/error/explicit "no links yet"
+  states — never confused with an error.
+- ✅ Minimal a11y: `<label htmlFor>` on all fields, `aria-live="polite"` on search results
+  and the links block, `aria-expanded` on the expander button, a skip-link to `#main-content`,
+  light/dark theme via `prefers-color-scheme`.
+- ✅ Playwright e2e (`apps/web/e2e`, `pnpm test:e2e`) — the "search → card → links" scenario
+  (docs/rules.md §5). It **creates its own data** via `POST /api/sync/:source` (the same
+  documented admin endpoint) instead of relying on a pre-populated DB —
+  deterministic, and works on a fresh database too. Run live twice: once when the book was
+  already in the database (the instant path), once from scratch on a new book ("Matilda") with a
+  really running `apps/worker`, to prove that the polling loop in `beforeAll` does not merely
+  coincide with already-prepared data.
+- ✅ A live browser check (see below) on top of the real api+worker+Postgres+Redis stack:
+  search, a card with 41 real editions of "The Hobbit", the language filter (4 of 41 for `ru`),
+  expanding the links block with an honest "no links yet" (there is no real link data yet —
+  `LinkPolicy`/providers do not yet return populated links for most editions), the 404 page.
+- 🐛 **Side findings, not directly related to the Web phase but caught during the live check of
+  the full from-scratch dev flow**:
+  1. `apps/web`'s relative imports (`'../lib/api-client.js'`) did not build under Next's webpack —
+     `moduleResolution: "Bundler"` in `apps/web/tsconfig.json` (unlike `NodeNext` in all the
+     other packages) does not work with an explicit `.js` extension on not-yet-compiled
+     `.tsx` files; `tsc --noEmit` stayed silent (passed) — only a real
+     `next build` catches it. All internal `apps/web` imports were switched to extensionless paths.
+  2. **The startup sequence documented in CLAUDE.md (`pnpm install` → `docker compose up -d` →
+     `pnpm dev`) had actually been broken since Phase 1.0** — the
+     `cp .env.example .env` step was missing everywhere, and `pnpm db:migrate`/`db:seed`/`pnpm sync`
+     did not load `.env` at all (`tsx` without `--env-file`). Plus a separate problem: Next.js
+     reads env files only from **its own** directory (`apps/web/.env.local`), not from the
+     monorepo root — the `NEXT_PUBLIC_API_URL` variable from the root `.env` physically never
+     reaches `apps/web`. All of this was discovered not by tests but by honestly retracing the
+     documented flow from scratch. Fixed:
+     `db:migrate`/`db:seed` — `tsx --env-file-if-exists=../../.env` (does not fail if the file is
+     absent — important for prod/CI where the variables are already in the environment);
+     `pnpm sync` — `tsx --env-file=../../.env` (strict, like `dev`); a tracked
+     `apps/web/.env.example` was added; CLAUDE.md and `.env.example` updated with the missing steps.
+  3. `.gitignore` did not cover `.env.local` (only `.env.*.local` — with a mandatory dot between
+     `.env` and `.local`; Next.js's pattern `.env*.local` differs by one character) — `apps/web`'s
+     local env file nearly ended up in git. Fixed together with finding #2.
 
-### 1.6 Docker и self-hosting ✅ (закрыто 2026-08-13)
+### 1.6 Docker and self-hosting ✅ (closed 2026-08-13)
 
-Self-hosting — целевой сценарий, не побочный эффект контейнеризации
-(см. [architecture.md §9](architecture.md#9-развёртывание-и-self-hosting)).
+Self-hosting is the target scenario, not a side effect of containerization
+(see [architecture.md §9](architecture.md#9-deployment-and-self-hosting)).
 
-- ✅ Multi-stage Dockerfile для api/worker (`docker/app.Dockerfile`, параметризован
-  `APP_NAME`, был с Фазы 1.0) и для web (`docker/web.Dockerfile`, новый — Next.js standalone
-  output, отдельный от `pnpm deploy`-паттерна api/worker). Плюс `docker/migrate.Dockerfile` —
-  one-shot сервис. Все три — непривилегированный пользователь, минимальный финальный слой.
-- ✅ Корневой `docker-compose.yml`: postgres, redis, migrate, api, worker, web, опциональный
-  `caddy` (профиль `tls`). Healthcheck у каждого сервиса (api/web — через `node -e` с реальным
-  HTTP-запросом, не `wget`/`curl`, которых может не быть в `node:alpine`), именованные volume
-  для Postgres/Redis. `postgres`/`redis` без публикации портов наружу вовсе — self-host им не нужен
-  доступ снаружи docker-сети, в отличие от dev-compose.
-- ✅ `migrate` — отдельный one-shot сервис (`docker/migrate.Dockerfile`), `api`/`worker` стартуют
-  через `depends_on: { migrate: { condition: service_completed_successfully } }`. Проверено
-  вживую против настоящего пустого Postgres: применяет 7 таблиц + сидирует 87 языков, повторный
-  запуск идемпотентен (as per Фаза 1.2/1.3 находки про `ON CONFLICT`).
-- ✅ `.env.example` расширен для self-host: `POSTGRES_PASSWORD` (compose сам собирает из него
-  `DATABASE_URL`/`REDIS_URL` для сервисов внутри своей сети — self-хостеру не нужно вручную
-  переписывать connection string на `postgres`/`redis`), `IMAGE_TAG`, `DOMAIN` (для `tls`).
-- ✅ Опциональный профиль `tls` (`docker compose --profile tls up -d`) с Caddy
-  (`docker/Caddyfile`) — единый публичный домен, `/api/*` и `/health/*` роутятся на api, всё
-  остальное — на web; автоматический Let's Encrypt через сам Caddy.
-- ✅ CI-воркфлоу `.github/workflows/release.yml`: сборка multi-arch (`linux/amd64`,
-  `linux/arm64`) образов api/worker/migrate через `buildx`+QEMU, публикация в GHCR с
-  семантическим тегом по пушу `v*.*.*`-тега. **`web` сознательно не публикуется** — см. находку
-  про `NEXT_PUBLIC_API_URL` ниже. Файл написан и проверен на валидность YAML, **не запускался** —
-  реальный пуш тега создал бы публичные образы в GHCR, это осознанно не делалось без явного
-  разрешения пользователя.
-- ✅ Проверка «чистая машина» — вживую, локально: собраны все образы под теми же тегами, что
-  использует compose, поднят полный self-host стек (не dev), пройден сценарий «первый запрос на
-  пустой инсталляции»: `202 pending` → воркер реально синкает с Open Library → повторный запрос
-  → `200 found`, и полностью через SSR-карточку и клиентский поиск (без единого узла на голом
-  хосте — только контейнеры). Реальный `git clone` на буквально чистой машине и публикация в
-  GHCR не выполнялись (см. отложенное ниже).
-- ✅ Замер ресурсов простаивающего стека: postgres 32 МиБ + redis 9.6 МиБ + api 41 МиБ +
-  worker 38 МиБ + web 30 МиБ ≈ **151 МиБ суммарно**, CPU ~0% в простое — с большим запасом
-  укладывается в целевые 2 vCPU / 2 ГБ RAM.
-- ✅ Обновление (`docker compose pull && docker compose up -d`) — миграции автоматически идут
-  через `migrate` при каждом `up`. Бэкап: `pg_dump | gzip` проверен вживую — восстановлен в
-  отдельный чистый Postgres, число строк (`work`/`edition`) совпало с оригиналом, ошибок при
-  восстановлении не было.
-- ✅ Структурные логи в stdout — pino JSON в `NODE_ENV=production` (см. находку про CORS/логи
-  ниже), `correlationId` сквозной с Фазы 1.0. Метрики — подтверждённо отложены в Фазу 3, как и
-  было изначально запланировано.
-- ✅ Покрытие `domain`+`application` ≥ 90% теперь реально измеряется в CI (`pnpm test:coverage`),
-  а не только `domain` — область была расширена в этой фазе: `application` набрал достаточно
-  протестированной логики за Фазы 1.3–1.4 (99.08% stmts / 94.56% branch по обоим пакетам вместе),
-  порог проходит с запасом.
-- 🐛 **Четыре реальные находки, пойманные только реальным подъёмом self-host compose** (не
-  собирались бы никаким юнит- или интеграционным тестом — только настоящие контейнеры в реальной
-  docker-сети):
-  1. **Docker по умолчанию выставляет `HOSTNAME` в id контейнера**, а Next.js standalone
-     `server.js` слушает именно тот хост, что в `HOSTNAME` — сервер слушал только собственный
-     bridge-IP контейнера, отказывая в соединениях на `127.0.0.1`/`localhost` (включая
-     healthcheck, который выполняется изнутри контейнера). Снаружи через опубликованный порт всё
-     работало (Docker NAT не смотрит, на что именно забинжен процесс), что маскировало проблему
-     при поверхностной проверке. Исправлено `ENV HOSTNAME=0.0.0.0` в `web.Dockerfile`.
-  2. **NEXT_PUBLIC_API_URL встраивается в браузерный бандл на этапе сборки** — константа,
-     подходящая для браузера (публичный домен), физически недостижима из SSR-кода, выполняющегося
-     **внутри** контейнера web (тот же `localhost:3001` внутри контейнера — это сам контейнер
-     web, не api). Карточка книги (SSR) молча падала бы в self-host compose, работая при этом
-     идеально в Фазе 1.5 (там web и api оба на голом хосте, `localhost` совпадает для обоих).
-     Решение: второй, НЕ-`NEXT_PUBLIC_`-переменная `INTERNAL_API_URL` (`http://api:3001`,
-     задаётся прямо в `docker-compose.yml`, не требует действий от self-хостера) — читается
-     только на сервере (`typeof window === 'undefined'`), никогда не улетает в браузер. Также
-     из-за этого же ограничения `web` — единственный сервис, который self-host compose собирает
-     локально, а не тянет готовым (см. правку `architecture.md §9.1`).
-  3. `.env.example`'s общий `NODE_ENV=development` (корректный для `pnpm dev`) молча протекал бы
-     в self-host: `apps/api` включает CORS `origin: true` (разрешить всё) и pretty-печать логов
-     вместо структурного JSON только когда `NODE_ENV !== 'development'`. «Три команды» дали бы
-     инстанс с полностью открытым CORS. Исправлено: `docker-compose.yml` выставляет
-     `NODE_ENV: production` для api/worker явно, тем же способом, каким уже переопределялись
-     `DATABASE_URL`/`REDIS_URL`.
-  4. Docker Compose **не подставляет значения одних переменных `.env` внутрь других** (`${VAR}`
-     в `.env` — не работает, только в самом compose-файле) — ранний черновик пытался написать
-     `DATABASE_URL=postgres://btf:${POSTGRES_PASSWORD}@postgres:5432/btf` прямо в `.env.example`
-     и не сработал бы. Решение — то же, что и у находки №3: собирать такие значения в
-     `environment:` самого `docker-compose.yml`, не в `.env`.
-- 📝 **Не может быть выполнено мной, требует реального пользователя**:
-  - «Сторонний человек разворачивает инстанс на чистой машине по README за три команды» — по
-    определению требует стороннего человека. README написан и рассчитан ровно на этот сценарий
-    (см. корень репозитория); фактическая проверка живым человеком не сделана.
-  - Реальная публикация образов в GHCR (`.github/workflows/release.yml`) не запускалась — пуш
-    версионного тега создал бы публичные артефакты в реальном registry без явного разрешения
-    пользователя на это действие.
-  - Multi-arch `arm64`-сборка не собиралась локально в этой сессии (эмуляция через QEMU в этом
-    песочничном окружении была бы медленной/ресурсоёмкой без реальной практической пользы —
-    логика buildx-шага в CI стандартна и не завязана на конкретную архитектуру хоста).
-
-### Definition of Done
-
-- [x] Ответ пользователю формируется **только** из своей БД, синхронных походов во внешние API
-      из HTTP-обработчика нет (backfill идёт через очередь).
-- [x] Повторный запуск синхронизации по одной работе не меняет данные и не создаёт дублей (тест).
-- [x] Сценарий первого запроса на пустой инсталляции покрыт E2E: `202` → ожидание → `200` —
-      и Playwright-сценарием (Фаза 1.5), и живой проверкой на self-host compose в этой фазе.
-- [x] Прототип из Фазы 0 удалён.
-- [x] Покрытие `domain` и `application` ≥ 90 %, общее ≥ 80 % — теперь реально измеряется в CI
-      (см. находку выше), а не декларируется.
-- [x] Все тесты легальной политики зелёные.
-- [ ] Сторонний человек разворачивает инстанс на чистой машине по README за три команды
-      (проверено на живом человеке, не на авторе) — **не выполнено мной, см. находки выше**.
-- [x] Замеры: холодный кэш ≤ 2 с, тёплый ≤ 300 мс на выборке из Фазы 0 — измерено вживую:
-      холодный `/api/works/:id` — 14 мс, тёплый — 2.4 мс; аналогично для search/editions/links —
-      всё в пределах единиц-десятков миллисекунд, с большим запасом от целевых порогов.
-
-### Явно НЕ входит в Фазу 1
-
-Аккаунты пользователей, избранное, рекомендации, мобильное приложение, WorldCat,
-Index Translationum, мультирегиональные диплинки.
-
----
-
-## Фаза 2 · Расширение покрытия (3–5 недель)
-
-**Цель:** повысить полноту данных и добавить редкие языки. Каждый новый источник — новая
-реализация существующего порта, без переписывания use cases (принцип Open/Closed на практике).
-
-### Задачи
-
-- 🚫 Запрос доступа к WorldCat Search API (учрежденческий ключ) — **заблокировано внешним
-  ограничением**, см. «Блокеры» ниже.
-- 🚫 `WorldCatProvider` как реализация `BookMetadataProvider` — заблокировано тем же (нет доступа
-  к API, реализовывать адаптер не к чему).
-- 🚫 Импорт выгрузок Index Translationum: батчи с чекпоинтами в `sync_log`, перезапуск
-  продолжает с последнего чекпоинта, повтор батча безопасен — заблокировано, см. «Блокеры» ниже.
-- 🚫 Сопоставление исторических записей Index Translationum с существующими `work` (matching
-  по нормализованным полям, ручная проверка выборки на качество склейки) — заблокировано тем же.
-- ✅ Диплинки на легальное заимствование — Open Library Lending: `OpenLibraryProvider` вызывает
-  `/api/volumes/brief/json/...` (недокументированный, но реальный и стабильный Read API), матчит
-  `match: 'exact'`, различает `full access` (→ `public_domain`/`download`) и
-  `lendable`/`checked out` (→ `copyrighted`/`borrow`), провайдер ссылки — `internet-archive`, а
-  не `open-library` (см. doc-комментарий `ProviderEdition.link` и docs/legal-policy.md И-1).
-  Живая проверка на "1984" (Orwell) вскрыла две реальные проблемы и обе исправлены: (1)
-  `editions.json?limit=50` не гарантирует, что среди первых 50 из 536 изданий вообще есть
-  издание с реальной доступностью — починено вторым, независимым запросом по `ia`-списку работы
-  из `search.json` (внимание: правильный префикс ключа запроса — `ocaid:`, а не `ia:`, второе
-  молча возвращает `{}` — проверено вживую); найденное вне уже загруженной партии издание
-  дозагружается отдельным запросом `/books/{OLID}.json`, с потолком
-  `MAX_EXTRA_AVAILABILITY_EDITIONS = 5` на синхронизацию. (2) Отдельная, не связанная с этой
-  задачей находка: часть изданий имеет `language: 'und'` и осознанно пропускается существующей
-  (Фаза 1.3) логикой `SyncWorkFromSource` как нераспознаваемый язык — это может скрыть реальную
-  ссылку на конкретное издание; зафиксировано как известное ограничение, вне объёма этой задачи.
-  Итог живой проверки на реальном стеке (Postgres + Redis + настоящие HTTP-запросы): "1984" →
-  5 реальных borrow-ссылок на archive.org с `provider: internet-archive`,
-  `rights_status: copyrighted`. Libby/OverDrive не подключены — не имеют публичного открытого API
-  без партнёрского соглашения библиотеки, вне объёма текущей сессии.
-- ⬜ Региональные диплинки на покупку — партнёрские программы опционально, при этом раскрытие
-  партнёрского статуса обязательно. Не начато: опциональный пункт плана, требует реальных
-  партнёрских соглашений (Amazon Associates и т.п.), которых у проекта нет — сознательно не
-  преследовалось в этой сессии, не блокер.
-- ✅ Приоритеты источников при конфликте полей, отражение источника факта в UI —
-  `resolveFieldConflict` (Фаза 1.1) вплетён в `SyncWorkFromSource`: перед перезаписью полей
-  work/edition при ресинке `shouldApplyMetadata` спрашивает `ExternalRefRepository.findSourcesForEntity`
-  (новый метод порта, реализован в Pg-адаптере и in-memory fake, покрыт contract-suite'ом) — какие
-  источники уже когда-либо касались этой сущности — и решает через `resolveFieldConflict('metadata', ...)`,
-  выигрывает ли текущий источник приоритет; если нет — поля не перезаписываются (у work бампается
-  только `syncedAt`, у edition поля остаются как есть). `GetWorkCard` отдаёт `sources: string[]`
-  (список всех источников, когда-либо внёсших вклад в work, отсортирован по алфавиту — не по
-  приоритету, это внутренняя деталь синка), карточка работы на web показывает
-  «Источник данных: …». Живая проверка на реальном стеке (Postgres + запущенный `apps/api` +
-  `apps/web`): `GET /api/works/:id` вернул `sources: ["google-books", "open-library"]`, страница
-  отрендерила «Источник данных: google-books, open-library».
-- 🚫 CI/CD на GitHub Actions: сборка образов, автодеплой на AWS, откат по тегу — заблокировано:
-  в этой сессии нет AWS-аккаунта/учётных данных, см. «Блокеры» ниже. Сборка и публикация образов
-  в GHCR (без автодеплоя на конкретную инфраструктуру) уже сделаны в Фазе 1.6 — это отдельный,
-  не заблокированный пункт, и он закрывает реальную потребность self-hosting-модели проекта:
-  пользователь сам разворачивает `docker compose pull && up -d`, автодеплой на AWS не является
-  частью этого пути вообще.
-- 🚫 Управление секретами (AWS Secrets Manager / SSM), ротация ключей источников — заблокировано
-  тем же отсутствием AWS-аккаунта. Для self-hosting модели секреты уже покрыты `.env`
-  (docs/architecture.md §9) — SSM актуален только если у проекта появится собственный
-  managed-хостинг, чего сейчас нет.
-- ✅ Нагрузочный тест поиска и карточки, оптимизация индексов по результатам — прогнан на
-  реальном Postgres/Redis с синтетическим набором 50 000 work / 150 000 edition / ~67 000
-  external_ref (репрезентативный объём для самостоятельного каталога, не единицы тестовых
-  записей). Нашлись и исправлены две реальные проблемы (не гипотетические — обе подтверждены
-  `EXPLAIN ANALYZE` до/после):
-  1. **`PgWorkSearchAdapter.search`** строил `WHERE similarity(col, query) > threshold` —
-     вызов функции `similarity()`, а не оператор `%`, поэтому GIN-индекс `gin_trgm_ops`
-     (Фаза 1.2) вообще не использовался: план — `Seq Scan`, 157 мс на 50k строк и растёт
-     линейно с размером таблицы. Исправлено на `col % query` с `pg_trgm.similarity_threshold`,
-     выставляемым через `SET LOCAL` внутри короткой транзакции (`SET` не принимает bind-параметр,
-     а сессионный `SET` без `LOCAL` протёк бы на следующий запрос того же соединения из пула) —
-     план стал `Bitmap Index Scan` по обоим trgm-индексам, 41 мс → **~4× быстрее**.
-  2. **`ExternalRefRepository.findSourcesForEntity`** (новый метод, задача #68) фильтрует
-     `external_ref` по `entity_id`, а индекса на этой колонке не было вовсе — `Seq Scan`,
-     6.3 мс на ~67k строк и тоже растёт линейно (вызывается на каждый непрокэшированный
-     `GetWorkCard`). Добавлен `external_ref_entity_id_idx` (миграция `0002_exotic_the_leader.sql`,
-     применена и на dev, и подтверждена свежим прогоном Testcontainers-миграций в
-     integration-сьюте) — `Index Scan`, 0.1 мс → **~60× быстрее**.
-     Замер под нагрузкой (50 конкурентных воркеров, 8 с, напрямую через use case слой — HTTP-уровень
-     сознательно исключён из измерения, потому что per-client rate limit (Фаза 1.4, 60 req/min)
-     специально блокирует именно такой синтетический трафик с одного клиента, это не то, что
-     оптимизируют индексами) на исправленном стеке: `SearchWorks` — p50 0.9 мс / p95 1.1 мс /
-     p99 1.9 мс при ~59 000 rps; `GetWorkCard` (холодная, вразнобой по id) — p50 0.4 мс / p95 28.8 мс
-     / p99 35.7 мс при ~6 300 rps; `GetWorkCard` (тёплый кэш) — p50 0.3 мс / p95 0.9 мс при
-     ~133 000 rps. Все цифры на порядки внутри целей §6 (холодный ≤ 2 с, тёплый ≤ 300 мс) — запас
-     большой даже с учётом роста каталога на порядок.
-
-### Блокеры (честно зафиксированы, не обойдены тихой заменой объёма)
-
-Три пункта плана Фазы 2 заблокированы внешними ограничениями, не решением срезать объём.
-Зафиксировано явно, как и решено с пользователем в начале Фазы 2 (вариант «пропустить, честно
-задокументировать» вместо подмены другим источником/задачей без предупреждения):
-
-- **WorldCat Search API** — институциональный доступ, свободного/пробного тарифа на 2026 год нет
-  (проверено вживую прямым запросом страницы oclc.org, а не по устаревшей документации). Без
-  API-ключа `WorldCatProvider` нечего реализовывать — сам порт `BookMetadataProvider` уже
-  спроектирован под любой новый источник (Open/Closed, Фаза 1.1), так что добавление в будущем не
-  требует переписывать use cases, когда/если доступ появится.
-- **Index Translationum (ЮНЕСКО)** — два независимых препятствия, оба проверены вживую, а не
-  предположены: (1) полная база доступна только через HTML-скрейпинг по признанию самого ЮНЕСКО —
-  прямо конфликтует с главным инвариантом проекта (CLAUDE.md: «никакого скрейпинга»), это не
-  временное неудобство, а архитектурный тупик для этого пути; (2) открытый API-семпл датасета
-  (единственная не-скрейпинговая часть) не содержит поле автора в возвращаемых записях — проверено
-  прямыми запросами к API, не документацией — что делает его непригодным для сопоставления по
-  natural key (`computeWorkNaturalKey`, Фаза 1.1 требует title+author) без компромисса на
-  идемпотентность, которую проект жёстко соблюдает во всём остальном стеке.
-- **CI/CD на AWS + Secrets Manager/SSM** — в этой сессии нет AWS-аккаунта или учётных данных;
-  сборка/публикация multi-arch образов в GHCR (Фаза 1.6) и полностью self-host-путь через
-  `docker compose` уже закрывают модель распространения проекта (open-source, self-hosting),
-  которая и есть приоритетная — деплой на конкретно AWS не является частью этого пути.
+- ✅ Multi-stage Dockerfile for api/worker (`docker/app.Dockerfile`, parameterized by
+  `APP_NAME`, existed since Phase 1.0) and for web (`docker/web.Dockerfile`, new — Next.js
+  standalone output, separate from the `pnpm deploy` pattern of api/worker). Plus
+  `docker/migrate.Dockerfile` — a one-shot service. All three — unprivileged user, minimal final
+  layer.
+- ✅ Root `docker-compose.yml`: postgres, redis, migrate, api, worker, web, optional
+  `caddy` (the `tls` profile). A healthcheck on every service (api/web — via `node -e` with a real
+  HTTP request, not `wget`/`curl`, which may be absent in `node:alpine`), named volumes
+  for Postgres/Redis. `postgres`/`redis` publish no ports at all — self-host does not need
+  access to them from outside the docker network, unlike the dev compose.
+- ✅ `migrate` — a separate one-shot service (`docker/migrate.Dockerfile`); `api`/`worker` start
+  via `depends_on: { migrate: { condition: service_completed_successfully } }`. Verified
+  live against a real empty Postgres: applies 7 tables + seeds 87 languages; a repeat
+  run is idempotent (as per the Phase 1.2/1.3 findings about `ON CONFLICT`).
+- ✅ `.env.example` extended for self-host: `POSTGRES_PASSWORD` (compose itself assembles
+  `DATABASE_URL`/`REDIS_URL` from it for the services inside its own network — the self-hoster
+  does not need to hand-rewrite connection strings to `postgres`/`redis`), `IMAGE_TAG`, `DOMAIN`
+  (for `tls`).
+- ✅ Optional `tls` profile (`docker compose --profile tls up -d`) with Caddy
+  (`docker/Caddyfile`) — a single public domain, `/api/*` and `/health/*` route to api,
+  everything else — to web; automatic Let's Encrypt via Caddy itself.
+- ✅ CI workflow `.github/workflows/release.yml`: multi-arch build (`linux/amd64`,
+  `linux/arm64`) of api/worker/migrate images via `buildx`+QEMU, published to GHCR with a
+  semantic tag on a `v*.*.*` tag push. **`web` is deliberately not published** — see the
+  `NEXT_PUBLIC_API_URL` finding below. The file was written and validated as YAML, **never run** —
+  a real tag push would have created public images in GHCR, which was deliberately not done
+  without the user's explicit permission.
+- ✅ The "clean machine" check — live, locally: all images built under the same tags that
+  compose uses, the full self-host stack brought up (not dev), the "first request on an empty
+  installation" scenario walked through: `202 pending` → the worker actually syncs from Open
+  Library → repeated request → `200 found`, and entirely through the SSR card and client-side
+  search (not a single Node process on the bare host — containers only). A real `git clone` on a
+  literally clean machine and publishing to GHCR were not performed (see the deferred items below).
+- ✅ Idle-stack resource measurement: postgres 32 MiB + redis 9.6 MiB + api 41 MiB +
+  worker 38 MiB + web 30 MiB ≈ **151 MiB total**, CPU ~0% at idle — fits into the target
+  2 vCPU / 2 GB RAM with a large margin.
+- ✅ Upgrade (`docker compose pull && docker compose up -d`) — migrations run automatically
+  via `migrate` on every `up`. Backup: `pg_dump | gzip` verified live — restored into a
+  separate clean Postgres, row counts (`work`/`edition`) matched the original, no errors during
+  restore.
+- ✅ Structured logs to stdout — pino JSON under `NODE_ENV=production` (see the CORS/logs finding
+  below), `correlationId` end-to-end since Phase 1.0. Metrics — confirmed as deferred to Phase 3,
+  as originally planned.
+- ✅ `domain`+`application` coverage ≥ 90% is now actually measured in CI (`pnpm test:coverage`),
+  not just `domain` — the scope was widened in this phase: `application` accumulated enough
+  tested logic over Phases 1.3–1.4 (99.08% stmts / 94.56% branch across both packages together),
+  the threshold passes with margin.
+- 🐛 **Four real findings caught only by actually bringing up the self-host compose** (no unit or
+  integration test would have caught them — only real containers in a real
+  docker network):
+  1. **Docker by default sets `HOSTNAME` to the container id**, and the Next.js standalone
+     `server.js` listens on exactly the host in `HOSTNAME` — the server listened only on the
+     container's own bridge IP, refusing connections on `127.0.0.1`/`localhost` (including the
+     healthcheck, which runs from inside the container). From outside, through the published
+     port, everything worked (Docker NAT does not care what the process is bound to), masking the
+     problem under a superficial check. Fixed with `ENV HOSTNAME=0.0.0.0` in `web.Dockerfile`.
+  2. **NEXT_PUBLIC_API_URL is baked into the browser bundle at build time** — a constant
+     suitable for the browser (the public domain) is physically unreachable from SSR code running
+     **inside** the web container (`localhost:3001` inside the container is the web container
+     itself, not api). The book card (SSR) would silently fail in the self-host compose while
+     working perfectly in Phase 1.5 (there, web and api both run on the bare host, `localhost` is
+     the same for both). Solution: a second, NON-`NEXT_PUBLIC_` variable `INTERNAL_API_URL`
+     (`http://api:3001`, set right in `docker-compose.yml`, requiring no action from the
+     self-hoster) — read only on the server (`typeof window === 'undefined'`), never shipped to
+     the browser. Also because of this same constraint, `web` is the only service the self-host
+     compose builds locally instead of pulling prebuilt (see the `architecture.md §9.1` edit).
+  3. `.env.example`'s shared `NODE_ENV=development` (correct for `pnpm dev`) would silently leak
+     into self-host: `apps/api` enables CORS `origin: true` (allow everything) and pretty-printed
+     logs instead of structured JSON only when `NODE_ENV !== 'development'`. The "three commands"
+     would have produced an instance with fully open CORS. Fixed: `docker-compose.yml` sets
+     `NODE_ENV: production` for api/worker explicitly, the same way
+     `DATABASE_URL`/`REDIS_URL` were already overridden.
+  4. Docker Compose **does not substitute the values of some `.env` variables into others**
+     (`${VAR}` inside `.env` does not work — only in the compose file itself) — an early draft
+     tried to write `DATABASE_URL=postgres://btf:${POSTGRES_PASSWORD}@postgres:5432/btf` right in
+     `.env.example` and would not have worked. The solution is the same as for finding #3:
+     assemble such values in the `environment:` of `docker-compose.yml` itself, not in `.env`.
+- 📝 **Cannot be done by me, requires a real user**:
+  - "An outside person deploys an instance on a clean machine following the README in three
+    commands" — by definition requires an outside person. The README is written and designed for
+    exactly this scenario (see the repository root); the actual check by a live human has not been
+    done.
+  - Actual publication of images to GHCR (`.github/workflows/release.yml`) was not triggered — a
+    version-tag push would have created public artifacts in a real registry without the user's
+    explicit permission for that action.
+  - The multi-arch `arm64` build was not built locally in this session (QEMU emulation in this
+    sandboxed environment would have been slow/resource-hungry with no real practical benefit —
+    the buildx step logic in CI is standard and not tied to a specific host architecture).
 
 ### Definition of Done
 
-- [ ] Подключены минимум 3 источника, каждый — отдельный адаптер, use cases не менялись при
-      добавлении (проверяется по диффу). **Не выполнено**: осталось 2 (Open Library, Google
-      Books) — третий (WorldCat) заблокирован, см. выше. Что реально сделано в рамках
-      существующих источников: доступность Open Library Lending (задача #67) и приоритет
-      источников при конфликте полей (задача #68) — оба расширяют полноту и корректность в
-      пределах текущих двух источников, не третий источник.
-- [ ] Повторное измерение полноты на выборке Фазы 0: рост доли книг с ≥ 3 переводами; цель ≥ 70 %.
-      Не проводилось — целевая метрика привязана к подключению новых источников (WorldCat/Index
-      Translationum), которые заблокированы; переизмерение той же пары источников не дало бы
-      нового сигнала.
-- [ ] Импорт выгрузки переживает убийство процесса посередине и корректно продолжается. Не
-      применимо — единственный импорт выгрузками в плане (Index Translationum) заблокирован.
-- [ ] Пуш в `main` автоматически доводит изменение до окружения, откат отработан на учениях. Не
-      выполнено — заблокировано отсутствием AWS-окружения, см. выше; self-host-путь (Фаза 1.6)
-      уже проверен вживую отдельно и не требует этого пункта для своей модели распространения.
+- [x] The user's response is assembled **only** from our own DB; there are no synchronous calls to
+      external APIs from an HTTP handler (backfill goes through the queue).
+- [x] Re-running synchronization for the same work does not change data and creates no duplicates (tested).
+- [x] The first-request-on-an-empty-installation scenario is covered by E2E: `202` → wait → `200` —
+      both by the Playwright scenario (Phase 1.5) and by the live check on the self-host compose in
+      this phase.
+- [x] The Phase 0 prototype is deleted.
+- [x] `domain` and `application` coverage ≥ 90 %, overall ≥ 80 % — now actually measured in CI
+      (see the finding above), not just declared.
+- [x] All legal-policy tests are green.
+- [ ] An outside person deploys an instance on a clean machine following the README in three
+      commands (verified on a live human, not the author) — **not done by me, see the findings above**.
+- [x] Measurements: cold cache ≤ 2 s, warm ≤ 300 ms on the Phase 0 sample — measured live:
+      cold `/api/works/:id` — 14 ms, warm — 2.4 ms; similarly for search/editions/links —
+      everything within single-digit to tens of milliseconds, with a large margin from the targets.
 
-### Риски фазы
+### Explicitly NOT in Phase 1
 
-Доступ к WorldCat могут не дать или дать с жёстким лимитом. План Б: Index Translationum +
-национальные библиотечные каталоги с открытыми API. Фаза не должна блокироваться целиком на
-одном источнике. **Реализовалось буквально так, как описано здесь заранее** (риск был верно
-предугадан в исходном плане, не задним числом): WorldCat действительно не дал доступа, а План Б
-(Index Translationum) тоже оказался заблокирован по независимой причине (конфликт со
-скрейпинг-инвариантом) — фаза не была заблокирована целиком: работа продолжилась и принесла
-реальную ценность в рамках существующих источников (задачи #67–69).
+User accounts, favorites, recommendations, mobile app, WorldCat,
+Index Translationum, multi-regional deeplinks.
 
 ---
 
-## Фаза 3 · Публичный запуск (2–3 недели)
+## Phase 2 · Coverage expansion (3–5 weeks)
 
-**Цель:** открытый релиз проекта как open-source, готового принимать внешних контрибьюторов.
+**Goal:** improve data completeness and add rare languages. Every new source is a new
+implementation of an existing port, without rewriting use cases (the Open/Closed principle in
+practice).
 
-### Задачи
+### Tasks
 
-- ✅ README: что за проект, скриншот живого UI (docs/images/, снят Playwright'ом с реального
-  стека), быстрый старт (уже был с Фазы 1.6), **явная декларация легальной политики** отдельным
-  разделом (И-5) со ссылкой на CONTRIBUTING.
-- ✅ Публичная документация API — [docs/api.md](api.md): человеческое описание всех эндпоинтов с
-  curl-примерами и реальными формами ответов. Формы ответов — дословно Zod-схемы из
-  `packages/contracts` (одна схема валидирует сервер и типизирует клиент); отдельный
-  OpenAPI-файл сознательно не генерировался — он дублировал бы contracts без потребителя,
-  добавить `@nestjs/swagger` можно позже без изменений API.
-- ✅ `CONTRIBUTING.md` с прямым запретом PR на интеграции с теневыми библиотеками (нарушение =
-  закрытие без обсуждения), `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1), шаблоны
-  issue (bug/feature) и PR с чек-листом инвариантов.
-- ✅ Лицензия MIT (файл был, README-раздел заполнен); лицензионная чистота проверена
-  `pnpm licenses list --prod`: только MIT/Apache-2.0/BSD/ISC/0BSD/Unlicense/CC-BY-4.0,
-  copyleft-зависимостей нет.
-- 🚫 Мониторинг Prometheus + Grafana с алертами — заблокировано в этой сессии: «дашборды и
-  алерты работают на реальном трафике» требуют развёрнутого публичного инстанса с трафиком,
-  которого нет (self-host модель, своего managed-хостинга у проекта нет). `/health/live`,
-  `/health/ready` и structured-логи с correlationId (Фаза 1) — работают.
-- ✅ `/health` для внешних проверок — есть и проверен вживую; публичный статус-дашборд — часть
-  заблокированного пункта выше.
-- ✅ **Self-host релиз:** раздел в README (Фаза 1.6), версионированные multi-arch образы в GHCR
-  (CI, Фаза 1.6), `CHANGELOG.md` с явной пометкой **[BREAKING MIGRATION]** (пока таких нет — все
-  миграции аддитивные, матрица совместимости сводится к «любой образ + `migrate` = актуальная
-  схема»).
-- ✅ Наполнение популярного ядра: `pnpm db:seed:catalog` — 20 курируемых книг через обычный
-  пайплайн `SyncWorkFromSource` (LinkPolicy применяется как к любым данным — только метаданные и
-  легальные ссылки, у сида нет особых прав). Идемпотентен, переживает прерывание, `--limit=N`
-  для быстрой проверки. Проверен вживую: «Война и мир» → 54 издания, 7 легальных ссылок.
-  Реализован как скрипт, а не публикуемый SQL-дамп: дамп пришлось бы перевыпускать при каждом
-  изменении схемы, а скрипт наполняет любую версию схемы через доменный код.
-- 🚫 Тест обновления N → N+1 на CI — заблокировано буквальной формулировкой: опубликованных
-  версионированных релизов ещё нет (v1.0.0 не выпущен), обновляться «с N на N+1» не с чего.
-  Инфраструктура под это готова: отдельный one-shot сервис `migrate`, аддитивные миграции,
-  каждый прогон integration-тестов применяет полную цепочку миграций с нуля на чистом Postgres.
-- ✅ Аудит безопасности: история коммитов просканирована (`.env` не коммитился, паттерны ключей
-  не найдены, в `.env.example` только плейсхолдеры); security-заголовки добавлены на все ответы
-  API (nosniff, X-Frame-Options DENY, CSP default-src 'none', no-referrer — проверены вживую);
-  CORS ограничен `PUBLIC_URL` вне development; rate limit 60/мин (Фаза 1.4).
-  `pnpm audit --prod`: уязвимости есть — все в транзитивных зависимостях, исправления требуют
-  мажорных апгрейдов (NestJS 10→11, Fastify 4→5, Next 14→15+, drizzle-orm 0.36→0.45);
-  `pnpm audit --fix` предлагал именно эти мажоры через overrides — отклонено как слепой ломающий
-  апгрейд, зафиксировано в CHANGELOG как выделенная задача миграции фреймворков.
-- ✅ Политика приватности де-факто: инстанс не собирает персональных данных (нет аккаунтов,
-  аналитики, куки), `Referrer-Policy: no-referrer` на API; партнёрских ссылок не появилось
-  (Фаза 2, пункт пропущен) — раскрывать нечего.
-- 🚫 Открытие репозитория, релиз `v1.0.0`, анонс — действия владельца проекта, не агента:
-  публикация репозитория и анонс — решения, которые принимает и выполняет человек.
+- 🚫 Requesting WorldCat Search API access (an institutional key) — **blocked by an external
+  constraint**, see "Blockers" below.
+- 🚫 `WorldCatProvider` as an implementation of `BookMetadataProvider` — blocked by the same
+  (no API access, there is nothing to implement an adapter against).
+- 🚫 Importing Index Translationum dumps: batches with checkpoints in `sync_log`, a restart
+  resumes from the last checkpoint, re-running a batch is safe — blocked, see "Blockers" below.
+- 🚫 Matching historical Index Translationum records with existing `work`s (matching
+  on normalized fields, manual sample verification of merge quality) — blocked by the same.
+- ✅ Deeplinks to legal borrowing — Open Library Lending: `OpenLibraryProvider` calls
+  `/api/volumes/brief/json/...` (undocumented, but a real and stable Read API), matches
+  `match: 'exact'`, distinguishes `full access` (→ `public_domain`/`download`) and
+  `lendable`/`checked out` (→ `copyrighted`/`borrow`); the link provider is `internet-archive`,
+  not `open-library` (see the doc comment on `ProviderEdition.link` and docs/legal-policy.md I-1).
+  A live check on "1984" (Orwell) exposed two real problems, both fixed: (1)
+  `editions.json?limit=50` does not guarantee that among the first 50 of 536 editions there is
+  even one edition with real availability — fixed with a second, independent request over the
+  work's `ia` list from `search.json` (note: the correct query-key prefix is `ocaid:`, not `ia:`
+  — the latter silently returns `{}`, verified live); an edition found outside the
+  already-loaded batch is fetched additionally via `/books/{OLID}.json`, capped at
+  `MAX_EXTRA_AVAILABILITY_EDITIONS = 5` per synchronization. (2) A separate finding unrelated to
+  this task: some editions have `language: 'und'` and are deliberately skipped by the existing
+  (Phase 1.3) `SyncWorkFromSource` logic as an unrecognizable language — this can hide a real
+  link to a specific edition; recorded as a known limitation, outside the scope of this task.
+  Result of the live check on the real stack (Postgres + Redis + real HTTP requests): "1984" →
+  5 real borrow links to archive.org with `provider: internet-archive`,
+  `rights_status: copyrighted`. Libby/OverDrive not integrated — they have no public open API
+  without a library partnership agreement, outside the scope of the current session.
+- ⬜ Regional purchase deeplinks — affiliate programs optionally, with mandatory disclosure of
+  affiliate status. Not started: an optional plan item requiring real affiliate agreements
+  (Amazon Associates and the like), which the project does not have — deliberately not
+  pursued in this session, not a blocker.
+- ✅ Source priorities on field conflicts, showing the fact's source in the UI —
+  `resolveFieldConflict` (Phase 1.1) is woven into `SyncWorkFromSource`: before overwriting
+  work/edition fields on resync, `shouldApplyMetadata` asks `ExternalRefRepository.findSourcesForEntity`
+  (a new port method, implemented in the Pg adapter and the in-memory fake, covered by the
+  contract suite) — which sources have ever touched this entity — and decides via
+  `resolveFieldConflict('metadata', ...)` whether the current source wins priority; if not, the
+  fields are not overwritten (for work only `syncedAt` is bumped, for edition the fields stay as
+  they are). `GetWorkCard` returns `sources: string[]` (the list of all sources that have ever
+  contributed to the work, sorted alphabetically — not by priority, which is an internal detail
+  of the sync), and the work card on web shows
+  "Data source: …". A live check on the real stack (Postgres + running `apps/api` +
+  `apps/web`): `GET /api/works/:id` returned `sources: ["google-books", "open-library"]`, the page
+  rendered "Data source: google-books, open-library".
+- 🚫 CI/CD on GitHub Actions: image builds, auto-deploy to AWS, tag-based rollback — blocked:
+  this session has no AWS account/credentials, see "Blockers" below. Building and publishing
+  images to GHCR (without auto-deploy to specific infrastructure) was already done in Phase 1.6 —
+  a separate, non-blocked item that covers the real need of the project's self-hosting model:
+  the user deploys with `docker compose pull && up -d` themselves; AWS auto-deploy is not part of
+  that path at all.
+- 🚫 Secret management (AWS Secrets Manager / SSM), source-key rotation — blocked by the same
+  absence of an AWS account. For the self-hosting model, secrets are already covered by `.env`
+  (docs/architecture.md §9) — SSM only becomes relevant if the project ever gets its own
+  managed hosting, which it currently does not have.
+- ✅ Load test of search and the card, index optimization based on the results — run on
+  real Postgres/Redis with a synthetic set of 50,000 work / 150,000 edition / ~67,000
+  external_ref (a representative volume for a standalone catalog, not a handful of test
+  records). Two real problems were found and fixed (not hypothetical — both confirmed with
+  `EXPLAIN ANALYZE` before/after):
+  1. **`PgWorkSearchAdapter.search`** built `WHERE similarity(col, query) > threshold` — a
+     call to the `similarity()` function, not the `%` operator, so the GIN index `gin_trgm_ops`
+     (Phase 1.2) was never used at all: the plan was `Seq Scan`, 157 ms on 50k rows and growing
+     linearly with table size. Fixed to `col % query` with `pg_trgm.similarity_threshold`
+     set via `SET LOCAL` inside a short transaction (`SET` does not accept a bind parameter,
+     and a session-level `SET` without `LOCAL` would leak into the next query of the same pooled
+     connection) — the plan became a `Bitmap Index Scan` over both trgm indexes, 41 ms → **~4× faster**.
+  2. **`ExternalRefRepository.findSourcesForEntity`** (a new method, task #68) filters
+     `external_ref` by `entity_id`, and there was no index on that column at all — `Seq Scan`,
+     6.3 ms on ~67k rows, also growing linearly (called on every uncached
+     `GetWorkCard`). Added `external_ref_entity_id_idx` (migration `0002_exotic_the_leader.sql`,
+     applied on dev and confirmed by a fresh Testcontainers migration run in the
+     integration suite) — `Index Scan`, 0.1 ms → **~60× faster**.
+     Measurement under load (50 concurrent workers, 8 s, directly through the use-case layer — the
+     HTTP layer was deliberately excluded from the measurement because the per-client rate limit
+     (Phase 1.4, 60 req/min) specifically blocks exactly this kind of synthetic traffic from a
+     single client; that is not what indexes optimize) on the fixed stack: `SearchWorks` —
+     p50 0.9 ms / p95 1.1 ms / p99 1.9 ms at ~59,000 rps; `GetWorkCard` (cold, random ids) —
+     p50 0.4 ms / p95 28.8 ms / p99 35.7 ms at ~6,300 rps; `GetWorkCard` (warm cache) —
+     p50 0.3 ms / p95 0.9 ms at ~133,000 rps. All numbers are orders of magnitude inside the §6
+     targets (cold ≤ 2 s, warm ≤ 300 ms) — a large margin even accounting for an
+     order-of-magnitude catalog growth.
 
-### Живое UX-тестирование перед релизом (сверх плана, по прямому запросу)
+### Blockers (recorded honestly, not worked around by quietly swapping the scope)
 
-Полный пользовательский путь пройден вживую на реальном стеке (`pnpm dev`: web + api + worker +
-Postgres + Redis, настоящие запросы к Open Library) — поиск книги, которой нет в базе → ленивое
-наполнение → карточка → издания → раскрытие легальной ссылки. Найдено и исправлено:
+Three Phase 2 plan items are blocked by external constraints, not by a decision to cut scope.
+Recorded explicitly, as agreed with the user at the start of Phase 2 (the "skip and document
+honestly" option instead of substituting another source/task without warning):
 
-1. **Таймаут HTTP-клиента источников 5с убивал живые запросы**: Open Library в этот день
-   отвечала ~9с (успешно!), каждая из 3 попыток ретрая умирала по таймауту — синк падал на
-   работающем API. Поднято до 25с (покрывает наблюдавшийся в Фазе 0 максимум 22с).
-2. **Транзиентная ошибка источника блокировала повтор запроса до конца дня**: упавший синк
-   «завершал» backfill-задачу со статусом not_found, а завершённая задача с детерминированным
-   дневным jobId удерживала дедупликацию BullMQ 24 часа — повторный поиск молча не ставил новую
-   задачу. Исправлено с двух сторон: `ProcessBackfillJob` теперь бросает
-   `BackfillSourcesUnavailableError` (очередь ретраит сама с backoff), а очередь не удерживает
-   завершённые задачи в дедупликации (`removeOnComplete: true`; упавшие — час на инспекцию,
-   история — в `sync_log`).
-3. **UX поиска**: окно поллинга продлено до ~90с (первый синк популярной книги легитимно
-   делает несколько последовательных запросов по 9–22с), после ~30с появляется поясняющее
-   сообщение, тупиковое «обновите страницу позже» заменено кнопкой «Попробовать ещё раз».
-4. **Языки читаемыми словами вместо ISO-кодов** («немецкий, испанский…», не «de, es») — через
-   `Intl.DisplayNames`, без нарушения границ слоёв (web не видит domain).
-5. **Фильтр языка — выпадающий список** из реально доступных языков книги вместо текстового
-   поля, требовавшего знать ISO-код наизусть.
-6. **Доступность источников видна списком**: `linkCount` в API изданий (новый метод порта
-   `SourceLinkRepository.countByEditionIds`, один запрос на весь список), бейдж «есть источники»,
-   издания с источниками — первыми, внутри — группировка по языку и год по убыванию. Раньше
-   пришлось бы раскрывать все 30 изданий по одному, чтобы найти, где есть ссылки.
-
-Итог живого прогона после исправлений: «Мастер и Маргарита» — фоновый синк с нуля, 30 изданий,
-7 языков, 7 реальных borrow-ссылок archive.org с правовым статусом; фильтр, мобильная вёрстка
-(375px, без горизонтального скролла) и пустые состояния проверены. Известное ограничение
-зафиксировано: эвристика языка оригинала (по самому раннему изданию выборки) для «Мастера и
-Маргариты» дала «английский» — ранние русские издания не попали в выборку источника.
+- **WorldCat Search API** — institutional access only; there is no free/trial tier as of 2026
+  (verified live by directly requesting the oclc.org page, not from outdated documentation).
+  Without an API key there is nothing to implement a `WorldCatProvider` against — the
+  `BookMetadataProvider` port itself is already designed for any new source (Open/Closed,
+  Phase 1.1), so adding it in the future requires no use-case rewrites when/if access appears.
+- **Index Translationum (UNESCO)** — two independent obstacles, both verified live rather than
+  assumed: (1) the full database is available only via HTML scraping, by UNESCO's own admission —
+  in direct conflict with the project's main invariant (CLAUDE.md: "no scraping"); this is not a
+  temporary inconvenience but an architectural dead end for this path; (2) the open API sample of
+  the dataset (the only non-scraping part) does not contain the author field in the returned
+  records — verified with direct API requests, not documentation — which makes it unusable for
+  natural-key matching (`computeWorkNaturalKey`, Phase 1.1 requires title+author) without
+  compromising the idempotency the project strictly upholds throughout the rest of the stack.
+- **CI/CD on AWS + Secrets Manager/SSM** — this session has no AWS account or credentials;
+  building/publishing multi-arch images to GHCR (Phase 1.6) and the fully self-host path via
+  `docker compose` already cover the project's distribution model (open-source, self-hosting),
+  which is the priority — deployment specifically to AWS is not part of that path.
 
 ### Definition of Done
 
-- [ ] Сторонний разработчик поднимает проект локально по README без вопросов к автору
-      (проверено на живом человеке). **Требует живого человека** — агент не может честно
-      закрыть этот пункт за него; README-путь проверен машинно (все команды из него выполнялись
-      вживую в Фазах 1.6 и 3).
-- [x] В истории репозитория нет секретов — проверено: `.env`/`.env.local` не коммитились ни в
-      одной ревизии, сканирование всей истории (`git log --all -p`) по паттернам ключей
-      (Google API, OpenAI/GitHub-токены, AWS, приватные ключи) не нашло ничего; в
-      `.env.example` только плейсхолдеры.
-- [ ] Дашборды и алерты работают на реальном трафике — заблокировано (см. пункт мониторинга
-      выше: реального трафика без публичного инстанса не существует).
-- [x] Легальная политика видна в README (отдельный раздел), `CONTRIBUTING.md` (главное правило)
-      и в UI (футер на каждой странице + явный правовой статус на каждой ссылке).
+- [ ] At least 3 sources connected, each a separate adapter, use cases unchanged when
+      adding them (verified by diff). **Not met**: still 2 (Open Library, Google
+      Books) — the third (WorldCat) is blocked, see above. What was actually done within the
+      existing sources: Open Library Lending availability (task #67) and source priority
+      on field conflicts (task #68) — both expand completeness and correctness within
+      the current two sources, not a third source.
+- [ ] Re-measuring completeness on the Phase 0 sample: growth in the share of books with ≥ 3 translations; target ≥ 70 %.
+      Not performed — the target metric is tied to connecting new sources (WorldCat/Index
+      Translationum), which are blocked; re-measuring the same pair of sources would give no
+      new signal.
+- [ ] A dump import survives the process being killed midway and resumes correctly. Not
+      applicable — the only dump-based import in the plan (Index Translationum) is blocked.
+- [ ] A push to `main` automatically delivers the change to the environment; rollback rehearsed. Not
+      met — blocked by the absence of an AWS environment, see above; the self-host path (Phase 1.6)
+      was already verified live separately and does not need this item for its distribution model.
+
+### Phase risks
+
+WorldCat access may be denied or granted with a strict limit. Plan B: Index Translationum +
+national library catalogs with open APIs. The phase must not be blocked entirely on
+a single source. **It played out literally as described here in advance** (the risk was correctly
+anticipated in the original plan, not in hindsight): WorldCat indeed did not grant access, and
+Plan B (Index Translationum) also turned out to be blocked for an independent reason (conflict
+with the scraping invariant) — the phase was not blocked entirely: work continued and delivered
+real value within the existing sources (tasks #67–69).
 
 ---
 
-## Критерии успеха MVP
+## Phase 3 · Public launch (2–3 weeks)
 
-| Критерий          | Целевое значение                                               | Как измеряем                                           |
-| ----------------- | -------------------------------------------------------------- | ------------------------------------------------------ |
-| Полнота данных    | ≥ 70 % запрошенных известных книг находят ≥ 3 перевода         | Прогон по выборке из Фазы 0, отчёт в `docs/research/`  |
-| Скорость ответа   | холодный кэш ≤ 2 с, тёплый ≤ 300 мс                            | p95 из метрик API                                      |
-| Актуальность      | фоновая синхронизация не реже раза в неделю на активные записи | Метрика максимального возраста `synced_at`             |
-| Легальная чистота | 0 прямых ссылок на скачивание вне public domain источников     | Тесты `LinkPolicy` + периодический аудит `source_link` |
+**Goal:** an open release of the project as open source, ready to accept outside contributors.
+
+### Tasks
+
+- ✅ README: what the project is, a screenshot of the live UI (docs/images/, taken with Playwright
+  against the real stack), quick start (already there since Phase 1.6), **an explicit declaration
+  of the legal policy** as a dedicated section (I-5) with a link to CONTRIBUTING.
+- ✅ Public API documentation — [docs/api.md](api.md): a human-readable description of all
+  endpoints with curl examples and real response shapes. The response shapes are verbatim the Zod
+  schemas from `packages/contracts` (one schema validates the server and types the client); a
+  separate OpenAPI file was deliberately not generated — it would duplicate contracts with no
+  consumer, and `@nestjs/swagger` can be added later without API changes.
+- ✅ `CONTRIBUTING.md` with an outright ban on PRs integrating shadow libraries (violation =
+  closed without discussion), `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1), issue templates
+  (bug/feature) and a PR template with an invariants checklist.
+- ✅ MIT license (the file existed; the README section filled in); license cleanliness verified
+  with `pnpm licenses list --prod`: only MIT/Apache-2.0/BSD/ISC/0BSD/Unlicense/CC-BY-4.0,
+  no copyleft dependencies.
+- 🚫 Prometheus + Grafana monitoring with alerts — blocked in this session: "dashboards and
+  alerts working on real traffic" requires a deployed public instance with traffic,
+  which does not exist (self-host model; the project has no managed hosting of its own).
+  `/health/live`, `/health/ready` and structured logs with correlationId (Phase 1) — working.
+- ✅ `/health` for external checks — exists and verified live; a public status dashboard is part
+  of the blocked item above.
+- ✅ **Self-host release:** a README section (Phase 1.6), versioned multi-arch images in GHCR
+  (CI, Phase 1.6), `CHANGELOG.md` with an explicit **[BREAKING MIGRATION]** marker (none so far —
+  all migrations are additive; the compatibility matrix reduces to "any image + `migrate` =
+  up-to-date schema").
+- ✅ Seeding the popular core: `pnpm db:seed:catalog` — 20 curated books through the regular
+  `SyncWorkFromSource` pipeline (LinkPolicy applies as to any data — only metadata and
+  legal links; the seed has no special privileges). Idempotent, survives interruption, `--limit=N`
+  for a quick check. Verified live: «Война и мир» → 54 editions, 7 legal links.
+  Implemented as a script rather than a published SQL dump: a dump would have to be re-issued on
+  every schema change, while the script populates any schema version through the domain code.
+- 🚫 The N → N+1 upgrade test on CI — blocked by the literal wording: there are no published
+  versioned releases yet (v1.0.0 not released), there is nothing to upgrade "from N to N+1" from.
+  The infrastructure for it is ready: a separate one-shot `migrate` service, additive migrations,
+  and every integration-test run applies the full migration chain from scratch on a clean Postgres.
+- ✅ Security audit: commit history scanned (`.env` never committed, no key patterns
+  found, `.env.example` contains only placeholders); security headers added to all API
+  responses (nosniff, X-Frame-Options DENY, CSP default-src 'none', no-referrer — verified live);
+  CORS restricted to `PUBLIC_URL` outside development; rate limit 60/min (Phase 1.4).
+  `pnpm audit --prod`: vulnerabilities exist — all in transitive dependencies; fixes require
+  major upgrades (NestJS 10→11, Fastify 4→5, Next 14→15+, drizzle-orm 0.36→0.45);
+  `pnpm audit --fix` proposed exactly those majors via overrides — rejected as a blind breaking
+  upgrade, recorded in the CHANGELOG as a dedicated framework-migration task.
+- ✅ De-facto privacy policy: the instance collects no personal data (no accounts,
+  analytics, or cookies), `Referrer-Policy: no-referrer` on the API; no affiliate links appeared
+  (Phase 2, item skipped) — nothing to disclose.
+- 🚫 Opening the repository, the `v1.0.0` release, the announcement — actions of the project
+  owner, not the agent: publishing the repository and announcing it are decisions a human makes
+  and carries out.
+
+### Live UX testing before release (beyond the plan, by direct request)
+
+The full user journey was walked live on the real stack (`pnpm dev`: web + api + worker +
+Postgres + Redis, real requests to Open Library) — searching for a book not in the database →
+lazy backfill → card → editions → expanding a legal link. Found and fixed:
+
+1. **The 5s source HTTP-client timeout was killing live requests**: Open Library that day
+   responded in ~9s (successfully!), each of the 3 retry attempts died on the timeout — the sync
+   failed against a working API. Raised to 25s (covers the 22s maximum observed in Phase 0).
+2. **A transient source error blocked query retries until the end of the day**: a failed sync
+   "completed" the backfill job with a not_found status, and a completed job with a deterministic
+   daily jobId held BullMQ deduplication for 24 hours — a repeated search silently enqueued no new
+   job. Fixed from both sides: `ProcessBackfillJob` now throws
+   `BackfillSourcesUnavailableError` (the queue retries on its own with backoff), and the queue no
+   longer holds completed jobs in deduplication (`removeOnComplete: true`; failed jobs — an hour
+   for inspection, history — in `sync_log`).
+3. **Search UX**: the polling window extended to ~90s (the first sync of a popular book
+   legitimately makes several sequential 9–22s requests), an explanatory message appears after
+   ~30s, and the dead-end "refresh the page later" was replaced with a "Try again" button.
+4. **Languages as readable words instead of ISO codes** ("German, Spanish…", not "de, es") — via
+   `Intl.DisplayNames`, without violating layer boundaries (web does not see domain).
+5. **The language filter is a dropdown** of the book's actually available languages instead of a
+   text field that required knowing the ISO code by heart.
+6. **Source availability visible in the list**: `linkCount` in the editions API (a new port method
+   `SourceLinkRepository.countByEditionIds`, one query for the whole list), a "has sources" badge,
+   editions with sources first, grouped by language and year descending within. Previously one
+   would have had to expand all 30 editions one by one to find where the links are.
+
+Result of the live run after the fixes: «Мастер и Маргарита» — background sync from scratch, 30
+editions, 7 languages, 7 real archive.org borrow links with legal status; the filter, mobile
+layout (375px, no horizontal scroll), and empty states verified. A known limitation
+recorded: the original-language heuristic (based on the earliest edition of the sample) for
+«Мастер и Маргарита» yielded "English" — the early Russian editions did not make it into the
+source's sample.
+
+### English UI and documentation (by direct request)
+
+The entire UI and all documentation were switched from Russian to English (Russian remains only
+where it is literal data: book titles in tests and examples, the `name_ru` column, seed queries
+in the books' original languages). The switch itself surfaced and fixed two more real issues,
+both verified live:
+
+1. **Cross-language search dead loop**: an English query ("Master and Margarita") could not find
+   a work stored under its Cyrillic original title, the backfill "succeeded" by deduplicating
+   into that same invisible work, and the UI polled `pending` forever. Fixed by making edition
+   titles a search arm of their own (the English edition titles were already in our database),
+   backed by a new trigram index on `edition.title` (migration 0003) — covered by an integration
+   test against real Postgres and verified live end to end.
+2. **Poll-triggered duplicate syncs**: the earlier `removeOnComplete: true` fix overshot — with
+   completed jobs vanishing instantly, the UI's 3-second poll loop re-enqueued a real sync on
+   every poll (observed live: 11 back-to-back syncs of one work in 40 seconds, one of which
+   raced into writing 7 mis-attributed link rows — cleaned up, not reproducible under controlled
+   conditions after the fix). Completed jobs are now retained for 60 seconds: long enough for
+   jobId dedup to absorb a polling session, short enough that a deliberate retry works.
+
+### Definition of Done
+
+- [ ] An outside developer brings the project up locally by the README with no questions to the
+      author (verified on a live human). **Requires a live human** — the agent cannot honestly
+      close this item on their behalf; the README path is machine-verified (all its commands were
+      executed live in Phases 1.6 and 3).
+- [x] No secrets in the repository history — verified: `.env`/`.env.local` were never committed in
+      any revision, a scan of the entire history (`git log --all -p`) for key patterns
+      (Google API, OpenAI/GitHub tokens, AWS, private keys) found nothing;
+      `.env.example` contains only placeholders.
+- [ ] Dashboards and alerts working on real traffic — blocked (see the monitoring item
+      above: real traffic does not exist without a public instance).
+- [x] The legal policy is visible in the README (a dedicated section), `CONTRIBUTING.md` (the main
+      rule), and in the UI (a footer on every page + an explicit legal status on every link).
 
 ---
 
-## Сквозные риски
+## MVP success criteria
 
-| Риск                                                | Влияние                                                | Митигация                                                                                                            |
-| --------------------------------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
-| Данные о переводчиках в открытых API дырявые        | Падает ценность карточки                               | Замерить в Фазе 0; при плохом результате не обещать переводчика как ключевую фичу                                    |
-| Лимиты / блокировка Google Books                    | Деградация поиска                                      | Кэш адаптера, условные запросы, свои данные как основной источник ответа, изоляция источников                        |
-| Доступ к WorldCat не получен                        | Ниже полнота по редким языкам                          | План Б в Фазе 2, ранняя подача заявки                                                                                |
-| Ошибочная склейка разных произведений в один `work` | Порча данных, тяжело откатывать                        | Консервативный matching, `external_ref` как след источника, ручная проверка выборки, возможность разъединения        |
-| Нестабильность `normalize()`                        | Ломается идемпотентность, растут дубли                 | Табличные тесты, изменение только с миграцией пересчёта natural keys                                                 |
-| Пустая база у свежей self-host инсталляции          | Пользователь удаляет контейнер в первую минуту         | Lazy backfill ([ADR-0003](adr/0003-lazy-backfill.md)) + seed-дамп в Фазе 3                                           |
-| Backfill выедает лимиты источников                  | Деградация для всех пользователей инстанса             | Отдельная очередь с низким приоритетом, схлопывание по `jobId`, кэш отрицательных результатов, дневной потолок задач |
-| Обновление self-host инстанса ломает данные         | Потеря доверия, невосстановимые потери у пользователей | Миграции только вперёд, отдельный сервис `migrate`, тест обновления N → N+1 на CI, документированный бэкап           |
-| Юридическая претензия по ссылке                     | Экзистенциальный для проекта                           | Инварианты в домене, тесты, `unknown` = `copyrighted`, процедура инцидента в `legal-policy.md`                       |
-| Разъезжание кода и слоёв под сроками                | Эрозия архитектуры                                     | Проверка границ импортов в CI с Фазы 1.0                                                                             |
+| Criterion         | Target value                                               | How we measure                                          |
+| ----------------- | ---------------------------------------------------------- | ------------------------------------------------------- |
+| Data completeness | ≥ 70 % of requested well-known books find ≥ 3 translations | Run over the Phase 0 sample, report in `docs/research/` |
+| Response speed    | cold cache ≤ 2 s, warm ≤ 300 ms                            | p95 from API metrics                                    |
+| Freshness         | background sync at least weekly for active records         | Metric of maximum `synced_at` age                       |
+| Legal cleanliness | 0 direct download links outside public domain sources      | `LinkPolicy` tests + periodic `source_link` audit       |
 
 ---
 
-## Ближайший шаг
+## Cross-cutting risks
 
-Фаза 0, разведка данных: собрать выборку из 50 книг и получить числа по полноте. Всё остальное
-в плане зависит от этого ответа.
+| Risk                                                | Impact                                                 | Mitigation                                                                                               |
+| --------------------------------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| Translator data in open APIs is patchy              | Card value drops                                       | Measure in Phase 0; on a bad result, do not promise the translator as a key feature                      |
+| Google Books limits / blocking                      | Search degradation                                     | Adapter cache, conditional requests, our own data as the primary answer source, source isolation         |
+| WorldCat access not granted                         | Lower completeness for rare languages                  | Plan B in Phase 2, early application                                                                     |
+| Erroneously merging different works into one `work` | Data corruption, hard to roll back                     | Conservative matching, `external_ref` as a source trail, manual sample verification, ability to split    |
+| Instability of `normalize()`                        | Idempotency breaks, duplicates grow                    | Table-driven tests, changes only with a natural-key recomputation migration                              |
+| Empty database on a fresh self-host installation    | The user deletes the container within the first minute | Lazy backfill ([ADR-0003](adr/0003-lazy-backfill.md)) + seed dump in Phase 3                             |
+| Backfill eats up source limits                      | Degradation for all users of the instance              | A separate low-priority queue, collapsing by `jobId`, negative-result caching, a daily job ceiling       |
+| Upgrading a self-host instance breaks data          | Loss of trust, unrecoverable losses for users          | Forward-only migrations, a separate `migrate` service, the N → N+1 upgrade test on CI, documented backup |
+| A legal claim over a link                           | Existential for the project                            | Invariants in the domain, tests, `unknown` = `copyrighted`, the incident procedure in `legal-policy.md`  |
+| Code and layers drifting apart under deadlines      | Architecture erosion                                   | Import-boundary checking in CI since Phase 1.0                                                           |
+
+---
+
+## Next step
+
+Phase 0, data scouting: assemble the 50-book sample and get the completeness numbers. Everything
+else in the plan depends on that answer.

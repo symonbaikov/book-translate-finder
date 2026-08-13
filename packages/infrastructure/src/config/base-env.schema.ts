@@ -18,7 +18,7 @@ export type BaseEnv = z.infer<typeof baseEnvSchema>;
 /**
  * Parses `source` against `schema` and either returns a fully typed, validated config or throws
  * a single readable error listing every problem at once. Call this exactly once per process, at
- * startup — see docs/rules.md §3 "Явное над неявным": nothing else in the codebase reads
+ * startup — see docs/rules.md §3 "Explicit over implicit": nothing else in the codebase reads
  * `process.env` directly.
  */
 export function loadEnv<TSchema extends z.ZodTypeAny>(

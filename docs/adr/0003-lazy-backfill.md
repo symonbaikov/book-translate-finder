@@ -1,56 +1,56 @@
-# ADR-0003: Ленивое наполнение базы по запросу (lazy backfill)
+# ADR-0003: Lazy on-demand database population (lazy backfill)
 
-- **Статус:** принято
-- **Дата:** 2026-08-12
-- **Контекст задачи:** требование «человек может развернуть приложение у себя»
+- **Status:** accepted
+- **Date:** 2026-08-12
+- **Task context:** the requirement "a person can deploy the application themselves"
 
-## Контекст
+## Context
 
-Self-hosting объявлен целевым сценарием. Свежая инсталляция стартует с пустым Postgres.
-Фоновая синхронизация обновляет только уже известные системе работы, поэтому пустая база
-остаётся пустой: пользователь вводит первый запрос, получает ноль результатов и удаляет
-контейнер. Одновременно действует архитектурное правило: пользовательский HTTP-запрос не ходит
-синхронно во внешний API (это защита от лимитов источников и от латентности в секунды).
+Self-hosting is declared the target scenario. A fresh installation starts with an empty
+Postgres. Background sync only refreshes works the system already knows about, so an empty
+database stays empty: the user enters their first query, gets zero results, and deletes the
+container. At the same time an architectural rule applies: a user's HTTP request never calls an
+external API synchronously (this protects against source rate limits and multi-second latency).
 
-Эти два требования на первый взгляд противоречат друг другу.
+At first glance these two requirements contradict each other.
 
-## Решение
+## Decision
 
-Промах поиска по своей БД **ставит задачу наполнения** и возвращает `202` со статусом
-`pending` и рекомендованной задержкой опроса. Воркер асинхронно опрашивает провайдеров,
-делает upsert и инвалидирует кэш; клиент повторяет запрос и получает `200`.
+A search miss against our own DB **enqueues a backfill job** and returns `202` with status
+`pending` and a recommended polling delay. A worker asynchronously queries the providers,
+performs upserts, and invalidates the cache; the client retries the request and gets `200`.
 
-Правило не нарушается: контроллер по-прежнему только читает БД и кладёт задачу в очередь,
-наружу ходит воркер.
+The rule is not violated: the controller still only reads the DB and puts a job on the queue;
+it is the worker that goes outside.
 
-Детали:
+Details:
 
-- `jobId = backfill-{sha256(normalize(query))}-{YYYY-MM-DD}` — параллельные и повторные запросы
-  одного и того же от разных пользователей схлопываются в одну задачу (идемпотентность, ADR-0002).
-- Отдельная очередь `backfill` с ограниченной конкурентностью и приоритетом ниже плановой
-  синхронизации — чтобы поток промахов не выел лимиты источников.
-- Защита от абьюза: rate limit на постановку backfill по IP, глобальный дневной потолок задач
-  на инсталляцию, отсечение мусорных запросов (слишком короткие, только цифры).
-- Отрицательный результат кэшируется (`not_found`, TTL 24 ч), иначе один и тот же
-  несуществующий запрос будет вечно порождать задачи.
-- Устаревшие, но существующие данные отдаются немедленно (`200`), фоновое обновление ставится
-  параллельно — пользователь не ждёт ради свежести.
+- `jobId = backfill-{sha256(normalize(query))}-{YYYY-MM-DD}` — parallel and repeated identical
+  requests from different users collapse into one job (idempotency, ADR-0002).
+- A separate `backfill` queue with bounded concurrency and lower priority than scheduled sync —
+  so the stream of misses doesn't eat up source rate limits.
+- Abuse protection: rate limit on backfill enqueueing per IP, a global daily job ceiling per
+  installation, filtering of junk queries (too short, digits only).
+- A negative result is cached (`not_found`, TTL 24 h); otherwise the same nonexistent query
+  would spawn jobs forever.
+- Stale but existing data is served immediately (`200`), and a background refresh is enqueued in
+  parallel — the user doesn't wait for the sake of freshness.
 
-Дополняется публикуемым seed-дампом популярного ядра каталога (Фаза 3) — он снимает эффект
-холодного старта, но не заменяет lazy backfill для длинного хвоста запросов.
+Complemented by a published seed dump of the popular catalog core (Phase 3) — it removes the
+cold-start effect but does not replace lazy backfill for the long tail of queries.
 
-## Рассмотренные альтернативы
+## Considered alternatives
 
-| Вариант                                  | Плюсы                   | Минусы                                                                                                        | Почему не выбран                              |
-| ---------------------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| Синхронный поход в источники при промахе | Простой UX, один запрос | Латентность в секунды, лимиты источников выедаются пользовательским трафиком, отказ источника = ошибка ответа | Ломает базовое архитектурное свойство системы |
-| Только seed-дамп, без backfill           | Инстанс полезен сразу   | Длинный хвост запросов не покрыт; дамп быстро устаревает; его размер и правовой статус — отдельная проблема   | Не решает задачу, только смягчает             |
-| Массовый первичный импорт при установке  | Полная база             | Часы работы, десятки ГБ, выедание лимитов на инсталляцию — неприемлемо для домашнего сервера                  | Несовместимо с self-hosting                   |
+| Option                                | Pros                       | Cons                                                                                                                 | Why not chosen                              |
+| ------------------------------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| Synchronous call to sources on a miss | Simple UX, one request     | Multi-second latency, source limits eaten by user traffic, a source outage = an error response                       | Breaks a fundamental architectural property |
+| Seed dump only, no backfill           | Instance useful right away | The long tail of queries is uncovered; the dump goes stale quickly; its size and legal status are a separate problem | Doesn't solve the problem, only softens it  |
+| Mass initial import at install time   | Full database              | Hours of work, tens of GB, eating the limits per installation — unacceptable for a home server                       | Incompatible with self-hosting              |
 
-## Последствия
+## Consequences
 
-- Публичный контракт `GET /api/search` получает второе состояние ответа (`202 pending`) —
-  это должно быть описано в OpenAPI и обработано в UI отдельным состоянием «ищем в источниках…».
-- Появляется очередь `backfill` со своими лимитами и метриками.
-- Нужен кэш отрицательных результатов, иначе система самоDDoS-ится на мусорных запросах.
-- E2E-тест должен покрывать сценарий «первый в жизни инсталляции запрос»: `202` → ожидание → `200`.
+- The public `GET /api/search` contract gains a second response state (`202 pending`) — this
+  must be described in OpenAPI and handled in the UI as a distinct "searching the sources…" state.
+- A `backfill` queue appears with its own limits and metrics.
+- A negative-result cache is needed, otherwise the system self-DDoSes on junk queries.
+- An E2E test must cover the "first request in an installation's life" scenario: `202` → wait → `200`.

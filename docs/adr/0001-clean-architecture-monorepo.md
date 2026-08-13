@@ -1,44 +1,45 @@
-# ADR-0001: Clean Architecture в pnpm-монорепо со слоями как пакетами
+# ADR-0001: Clean Architecture in a pnpm monorepo with layers as packages
 
-- **Статус:** принято
-- **Дата:** 2026-08-12
-- **Контекст задачи:** стартовое планирование проекта
+- **Status:** accepted
+- **Date:** 2026-08-12
+- **Task context:** initial project planning
 
-## Контекст
+## Context
 
-Проект агрегирует данные из нескольких внешних источников (Open Library, Google Books, далее
-WorldCat, Index Translationum), число которых будет расти. Источники нестабильны, имеют лимиты
-и разные форматы. Одновременно на систему наложены жёсткие юридические инварианты
-([legal-policy.md](../legal-policy.md)), которые нельзя допустить размазать по контроллерам и
-UI-компонентам. Нужна структура, в которой добавление источника не трогает бизнес-сценарии, а
-правила проверяются автоматически, а не на ревью.
+The project aggregates data from several external sources (Open Library, Google Books, later
+WorldCat, Index Translationum), and their number will grow. Sources are unstable, rate-limited,
+and use different formats. At the same time, the system is subject to strict legal invariants
+([legal-policy.md](../legal-policy.md)) that must not be allowed to smear across controllers and
+UI components. We need a structure where adding a source does not touch business scenarios, and
+where the rules are checked automatically rather than in code review.
 
-## Решение
+## Decision
 
-Используем Clean Architecture с четырьмя слоями, оформленными как отдельные пакеты pnpm-workspace:
-`domain` → `application` → `infrastructure` → `apps`. Направление зависимостей — только внутрь.
-`packages/domain` не имеет ни одной внешней зависимости. Все внешние взаимодействия проходят через
-порты, объявленные в `domain`, и адаптеры в `infrastructure`. Композиция зависимостей — только в
+We use Clean Architecture with four layers organized as separate pnpm-workspace packages:
+`domain` → `application` → `infrastructure` → `apps`. Dependencies point inward only.
+`packages/domain` has zero external dependencies. All external interactions go through ports
+declared in `domain` and adapters in `infrastructure`. Dependency composition happens only in
 `apps/*`.
 
-Границы импортов проверяются в CI командой `pnpm boundaries` (dependency-cruiser), нарушение
-роняет сборку. `eslint-plugin-boundaries` рассматривался как альтернатива, но в связке pnpm +
-ESM + TS project references не резолвил импорты между пакетами (`@btf/*`) и молча пропускал
-нарушения — обнаружено и подтверждено экспериментом на этапе 1.0, от плагина отказались.
+Import boundaries are checked in CI by the `pnpm boundaries` command (dependency-cruiser); a
+violation fails the build. `eslint-plugin-boundaries` was considered as an alternative, but in
+the pnpm + ESM + TS project references combination it failed to resolve imports between packages
+(`@btf/*`) and silently let violations through — discovered and confirmed by experiment during
+Phase 1.0, so the plugin was dropped.
 
-## Рассмотренные альтернативы
+## Considered alternatives
 
-| Вариант                                        | Плюсы                           | Минусы                                                                                                 | Почему не выбран                               |
-| ---------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------- |
-| Слои как папки внутри одного пакета            | Проще старт                     | Границы держатся только на дисциплине; импорт «наружу» ничем не остановлен                             | Главная ценность — принудительность границ     |
-| Стандартный модульный NestJS без явного домена | Быстрее писать первые эндпоинты | Бизнес-правила прирастают к фреймворку; юридические инварианты расползаются по сервисам и контроллерам | Неприемлемо для инвариантов легальной политики |
-| Полноценные микросервисы                       | Независимый деплой              | Оверинжиниринг для одного разработчика на MVP; распределённые транзакции ломают идемпотентность        | Не оправдано на текущем масштабе               |
+| Option                                             | Pros                                | Cons                                                                                            | Why not chosen                                 |
+| -------------------------------------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| Layers as folders inside a single package          | Easier start                        | Boundaries hold only by discipline; nothing stops an "outward" import                           | The main value is enforceability of boundaries |
+| Standard modular NestJS without an explicit domain | Faster to write the first endpoints | Business rules grow onto the framework; legal invariants spread across services and controllers | Unacceptable for the legal-policy invariants   |
+| Full-blown microservices                           | Independent deployment              | Overengineering for a solo developer on an MVP; distributed transactions break idempotency      | Not justified at the current scale             |
 
-## Последствия
+## Consequences
 
-- Добавление источника = новый адаптер + регистрация в composition root; use cases не меняются.
-- Доменные правила (включая `LinkPolicy`) тестируются без БД, сети и фреймворка.
-- Цена: больше файлов и явного маппинга «строка БД ↔ сущность» на старте; настройка project
-  references и границ занимает Фазу 1.0.
-- Если проект останется совсем маленьким, структура окажется избыточной — но обратный переход
-  (склейка пакетов) дешевле, чем распутывание слипшихся слоёв.
+- Adding a source = a new adapter + registration in the composition root; use cases don't change.
+- Domain rules (including `LinkPolicy`) are tested without a DB, network, or framework.
+- The price: more files and explicit "DB row ↔ entity" mapping at the start; setting up project
+  references and boundaries takes Phase 1.0.
+- If the project stays very small, the structure will prove excessive — but the reverse move
+  (merging packages) is cheaper than untangling layers that have fused together.

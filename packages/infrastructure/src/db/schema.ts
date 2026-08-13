@@ -117,7 +117,7 @@ export const sourceLink = pgTable(
       sql`${table.rightsStatus} IN ('public_domain', 'open_license', 'copyrighted', 'unknown')`,
     ),
     // docs/rules.md §3 CHECK: a download link can never be marked not-legally-free — LinkPolicy
-    // (docs/legal-policy.md И-1) already guarantees this at the domain layer; this is the same
+    // (docs/legal-policy.md I-1) already guarantees this at the domain layer; this is the same
     // invariant enforced again at the storage boundary, independent of application code.
     check(
       'source_link_download_is_legal_free_check',
@@ -138,7 +138,7 @@ export const externalRef = pgTable(
   (table) => [
     unique('external_ref_source_external_key').on(table.sourceName, table.externalId),
     check('external_ref_entity_type_check', sql`${table.entityType} IN ('work', 'edition')`),
-    // `findSourcesForEntity` (Phase 2, docs/plan.md §Фаза 2) filters by entity_id — without this,
+    // `findSourcesForEntity` (Phase 2, docs/plan.md §Phase 2) filters by entity_id — without this,
     // it's a full table scan; confirmed live via EXPLAIN ANALYZE at 66k synthetic rows (6.3ms and
     // climbing linearly with table size, called on every uncached GetWorkCard request).
     index('external_ref_entity_id_idx').on(table.entityId),

@@ -1,343 +1,351 @@
-# Отчёт по разведке данных — Фаза 0
+# Data reconnaissance report — Phase 0
 
-Дата: 2026-08-13. Источники: Open Library Search API, Google Books API (без ключа). Выборка: 50
-книг — 20 классика/public domain, 20 современных бестселлеров, 10 нишевого нон-фикшна, с
-намеренным разбросом оригинальных языков (русский, английский, испанский, французский,
-греческий, итальянский, шведский, португальский, японский, иврит) — иначе метрика «сколько
-языков перевода нашлось» была бы бессмысленна для чисто англоязычной выборки.
+Date: 2026-08-13. Sources: Open Library Search API, Google Books API (without a key). Sample: 50
+books — 20 classics/public domain, 20 contemporary bestsellers, 10 niche non-fiction, with a
+deliberate spread of original languages (Russian, English, Spanish, French, Greek, Italian,
+Swedish, Portuguese, Japanese, Hebrew) — otherwise the "how many translation languages were
+found" metric would be meaningless for a purely English-language sample.
 
-Связанные документы: [plan.md](../plan.md) (критерии успеха, стоп-условие) ·
-[architecture.md](../architecture.md) (приоритет источников, кэш) ·
-[legal-policy.md](../legal-policy.md) (правовой статус ссылок) ·
-[prototype/](../../prototype/) (кликабельный прототип).
+Related documents: [plan.md](../plan.md) (success criteria, stop condition) ·
+[architecture.md](../architecture.md) (source priority, cache) ·
+[legal-policy.md](../legal-policy.md) (legal status of links) ·
+[prototype/](../../prototype/) (clickable prototype).
 
 ---
 
 ## TL;DR
 
-- **Гипотеза подтверждена, с оговоркой по выборке**: 50/50 книг (100%) нашли ≥3 языка через один
-  Open Library, при медиане 16 языков на книгу. Цель «≥70% книг находят ≥3 перевода» из
-  `plan.md` перевыполнена с большим запасом — **но выборка состоит из заведомо известных книг**,
-  для длинного хвоста нишевых запросов результат может быть хуже (см. «Ограничения» ниже).
-- **Критическая находка по методологии**: field-scoped запрос (`title:"..." author:...`) почти
-  бесполезен — Open Library плохо дедуплицирует «work»-записи, и такой запрос находит только
-  фрагмент изданий на одном языке. Обычный полнотекстовый запрос (`q=title author`) находит
-  каноническую запись с полным набором языков. **Это меняет реализацию `OpenLibraryProvider` в
-  Фазе 1.3** — используется только полнотекстовый запрос.
-- **Google Books непроверяем в этом окружении**: анонимная дневная квота была исчерпана ещё до
-  первого содержательного запроса (`quota_limit_value: "0"`). Оценка ограничена ручным
-  тестированием ответов формы + этой находкой как таковой.
-- **Open Library оказался нестабилен под последовательной нагрузкой**: при первом проходе (50
-  запросов подряд, задержка 1с) — **76% запросов** (38 из 50) упали с `ECONNRESET` / timeout /
-  connection refused. После повторов с увеличенной задержкой (4с, затем 8с) все 50 в итоге
-  прошли. Это прямое требование к `Phase 1.3`: ретраи с экспоненциальным backoff и circuit
-  breaker — не опция, а условие вообще получить полный ответ от источника.
-- **Поле «переводчик» — действительно дырявое, как и предполагалось в `plan.md`**, но не
-  безнадёжно: на уровне отдельного издания структурированный переводчик указан лишь в ~12%
-  изданий, но на уровне произведения **у 17 из 18 проверенных книг нашлось хотя бы одно издание
-  с переводчиком**. ISBN, напротив, в хорошем состоянии — 89% изданий.
-- **`prototype/` не может быть «без бэкенда» буквально** — ни Open Library, ни (в части случаев)
-  Google Books не отдают `Access-Control-Allow-Origin`, прямой `fetch()` из браузера блокируется
-  CORS. Добавлен минимальный same-origin proxy-роут внутри того же Next.js-приложения — без БД,
-  без очередей, без отдельного сервиса.
-- **Решение**: продолжаем в Фазу 1 с Open Library как основным источником языков/изданий, без
-  экстренного включения WorldCat/Index Translationum в MVP — они остаются в Фазе 2 по плану.
-  Google Books остаётся вторичным источником (ISBN, покупка), но его собственную роль в
-  повышении полноты подтвердить в этом окружении не удалось.
+- **Hypothesis confirmed, with a sampling caveat**: 50/50 books (100%) found ≥3 languages via
+  Open Library alone, with a median of 16 languages per book. The "≥70% of books find ≥3
+  translations" goal from `plan.md` is exceeded by a wide margin — **but the sample consists of
+  deliberately well-known books**; for the long tail of niche queries the result may be worse
+  (see "Limitations" below).
+- **Critical methodology finding**: a field-scoped query (`title:"..." author:...`) is nearly
+  useless — Open Library deduplicates "work" records poorly, and such a query finds only a
+  fragment of editions in a single language. A plain full-text query (`q=title author`) finds
+  the canonical record with the full set of languages. **This changes the `OpenLibraryProvider`
+  implementation in Phase 1.3** — only the full-text query is used.
+- **Google Books is unverifiable in this environment**: the anonymous daily quota was exhausted
+  before the first substantive request (`quota_limit_value: "0"`). The assessment is limited to
+  manual testing of response shapes + this finding as such.
+- **Open Library turned out to be unstable under sequential load**: on the first pass (50
+  requests in a row, 1s delay) — **76% of requests** (38 of 50) failed with `ECONNRESET` /
+  timeout / connection refused. After retries with increased delay (4s, then 8s) all 50
+  eventually succeeded. This is a direct requirement for `Phase 1.3`: retries with exponential
+  backoff and a circuit breaker are not optional — they are a precondition for getting a
+  complete response from the source at all.
+- **The "translator" field is indeed patchy, as `plan.md` predicted**, but not hopeless: at the
+  level of an individual edition a structured translator is present in only ~12% of editions,
+  but at the work level **17 of the 18 checked books had at least one edition with a
+  translator**. ISBN, by contrast, is in good shape — 89% of editions.
+- **`prototype/` cannot literally be "without a backend"** — neither Open Library nor (in some
+  cases) Google Books returns `Access-Control-Allow-Origin`; a direct `fetch()` from the browser
+  is blocked by CORS. A minimal same-origin proxy route was added inside the same Next.js app —
+  no DB, no queues, no separate service.
+- **Decision**: we proceed to Phase 1 with Open Library as the primary source of
+  languages/editions, without emergency inclusion of WorldCat/Index Translationum in the MVP —
+  they remain in Phase 2 as planned. Google Books remains a secondary source (ISBN, purchase),
+  but its own contribution to improving completeness could not be confirmed in this environment.
 
 ---
 
-## Методология
+## Methodology
 
-### Выборка
+### Sample
 
-Полный список 50 книг и подробности — см. таблицу в разделе «Результаты». Разбивка: 20
-классика/public domain (в основном опубликованы до 1929 — рабочая эвристика public domain в
-США), 20 современных бестселлеров под авторским правом, 10 нишевого нон-фикшна.
+The full list of 50 books and details — see the table in the "Results" section. Breakdown: 20
+classics/public domain (mostly published before 1929 — a working US public-domain heuristic),
+20 contemporary copyrighted bestsellers, 10 niche non-fiction.
 
-### Запросы к Open Library
+### Open Library queries
 
-**Находка методологии, определившая весь остальной подход:** поле-скоупный запрос вида
-`q=title:"War and Peace" author:Tolstoy` систематически возвращает набор из множества плохо
-дедуплицированных `work`-записей (известная проблема Open Library с дедупликацией произведений),
-каждая из которых содержит издания **только на одном языке**. На тесте с «War and Peace»
-field-scoped запрос отдал несколько разных `work`-ключей, у каждого `language: ["eng"]`,
-edition_count 3–12 — переводы просто не находятся.
+**The methodology finding that shaped the entire approach:** a field-scoped query of the form
+`q=title:"War and Peace" author:Tolstoy` systematically returns a set of many poorly
+deduplicated `work` records (a known Open Library work-deduplication problem), each of which
+contains editions **in only one language**. In a test with "War and Peace", the field-scoped
+query returned several different `work` keys, each with `language: ["eng"]`, edition_count
+3–12 — the translations are simply not found.
 
-Обычный полнотекстовый запрос (`q=War and Peace Tolstoy`, без `title:`/`author:`) для того же
-названия отдаёт единственную каноническую запись `/works/OL267096W` с edition_count=1315 и 23
-языками — и именно она первая по релевантности. **Вывод: методология обязана использовать
-полнотекстовый запрос, не field-scoped**, иначе полнота будет занижена в разы. Это прямо влияет
-на реализацию `OpenLibraryProvider` в Фазе 1.3.
+A plain full-text query (`q=War and Peace Tolstoy`, without `title:`/`author:`) for the same
+title returns the single canonical record `/works/OL267096W` with edition_count=1315 and 23
+languages — and it is the top result by relevance. **Conclusion: the methodology must use the
+full-text query, not field-scoped**, otherwise completeness is understated by a large factor.
+This directly affects the `OpenLibraryProvider` implementation in Phase 1.3.
 
-Итоговая методология на книгу:
+Final per-book methodology:
 
 1. `GET /search.json?q={title} {author}&fields=key,title,author_name,language,edition_count,first_publish_year,ebook_access&limit=5`
-2. Берётся первый результат (`docs[0]`) по релевантности — эмпирически на всех 50 книгах выборки
-   он оказался самой полной записью.
-3. Число языков = длина массива `language` в этой записи (набор уникальных языков среди
-   проиндексированных изданий этого `work`).
+2. Take the first result (`docs[0]`) by relevance — empirically, across all 50 sample books it
+   turned out to be the most complete record.
+3. Number of languages = length of the `language` array in that record (the set of unique
+   languages across the indexed editions of that `work`).
 
-Фикстуры сырых ответов — [fixtures/open-library-search-classic.json](fixtures/open-library-search-classic.json),
+Raw response fixtures — [fixtures/open-library-search-classic.json](fixtures/open-library-search-classic.json),
 […-bestseller.json](fixtures/open-library-search-bestseller.json),
 […-nonfiction.json](fixtures/open-library-search-nonfiction.json).
 
-### Запросы к Google Books
+### Google Books queries
 
-`GET /volumes?q=intitle:{title}+inauthor:{author}&maxResults=5` — метаданные издания, ISBN,
+`GET /volumes?q=intitle:{title}+inauthor:{author}&maxResults=5` — edition metadata, ISBN,
 `saleInfo.buyLink`.
 
-**Блокер:** первый же тестовый запрос к анонимному (без ключа) Google Books API в этом окружении
-вернул `429 RESOURCE_EXHAUSTED` с `quota_limit_value: "0"` — дневная анонимная квота уже
-исчерпана на используемом здесь исходящем IP/проекте (см.
+**Blocker:** the very first test request to the anonymous (keyless) Google Books API in this
+environment returned `429 RESOURCE_EXHAUSTED` with `quota_limit_value: "0"` — the anonymous
+daily quota was already exhausted for the outbound IP/project used here (see
 [fixtures/google-books-quota-exceeded-429.txt](fixtures/google-books-quota-exceeded-429.txt)).
-Повтор через 15 секунд и повторная проверка час спустя дали ту же ошибку — это дневной, а не
-секундный лимит. Полный прогон по 50 книгам через Google Books в этом окружении невозможен.
+A retry after 15 seconds and a re-check an hour later produced the same error — this is a
+daily, not a per-second, limit. A full 50-book run through Google Books is impossible in this
+environment.
 
-Это само по себе значимая находка: **анонимный Google Books API непригоден даже для разработки и
-тестирования без ключа**, не только для продакшена. `GOOGLE_BOOKS_API_KEY` в `.env.example`
-([architecture.md §9.2](../architecture.md#92-конфигурация-self-host-инсталляции)) стоит
-воспринимать не как «опционально, но с низкими лимитами», а как «обязательно для любого
-использования за пределами единичного ручного теста».
+This is itself a significant finding: **the anonymous Google Books API is unfit even for
+development and testing without a key**, not just for production. `GOOGLE_BOOKS_API_KEY` in
+`.env.example` ([architecture.md §9.2](../architecture.md#92-configuration-of-a-self-host-installation))
+should be treated not as "optional, but with low limits" but as "mandatory for any use beyond a
+single manual test".
 
-### Надёжность соединения с Open Library
+### Open Library connection reliability
 
-При первом последовательном проходе по всем 50 книгам (пауза 1с между запросами, как
-рекомендует этикет публичных API) **38 из 50 запросов (76%) завершились ошибкой** —
-`ECONNRESET` (28), `timeout` (7), `connection refused` (3). Повторный проход тех же книг с
-паузой 4с снизил число ошибок до 16 (32%); финальный проход с паузой 8с и до 3 попыток на книгу
-— до 0.
+On the first sequential pass over all 50 books (1s pause between requests, as public-API
+etiquette recommends), **38 of 50 requests (76%) failed** — `ECONNRESET` (28), `timeout` (7),
+`connection refused` (3). A second pass over the same books with a 4s pause reduced the error
+count to 16 (32%); a final pass with an 8s pause and up to 3 attempts per book — to 0.
 
-Возможные причины (различить со стороны клиента невозможно): (а) агрессивное троттлинг/anti-abuse
-поведение на стороне Open Library при устойчивой последовательной нагрузке с одного IP, даже при
-скромном темпе ~1 запрос/сек; (б) особенности исходящей сети в этом изолированном облачном
-окружении (шумные соседи на общем IP). В пользу (а) говорит то, что `curl` к тому же хосту в
-процессе работал (пусть и с латентностью 5–7с), а `curl`-запросы вне узла Node/`fetch` иногда
-проходили там, где `fetch` в Node падал с `ECONNRESET` — то есть проблема не универсальна для
-всех клиентов одновременно, что больше похоже на нестабильность/лимиты на удалённой стороне, чем
-на полную блокировку исходящей сети целиком.
+Possible causes (indistinguishable from the client side): (a) aggressive throttling/anti-abuse
+behavior on Open Library's side under sustained sequential load from one IP, even at a modest
+~1 request/sec pace; (b) peculiarities of outbound networking in this isolated cloud
+environment (noisy neighbors on a shared IP). In favor of (a): `curl` to the same host kept
+working during the run (albeit with 5–7s latency), and `curl` requests outside the Node/`fetch`
+path sometimes succeeded where `fetch` in Node failed with `ECONNRESET` — i.e. the problem is
+not universal across all clients at once, which looks more like instability/limits on the
+remote side than a complete outbound-network blackout.
 
-**Прямое следствие для Фазы 1.3**: ретраи с экспоненциальным backoff и джиттером, разумные
-таймауты, circuit breaker на провайдер — это не работа «на будущее про запас», а условие вообще
-получить полный ответ от Open Library в проде. Стоит также перепроверить эту находку с обычного
-(не общего облачного) IP перед тем как закладывать её в SLA/алерты Фазы 3.
+**Direct consequence for Phase 1.3**: retries with exponential backoff and jitter, sane
+timeouts, a per-provider circuit breaker — this is not "future-proofing for later" work, but a
+precondition for getting a complete response from Open Library in production at all. It is also
+worth re-verifying this finding from a regular (non-shared cloud) IP before baking it into the
+Phase 3 SLAs/alerts.
 
-### CORS (обнаружено при сборке прототипа)
+### CORS (discovered while building the prototype)
 
-План Фазы 0 предполагал «страница поиска на Next.js **без бэкенда**, прямые запросы к API из
-клиента». Проверка заголовков показала:
+The Phase 0 plan assumed "a Next.js search page **without a backend**, direct API requests from
+the client". Header inspection showed:
 
-- **Open Library не отдаёт `Access-Control-Allow-Origin`** ни при каком заголовке `Origin` —
-  прямой `fetch()` из браузера блокируется политикой CORS.
-- **Google Books CORS поддерживает** — отдаёт `access-control-allow-origin`, отражающий `Origin`,
-  видно даже в ответе `429`.
+- **Open Library does not return `Access-Control-Allow-Origin`** for any `Origin` header — a
+  direct `fetch()` from the browser is blocked by CORS policy.
+- **Google Books does support CORS** — it returns an `access-control-allow-origin` reflecting
+  the `Origin`, visible even in the `429` response.
 
-Из-за Open Library `prototype/` физически не может быть «без бэкенда» в буквальном смысле —
-добавлен минимальный same-origin proxy-роут внутри того же Next.js-приложения
-(`app/api/search/route.ts`, `app/api/editions/route.ts`): без БД, без очередей, без отдельного
-сервиса, только серверный `fetch` вместо клиентского. Дух Фазы 0 не нарушен (прототип всё ещё
-одноразовый и не проходит проверку границ слоёв), но буквальная формулировка задачи в `plan.md`
-была неточной — обновлена.
+Because of Open Library, `prototype/` physically cannot be "without a backend" in the literal
+sense — a minimal same-origin proxy route was added inside the same Next.js app
+(`app/api/search/route.ts`, `app/api/editions/route.ts`): no DB, no queues, no separate
+service, just a server-side `fetch` instead of a client-side one. The spirit of Phase 0 is not
+violated (the prototype is still throwaway and does not pass layer-boundary checks), but the
+literal wording of the task in `plan.md` was inaccurate — it has been updated.
 
-### Ограничения методологии
+### Methodology limitations
 
-- Число языков в `search.json` — это языки **проиндексированных изданий**, не подтверждение
-  наличия читаемого текста; часть записей могут быть каталожными записями без текста.
-- Число включает **оригинальный язык книги** как один из «найденных языков» — то есть это не
-  ровно «число переводов», а «число языков публикации минус необязательно единица». На
-  наблюдаемых минимумах (следующее по малости значение после 3 — это 6) вычитание единицы не
-  меняет ни один вердикт по порогу «≥3».
-- **Смещение выборки**: все 50 книг — заведомо известные (классика или бестселлеры). Это
-  осознанный выбор для Фазы 0 (нужно было проверить гипотезу быстро и на понятных примерах), но
-  результат **нельзя** экстраполировать на длинный хвост нишевых/локальных книг без отдельного
-  замера — вероятная будущая работа для Фазы 2.
-- Выбор `docs[0]` по релевантности Open Library — эмпирическая эвристика, не гарантия; для
-  «The Order of Time» (нон-фикшн, оригинал на итальянском) в найденном списке языков вообще не
-  оказалось итальянского — вероятно, `docs[0]` не был полностью канонической записью для этой
-  менее известной книги. На выводы по порогу `≥3` это не повлияло (все 3 найденных языка —
-  переводы), но иллюстрирует хрупкость эвристики «топ по релевантности» на менее известных
-  книгах.
-- Одна запись содержит артефакт данных самого Open Library: `first_publish_year: 0` для «The War
-  of the Worlds» — не ошибка сбора, значение получено именно таким от API.
-- Google Books покрыт не полностью (см. блокер квоты выше) — количественная оценка по всем 50
-  книгам невозможна в этом окружении.
-- Оценка поля «переводчик»/ISBN сделана на подвыборке из 18 книг (по ~6 на категорию), не на
-  всех 50 — Open Library не даёт агрегированной статистики по этому полю, только по одному
-  изданию за раз, и это дорого по числу запросов.
+- The language count in `search.json` reflects the languages of **indexed editions**, not
+  confirmation that a readable text exists; some records may be catalog entries without a text.
+- The count includes **the book's original language** as one of the "found languages" — i.e. it
+  is not exactly "number of translations" but "number of publication languages minus not
+  necessarily one". At the observed minimums (the next smallest value after 3 is 6),
+  subtracting one does not change a single verdict against the "≥3" threshold.
+- **Sample bias**: all 50 books are deliberately well-known (classics or bestsellers). This was
+  a conscious choice for Phase 0 (the hypothesis had to be checked quickly and on obvious
+  examples), but the result **cannot** be extrapolated to the long tail of niche/local books
+  without a separate measurement — likely future work for Phase 2.
+- Picking `docs[0]` by Open Library relevance is an empirical heuristic, not a guarantee; for
+  "The Order of Time" (non-fiction, originally in Italian) the found language list contained no
+  Italian at all — likely `docs[0]` was not the fully canonical record for this less famous
+  book. This did not affect the `≥3` threshold conclusions (all 3 found languages are
+  translations), but it illustrates the fragility of the "top by relevance" heuristic on less
+  well-known books.
+- One record contains a data artifact of Open Library itself: `first_publish_year: 0` for "The
+  War of the Worlds" — not a collection error; the value came from the API exactly like that.
+- Google Books is not fully covered (see the quota blocker above) — a quantitative assessment
+  across all 50 books is impossible in this environment.
+- The "translator"/ISBN field assessment was done on a subsample of 18 books (~6 per category),
+  not all 50 — Open Library provides no aggregated statistics for this field, only one edition
+  at a time, and that is expensive in request count.
 
 ---
 
-## Результаты по 50 книгам (Open Library)
+## Results across 50 books (Open Library)
 
-| Книга                                    | Категория  | Ориг. язык | Языков найдено | Изданий | Год первой публ.         |
-| ---------------------------------------- | ---------- | ---------- | -------------- | ------- | ------------------------ |
-| War and Peace                            | классика   | Russian    | 16             | 644     | 1864                     |
-| Crime and Punishment                     | классика   | Russian    | 22             | 1179    | 1866                     |
-| Anna Karenina                            | классика   | Russian    | 23             | 1315    | 1876                     |
-| The Brothers Karamazov                   | классика   | Russian    | 18             | 313     | 1880                     |
-| Pride and Prejudice                      | классика   | English    | 27             | 4039    | 1813                     |
-| Great Expectations                       | классика   | English    | 18             | 1489    | 1861                     |
-| Frankenstein                             | классика   | English    | 9              | 2187    | 1818                     |
-| Dracula                                  | классика   | English    | 16             | 1917    | 1897                     |
-| Alice's Adventures in Wonderland         | классика   | English    | 51             | 3547    | 1865                     |
-| The Picture of Dorian Gray               | классика   | English    | 20             | 3012    | 1890                     |
-| Ulysses                                  | классика   | English    | 17             | 612     | 1914                     |
-| The Adventures of Sherlock Holmes        | классика   | English    | 17             | 1133    | 1892                     |
-| The War of the Worlds                    | классика   | English    | 11             | 457     | _0 (артефакт данных OL)_ |
-| Don Quixote                              | классика   | Spanish    | 29             | 1594    | 1600                     |
-| Madame Bovary                            | классика   | French     | 20             | 1558    | 1856                     |
-| The Count of Monte Cristo                | классика   | French     | 28             | 736     | 1830                     |
-| Les Misérables                           | классика   | French     | 15             | 526     | 1862                     |
-| The Odyssey                              | классика   | Greek      | 26             | 1064    | 1488                     |
-| The Divine Comedy                        | классика   | Italian    | 27             | 1339    | 1472                     |
-| Moby Dick                                | классика   | English    | 20             | 1116    | 1851                     |
-| Harry Potter and the Philosopher's Stone | бестселлер | English    | 49             | 398     | 1997                     |
-| The Da Vinci Code                        | бестселлер | English    | 25             | 203     | 2003                     |
-| The Hunger Games                         | бестселлер | English    | 19             | 142     | 2008                     |
-| Gone Girl                                | бестселлер | English    | 6              | 48      | 2011                     |
-| The Girl with the Dragon Tattoo          | бестселлер | Swedish    | 12             | 78      | 2005                     |
-| Nineteen Eighty-Four                     | бестселлер | English    | 22             | 536     | 1949                     |
-| The Kite Runner                          | бестселлер | English    | 20             | 125     | 2003                     |
-| Life of Pi                               | бестселлер | English    | 14             | 115     | 2000                     |
-| The Alchemist                            | бестселлер | Portuguese | 19             | 141     | 1988                     |
-| A Game of Thrones                        | бестселлер | English    | 18             | 136     | 1996                     |
-| The Book Thief                           | бестселлер | English    | 16             | 109     | 1998                     |
-| Twilight                                 | бестселлер | English    | 13             | 131     | 2005                     |
-| The Fault in Our Stars                   | бестселлер | English    | 12             | 80      | 2010                     |
-| Gone with the Wind                       | бестселлер | English    | 22             | 362     | 1936                     |
-| The Shadow of the Wind                   | бестселлер | Spanish    | 12             | 99      | 2001                     |
-| Norwegian Wood                           | бестселлер | Japanese   | 11             | 56      | 1987                     |
-| The Name of the Wind                     | бестселлер | English    | 13             | 76      | 2007                     |
-| Educated                                 | бестселлер | English    | 6              | 35      | 2018                     |
-| Where the Crawdads Sing                  | бестселлер | English    | 10             | 44      | 2018                     |
-| The Silent Patient                       | бестселлер | English    | 6              | 26      | 2018                     |
-| Sapiens                                  | нон-фикшн  | Hebrew     | 13             | 86      | 2011                     |
-| Thinking, Fast and Slow                  | нон-фикшн  | English    | 7              | 35      | 2011                     |
-| The Selfish Gene                         | нон-фикшн  | English    | 9              | 41      | 1976                     |
-| Guns, Germs, and Steel                   | нон-фикшн  | English    | 15             | 61      | 1997                     |
-| The Emperor of All Maladies              | нон-фикшн  | English    | 8              | 29      | 2010                     |
-| Silent Spring                            | нон-фикшн  | English    | 6              | 57      | 1962                     |
-| A Brief History of Time                  | нон-фикшн  | English    | 15             | 120     | 1988                     |
-| The Structure of Scientific Revolutions  | нон-фикшн  | English    | 9              | 47      | 1955                     |
-| Debt: The First 5000 Years               | нон-фикшн  | English    | 6              | 12      | 2011                     |
-| The Order of Time                        | нон-фикшн  | Italian    | 3              | 17      | 2017                     |
+| Book                                     | Category    | Orig. language | Languages found | Editions | First publ. year       |
+| ---------------------------------------- | ----------- | -------------- | --------------- | -------- | ---------------------- |
+| War and Peace                            | classic     | Russian        | 16              | 644      | 1864                   |
+| Crime and Punishment                     | classic     | Russian        | 22              | 1179     | 1866                   |
+| Anna Karenina                            | classic     | Russian        | 23              | 1315     | 1876                   |
+| The Brothers Karamazov                   | classic     | Russian        | 18              | 313      | 1880                   |
+| Pride and Prejudice                      | classic     | English        | 27              | 4039     | 1813                   |
+| Great Expectations                       | classic     | English        | 18              | 1489     | 1861                   |
+| Frankenstein                             | classic     | English        | 9               | 2187     | 1818                   |
+| Dracula                                  | classic     | English        | 16              | 1917     | 1897                   |
+| Alice's Adventures in Wonderland         | classic     | English        | 51              | 3547     | 1865                   |
+| The Picture of Dorian Gray               | classic     | English        | 20              | 3012     | 1890                   |
+| Ulysses                                  | classic     | English        | 17              | 612      | 1914                   |
+| The Adventures of Sherlock Holmes        | classic     | English        | 17              | 1133     | 1892                   |
+| The War of the Worlds                    | classic     | English        | 11              | 457      | _0 (OL data artifact)_ |
+| Don Quixote                              | classic     | Spanish        | 29              | 1594     | 1600                   |
+| Madame Bovary                            | classic     | French         | 20              | 1558     | 1856                   |
+| The Count of Monte Cristo                | classic     | French         | 28              | 736      | 1830                   |
+| Les Misérables                           | classic     | French         | 15              | 526      | 1862                   |
+| The Odyssey                              | classic     | Greek          | 26              | 1064     | 1488                   |
+| The Divine Comedy                        | classic     | Italian        | 27              | 1339     | 1472                   |
+| Moby Dick                                | classic     | English        | 20              | 1116     | 1851                   |
+| Harry Potter and the Philosopher's Stone | bestseller  | English        | 49              | 398      | 1997                   |
+| The Da Vinci Code                        | bestseller  | English        | 25              | 203      | 2003                   |
+| The Hunger Games                         | bestseller  | English        | 19              | 142      | 2008                   |
+| Gone Girl                                | bestseller  | English        | 6               | 48       | 2011                   |
+| The Girl with the Dragon Tattoo          | bestseller  | Swedish        | 12              | 78       | 2005                   |
+| Nineteen Eighty-Four                     | bestseller  | English        | 22              | 536      | 1949                   |
+| The Kite Runner                          | bestseller  | English        | 20              | 125      | 2003                   |
+| Life of Pi                               | bestseller  | English        | 14              | 115      | 2000                   |
+| The Alchemist                            | bestseller  | Portuguese     | 19              | 141      | 1988                   |
+| A Game of Thrones                        | bestseller  | English        | 18              | 136      | 1996                   |
+| The Book Thief                           | bestseller  | English        | 16              | 109      | 1998                   |
+| Twilight                                 | bestseller  | English        | 13              | 131      | 2005                   |
+| The Fault in Our Stars                   | bestseller  | English        | 12              | 80       | 2010                   |
+| Gone with the Wind                       | bestseller  | English        | 22              | 362      | 1936                   |
+| The Shadow of the Wind                   | bestseller  | Spanish        | 12              | 99       | 2001                   |
+| Norwegian Wood                           | bestseller  | Japanese       | 11              | 56       | 1987                   |
+| The Name of the Wind                     | bestseller  | English        | 13              | 76       | 2007                   |
+| Educated                                 | bestseller  | English        | 6               | 35       | 2018                   |
+| Where the Crawdads Sing                  | bestseller  | English        | 10              | 44       | 2018                   |
+| The Silent Patient                       | bestseller  | English        | 6               | 26       | 2018                   |
+| Sapiens                                  | non-fiction | Hebrew         | 13              | 86       | 2011                   |
+| Thinking, Fast and Slow                  | non-fiction | English        | 7               | 35       | 2011                   |
+| The Selfish Gene                         | non-fiction | English        | 9               | 41       | 1976                   |
+| Guns, Germs, and Steel                   | non-fiction | English        | 15              | 61       | 1997                   |
+| The Emperor of All Maladies              | non-fiction | English        | 8               | 29       | 2010                   |
+| Silent Spring                            | non-fiction | English        | 6               | 57       | 1962                   |
+| A Brief History of Time                  | non-fiction | English        | 15              | 120      | 1988                   |
+| The Structure of Scientific Revolutions  | non-fiction | English        | 9               | 47       | 1955                   |
+| Debt: The First 5000 Years               | non-fiction | English        | 6               | 12       | 2011                   |
+| The Order of Time                        | non-fiction | Italian        | 3               | 17       | 2017                   |
 
-### Агрегаты по категориям
+### Aggregates by category
 
-| Категория              | n      | Медиана языков | Среднее языков | Мин/макс | Доля с ≥3 языками | Медиана изданий |
-| ---------------------- | ------ | -------------- | -------------- | -------- | ----------------- | --------------- |
-| Классика/public domain | 20     | 20.0           | 21.5           | 9 / 51   | 20/20 = 100%      | 1247            |
-| Совр. бестселлеры      | 20     | 13.5           | 16.2           | 6 / 49   | 20/20 = 100%      | 112             |
-| Нон-фикшн              | 10     | 8.5            | 9.1            | 3 / 15   | 10/10 = 100%      | 44              |
-| **Итого**              | **50** | **16.0**       | —              | —        | **50/50 = 100%**  | —               |
+| Category                 | n      | Median languages | Mean languages | Min/max | Share with ≥3 languages | Median editions |
+| ------------------------ | ------ | ---------------- | -------------- | ------- | ----------------------- | --------------- |
+| Classics/public domain   | 20     | 20.0             | 21.5           | 9 / 51  | 20/20 = 100%            | 1247            |
+| Contemporary bestsellers | 20     | 13.5             | 16.2           | 6 / 49  | 20/20 = 100%            | 112             |
+| Non-fiction              | 10     | 8.5              | 9.1            | 3 / 15  | 10/10 = 100%            | 44              |
+| **Total**                | **50** | **16.0**         | —              | —       | **50/50 = 100%**        | —               |
 
-Ожидаемый градиент подтвердился: классика (много изданий за века, обычно уже public domain) >
-бестселлеры (активно переводятся здесь и сейчас, но моложе) > нон-фикшн (переводится избирательнее,
-меньше изданий вообще). Ни одна книга из выборки не оказалась даже близко к порогу — минимум по
-всей выборке 3 (нон-фикшн, «The Order of Time», см. оговорку про эвристику `docs[0]` выше), а
-следующий минимум уже 6.
+The expected gradient held: classics (many editions over centuries, usually already public
+domain) > bestsellers (actively translated right now, but younger) > non-fiction (translated
+more selectively, fewer editions overall). Not a single book in the sample came anywhere near
+the threshold — the minimum across the whole sample is 3 (non-fiction, "The Order of Time", see
+the `docs[0]` heuristic caveat above), and the next minimum is already 6.
 
 ---
 
 ## Google Books
 
-Количественная оценка по 50 книгам невозможна — анонимная дневная квота была исчерпана до начала
-содержательного тестирования (см. «Методология» и
-[фикстуру ошибки](fixtures/google-books-quota-exceeded-429.txt)). До исчерпания квоты успели
-пройти единичные ручные запросы, подтвердившие форму ответа (`items[].volumeInfo.language`,
-`industryIdentifiers`, `saleInfo.buyLink`), достаточную для роли Google Books в архитектуре —
-вторичный источник ISBN/ссылок на покупку, не основной источник числа языков ([architecture.md
-§5](../architecture.md#5-поток-синхронизации): «`open-library > google-books` для языков/изданий»).
+A quantitative assessment across the 50 books is impossible — the anonymous daily quota was
+exhausted before substantive testing began (see "Methodology" and the
+[error fixture](fixtures/google-books-quota-exceeded-429.txt)). Before the quota ran out, a few
+manual requests got through, confirming a response shape (`items[].volumeInfo.language`,
+`industryIdentifiers`, `saleInfo.buyLink`) sufficient for Google Books' role in the
+architecture — a secondary source of ISBNs/purchase links, not the primary source of language
+counts ([architecture.md §5](../architecture.md#5-sync-flow): "`open-library >
+google-books` for languages/editions").
 
-**Рекомендация**: перед Фазой 1.3 либо (а) получить `GOOGLE_BOOKS_API_KEY` и повторить этот же
-скрипт с ключом с обычного (не общего облачного) IP, либо (б) явно принять, что оценка полноты
-Google Books откладывается до появления реального адаптера с собственным кэшем и уважением
-лимитов — в любом случае, ключ должен быть в `.env` уже на этапе разработки Фазы 1, не только
-для self-host прода.
+**Recommendation**: before Phase 1.3, either (a) obtain a `GOOGLE_BOOKS_API_KEY` and rerun this
+same script with the key from a regular (non-shared cloud) IP, or (b) explicitly accept that
+the Google Books completeness assessment is deferred until a real adapter exists with its own
+cache and rate-limit respect — either way, the key must be in `.env` already during Phase 1
+development, not only for self-hosted production.
 
 ---
 
-## Качество поля «переводчик» и ISBN
+## Quality of the "translator" field and ISBN
 
-Подвыборка: 18 книг (по ~6 на категорию), все издания каждой канонической `work`-записи (до 50 на
-книгу), всего 853 издания. Сырые ответы —
+Subsample: 18 books (~6 per category), all editions of each canonical `work` record (up to 50
+per book), 853 editions in total. Raw responses —
 [fixtures/open-library-editions-with-translators.json](fixtures/open-library-editions-with-translators.json)
-(«The Picture of Dorian Gray», хороший пример) и
-[fixtures/open-library-editions-sample.json](fixtures/open-library-editions-sample.json) («War
-and Peace»).
+("The Picture of Dorian Gray", a good example) and
+[fixtures/open-library-editions-sample.json](fixtures/open-library-editions-sample.json) ("War
+and Peace").
 
-**Важная методологическая поправка по ходу работы**: переводчик у Open Library хранится в
-структурированном поле `contributors: [{role: "Translator", name: "..."}]`, а не в свободном
-тексте — первая версия скрипта проверяла только текстовые поля (`contributions`,
-`by_statement`) и занижала результат почти до нуля. После исправления картина другая:
+**An important mid-work methodological correction**: Open Library stores the translator in a
+structured field `contributors: [{role: "Translator", name: "..."}]`, not in free text — the
+first version of the script checked only the text fields (`contributions`, `by_statement`) and
+understated the result to nearly zero. After the fix the picture is different:
 
-| Метрика                                                                                    | Значение    |
-| ------------------------------------------------------------------------------------------ | ----------- |
-| Изданий проверено                                                                          | 853         |
-| …с именным переводчиком (`contributors[].role`)                                            | 104 (12.2%) |
-| …с полем `translated_from` (язык оригинала для конкретного издания, без имени переводчика) | 140 (16.4%) |
-| …с ISBN-10 или ISBN-13                                                                     | 760 (89.1%) |
-| Книг, где хотя бы 1 издание из проверенных содержит именного переводчика                   | 17 / 18     |
-| Книг, где хотя бы 1 издание содержит `translated_from`                                     | 18 / 18     |
+| Metric                                                                                          | Value       |
+| ----------------------------------------------------------------------------------------------- | ----------- |
+| Editions checked                                                                                | 853         |
+| …with a named translator (`contributors[].role`)                                                | 104 (12.2%) |
+| …with a `translated_from` field (original language of the specific edition, no translator name) | 140 (16.4%) |
+| …with an ISBN-10 or ISBN-13                                                                     | 760 (89.1%) |
+| Books where at least 1 checked edition contains a named translator                              | 17 / 18     |
+| Books where at least 1 edition contains `translated_from`                                       | 18 / 18     |
 
-**Интерпретация**: на уровне отдельного издания поле «переводчик» действительно дырявое, как и
-предполагалось в `plan.md`, — им размечено только ~12% изданий. Но на уровне продукта важнее
-другое: почти для каждой книги (17 из 18) находится **хотя бы одно** издание с указанным
-переводчиком — то есть карточка книги в Фазе 1 сможет показать имя переводчика для большинства
-произведений, даже если не для каждого конкретного издания. Дополнительно, `translated_from`
-(язык оригинала конкретного издания) заполнен чаще и независимо от имени переводчика — его стоит
-использовать в Фазе 1.1 как самостоятельный сигнал «это перевод», даже когда имя переводчика
-неизвестно.
+**Interpretation**: at the level of an individual edition the "translator" field is indeed
+patchy, as `plan.md` predicted — only ~12% of editions are labeled with it. But at the product
+level something else matters more: for almost every book (17 of 18) there is **at least one**
+edition with a named translator — meaning the Phase 1 book card will be able to show the
+translator's name for most works, even if not for every specific edition. Additionally,
+`translated_from` (the original language of a specific edition) is filled in more often and
+independently of the translator's name — it should be used in Phase 1.1 as a standalone "this
+is a translation" signal, even when the translator's name is unknown.
 
-ISBN, напротив, в хорошем состоянии (89%) и не требует специальной компенсирующей логики.
-
----
-
-## Латентность и лимиты
-
-| Показатель                                               | Значение    |
-| -------------------------------------------------------- | ----------- |
-| Медиана латентности успешного `search.json`              | 3.5с        |
-| Среднее                                                  | 6.0с        |
-| Максимум                                                 | 22.0с       |
-| Доля неудачных запросов при темпе 1 req/s без ретраев    | 76% (38/50) |
-| Доля неудачных запросов при темпе 1 req/4s               | 32% (16/50) |
-| Доля неудачных запросов при темпе 1 req/8s, до 3 попыток | 0% (0/50)   |
-
-Целевой показатель из `plan.md` («холодный кэш ≤ 2с, тёплый ≤ 300мс») относится к **ответу
-нашего API из собственной БД**, не к прямому походу в Open Library — эти цифры подтверждают,
-почему архитектурное решение «пользовательский запрос никогда не идёт синхронно во внешний API»
-([architecture.md §1](../architecture.md#1-контекст-и-границы-системы)) необходимо буквально:
-медиана 3.5с и максимум 22с на один запрос делают синхронный поход неприемлемым для HTTP-ответа
-пользователю, а нестабильность соединения — обязательным поводом для ретраев в фоновом воркере,
-где лишняя секунда-другая не видна пользователю.
-
-Google Books: единственный чётко измеренный лимит — дневная анонимная квота, исчерпанная
-целиком (`quota_limit_value: 0`). Значение точного дневного лимита с ключом не измерялось (нет
-ключа в этом окружении).
+ISBN, by contrast, is in good shape (89%) and needs no special compensating logic.
 
 ---
 
-## Решение по критерию «≥70% книг находят ≥3 перевода»
+## Latency and limits
 
-**Критерий перевыполнен**: 50/50 (100%) книг выборки нашли ≥3 языка через один Open Library,
-при медиане 16. Даже наименее удачная категория (нон-фикшн) дала 100% при медиане 8.5.
+| Metric                                             | Value       |
+| -------------------------------------------------- | ----------- |
+| Median latency of a successful `search.json`       | 3.5s        |
+| Mean                                               | 6.0s        |
+| Maximum                                            | 22.0s       |
+| Failed-request share at 1 req/s, no retries        | 76% (38/50) |
+| Failed-request share at 1 req/4s                   | 32% (16/50) |
+| Failed-request share at 1 req/8s, up to 3 attempts | 0% (0/50)   |
 
-**Но решение принимается с оговоркой**, а не безусловным «да»:
+The target from `plan.md` ("cold cache ≤ 2s, warm ≤ 300ms") refers to **our API's response from
+its own DB**, not to a direct call to Open Library — these numbers confirm why the
+architectural decision "a user request never goes synchronously to an external API"
+([architecture.md §1](../architecture.md#1-system-context-and-boundaries)) is necessary
+literally: a 3.5s median and a 22s maximum per request make a synchronous call unacceptable for
+a user-facing HTTP response, and the connection instability makes retries in a background
+worker mandatory — where an extra second or two is invisible to the user.
 
-1. Выборка — заведомо известные книги (классика и бестселлеры). Гипотеза **подтверждена для
-   этого сегмента**, который, вероятно, составляет основную массу реальных пользовательских
-   запросов, но не доказана для длинного хвоста нишевых/локальных книг.
-2. Итог: **продолжаем в Фазу 1 без экстренного включения WorldCat/Index Translationum** — они
-   остаются в Фазе 2 согласно исходному плану. Стоп-условие из `plan.md` («медиана < 2 →
-   пересматриваем нишу») не сработало ни близко — медиана 16 против порога 2.
-3. Три находки этой фазы меняют реализацию, а не только подтверждают гипотезу, и должны быть
-   отражены в бэклоге Фазы 1.3 (уже добавлено в `plan.md`):
-   - `OpenLibraryProvider` использует только полнотекстовый запрос, никогда field-scoped.
-   - Ретраи с backoff и circuit breaker обязательны с первой версии адаптера, не «добавим
-     потом» — без них Open Library недоступен на 76% запросов при наивной реализации.
-   - `GOOGLE_BOOKS_API_KEY` обязателен уже для разработки, не только для self-host прода.
-4. Разовая, недорогая задача на начало Фазы 1 (не блокирует старт): прогнать этот же скрипт по
-   выборке из ~15–20 **нишевых/малоизвестных** книг (среднего некрупного нон-фикшна, локальных
-   изданий, книг младше 5 лет без экранизаций) — чтобы иметь реальную цифру по худшему случаю, а
-   не только по лёгкому.
+Google Books: the only clearly measured limit is the anonymous daily quota, exhausted entirely
+(`quota_limit_value: 0`). The exact daily limit with a key was not measured (no key in this
+environment).
+
+---
+
+## Decision on the "≥70% of books find ≥3 translations" criterion
+
+**The criterion is exceeded**: 50/50 (100%) of the sample books found ≥3 languages via Open
+Library alone, with a median of 16. Even the weakest category (non-fiction) scored 100% with a
+median of 8.5.
+
+**But the decision comes with a caveat**, not an unconditional "yes":
+
+1. The sample is deliberately well-known books (classics and bestsellers). The hypothesis is
+   **confirmed for this segment**, which probably makes up the bulk of real user queries, but
+   is not proven for the long tail of niche/local books.
+2. Bottom line: **we proceed to Phase 1 without emergency inclusion of WorldCat/Index
+   Translationum** — they remain in Phase 2 per the original plan. The stop condition from
+   `plan.md` ("median < 2 → we reconsider the niche") did not come anywhere close to firing —
+   median 16 against a threshold of 2.
+3. Three findings from this phase change the implementation, not just confirm the hypothesis,
+   and must be reflected in the Phase 1.3 backlog (already added to `plan.md`):
+   - `OpenLibraryProvider` uses only the full-text query, never field-scoped.
+   - Retries with backoff and a circuit breaker are mandatory from the adapter's first version,
+     not "we'll add them later" — without them Open Library is unavailable for 76% of requests
+     under a naive implementation.
+   - `GOOGLE_BOOKS_API_KEY` is mandatory already for development, not only for self-hosted
+     production.
+4. A one-off, cheap task for the start of Phase 1 (does not block the start): run this same
+   script over a sample of ~15–20 **niche/little-known** books (mid-list smaller non-fiction,
+   local editions, books under 5 years old with no screen adaptations) — to have a real
+   worst-case number, not just the easy-case one.

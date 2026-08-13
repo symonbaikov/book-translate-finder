@@ -18,7 +18,7 @@ const baseCandidate = (overrides: Partial<LinkCandidate> = {}): LinkCandidate =>
   ...overrides,
 });
 
-describe('assertLinkAllowed — И-3 shadow libraries are never a source, regardless of link type', () => {
+describe('assertLinkAllowed — I-3 shadow libraries are never a source, regardless of link type', () => {
   it.each([
     'https://libgen.rs/book/12345',
     'https://LIBGEN.RS/book/12345', // case
@@ -64,7 +64,7 @@ describe('assertLinkAllowed — И-3 shadow libraries are never a source, regard
   });
 });
 
-describe('assertLinkAllowed — И-1 download requires allowlisted provider + public status', () => {
+describe('assertLinkAllowed — I-1 download requires allowlisted provider + public status', () => {
   it('allows a download from an allowlisted provider with public_domain status', () => {
     const link = assertLinkAllowed(baseCandidate());
     expect(link.type).toBe('download');
@@ -108,7 +108,7 @@ describe('assertLinkAllowed — И-1 download requires allowlisted provider + pu
   );
 });
 
-describe('assertLinkAllowed — И-2/И-4 buy/borrow links are not status-gated but always carry a status', () => {
+describe('assertLinkAllowed — I-2/I-4 buy/borrow links are not status-gated but always carry a status', () => {
   it.each(['buy', 'borrow'] as const)('allows a %s link for a copyrighted work', (type) => {
     const link = assertLinkAllowed(
       baseCandidate({

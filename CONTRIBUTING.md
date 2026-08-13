@@ -1,27 +1,28 @@
-# Как контрибьютить в BookTranslate Finder
+# How to contribute to BookTranslate Finder
 
-Спасибо за интерес к проекту! Прежде чем открывать PR, прочитайте этот файл целиком —
-он короткий, а пара его правил жёсткие.
+Thank you for your interest in the project! Before opening a PR, read this file in full —
+it is short, but a couple of its rules are strict.
 
-## Главное правило (нарушение = закрытие PR без обсуждения)
+## The main rule (violation = PR closed without discussion)
 
-**PR с интеграциями теневых библиотек не принимаются.** Никакого скрейпинга и никаких ссылок на
-Library Genesis, Anna's Archive, Z-Library и подобные — ни как источник данных, ни как источник
-ссылок, ни «опциональным флагом», ни «для личного использования». Это не пожелание мейнтейнера,
-а архитектурный и юридический инвариант проекта: он закреплён в доменном коде (`LinkPolicy`),
-покрыт тестами и описан в [docs/legal-policy.md](docs/legal-policy.md). Прямая ссылка на
-скачивание допустима **только** для public domain / открытой лицензии из allowlist провайдеров.
+**PRs with shadow library integrations are not accepted.** No scraping and no links to
+Library Genesis, Anna's Archive, Z-Library, and the like — neither as a data source, nor as a
+link source, nor "behind an optional flag", nor "for personal use". This is not a maintainer's
+preference but an architectural and legal invariant of the project: it is enforced in the domain
+code (`LinkPolicy`), covered by tests, and described in [docs/legal-policy.md](docs/legal-policy.md).
+A direct download link is allowed **only** for public domain / open-license works from the
+provider allowlist.
 
-## Перед началом работы
+## Before you start
 
-1. Прочитайте [docs/rules.md](docs/rules.md) — SOLID, идемпотентность, правила кода и тестов.
-2. Для нового слоя/модуля — [docs/architecture.md](docs/architecture.md). Направление
-   зависимостей строго внутрь: `apps → infrastructure → application → domain`; `domain` не
-   импортирует ничего из проекта. Нарушение границ роняет CI (`pnpm boundaries`).
-3. Новый внешний источник данных подключается только через порт в `domain` и адаптер в
-   `infrastructure` — и только легальный (см. выше).
+1. Read [docs/rules.md](docs/rules.md) — SOLID, idempotency, code and testing rules.
+2. For a new layer/module — [docs/architecture.md](docs/architecture.md). Dependency
+   direction is strictly inward: `apps → infrastructure → application → domain`; `domain`
+   imports nothing from the project. Boundary violations fail CI (`pnpm boundaries`).
+3. A new external data source is connected only through a port in `domain` and an adapter in
+   `infrastructure` — and only a legal one (see above).
 
-## Локальная разработка
+## Local development
 
 ```bash
 pnpm install
@@ -31,21 +32,20 @@ pnpm db:migrate && pnpm db:seed
 pnpm dev
 ```
 
-Подробности — в [CLAUDE.md](CLAUDE.md) (контракт команд) и [README.md](README.md).
+Details — in [CLAUDE.md](CLAUDE.md) (the command contract) and [README.md](README.md).
 
-## Требования к PR
+## PR requirements
 
-- `pnpm lint && pnpm typecheck && pnpm boundaries && pnpm test` проходят локально.
-  `pnpm test:integration` требует работающий Docker (Testcontainers).
-- Новая логика покрыта тестами. Любая операция записи, вызываемая джобой или ретраем, —
-  идемпотентна (`INSERT` без стратегии конфликта — ошибка ревью).
-- Код, комментарии, коммиты и идентификаторы — на английском. Пользовательский текст в UI — на
-  русском (текущий язык интерфейса).
-- Секреты и ключи источников — только через переменные окружения; `.env` не коммитится.
-- Один PR — одно осмысленное изменение. Рефакторинг «заодно» разбивайте на отдельные PR.
+- `pnpm lint && pnpm typecheck && pnpm boundaries && pnpm test` pass locally.
+  `pnpm test:integration` requires a running Docker (Testcontainers).
+- New logic is covered by tests. Any write operation invoked by a job or a retry is
+  idempotent (an `INSERT` without a conflict strategy is a review error).
+- Code, comments, commits, identifiers, documentation, and user-facing UI text — all in English.
+- Secrets and source API keys — only via environment variables; `.env` is not committed.
+- One PR — one meaningful change. Split "while we're at it" refactoring into separate PRs.
 
-## Как предложить новый источник данных
+## How to propose a new data source
 
-Откройте issue с описанием: что за источник, какой у него официальный API/выгрузки, условия
-использования (ToS), лимиты, есть ли поле автора и языка. Источники без официального API
-(только HTML) не подходят — см. главное правило.
+Open an issue describing: what the source is, what official API/data dumps it has, its terms
+of use (ToS), rate limits, and whether it has author and language fields. Sources without an
+official API (HTML only) are not suitable — see the main rule.

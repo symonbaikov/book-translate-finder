@@ -1,84 +1,85 @@
-# Архитектура BookTranslate Finder
+# BookTranslate Finder Architecture
 
-Документ описывает целевую архитектуру системы. Он нормативный: код должен соответствовать
-описанному здесь разделению слоёв и контрактам. Отклонения оформляются через ADR в `docs/adr/`.
+This document describes the target architecture of the system. It is normative: code must
+conform to the layer separation and contracts described here. Deviations are recorded as ADRs
+in `docs/adr/`.
 
 ---
 
-## 1. Контекст и границы системы
+## 1. System context and boundaries
 
 ```
         ┌──────────────┐
-        │  Пользователь │
+        │     User     │
         └──────┬───────┘
                │ HTTPS
      ┌─────────▼──────────┐
-     │  Web (Next.js)     │  SSR карточки книги, поиск, SEO
+     │  Web (Next.js)     │  SSR book card, search, SEO
      └─────────┬──────────┘
                │ REST (JSON, contracts)
      ┌─────────▼──────────┐        ┌──────────────┐
-     │  API (NestJS)      │◄──────►│    Redis     │ кэш, rate limit, очереди
+     │  API (NestJS)      │◄──────►│    Redis     │ cache, rate limit, queues
      └─────────┬──────────┘        └──────▲───────┘
                │                          │
      ┌─────────▼──────────┐        ┌──────┴───────┐
-     │   PostgreSQL       │        │   Worker     │ BullMQ: синхронизация, импорт
+     │   PostgreSQL       │        │   Worker     │ BullMQ: sync, imports
      └────────────────────┘        └──────┬───────┘
                                           │ HTTP (rate-limited, retry, circuit breaker)
                            ┌──────────────▼───────────────┐
-                           │ Внешние источники:            │
+                           │ External sources:             │
                            │ Open Library, Google Books,   │
                            │ WorldCat, Index Translationum,│
                            │ Gutenberg / Internet Archive  │
                            └───────────────────────────────┘
 ```
 
-Ключевое свойство: **пользовательский запрос никогда не идёт синхронно во внешний API**.
-Внешние источники опрашиваются воркерами асинхронно, результат нормализуется и кладётся в
-PostgreSQL; чтение идёт из своей БД с прогревом через Redis. Единственное исключение —
-Фаза 0 (прототип), которая существует ровно для проверки гипотезы и затем выбрасывается.
+Key property: **a user request never goes synchronously to an external API**.
+External sources are polled by workers asynchronously; the result is normalized and stored in
+PostgreSQL; reads come from our own DB, warmed through Redis. The only exception is
+Phase 0 (the prototype), which exists solely to validate the hypothesis and is then thrown away.
 
 ---
 
-## 2. Слои Clean Architecture
+## 2. Clean Architecture layers
 
-### 2.1 Правило зависимостей
+### 2.1 The dependency rule
 
-Зависимости направлены **только внутрь**. Внутренний слой ничего не знает о внешнем.
+Dependencies point **inward only**. An inner layer knows nothing about an outer one.
 
 ```
    apps (web / api / worker)          ← composition root, HTTP, DI, cron
         ↓
-   infrastructure                     ← адаптеры: Postgres, Redis, HTTP-клиенты, BullMQ
+   infrastructure                     ← adapters: Postgres, Redis, HTTP clients, BullMQ
         ↓
-   application                        ← use cases (интеракторы), оркестрация
+   application                        ← use cases (interactors), orchestration
         ↓
-   domain                             ← сущности, VO, доменные правила, ПОРТЫ (интерфейсы)
+   domain                             ← entities, VOs, domain rules, PORTS (interfaces)
 ```
 
-`packages/contracts` — поперечный пакет с Zod-схемами внешнего API; его импортируют `apps/web`
-и `apps/api`, но **не** `domain` и не `application`.
+`packages/contracts` is a cross-cutting package with Zod schemas of the external API; it is
+imported by `apps/web` and `apps/api`, but **not** by `domain` or `application`.
 
-Правило проверяется автоматически в CI командой `pnpm boundaries` (dependency-cruiser,
-`.dependency-cruiser.mjs`), а не силой воли ревьюера — она резолвит импорты пакетов
-(`@btf/infrastructure` и т.п.) до реальных файлов и падает на любом нарушении направления
-зависимостей. `eslint-plugin-boundaries` был опробован для этой роли на этапе 1.0, но в связке
-pnpm + ESM + TS project references не резолвил `@btf/*`-импорты между пакетами и молча
-пропускал нарушения — от него отказались (docs/adr/0001-clean-architecture-monorepo.md).
+The rule is enforced automatically in CI by `pnpm boundaries` (dependency-cruiser,
+`.dependency-cruiser.mjs`), not by reviewer willpower — it resolves package imports
+(`@btf/infrastructure` etc.) to real files and fails on any violation of the dependency
+direction. `eslint-plugin-boundaries` was tried for this role in stage 1.0, but in the
+pnpm + ESM + TS project references setup it failed to resolve `@btf/*` imports between packages
+and silently let violations through — it was dropped (docs/adr/0001-clean-architecture-monorepo.md).
 
 ### 2.2 domain (`packages/domain`)
 
-Ноль внешних зависимостей — ни ORM, ни HTTP, ни `node:fs`, ни фреймворка. Только TypeScript.
+Zero external dependencies — no ORM, no HTTP, no `node:fs`, no framework. TypeScript only.
 
-Содержит:
+Contains:
 
-- **Сущности**: `Work`, `Edition`, `SourceLink`, `Language`.
+- **Entities**: `Work`, `Edition`, `SourceLink`, `Language`.
 - **Value objects**: `Isbn`, `LanguageCode` (ISO 639-1), `WorkNaturalKey`, `RightsStatus`,
   `LinkType`, `ProviderId`, `ExternalRef`.
-- **Доменные правила**: политика ссылок (`LinkPolicy`), нормализация названий/авторов,
-  правила слияния изданий.
-- **Порты** (интерфейсы, реализуемые в infrastructure).
+- **Domain rules**: link policy (`LinkPolicy`), title/author normalization,
+  edition-merging rules.
+- **Ports** (interfaces implemented in infrastructure).
 
-Пример границы — порт источника метаданных:
+Example of a boundary — the metadata source port:
 
 ```ts
 // packages/domain/src/ports/book-metadata-provider.port.ts
@@ -89,91 +90,91 @@ export interface BookMetadataProvider {
 }
 ```
 
-Реестр портов:
+Port registry:
 
-| Порт                    | Ответственность                               | Реализация (Фаза 1)                          |
+| Port                    | Responsibility                                | Implementation (Phase 1)                     |
 | ----------------------- | --------------------------------------------- | -------------------------------------------- |
-| `BookMetadataProvider`  | Получение работ/изданий из внешнего источника | `OpenLibraryProvider`, `GoogleBooksProvider` |
-| `WorkRepository`        | Чтение/запись `work`, поиск по natural key    | `PgWorkRepository`                           |
-| `EditionRepository`     | Чтение/запись `edition`, дедупликация         | `PgEditionRepository`                        |
-| `SourceLinkRepository`  | Ссылки издания                                | `PgSourceLinkRepository`                     |
-| `ExternalRefRepository` | Связь «наш id ↔ id источника»                 | `PgExternalRefRepository`                    |
-| `SyncLogRepository`     | Журнал синхронизаций                          | `PgSyncLogRepository`                        |
-| `IdempotencyStore`      | Хранение ключей идемпотентности и ответов     | `PgIdempotencyStore`                         |
-| `UnitOfWork`            | Транзакционная граница use case               | `PgUnitOfWork`                               |
-| `CachePort`             | Кэш горячих запросов                          | `RedisCache`                                 |
-| `JobQueuePort`          | Постановка задач синхронизации                | `BullMqQueue`                                |
-| `Clock`                 | Текущее время (детерминизм тестов)            | `SystemClock`                                |
-| `IdGenerator`           | Генерация id (UUIDv7)                         | `Uuid7Generator`                             |
+| `BookMetadataProvider`  | Fetching works/editions from external sources | `OpenLibraryProvider`, `GoogleBooksProvider` |
+| `WorkRepository`        | Read/write `work`, lookup by natural key      | `PgWorkRepository`                           |
+| `EditionRepository`     | Read/write `edition`, deduplication           | `PgEditionRepository`                        |
+| `SourceLinkRepository`  | Edition links                                 | `PgSourceLinkRepository`                     |
+| `ExternalRefRepository` | Mapping "our id ↔ source id"                  | `PgExternalRefRepository`                    |
+| `SyncLogRepository`     | Sync journal                                  | `PgSyncLogRepository`                        |
+| `IdempotencyStore`      | Storing idempotency keys and responses        | `PgIdempotencyStore`                         |
+| `UnitOfWork`            | Transactional boundary of a use case          | `PgUnitOfWork`                               |
+| `CachePort`             | Cache for hot queries                         | `RedisCache`                                 |
+| `JobQueuePort`          | Enqueueing sync jobs                          | `BullMqQueue`                                |
+| `Clock`                 | Current time (test determinism)               | `SystemClock`                                |
+| `IdGenerator`           | Id generation (UUIDv7)                        | `Uuid7Generator`                             |
 
-`Clock` и `IdGenerator` — порты не ради догмы: без них use case недетерминирован, а
-идемпотентность невозможно протестировать.
+`Clock` and `IdGenerator` are ports not out of dogma: without them a use case is
+non-deterministic and idempotency cannot be tested.
 
 ### 2.3 application (`packages/application`)
 
-Use cases — по одному классу на сценарий, один публичный метод `execute`. Зависимости приходят
-через конструктор в виде **портов**, никогда в виде конкретных классов.
+Use cases — one class per scenario, a single public method `execute`. Dependencies arrive
+through the constructor as **ports**, never as concrete classes.
 
-| Use case             | Триггер                       | Идемпотентность                        |
-| -------------------- | ----------------------------- | -------------------------------------- |
-| `SearchWorks`        | `GET /api/search`             | Чтение, N/A                            |
-| `GetWorkCard`        | `GET /api/works/:id`          | Чтение, N/A                            |
-| `ListEditions`       | `GET /api/works/:id/editions` | Чтение, N/A                            |
-| `GetEditionLinks`    | `GET /api/editions/:id/links` | Чтение, N/A                            |
-| `EnqueueSourceSync`  | `POST /api/sync/:source`      | Ключ идемпотентности + дедуп jobId     |
-| `SyncWorkFromSource` | BullMQ job                    | Upsert по natural key + external ref   |
-| `ImportSourceDump`   | CLI / cron (Фаза 2)           | Батчевый upsert, чекпоинты по строкам  |
-| `RefreshStaleWorks`  | cron                          | Отбор по `synced_at`, повтор безопасен |
+| Use case             | Trigger                       | Idempotency                              |
+| -------------------- | ----------------------------- | ---------------------------------------- |
+| `SearchWorks`        | `GET /api/search`             | Read, N/A                                |
+| `GetWorkCard`        | `GET /api/works/:id`          | Read, N/A                                |
+| `ListEditions`       | `GET /api/works/:id/editions` | Read, N/A                                |
+| `GetEditionLinks`    | `GET /api/editions/:id/links` | Read, N/A                                |
+| `EnqueueSourceSync`  | `POST /api/sync/:source`      | Idempotency key + jobId dedup            |
+| `SyncWorkFromSource` | BullMQ job                    | Upsert by natural key + external ref     |
+| `ImportSourceDump`   | CLI / cron (Phase 2)          | Batched upsert, row-level checkpoints    |
+| `RefreshStaleWorks`  | cron                          | Selection by `synced_at`, safe to repeat |
 
-Use case **не** знает про HTTP-статусы, Nest-декораторы, SQL и Redis. Он возвращает результат
-или доменную ошибку; перевод в HTTP — работа контроллера в `apps/api`.
+A use case does **not** know about HTTP statuses, Nest decorators, SQL, or Redis. It returns a
+result or a domain error; translating to HTTP is the job of the controller in `apps/api`.
 
 ### 2.4 infrastructure (`packages/infrastructure`)
 
-Адаптеры портов. Здесь и только здесь живут: Drizzle-схемы и SQL, Redis-клиент, HTTP-клиенты
-источников (с таймаутами, ретраями с экспоненциальной задержкой и джиттером, circuit breaker,
-уважением rate limit источника), BullMQ, маппинг «строка БД ↔ доменная сущность».
+Port adapters. Here and only here live: Drizzle schemas and SQL, the Redis client, HTTP clients
+for sources (with timeouts, retries with exponential backoff and jitter, circuit breaker,
+respect for the source's rate limit), BullMQ, and the "DB row ↔ domain entity" mapping.
 
-Правило маппинга: типы ORM/DTO источников **не покидают** infrastructure. Наружу отдаются
-доменные сущности.
+Mapping rule: ORM types and source DTOs **do not leave** infrastructure. Domain entities are
+what gets returned outward.
 
 ### 2.5 apps
 
-- **`apps/api`** — composition root: сборка DI-контейнера Nest (провайдеры биндят порты на
-  адаптеры), контроллеры, валидация входа Zod-схемами из `contracts`, rate limiting,
-  обработка ошибок, OpenAPI.
-- **`apps/worker`** — composition root воркеров: подписка BullMQ на очереди, расписания cron,
-  graceful shutdown.
-- **`apps/web`** — Next.js. Ходит только в собственный API. Не знает про источники данных и не
-  содержит бизнес-правил, кроме отображения.
+- **`apps/api`** — composition root: assembly of the Nest DI container (providers bind ports to
+  adapters), controllers, input validation with Zod schemas from `contracts`, rate limiting,
+  error handling, OpenAPI.
+- **`apps/worker`** — composition root of the workers: BullMQ queue subscriptions, cron
+  schedules, graceful shutdown.
+- **`apps/web`** — Next.js. Talks only to our own API. Knows nothing about data sources and
+  contains no business rules beyond presentation.
 
 ---
 
-## 3. Модель данных
+## 3. Data model
 
-Ядро — разделение **произведения** (`work`) и **издания** (`edition`): у одной книги бывает
-несколько переводов на один и тот же язык от разных издательств и переводчиков.
+The core is the separation of a **work** (`work`) and an **edition** (`edition`): a single book
+can have several translations into the same language from different publishers and translators.
 
 ```
 work 1───* edition 1───* source_link
  │              │
  │              └── language (ISO 639-1)
- └───* external_ref (work|edition ↔ id во внешнем источнике)
+ └───* external_ref (work|edition ↔ id in an external source)
 ```
 
-### 3.1 Таблицы
+### 3.1 Tables
 
-| Таблица           | Ключевые поля                                                                                                       | Комментарий                                                                                                                                                                                                                                                                                                                                                                                  |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `work`            | `id`, `original_title`, `original_language`, `author`, `first_published_year`, `natural_key`, `synced_at`           | `natural_key` — детерминированный хэш нормализованных title+author                                                                                                                                                                                                                                                                                                                           |
-| `edition`         | `id`, `work_id`, `title`, `language`, `translator`, `translated_from`, `publisher`, `year`, `isbn13`, `natural_key` | `natural_key` = ISBN-13, если есть; иначе хэш(work_id, language, publisher, year, norm(title)). `translated_from` — язык оригинала для этого издания; по данным Фазы 0 заполнен чаще, чем `translator` (16.4% против 12.2% изданий) — самостоятельный сигнал «это перевод», не производный от переводчика. Источник издания — через `external_ref`, отдельного поля на самой записи не нужно |
-| `source_link`     | `id`, `edition_id`, `type`, `url`, `url_hash`, `provider`, `rights_status`, `is_legal_free`, `verified_at`          | `type ∈ {download, buy, borrow}`                                                                                                                                                                                                                                                                                                                                                             |
-| `language`        | `code` (ISO 639-1), `name_ru`, `name_en`                                                                            | Справочник, сидируется                                                                                                                                                                                                                                                                                                                                                                       |
-| `external_ref`    | `id`, `source_name`, `external_id`, `entity_type`, `entity_id`                                                      | Уникальность `(source_name, external_id)` — основа идемпотентного связывания                                                                                                                                                                                                                                                                                                                 |
-| `sync_log`        | `id`, `source_name`, `work_id`, `fetched_at`, `status`, `error`, `job_id`                                           | Аудит и наблюдаемость синхронизаций                                                                                                                                                                                                                                                                                                                                                          |
-| `idempotency_key` | `key`, `endpoint`, `request_hash`, `response_body`, `status_code`, `created_at`, `expires_at`                       | Идемпотентность мутирующих HTTP-эндпоинтов                                                                                                                                                                                                                                                                                                                                                   |
+| Table             | Key fields                                                                                                          | Comment                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `work`            | `id`, `original_title`, `original_language`, `author`, `first_published_year`, `natural_key`, `synced_at`           | `natural_key` — deterministic hash of normalized title+author                                                                                                                                                                                                                                                                                                                                                                              |
+| `edition`         | `id`, `work_id`, `title`, `language`, `translator`, `translated_from`, `publisher`, `year`, `isbn13`, `natural_key` | `natural_key` = ISBN-13 if present; otherwise hash(work_id, language, publisher, year, norm(title)). `translated_from` — the source language for this edition; per Phase 0 data it is populated more often than `translator` (16.4% vs 12.2% of editions) — a standalone "this is a translation" signal, not derived from the translator. The edition's source comes via `external_ref`; no dedicated field on the record itself is needed |
+| `source_link`     | `id`, `edition_id`, `type`, `url`, `url_hash`, `provider`, `rights_status`, `is_legal_free`, `verified_at`          | `type ∈ {download, buy, borrow}`                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `language`        | `code` (ISO 639-1), `name_ru`, `name_en`                                                                            | Reference table, seeded                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `external_ref`    | `id`, `source_name`, `external_id`, `entity_type`, `entity_id`                                                      | Uniqueness of `(source_name, external_id)` is the foundation of idempotent linking                                                                                                                                                                                                                                                                                                                                                         |
+| `sync_log`        | `id`, `source_name`, `work_id`, `fetched_at`, `status`, `error`, `job_id`                                           | Audit and observability of syncs                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `idempotency_key` | `key`, `endpoint`, `request_hash`, `response_body`, `status_code`, `created_at`, `expires_at`                       | Idempotency of mutating HTTP endpoints                                                                                                                                                                                                                                                                                                                                                                                                     |
 
-### 3.2 Уникальные ограничения (несущая конструкция идемпотентности)
+### 3.2 Unique constraints (the load-bearing structure of idempotency)
 
 ```sql
 UNIQUE (work.natural_key)
@@ -183,39 +184,39 @@ UNIQUE (source_link.edition_id, source_link.provider, source_link.type, source_l
 UNIQUE (idempotency_key.key, idempotency_key.endpoint)
 ```
 
-Каждая запись из источника проходит через `ON CONFLICT ... DO UPDATE`, поэтому повторный
-прогон синхронизации не создаёт дублей — это свойство схемы, а не аккуратности кода.
+Every record from a source goes through `ON CONFLICT ... DO UPDATE`, so re-running a sync does
+not create duplicates — this is a property of the schema, not of code carefulness.
 
-### 3.3 Индексы (минимум для Фазы 1)
+### 3.3 Indexes (minimum for Phase 1)
 
-- `work`: GIN trigram по `original_title` и `author` для нечёткого поиска; btree по `synced_at`
-  для отбора устаревших записей.
+- `work`: GIN trigram on `original_title` and `author` for fuzzy search; btree on `synced_at`
+  for selecting stale records.
 - `edition`: btree `(work_id, language)`, unique `isbn13` (partial, `WHERE isbn13 IS NOT NULL`).
 - `source_link`: btree `edition_id`.
 - `sync_log`: btree `(source_name, fetched_at DESC)`.
 
 ---
 
-## 4. Внешний API
+## 4. External API
 
-Базовый префикс `/api`. Все ответы — JSON, схемы описаны в `packages/contracts` и
-экспортируются в OpenAPI.
+Base prefix `/api`. All responses are JSON; schemas are described in `packages/contracts` and
+exported to OpenAPI.
 
-| Маршрут                                       | Назначение                                    | Кэш               |
+| Route                                         | Purpose                                       | Cache             |
 | --------------------------------------------- | --------------------------------------------- | ----------------- |
-| `GET /api/search?q=&limit=`                   | Поиск произведений по названию/автору         | Redis, TTL 10 мин |
-| `GET /api/works/:id`                          | Карточка: языки переводов, сводка изданий     | Redis, TTL 1 ч    |
-| `GET /api/works/:id/editions?language=&year=` | Издания с фильтрами                           | Redis, TTL 1 ч    |
-| `GET /api/editions/:id/links`                 | Ссылки: скачать / купить / взять в библиотеке | Redis, TTL 6 ч    |
-| `POST /api/sync/:source`                      | Служебный запуск синхронизации источника      | —                 |
+| `GET /api/search?q=&limit=`                   | Search works by title/author                  | Redis, TTL 10 min |
+| `GET /api/works/:id`                          | Card: translation languages, edition summary  | Redis, TTL 1 h    |
+| `GET /api/works/:id/editions?language=&year=` | Editions with filters                         | Redis, TTL 1 h    |
+| `GET /api/editions/:id/links`                 | Links: download / buy / borrow from a library | Redis, TTL 6 h    |
+| `POST /api/sync/:source`                      | Service-side trigger of a source sync         | —                 |
 
-`POST /api/sync/:source` требует заголовок `Idempotency-Key` и служебной авторизации
-(`X-Admin-Token` в Фазе 1, полноценная авторизация — Фаза 2). Повтор с тем же ключом и тем же
-телом возвращает сохранённый ответ и не ставит новую задачу; повтор с тем же ключом и другим
-телом → `409 Conflict`.
+`POST /api/sync/:source` requires an `Idempotency-Key` header and service authorization
+(`X-Admin-Token` in Phase 1, full authorization in Phase 2). A retry with the same key and the
+same body returns the stored response and does not enqueue a new job; a retry with the same key
+and a different body → `409 Conflict`.
 
-Ответ `GET /api/editions/:id/links` всегда содержит явный правовой статус каждой ссылки —
-это требование продукта и юридической политики одновременно:
+The `GET /api/editions/:id/links` response always contains the explicit rights status of every
+link — this is a product requirement and a legal-policy requirement at the same time:
 
 ```json
 {
@@ -230,7 +231,7 @@ UNIQUE (idempotency_key.key, idempotency_key.endpoint)
 
 ---
 
-## 5. Поток синхронизации
+## 5. Sync flow
 
 ```
 POST /api/sync/:source  ──► EnqueueSourceSync ──► BullMQ (jobId = source-target-bucket)
@@ -241,84 +242,86 @@ POST /api/sync/:source  ──► EnqueueSourceSync ──► BullMQ (jobId = so
                                                         │
                     ┌───────────────────────────────────┼───────────────────────────┐
                     ▼                                   ▼                           ▼
-          BookMetadataProvider              нормализация + natural key      LinkPolicy (фильтр)
-          (HTTP, retry, breaker)            дедупликация изданий            легальности ссылок
+          BookMetadataProvider              normalization + natural key     LinkPolicy (filters
+          (HTTP, retry, breaker)            edition deduplication           link legality)
                     └───────────────────────────────────┬───────────────────────────┘
                                                         ▼
                                     UnitOfWork: upsert work/edition/source_link/external_ref
                                                         ▼
-                                              sync_log + инвалидация кэша
+                                              sync_log + cache invalidation
 ```
 
-Свойства потока:
+Flow properties:
 
-- **At-least-once**: очередь может доставить задачу повторно — обработчик обязан быть идемпотентным.
-- **Транзакционность**: все записи одной задачи в одной транзакции через `UnitOfWork`;
-  частично применённой синхронизации не существует.
-- **Изоляция источников**: падение или лимит одного провайдера не блокирует остальные
-  (отдельные очереди и circuit breaker на провайдер).
-- **Приоритет источников**: при конфликте значений полей выигрывает источник с более высоким
-  приоритетом (`open-library > google-books` для языков/изданий, обратный порядок для обложек);
-  правило живёт в domain, а не в адаптере.
-
----
-
-## 6. Кэширование
-
-Два уровня:
-
-1. **PostgreSQL** — источник истины. Данные уже нормализованы, внешние API не нужны для ответа.
-2. **Redis** — кэш горячих ответов, ключ = `v1:{route}:{хэш нормализованных параметров}`.
-
-Инвалидация — явная: успешная синхронизация работы удаляет ключи по её `work_id`. Версия `v1`
-в префиксе позволяет инвалидировать всё сразу при изменении формата ответа.
-
-Целевые показатели (из критериев успеха): холодный кэш ≤ 2 с, тёплый ≤ 300 мс.
+- **At-least-once**: the queue may deliver a job more than once — the handler must be idempotent.
+- **Transactionality**: all writes of a single job happen in one transaction via `UnitOfWork`;
+  a partially applied sync does not exist.
+- **Source isolation**: a failure or rate limit of one provider does not block the others
+  (separate queues and a circuit breaker per provider).
+- **Source priority**: on a field-value conflict, the source with the higher priority wins
+  (`open-library > google-books` for languages/editions, the reverse order for covers);
+  the rule lives in domain, not in an adapter.
 
 ---
 
-## 7. Наблюдаемость
+## 6. Caching
 
-- **Логи**: structured JSON (pino), обязательный `correlationId`, сквозной от HTTP-запроса до
-  задачи в очереди.
-- **Метрики** (Prometheus, Фаза 3, инструментируется с Фазы 1): латентность эндпоинтов,
-  hit-rate кэша, длина очередей, число ошибок и остаток лимитов по каждому внешнему источнику,
-  возраст самых устаревших записей.
-- **Health**: `/health/live`, `/health/ready` (готовность = доступны Postgres и Redis).
+Two levels:
 
----
+1. **PostgreSQL** — the source of truth. Data is already normalized; external APIs are not
+   needed to answer.
+2. **Redis** — cache for hot responses, key = `v1:{route}:{hash of normalized params}`.
 
-## 8. Зафиксированные технологические решения
+Invalidation is explicit: a successful sync of a work deletes the keys for its `work_id`. The
+`v1` version in the prefix allows invalidating everything at once when the response format changes.
 
-| Решение                     | Причина                                                                                      |
-| --------------------------- | -------------------------------------------------------------------------------------------- |
-| Монорепо на pnpm workspaces | Слои Clean Architecture как отдельные пакеты с проверяемыми границами импорта                |
-| NestJS на Fastify           | DI из коробки для composition root; Fastify — производительность                             |
-| Drizzle ORM вместо Prisma   | SQL-first: `ON CONFLICT DO UPDATE` пишется явно, а сгенерированные типы не протекают в домен |
-| BullMQ                      | Штатная дедупликация по `jobId`, ретраи, расписания; Redis уже в стеке                       |
-| Zod в `contracts`           | Одна схема как валидация входа API и типы клиента                                            |
-| UUIDv7 для id               | Сортируемость по времени без раскрытия последовательности                                    |
-
-Каждое решение при пересмотре оформляется как ADR (`docs/adr/NNNN-*.md`).
+Target numbers (from the success criteria): cold cache ≤ 2 s, warm ≤ 300 ms.
 
 ---
 
-## 9. Развёртывание и self-hosting
+## 7. Observability
 
-Self-hosting — **целевой сценарий использования**, а не побочный эффект контейнеризации.
-Проект открытый, и запуск своей копии должен быть доступен человеку с одним сервером или
-домашним NAS. Из этого следуют требования ниже.
+- **Logs**: structured JSON (pino), a mandatory `correlationId`, carried end-to-end from the
+  HTTP request to the queue job.
+- **Metrics** (Prometheus, Phase 3, instrumented from Phase 1): endpoint latency, cache
+  hit rate, queue lengths, error counts and remaining quota per external source,
+  age of the stalest records.
+- **Health**: `/health/live`, `/health/ready` (ready = Postgres and Redis are reachable).
 
-### 9.1 Топология compose
+---
 
-Корневой `docker-compose.yml` — для self-host: тянет готовые образы, ничего не собирает —
-**кроме `web`**. Next.js встраивает `NEXT_PUBLIC_*` в браузерный бандл на этапе сборки, а не
-читает их при старте контейнера — готовый образ с чужого CI нельзя переконфигурировать под свой
-домен через `.env`, в отличие от api/worker. Поэтому `web` — единственный сервис, который этот
-compose собирает локально из исходников с `NEXT_PUBLIC_API_URL` как build-arg (см. `.env.example`).
-SSR-часть web (карточка книги) от этого не страдает — она читает переменную при каждом запросе на
-сервере как обычно; встраивание касается только двух клиентских fetch'ей (поиск, блок ссылок).
-`docker/docker-compose.dev.yml` — для разработки: собирает из исходников, только Postgres и Redis.
+## 8. Committed technology decisions
+
+| Decision                      | Reason                                                                                                    |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------- |
+| pnpm workspaces monorepo      | Clean Architecture layers as separate packages with enforceable import boundaries                         |
+| NestJS on Fastify             | DI out of the box for the composition root; Fastify for performance                                       |
+| Drizzle ORM instead of Prisma | SQL-first: `ON CONFLICT DO UPDATE` is written explicitly, and generated types do not leak into the domain |
+| BullMQ                        | Built-in dedup by `jobId`, retries, schedules; Redis is already in the stack                              |
+| Zod in `contracts`            | One schema serves as API input validation and client types                                                |
+| UUIDv7 for ids                | Time-sortable without exposing a sequence                                                                 |
+
+Every decision, when revisited, is recorded as an ADR (`docs/adr/NNNN-*.md`).
+
+---
+
+## 9. Deployment and self-hosting
+
+Self-hosting is the **target usage scenario**, not a side effect of containerization.
+The project is open source, and running one's own copy must be feasible for a person with a
+single server or a home NAS. The requirements below follow from this.
+
+### 9.1 Compose topology
+
+The root `docker-compose.yml` is for self-hosting: it pulls prebuilt images and builds nothing —
+**except `web`**. Next.js bakes `NEXT_PUBLIC_*` into the browser bundle at build time rather
+than reading them at container start — a prebuilt image from someone else's CI cannot be
+reconfigured for your own domain via `.env`, unlike api/worker. Therefore `web` is the only
+service this compose builds locally from source with `NEXT_PUBLIC_API_URL` as a build arg (see
+`.env.example`). The SSR part of web (the book card) does not suffer from this — it reads the
+variable on every request on the server as usual; the baking only affects the two client-side
+fetches (search, the links block).
+`docker/docker-compose.dev.yml` is for development: builds from source, Postgres and Redis only.
 
 ```
 docker-compose.yml
@@ -328,76 +331,79 @@ docker-compose.yml
 ├── api         depends_on: migrate completed_successfully, healthcheck /health/ready
 ├── worker      depends_on: migrate completed_successfully
 ├── web         depends_on: api healthy
-└── caddy       профиль `tls` — опциональный reverse proxy с Let's Encrypt
+└── caddy       `tls` profile — optional reverse proxy with Let's Encrypt
 ```
 
-Ключевые свойства:
+Key properties:
 
-- **Миграции — отдельный one-shot сервис**, а не шаг в entrypoint приложения. Запуск миграций
-  из нескольких реплик api одновременно — гонка; выделенный сервис снимает вопрос.
-  `api` и `worker` стартуют через `depends_on: { migrate: { condition: service_completed_successfully } }`.
-- **Healthcheck у каждого сервиса.** Без них `depends_on` гарантирует только запуск процесса,
-  а не готовность.
-- **Именованные volume** для данных Postgres и Redis; `docker compose down` не уничтожает базу.
-- **Образы с пиннутым тегом** (`:1.2.3`), не `:latest` — иначе `docker compose pull` может
-  внезапно приехать с несовместимой миграцией.
-- **Multi-arch сборка** (`linux/amd64`, `linux/arm64`) — чтобы работало на ARM-серверах и
-  домашних машинах.
-- **Непривилегированный пользователь** в контейнерах, read-only rootfs где возможно.
-- Единственный обязательный к правке файл у пользователя — `.env` (копируется из `.env.example`).
+- **Migrations are a separate one-shot service**, not a step in the application's entrypoint.
+  Running migrations from several api replicas simultaneously is a race; a dedicated service
+  removes the question.
+  `api` and `worker` start via `depends_on: { migrate: { condition: service_completed_successfully } }`.
+- **A healthcheck on every service.** Without them, `depends_on` guarantees only that the
+  process started, not that it is ready.
+- **Named volumes** for Postgres and Redis data; `docker compose down` does not destroy the database.
+- **Images with a pinned tag** (`:1.2.3`), not `:latest` — otherwise `docker compose pull` may
+  suddenly arrive with an incompatible migration.
+- **Multi-arch build** (`linux/amd64`, `linux/arm64`) — so it works on ARM servers and
+  home machines.
+- **Unprivileged user** in containers, read-only rootfs where possible.
+- The only file the user must edit is `.env` (copied from `.env.example`).
 
-### 9.2 Конфигурация self-host инсталляции
+### 9.2 Configuration of a self-host installation
 
-Полный и всегда актуальный список переменных — в [`.env.example`](../.env.example) (каждая
-задокументирована прямо там); таблица ниже — только те, что несут архитектурный смысл.
+The complete and always up-to-date list of variables is in [`.env.example`](../.env.example)
+(each one documented right there); the table below covers only those that carry architectural
+meaning.
 
-| Переменная                   | Обязательна | Комментарий                                                                                          |
-| ---------------------------- | ----------- | ---------------------------------------------------------------------------------------------------- |
-| `DATABASE_URL` / `REDIS_URL` | да          | В self-host compose (Фаза 1.6) указывают на сервисы `postgres`/`redis` внутри той же docker-сети     |
-| `ADMIN_TOKEN`                | да          | Доступ к `POST /api/sync/:source`                                                                    |
-| `PUBLIC_URL`                 | да          | Для корректных SSR-ссылок и CORS у `apps/api`                                                        |
-| `NEXT_PUBLIC_API_URL`        | да          | Куда `apps/web` шлёт запросы к API — должен быть доступен из браузера, не только изнутри docker-сети |
-| `GOOGLE_BOOKS_API_KEY`       | нет         | Без ключа работает, но с низкими лимитами                                                            |
-| `WORLDCAT_API_KEY`           | нет         | Фаза 2, у большинства self-host инсталляций его не будет                                             |
-| `CONTACT_URL`                | да          | Уходит в `User-Agent` запросов к источникам — этикет публичных API                                   |
+| Variable                     | Required | Comment                                                                                                           |
+| ---------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL` / `REDIS_URL` | yes      | In the self-host compose (Phase 1.6) they point at the `postgres`/`redis` services inside the same docker network |
+| `ADMIN_TOKEN`                | yes      | Access to `POST /api/sync/:source`                                                                                |
+| `PUBLIC_URL`                 | yes      | For correct SSR links and CORS in `apps/api`                                                                      |
+| `NEXT_PUBLIC_API_URL`        | yes      | Where `apps/web` sends API requests — must be reachable from the browser, not only from inside the docker network |
+| `GOOGLE_BOOKS_API_KEY`       | no       | Works without a key, but with low quotas                                                                          |
+| `WORLDCAT_API_KEY`           | no       | Phase 2; most self-host installations will not have one                                                           |
+| `CONTACT_URL`                | yes      | Goes into the `User-Agent` of requests to sources — public-API etiquette                                          |
 
-Конфиг валидируется Zod-схемой при старте: инсталляция с неверным `.env` падает сразу с
-внятным сообщением, а не через десять минут на первом запросе.
+The config is validated by a Zod schema at startup: an installation with a broken `.env` fails
+immediately with a clear message, not ten minutes later on the first request.
 
-Отсутствие ключей платных/учрежденческих источников — штатная ситуация: соответствующие
-провайдеры просто не регистрируются в composition root, система работает на оставшихся.
+Missing keys for paid/institutional sources is a normal situation: the corresponding providers
+are simply not registered in the composition root, and the system runs on the remaining ones.
 
-### 9.3 Холодная база (ключевая проблема self-hosting)
+### 9.3 The cold database (the key self-hosting problem)
 
-Свежая инсталляция имеет пустой Postgres. Синхронизация по расписанию наполняет только то,
-что уже известно системе, — то есть ничего. Без решения пользователь увидит пустой поиск и
-удалит контейнер.
+A fresh installation has an empty Postgres. Scheduled sync only fills in what the system
+already knows about — that is, nothing. Without a solution the user would see an empty search
+and delete the container.
 
-Решение — **ленивое наполнение по запросу** (см. [ADR-0003](adr/0003-lazy-backfill.md)):
+The solution is **lazy backfill on request** (see [ADR-0003](adr/0003-lazy-backfill.md)):
 
 ```
 GET /api/search?q=…
-   └─ есть в БД ──────────────────► 200 + результаты (при устаревших данных — фоновое обновление)
-   └─ нет в БД ──► EnqueueSearchBackfill ──► 202 { status: "pending", pollAfterMs }
-                                              │  UI показывает «ищем в источниках…»
+   └─ in the DB ─────────────────► 200 + results (if data is stale — background refresh)
+   └─ not in the DB ──► EnqueueSearchBackfill ──► 202 { status: "pending", pollAfterMs }
+                                              │  UI shows "searching the sources…"
                                               ▼
-                                    воркер опрашивает провайдеров, upsert, инвалидация кэша
+                                    worker polls the providers, upserts, invalidates cache
                                               ▼
-                                    повторный запрос клиента отдаёт 200
+                                    the client's repeat request returns 200
 ```
 
-Правило «пользовательский запрос не ходит синхронно во внешний API» при этом не нарушается:
-HTTP-обработчик по-прежнему только читает свою БД и ставит задачу, а поход наружу делает воркер.
+The rule "a user request does not go synchronously to an external API" is not violated here:
+the HTTP handler still only reads its own DB and enqueues a job, while the outbound call is
+made by the worker.
 
-Дополнительно (Фаза 3): публикуемый seed-дамп с популярным ядром каталога, разворачиваемый
-командой `pnpm db:seed:catalog` или профилем compose, — чтобы инстанс был полезен с первой минуты.
+Additionally (Phase 3): a published seed dump with a popular core of the catalog, deployed via
+`pnpm db:seed:catalog` or a compose profile — so the instance is useful from minute one.
 
-### 9.4 Эксплуатация self-host инсталляции
+### 9.4 Operating a self-host installation
 
-- **Обновление:** `docker compose pull && docker compose up -d`. Миграции только вперёд,
-  выполняются сервисом `migrate` автоматически.
-- **Бэкап:** документированная команда `pg_dump` и рекомендация проверять восстановление.
-  Redis не бэкапится — это кэш и очереди, потеря некритична.
-- **Ресурсы:** целевой минимум — 2 vCPU / 2 ГБ RAM для полного стека без нагрузки.
-  Требование проверяется замером в Фазе 1, а не декларируется.
-- **Логи** — в stdout, сбор оставлен на усмотрение хоста (docker logs / journald).
+- **Updating:** `docker compose pull && docker compose up -d`. Migrations are forward-only and
+  run automatically via the `migrate` service.
+- **Backup:** a documented `pg_dump` command and a recommendation to test restores.
+  Redis is not backed up — it is cache and queues; losing it is not critical.
+- **Resources:** target minimum — 2 vCPU / 2 GB RAM for the full stack under no load.
+  The requirement is verified by measurement in Phase 1, not declared.
+- **Logs** go to stdout; collection is left to the host (docker logs / journald).

@@ -1,20 +1,20 @@
 /**
- * Human-facing labels for every link (docs/legal-policy.md, brief requirement И-4: explicit
- * badges for «public domain» / «купить» / «взять в библиотеке»). Every `SourceLinkDto` carries
+ * Human-facing labels for every link (docs/legal-policy.md, brief requirement I-4: explicit
+ * badges for "public domain" / "buy" / "borrow from a library"). Every `SourceLinkDto` carries
  * its own `rightsStatus` — the UI must never infer legality from a link merely existing.
  */
 
 export const LINK_TYPE_LABELS: Record<string, string> = {
-  download: 'Скачать',
-  buy: 'Купить',
-  borrow: 'Взять в библиотеке',
+  download: 'Download',
+  buy: 'Buy',
+  borrow: 'Borrow from a library',
 };
 
 export const RIGHTS_STATUS_LABELS: Record<string, string> = {
   public_domain: 'Public domain',
-  open_license: 'Открытая лицензия',
-  copyrighted: 'Защищено авторским правом',
-  unknown: 'Статус не определён',
+  open_license: 'Open license',
+  copyrighted: 'Copyrighted',
+  unknown: 'Status unknown',
 };
 
 export const RIGHTS_STATUS_TONE: Record<string, 'positive' | 'neutral' | 'caution'> = {

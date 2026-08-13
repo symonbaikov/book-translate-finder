@@ -119,8 +119,8 @@ function mapEditionEntry(entry: OpenLibraryEditionEntry): ProviderEdition {
  * a legal link at all (`restricted`, or anything undocumented). `internet-archive` — not
  * `open-library` — is the link's provider identity: the content is actually hosted and legally
  * vetted by Internet Archive (which runs Open Library), matching docs/legal-policy.md §3 rule 2
- * ("Internet Archive отдаёт метку открытого доступа (не lending) → public_domain") and the
- * `download` allowlist in И-1, which lists `internet-archive`, not `open-library`.
+ * ("Internet Archive reports an open-access label (not lending) → public_domain") and the
+ * `download` allowlist in I-1, which lists `internet-archive`, not `open-library`.
  */
 function mapAvailability(item: AvailabilityItem): {
   rightsSignal: RightsStatus;
@@ -137,7 +137,7 @@ function mapAvailability(item: AvailabilityItem): {
     case 'lendable':
     case 'checked out':
       // Still legal to *try* to borrow even while checked out by someone else (docs/legal-policy.md
-      // И-2/И-4) — the reader joins IA's own waitlist, that's not our concern to model.
+      // I-2/I-4) — the reader joins IA's own waitlist, that's not our concern to model.
       return {
         rightsSignal: 'copyrighted',
         link: { type: 'borrow', url: item.itemURL, provider: 'internet-archive' },

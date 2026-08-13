@@ -56,7 +56,7 @@ export interface ProviderEdition {
    * the link's actual legal origin differs from the adapter discovering it. Open Library's
    * availability lookup surfaces Internet Archive-hosted lending/full-text links, so those are
    * attributed to `internet-archive` (the allowlisted, legally-relevant host, docs/legal-policy.md
-   * И-1), not to `open-library` itself.
+   * I-1), not to `open-library` itself.
    */
   link?: { type: LinkType; url: string; provider?: string };
 }

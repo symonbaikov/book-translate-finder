@@ -1,25 +1,25 @@
 ---
-name: Сообщение об ошибке
-about: Что-то работает не так, как описано
+name: Bug report
+about: Something does not work as described
 labels: bug
 ---
 
-## Что произошло
+## What happened
 
-<!-- Что вы сделали, что ожидали и что получили вместо этого. -->
+<!-- What you did, what you expected, and what you got instead. -->
 
-## Как воспроизвести
+## How to reproduce
 
 1.
 2.
 3.
 
-## Окружение
+## Environment
 
-- Способ запуска: self-host (`docker compose`) / локальная разработка (`pnpm dev`)
-- Версия образа или коммит:
-- ОС / Docker версия:
+- Deployment method: self-host (`docker compose`) / local development (`pnpm dev`)
+- Image version or commit:
+- OS / Docker version:
 
-## Логи
+## Logs
 
-<!-- `docker compose logs api worker` или вывод терминала. Уберите секреты! -->
+<!-- `docker compose logs api worker` or terminal output. Remove secrets! -->

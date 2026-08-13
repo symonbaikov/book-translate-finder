@@ -1,20 +1,20 @@
 ---
-name: Предложение фичи
-about: Идея улучшения или новый источник данных
+name: Feature request
+about: An improvement idea or a new data source
 labels: enhancement
 ---
 
-## Проблема, которую это решает
+## The problem this solves
 
-<!-- Какую реальную задачу пользователя закрывает предложение. -->
+<!-- What real user need the proposal addresses. -->
 
-## Предлагаемое решение
+## Proposed solution
 
-<!-- Как вы это видите. Для нового источника данных обязательно укажите:
-     официальный API/выгрузки, условия использования, лимиты, наличие полей автора и языка.
-     Источники без официального API (только HTML-скрейпинг) и теневые библиотеки не
-     рассматриваются — см. CONTRIBUTING.md и docs/legal-policy.md. -->
+<!-- How you see it. For a new data source, you must specify:
+     the official API/data dumps, terms of use, rate limits, presence of author and language fields.
+     Sources without an official API (HTML scraping only) and shadow libraries are not
+     considered — see CONTRIBUTING.md and docs/legal-policy.md. -->
 
-## Альтернативы
+## Alternatives
 
-<!-- Что ещё рассматривали и почему отвергли. -->
+<!-- What else you considered and why you rejected it. -->

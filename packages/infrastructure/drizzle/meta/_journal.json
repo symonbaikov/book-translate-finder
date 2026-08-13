@@ -22,6 +22,13 @@
       "when": 1786634120922,
       "tag": "0002_exotic_the_leader",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1786639915020,
+      "tag": "0003_edition_title_trgm",
+      "breakpoints": true
     }
   ]
 }

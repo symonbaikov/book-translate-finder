@@ -1,23 +1,23 @@
-# ADR-NNNN: <краткое название решения>
+# ADR-NNNN: <short title of the decision>
 
-- **Статус:** предложено | принято | заменено ADR-NNNN | отклонено
-- **Дата:** YYYY-MM-DD
-- **Контекст задачи:** ссылка на issue/PR
+- **Status:** proposed | accepted | superseded by ADR-NNNN | rejected
+- **Date:** YYYY-MM-DD
+- **Task context:** link to issue/PR
 
-## Контекст
+## Context
 
-Какая проблема решается, какие ограничения действуют, что известно на момент решения.
+What problem is being solved, what constraints apply, what is known at the time of the decision.
 
-## Решение
+## Decision
 
-Что именно решено. Формулировка в настоящем времени: «используем X», а не «будем использовать X».
+What exactly has been decided. Phrased in the present tense: "we use X", not "we will use X".
 
-## Рассмотренные альтернативы
+## Considered alternatives
 
-| Вариант | Плюсы | Минусы | Почему не выбран |
-| ------- | ----- | ------ | ---------------- |
+| Option | Pros | Cons | Why not chosen |
+| ------ | ---- | ---- | -------------- |
 
-## Последствия
+## Consequences
 
-Что становится проще, что сложнее, какие обязательства принимаем, что придётся менять, если
-решение окажется неверным.
+What becomes easier, what becomes harder, what obligations we take on, what will have to change
+if the decision turns out to be wrong.

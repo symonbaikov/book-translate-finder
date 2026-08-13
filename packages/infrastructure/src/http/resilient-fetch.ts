@@ -40,8 +40,8 @@ class RetryableHttpError extends Error {
 
 /**
  * Timeout + retry-with-jittered-backoff + circuit-breaker, composed once per provider instance
- * and reused across every call it makes (docs/architecture.md §2.4 "ретраи с экспоненциальной
- * задержкой и джиттером, circuit breaker"). This isn't optional hardening — Phase 0 research
+ * and reused across every call it makes (docs/architecture.md §2.4 "retries with exponential
+ * backoff and jitter, circuit breaker"). This isn't optional hardening — Phase 0 research
  * found 76% of naive sequential requests to Open Library failed under load without it
  * (docs/research/coverage-phase0.md).
  *

@@ -1,12 +1,12 @@
-## Что меняет этот PR
+## What this PR changes
 
-<!-- Одно осмысленное изменение на PR. Ссылка на issue, если есть. -->
+<!-- One meaningful change per PR. Link the issue, if any. -->
 
-## Чек-лист
+## Checklist
 
-- [ ] `pnpm lint && pnpm typecheck && pnpm boundaries && pnpm test` проходят локально
-- [ ] Новая логика покрыта тестами
-- [ ] Операции записи, вызываемые джобами/ретраями, идемпотентны (нет `INSERT` без стратегии конфликта)
-- [ ] Не добавляет скрейпинг или интеграции с теневыми библиотеками ([CONTRIBUTING.md](../CONTRIBUTING.md) — такие PR закрываются)
-- [ ] Не добавляет зависимостей в `packages/domain`
-- [ ] Секреты только через переменные окружения
+- [ ] `pnpm lint && pnpm typecheck && pnpm boundaries && pnpm test` pass locally
+- [ ] New logic is covered by tests
+- [ ] Write operations invoked by jobs/retries are idempotent (no `INSERT` without a conflict strategy)
+- [ ] Does not add scraping or shadow library integrations ([CONTRIBUTING.md](../CONTRIBUTING.md) — such PRs are closed)
+- [ ] Does not add dependencies to `packages/domain`
+- [ ] Secrets only via environment variables

@@ -27,7 +27,7 @@ export class PgWorkSearchAdapter implements WorkSearchPort {
     const likePattern = `%${query}%`;
 
     // The WHERE clause uses the `%` trigram operator, not `similarity(col, query) > threshold` —
-    // load-tested live at 50k works/150k editions (docs/plan.md §Фаза 2): the function-call form
+    // load-tested live at 50k works/150k editions (docs/plan.md §Phase 2): the function-call form
     // is NOT accelerated by the GIN `gin_trgm_ops` indexes at all (only the `%`/`LIKE`/`ILIKE`
     // *operators* are), so it silently fell back to a full sequential scan — 157ms and climbing
     // with table size. `%`'s implicit threshold comes from the `pg_trgm.similarity_threshold`
@@ -36,6 +36,13 @@ export class PgWorkSearchAdapter implements WorkSearchPort {
     // across both trigram indexes, confirmed via EXPLAIN ANALYZE) — the ranking `similarity()`
     // calls in SELECT/ORDER BY stay function calls, which is fine: by then the WHERE clause has
     // already narrowed the row set the ranking runs over.
+    //
+    // Edition titles are matched too (EXISTS + the `edition_title_trgm_idx` from migration 0003):
+    // found live in Phase 3 — a work stored under its original-language title (e.g. «Мастер и
+    // Маргарита») was unfindable by the English title its translations carry ("Master and
+    // Margarita"), even though those edition titles were sitting in our own database. Worse, the
+    // backfill "succeeded" by deduplicating into that same work, so the search stayed `pending`
+    // forever — a cross-language dead loop.
     const rows = await this.db.transaction(async (tx) => {
       // `SET LOCAL` doesn't support bind parameters (Postgres rejects `$1` there outright) — safe
       // to inline as a literal since `threshold` is a fixed constant above, never user input.
@@ -51,12 +58,26 @@ export class PgWorkSearchAdapter implements WorkSearchPort {
           "original_title" AS "originalTitle",
           "author",
           "first_published_year" AS "firstPublishedYear",
-          GREATEST(similarity("original_title", ${query}), similarity("author", ${query})) AS "rank"
+          GREATEST(
+            similarity("original_title", ${query}),
+            similarity("author", ${query}),
+            COALESCE((
+              SELECT MAX(similarity(e."title", ${query}))
+              FROM "edition" e
+              WHERE e."work_id" = "work"."id"
+                AND (e."title" % ${query} OR e."title" ILIKE ${likePattern})
+            ), 0)
+          ) AS "rank"
         FROM "work"
         WHERE "original_title" % ${query}
            OR "author" % ${query}
            OR "original_title" ILIKE ${likePattern}
            OR "author" ILIKE ${likePattern}
+           OR EXISTS (
+             SELECT 1 FROM "edition" e
+             WHERE e."work_id" = "work"."id"
+               AND (e."title" % ${query} OR e."title" ILIKE ${likePattern})
+           )
         ORDER BY "rank" DESC
         LIMIT ${limit}
       `);

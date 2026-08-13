@@ -5,7 +5,7 @@ import type { LinkType } from '../value-objects/link-type.js';
 import type { ProviderId } from '../value-objects/provider-id.js';
 import type { RightsStatus } from '../value-objects/rights-status.js';
 
-/** Thrown when a link's host matches a known shadow-library domain — see docs/legal-policy.md И-3. */
+/** Thrown when a link's host matches a known shadow-library domain — see docs/legal-policy.md I-3. */
 export class ForbiddenSourceError extends DomainError {
   readonly code = 'forbidden_source';
   constructor(readonly host: string) {
@@ -13,7 +13,7 @@ export class ForbiddenSourceError extends DomainError {
   }
 }
 
-/** Thrown when a `download` link doesn't satisfy И-1 (public domain, from an allowlisted provider). */
+/** Thrown when a `download` link doesn't satisfy I-1 (public domain, from an allowlisted provider). */
 export class IllegalDownloadLinkError extends DomainError {
   readonly code = 'illegal_download_link';
 }
@@ -29,7 +29,7 @@ export interface LinkCandidate {
 }
 
 /**
- * Providers allowed to back a `download` link (docs/legal-policy.md И-1). Adding an entry here
+ * Providers allowed to back a `download` link (docs/legal-policy.md I-1). Adding an entry here
  * is a legal decision, not a routine code change — requires an ADR (docs/legal-policy.md §5).
  */
 const DOWNLOAD_ALLOWLIST: ReadonlySet<string> = new Set([
@@ -40,7 +40,7 @@ const DOWNLOAD_ALLOWLIST: ReadonlySet<string> = new Set([
 ]);
 
 /**
- * Known shadow-library domains (docs/legal-policy.md И-3). Full registrable domains, not bare
+ * Known shadow-library domains (docs/legal-policy.md I-3). Full registrable domains, not bare
  * name fragments — matched by exact host or proper subdomain (`host === d || host.endsWith('.'+d)`).
  * A fragment-based substring match (e.g. bare `"libgen"`) would falsely flag an unrelated domain
  * that merely contains the fragment as a name prefix (e.g. a hypothetical "libgenuine-authors.com"
@@ -81,12 +81,12 @@ function isDenylisted(hostname: string): boolean {
  * The single place in the codebase allowed to decide whether a link may exist
  * (docs/architecture.md §2.2). Every `SourceLink` is created here or not at all — the entity's
  * constructor is private specifically to make this the only path. Enforces all of
- * docs/legal-policy.md's inварианты:
+ * docs/legal-policy.md's invariants:
  *
- * - И-3: reject any host on the shadow-library denylist, regardless of link type.
- * - И-1: a `download` link requires BOTH an allowlisted provider AND a `public_domain` or
+ * - I-3: reject any host on the shadow-library denylist, regardless of link type.
+ * - I-1: a `download` link requires BOTH an allowlisted provider AND a `public_domain` or
  *   `open_license` rights status — `unknown` is treated as `copyrighted` (never permission).
- * - И-2/И-4: `buy`/`borrow` links carry whatever rights status is known (never gated on it —
+ * - I-2/I-4: `buy`/`borrow` links carry whatever rights status is known (never gated on it —
  *   purchasing or borrowing a book is always legal regardless of its copyright status), and
  *   `rightsStatus` is a required field on every `SourceLink`, so "status unknown" is always
  *   visible, never silently absent.

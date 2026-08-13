@@ -1,47 +1,47 @@
-# ADR-0002: Идемпотентность через natural keys, upsert и ключи идемпотентности
+# ADR-0002: Idempotency via natural keys, upserts, and idempotency keys
 
-- **Статус:** принято
-- **Дата:** 2026-08-12
-- **Контекст задачи:** стартовое планирование проекта
+- **Status:** accepted
+- **Date:** 2026-08-12
+- **Task context:** initial project planning
 
-## Контекст
+## Context
 
-Данные приходят из внешних источников через очередь (BullMQ, доставка at-least-once), по cron и
-по служебному HTTP-эндпоинту. Одна и та же книга приходит из нескольких источников, в разных
-написаниях и с разной полнотой полей. Повторная обработка неизбежна: ретраи после таймаута,
-перезапуск воркера, пересечение cron с ручным запуском, повтор запроса клиентом. Без явной
-стратегии это даёт дубли работ и изданий — а склеенные задним числом дубли восстанавливать
-дорого и не всегда возможно.
+Data arrives from external sources via a queue (BullMQ, at-least-once delivery), on cron, and
+through an internal HTTP endpoint. The same book arrives from several sources, in different
+spellings and with varying field completeness. Reprocessing is inevitable: retries after a
+timeout, worker restarts, cron overlapping with a manual run, a client repeating a request.
+Without an explicit strategy this produces duplicate works and editions — and duplicates merged
+after the fact are expensive and not always possible to recover.
 
-## Решение
+## Decision
 
-Идемпотентность обеспечивается на уровне схемы БД, а не аккуратностью кода:
+Idempotency is guaranteed at the DB schema level, not by carefulness in code:
 
-1. **Natural key** — детерминированный хэш нормализованного содержимого — у `work` и `edition`,
-   плюс уникальность `(source_name, external_id)` в `external_ref` и `url_hash` у `source_link`.
-2. **Только upsert**: все записи из источников идут через `INSERT ... ON CONFLICT DO UPDATE`.
-3. **Транзакция на логическую операцию** через `UnitOfWork` — частично применённой синхронизации
-   не существует.
-4. **Детерминированный `jobId`** (`sync-{source}-{workId}-{дата}`) — дедупликация задач на стороне очереди.
-5. **`Idempotency-Key`** для мутирующих HTTP-эндпоинтов с сохранением ответа и хэша запроса:
-   повтор с тем же телом возвращает сохранённый ответ, с другим — `409`.
-6. **`Clock` и `IdGenerator` как порты** — без них поведение недетерминировано и идемпотентность
-   нечем проверить в тестах.
+1. **Natural key** — a deterministic hash of normalized content — on `work` and `edition`,
+   plus uniqueness of `(source_name, external_id)` in `external_ref` and `url_hash` on `source_link`.
+2. **Upsert only**: all writes from sources go through `INSERT ... ON CONFLICT DO UPDATE`.
+3. **One transaction per logical operation** via `UnitOfWork` — a partially applied sync
+   does not exist.
+4. **Deterministic `jobId`** (`sync-{source}-{workId}-{date}`) — job deduplication on the queue side.
+5. **`Idempotency-Key`** for mutating HTTP endpoints, storing the response and a request hash:
+   a repeat with the same body returns the stored response; with a different one — `409`.
+6. **`Clock` and `IdGenerator` as ports** — without them behavior is nondeterministic and
+   idempotency cannot be verified in tests.
 
-Каждая операция записи сопровождается тестом «двойной прогон даёт то же состояние».
+Every write operation is accompanied by a "double run yields the same state" test.
 
-## Рассмотренные альтернативы
+## Considered alternatives
 
-| Вариант                                  | Плюсы             | Минусы                                                                | Почему не выбран                         |
-| ---------------------------------------- | ----------------- | --------------------------------------------------------------------- | ---------------------------------------- |
-| Проверка «есть ли запись» перед вставкой | Просто и очевидно | Гонка между конкурентными воркерами; дубли всё равно появляются       | Не даёт гарантии без уникального индекса |
-| Полагаться на exactly-once очереди       | Нет ручной работы | Такой гарантии нет ни у одной очереди на практике                     | Ложная предпосылка                       |
-| Дедупликация постфактум отдельной джобой | Не мешает записи  | Данные временно неверны, склейка теряет информацию, сложно откатывать | Лечение вместо профилактики              |
+| Option                                         | Pros                 | Cons                                                                    | Why not chosen                      |
+| ---------------------------------------------- | -------------------- | ----------------------------------------------------------------------- | ----------------------------------- |
+| "Does the record exist" check before insert    | Simple and obvious   | Race between concurrent workers; duplicates appear anyway               | No guarantee without a unique index |
+| Rely on exactly-once from the queue            | No manual work       | No queue provides this guarantee in practice                            | False premise                       |
+| After-the-fact deduplication by a separate job | Doesn't block writes | Data is temporarily wrong, merging loses information, hard to roll back | Cure instead of prevention          |
 
-## Последствия
+## Consequences
 
-- Дубли невозможны на уровне ограничений БД, а не намерений разработчика.
-- Функция `normalize()` становится критической: её изменение меняет natural keys, поэтому
-  правки допускаются только вместе с миграцией пересчёта ключей.
-- Появляется таблица `idempotency_key` и джоба её очистки (TTL 24 часа).
-- Upsert-запросы пишутся вручную — одна из причин выбора Drizzle вместо Prisma.
+- Duplicates are impossible at the level of DB constraints, not developer intentions.
+- The `normalize()` function becomes critical: changing it changes the natural keys, so edits
+  are allowed only together with a key-recomputation migration.
+- An `idempotency_key` table appears, along with a cleanup job for it (TTL 24 hours).
+- Upsert queries are written by hand — one of the reasons for choosing Drizzle over Prisma.

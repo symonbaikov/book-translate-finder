@@ -1,5 +1,6 @@
-import { LanguageCode, Work } from '@btf/domain';
+import { Edition, LanguageCode, Work } from '@btf/domain';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { PgEditionRepository } from '../../src/repositories/pg-edition-repository.js';
 import { PgWorkRepository } from '../../src/repositories/pg-work-repository.js';
 import { PgWorkSearchAdapter } from '../../src/repositories/pg-work-search-adapter.js';
 import { setupTestDb, teardownTestDb, type TestDb } from './setup-test-db.js';
@@ -95,5 +96,28 @@ describe('PgWorkSearchAdapter (real Postgres, pg_trgm)', () => {
     const results = await search.search('War and Peace', 2);
 
     expect(results).toHaveLength(2);
+  });
+
+  it('finds a work by a translated edition title when the original title is in another language', async () => {
+    // Found live in Phase 3: «Мастер и Маргарита» (the stored original title) was unfindable by
+    // the English title its own translations carry, and the backfill deduplicated into the same
+    // work — a cross-language dead loop. Edition titles must be a search arm of their own.
+    await seed('work-1', 'Мастер и Маргарита', 'Михаил Афанасьевич Булгаков', 1966);
+    const editionRepo = new PgEditionRepository(testDb.db);
+    await editionRepo.save(
+      Edition.create({
+        id: 'edition-1',
+        workId: 'work-1',
+        title: 'The Master and Margarita',
+        language: LanguageCode.create('en'),
+        publisher: 'Penguin',
+        year: 2000,
+      }),
+    );
+
+    const results = await search.search('Master and Margarita', 10);
+
+    expect(results.map((r) => r.id)).toContain('work-1');
+    expect(results[0]?.originalTitle).toBe('Мастер и Маргарита');
   });
 });

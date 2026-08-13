@@ -1,32 +1,33 @@
 # BookTranslate Finder
 
-Открытый агрегатор переводов книг. Введите название и автора — сервис покажет, на какие языки
-книга переводилась, какие издания существуют и где получить текст **легально**: прямое скачивание
-для public domain, диплинк на покупку или библиотечное заимствование для книг под авторским правом.
+An open book translation aggregator. Enter a title and author — the service shows which languages
+the book has been translated into, which editions exist, and where to get the text **legally**:
+direct download for public domain works, a deep link to purchase, or library borrowing for books
+under copyright.
 
-Проект рассчитан на self-hosting: разверните свою копию на собственном сервере или домашнем NAS.
+The project is designed for self-hosting: deploy your own copy on your own server or home NAS.
 
-![Карточка книги: языки переводов, издания, легальные ссылки](docs/images/work-card.png)
+![Book card: translation languages, editions, legal links](docs/images/work-card.png)
 
-## Легальная политика
+## Legal policy
 
-Это не сноска, а архитектурный инвариант, закреплённый в доменном коде и покрытый тестами
-(подробно — [docs/legal-policy.md](docs/legal-policy.md)):
+This is not a footnote but an architectural invariant, enforced in the domain code and covered by
+tests (details — [docs/legal-policy.md](docs/legal-policy.md)):
 
-- **Никакого скрейпинга и никаких ссылок на теневые библиотеки** (Library Genesis, Anna's
-  Archive, Z-Library и подобные) — ни как источника данных, ни как источника ссылок.
-- Прямая ссылка на скачивание допустима **только** для public domain / открытой лицензии из
-  allowlist провайдеров (Project Gutenberg, Internet Archive, Wikisource, Standard Ebooks).
-- Каждая ссылка в API и UI несёт явный правовой статус; отсутствие ясного сигнала о правах
-  трактуется как «под авторским правом», никогда как разрешение.
-- Данные берутся только из официальных API источников (Open Library, Google Books), с уважением
-  их лимитов и условий использования.
+- **No scraping and no links to shadow libraries** (Library Genesis, Anna's
+  Archive, Z-Library, and the like) — neither as a data source nor as a link source.
+- A direct download link is allowed **only** for public domain / open-license works from the
+  provider allowlist (Project Gutenberg, Internet Archive, Wikisource, Standard Ebooks).
+- Every link in the API and UI carries an explicit rights status; the absence of a clear rights
+  signal is treated as "under copyright", never as permission.
+- Data is taken only from the sources' official APIs (Open Library, Google Books), respecting
+  their rate limits and terms of use.
 
-PR, нарушающие эту политику, закрываются без обсуждения — см. [CONTRIBUTING.md](CONTRIBUTING.md).
+PRs violating this policy are closed without discussion — see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Self-hosting
 
-Нужен Docker и Docker Compose. Три команды:
+You need Docker and Docker Compose. Three commands:
 
 ```bash
 git clone https://github.com/symonbaikov/book-translate-finder.git
@@ -34,39 +35,40 @@ cd book-translate-finder
 cp .env.example .env
 ```
 
-Откройте `.env` и задайте как минимум `POSTGRES_PASSWORD`, `ADMIN_TOKEN` и `NEXT_PUBLIC_API_URL`
-(остальные переменные и их назначение описаны прямо в файле).
+Open `.env` and set at least `POSTGRES_PASSWORD`, `ADMIN_TOKEN`, and `NEXT_PUBLIC_API_URL`
+(the remaining variables and their purpose are described right in the file).
 
 ```bash
 docker compose up -d
 ```
 
-Через минуту-другую (первая сборка `web` из исходников — единственный образ, который эта команда
-собирает сама, остальные тянутся готовыми) откройте адрес этой машины на порту 3000 в браузере
-(по умолчанию [http://localhost:3000](http://localhost:3000)).
+After a minute or two (the first build of `web` from source — the only image this command builds
+itself, the rest are pulled prebuilt), open this machine's address on port 3000 in a browser
+(by default [http://localhost:3000](http://localhost:3000)).
 
-Первый поиск по свежей базе вернёт «ищем в источниках…» — это ожидаемо: инсталляция стартует с
-пустой БД и наполняется лениво по запросу (см. [ADR-0003](docs/adr/0003-lazy-backfill.md)).
-Повторный запрос через несколько секунд уже отдаст результат.
+The first search against a fresh database will return "searching the sources…" — this is
+expected: an installation starts with an empty DB and fills lazily on demand (see
+[ADR-0003](docs/adr/0003-lazy-backfill.md)). Repeating the query a few seconds later will
+already return results.
 
-Проверить, что всё поднялось:
+To check that everything is up:
 
 ```bash
 docker compose logs -f api
 ```
 
-### TLS и свой домен
+### TLS and your own domain
 
-Опциональный профиль с Caddy и автоматическим Let's Encrypt:
+Optional profile with Caddy and automatic Let's Encrypt:
 
 ```bash
 docker compose --profile tls up -d
 ```
 
-Требует `DOMAIN` в `.env` (реальный домен, указывающий на эту машину) — см.
+Requires `DOMAIN` in `.env` (a real domain pointing at this machine) — see
 [docker/Caddyfile](docker/Caddyfile).
 
-### Обновление и бэкап
+### Updating and backup
 
 ```bash
 docker compose pull && docker compose up -d
@@ -76,20 +78,20 @@ docker compose pull && docker compose up -d
 docker compose exec -T postgres pg_dump -U btf btf | gzip > backup-$(date +%F).sql.gz
 ```
 
-Redis не бэкапится — это кэш и очереди, потеря некритична.
+Redis is not backed up — it is cache and queues, losing it is non-critical.
 
 ## API
 
-У инстанса есть публичное REST API (поиск, карточка, издания, ссылки) —
-см. [docs/api.md](docs/api.md) с примерами запросов.
+The instance has a public REST API (search, book card, editions, links) —
+see [docs/api.md](docs/api.md) with request examples.
 
-## Разработка
+## Development
 
-См. [CLAUDE.md](CLAUDE.md) — стек, команды, структура репозитория, правила работы с кодом.
-Документация по архитектуре и легальной политике — в [docs/](docs/). Как контрибьютить —
+See [CLAUDE.md](CLAUDE.md) — stack, commands, repository structure, code workflow rules.
+Architecture and legal policy documentation is in [docs/](docs/). How to contribute —
 [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Лицензия
+## License
 
-[MIT](LICENSE). Все производственные зависимости — под пермиссивными лицензиями
-(MIT/Apache-2.0/BSD/ISC, проверено `pnpm licenses`).
+[MIT](LICENSE). All production dependencies are under permissive licenses
+(MIT/Apache-2.0/BSD/ISC, verified with `pnpm licenses`).

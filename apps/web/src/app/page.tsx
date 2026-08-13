@@ -5,7 +5,7 @@ export default function HomePage() {
     <main id="main-content" className="container">
       <h1>BookTranslate Finder</h1>
       <p className="muted">
-        Открытый агрегатор переводов книг: языки, издания и легальные источники.
+        An open book translation aggregator: languages, editions, and legal sources.
       </p>
       <SearchBox />
     </main>

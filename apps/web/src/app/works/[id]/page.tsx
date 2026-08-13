@@ -19,7 +19,7 @@ function sortEditions(editions: EditionSummary[]): EditionSummary[] {
     const aHasLinks = a.linkCount > 0 ? 0 : 1;
     const bHasLinks = b.linkCount > 0 ? 0 : 1;
     if (aHasLinks !== bHasLinks) return aHasLinks - bHasLinks;
-    const byLanguage = languageName(a.language).localeCompare(languageName(b.language), 'ru');
+    const byLanguage = languageName(a.language).localeCompare(languageName(b.language), 'en');
     if (byLanguage !== 0) return byLanguage;
     return (b.year ?? 0) - (a.year ?? 0);
   });
@@ -36,45 +36,45 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
   });
   const editions = sortEditions(editionsResult.editions);
   const languageOptions = [...new Set([work.originalLanguage, ...work.translatedLanguages])].sort(
-    (a, b) => languageName(a).localeCompare(languageName(b), 'ru'),
+    (a, b) => languageName(a).localeCompare(languageName(b), 'en'),
   );
 
   return (
     <main id="main-content" className="container">
       <p>
-        <a href="/">← Новый поиск</a>
+        <a href="/">← New search</a>
       </p>
       <h1>{work.originalTitle}</h1>
       <p className="muted">
         {work.author}
-        {work.firstPublishedYear ? `, ${work.firstPublishedYear}` : ''} · оригинал:{' '}
+        {work.firstPublishedYear ? `, ${work.firstPublishedYear}` : ''} · original:{' '}
         {languageName(work.originalLanguage)}
       </p>
       {work.sources.length > 0 && (
         <p className="muted" style={{ fontSize: '0.85em' }}>
-          Источник данных: {work.sources.join(', ')}
+          Data sources: {work.sources.join(', ')}
         </p>
       )}
 
       <section aria-labelledby="translations-heading" style={{ marginTop: '1.5rem' }}>
-        <h2 id="translations-heading">Переведено на</h2>
+        <h2 id="translations-heading">Translated into</h2>
         {work.translatedLanguages.length > 0 ? (
           <p>{work.translatedLanguages.map(languageName).join(', ')}</p>
         ) : (
-          <p className="muted">Переводов пока не найдено.</p>
+          <p className="muted">No translations found yet.</p>
         )}
       </section>
 
       <section aria-labelledby="editions-heading" style={{ marginTop: '2rem' }}>
         <h2 id="editions-heading">
-          Издания ({editions.length} из {work.editionCount})
+          Editions ({editions.length} of {work.editionCount})
         </h2>
 
         <form method="get" className="filters" style={{ marginBottom: '1rem' }}>
           <div className="field">
-            <label htmlFor="language-filter">Язык</label>
+            <label htmlFor="language-filter">Language</label>
             <select id="language-filter" name="language" defaultValue={searchParams.language ?? ''}>
-              <option value="">Все языки</option>
+              <option value="">All languages</option>
               {languageOptions.map((code) => (
                 <option key={code} value={code}>
                   {languageName(code)}
@@ -83,7 +83,7 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
             </select>
           </div>
           <div className="field">
-            <label htmlFor="year-filter">Год</label>
+            <label htmlFor="year-filter">Year</label>
             <input
               id="year-filter"
               name="year"
@@ -91,14 +91,14 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
               inputMode="numeric"
             />
           </div>
-          <button type="submit">Фильтровать</button>
+          <button type="submit">Filter</button>
           {(searchParams.language || searchParams.year) && (
-            <a href={`/works/${params.id}`}>Сбросить</a>
+            <a href={`/works/${params.id}`}>Reset</a>
           )}
         </form>
 
         {editions.length === 0 ? (
-          <p className="muted">Изданий с такими фильтрами не найдено.</p>
+          <p className="muted">No editions match these filters.</p>
         ) : (
           editions.map((edition) => <EditionCard key={edition.id} edition={edition} />)
         )}
@@ -123,14 +123,14 @@ function EditionCard({ edition }: { edition: EditionSummary }) {
             whiteSpace: 'nowrap',
           }}
         >
-          есть источники
+          sources available
         </span>
       )}
       <div className="muted">
         {languageName(edition.language)}
         {edition.publisher ? ` · ${edition.publisher}` : ''}
         {edition.year ? ` · ${edition.year}` : ''}
-        {edition.translator ? ` · перевод: ${edition.translator}` : ''}
+        {edition.translator ? ` · translated by ${edition.translator}` : ''}
         {edition.isbn ? ` · ISBN ${edition.isbn}` : ''}
       </div>
       <EditionLinks editionId={edition.id} />
