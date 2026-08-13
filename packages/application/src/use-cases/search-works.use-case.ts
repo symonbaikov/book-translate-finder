@@ -19,6 +19,7 @@ export interface SearchWorksHit {
   originalTitle: string;
   author: string;
   firstPublishedYear: number | null;
+  coverUrl: string | null;
 }
 
 export type SearchWorksOutput =
