@@ -33,6 +33,7 @@ export function EditionLinks({ editionId }: { editionId: string }) {
     <div style={{ marginTop: '0.5rem' }}>
       <button
         type="button"
+        className="button--secondary"
         onClick={() => void handleToggle()}
         aria-expanded={state.kind === 'loaded'}
       >

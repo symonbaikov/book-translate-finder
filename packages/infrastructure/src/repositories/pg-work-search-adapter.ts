@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm';
 import type { WorkSearchHit, WorkSearchPort } from '@btf/domain';
 import type { Db } from '../db/client.js';
+import { romanizeCyrillicQuery } from '../search/transliterate-query.js';
 
 /**
  * Trigram-ranked search (docs/architecture.md §3.3/§4 `GET /api/search`) over `work.original_title`
@@ -20,6 +21,20 @@ export class PgWorkSearchAdapter implements WorkSearchPort {
   constructor(private readonly db: Db) {}
 
   async search(query: string, limit: number): Promise<WorkSearchHit[]> {
+    const hits = await this.runSearch(query, limit);
+    if (hits.length > 0) return hits;
+
+    // Cross-script fallback (found live in Phase 3): Open Library stores Russian editions under
+    // romanized titles ("Voina i mir"), so a Cyrillic query shares zero trigrams with anything
+    // stored and finds nothing. When the primary pass is empty and the query contains Cyrillic,
+    // retry with its romanized form — see transliterate-query.ts for why this lives here and
+    // not in the domain's normalizeText.
+    const romanized = romanizeCyrillicQuery(query);
+    if (romanized === null) return hits;
+    return this.runSearch(romanized, limit);
+  }
+
+  private async runSearch(query: string, limit: number): Promise<WorkSearchHit[]> {
     // pg_trgm's own recommended default (`similarity_threshold` GUC). Found live at 0.1: an
     // unrelated title ("The Little Prince...") matched "The Hobbit" at 0.1025 similarity purely
     // from the shared word "The" — 0.1 was too permissive to be a meaningful relevance cutoff.

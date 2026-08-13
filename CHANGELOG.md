@@ -12,6 +12,9 @@ them before the API starts).
 - The entire UI and all project documentation switched from Russian to English. Russian remains
   only where it is literal data (book titles in examples and tests, the `name_ru` column of the
   language table, seed queries in the books' original languages).
+- Modernized visual design: blue primary and secondary buttons, elevated cards with soft
+  shadows on a subtle page background, focus rings on inputs, refined typography — in both
+  light and dark color schemes.
 
 ### Added
 
@@ -20,6 +23,11 @@ them before the API starts).
   search matches edition titles too, backed by a new trigram index (migration 0003). Found live:
   without this, an English query looped forever in `pending` because the backfill deduplicated
   into a work the search still could not see.
+- Any-script query input: a Cyrillic query now also matches romanized-stored titles («Война и
+  мир» finds "Voina i mir" — Open Library stores Russian editions romanized, so the scripts
+  share zero trigrams). The search adapter retries an empty result with a romanized form of the
+  query; the romanization exists only on the query side and never touches natural keys.
+  Verified live in Russian, English, German, and Italian.
 
 - Open Library Lending: real "borrow from library"/"download" links from archive.org, with an
   explicit rights status on every link.

@@ -1,36 +1,54 @@
 :root {
-  --color-text: #1a1a1a;
-  --color-muted: #666;
-  --color-border: #ddd;
-  --color-bg: #fff;
-  --color-bg-subtle: #f7f7f7;
-  --color-link: #0b5fff;
-  --color-positive-bg: #e6f4ea;
-  --color-positive-text: #1e7a34;
-  --color-neutral-bg: #eee;
-  --color-neutral-text: #444;
-  --color-caution-bg: #fff4e0;
-  --color-caution-text: #8a5a00;
-  --color-error-bg: #fdecea;
-  --color-error-text: #a4262c;
+  --color-text: #0f172a;
+  --color-muted: #64748b;
+  --color-border: #e2e8f0;
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-bg-subtle: #f1f5f9;
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-active: #1e40af;
+  --color-primary-soft: #eff6ff;
+  --color-on-primary: #ffffff;
+  --color-ring: rgba(37, 99, 235, 0.35);
+  --color-link: #2563eb;
+  --color-positive-bg: #ecfdf5;
+  --color-positive-text: #047857;
+  --color-neutral-bg: #f1f5f9;
+  --color-neutral-text: #475569;
+  --color-caution-bg: #fffbeb;
+  --color-caution-text: #b45309;
+  --color-error-bg: #fef2f2;
+  --color-error-text: #b91c1c;
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-card-hover: 0 4px 6px rgba(15, 23, 42, 0.05), 0 10px 15px rgba(15, 23, 42, 0.08);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-text: #e8e8e8;
-    --color-muted: #a0a0a0;
-    --color-border: #3a3a3a;
-    --color-bg: #17181a;
-    --color-bg-subtle: #202124;
-    --color-link: #6ea8ff;
-    --color-positive-bg: #16321f;
-    --color-positive-text: #7ed996;
-    --color-neutral-bg: #2a2a2a;
-    --color-neutral-text: #c8c8c8;
-    --color-caution-bg: #3a2c0d;
-    --color-caution-text: #e0b355;
-    --color-error-bg: #3a1616;
-    --color-error-text: #ff9a94;
+    --color-text: #e2e8f0;
+    --color-muted: #94a3b8;
+    --color-border: #334155;
+    --color-bg: #0f172a;
+    --color-surface: #1e293b;
+    --color-bg-subtle: #263449;
+    --color-primary: #3b82f6;
+    --color-primary-hover: #60a5fa;
+    --color-primary-active: #2563eb;
+    --color-primary-soft: #1e3a8a;
+    --color-on-primary: #ffffff;
+    --color-ring: rgba(96, 165, 250, 0.4);
+    --color-link: #60a5fa;
+    --color-positive-bg: #064e3b;
+    --color-positive-text: #6ee7b7;
+    --color-neutral-bg: #334155;
+    --color-neutral-text: #cbd5e1;
+    --color-caution-bg: #451a03;
+    --color-caution-text: #fbbf24;
+    --color-error-bg: #450a0a;
+    --color-error-text: #fca5a5;
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.45);
   }
 }
 
@@ -47,17 +65,39 @@ body {
     sans-serif;
   color: var(--color-text);
   background: var(--color-bg);
-  line-height: 1.5;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0.5rem 0 1rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.75rem;
 }
 
 a {
   color: var(--color-link);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  color: var(--color-primary-hover);
 }
 
 .container {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
-  padding: 2rem 1.25rem;
+  padding: 2.5rem 1.25rem;
 }
 
 .muted {
@@ -68,7 +108,7 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 0.35em;
-  padding: 0.15em 0.6em;
+  padding: 0.2em 0.65em;
   border-radius: 999px;
   font-size: 0.8125rem;
   font-weight: 500;
@@ -93,53 +133,130 @@ a {
 .error-box {
   background: var(--color-error-bg);
   color: var(--color-error-text);
-  border-radius: 8px;
-  padding: 0.9rem 1rem;
-}
-
-.card {
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 1rem 1.25rem;
 }
 
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 1.1rem 1.35rem;
+  box-shadow: var(--shadow-card);
+  transition:
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
 .card + .card {
-  margin-top: 0.75rem;
+  margin-top: 0.85rem;
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.4rem;
+}
+
+.field label {
+  font-size: 0.875rem;
+  font-weight: 550;
+  color: var(--color-muted);
+}
+
+input[type='search'] {
+  width: 100%;
+  max-width: 34rem;
 }
 
 input[type='search'],
+input:not([type]),
 select {
   font: inherit;
   color: inherit;
-  background: var(--color-bg);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 8px;
-  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+input[type='search']:focus-visible,
+input:not([type]):focus-visible,
+select:focus-visible {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-ring);
 }
 
 button {
   font: inherit;
+  font-weight: 550;
   cursor: pointer;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  padding: 0.55rem 1rem;
-  background: var(--color-bg-subtle);
-  color: var(--color-text);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 0.65rem 1.25rem;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.05s ease;
 }
 
 button:hover {
-  background: var(--color-border);
+  background: var(--color-primary-hover);
+}
+
+button:active {
+  background: var(--color-primary-active);
+  transform: translateY(1px);
+}
+
+button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-ring);
 }
 
 button:disabled {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: not-allowed;
+  transform: none;
+}
+
+button:disabled:hover {
+  background: var(--color-primary);
+}
+
+/* Secondary buttons (per-edition link toggles) — quieter than the primary action, still blue. */
+button.button--secondary {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  border-color: transparent;
+  padding: 0.45rem 0.95rem;
+  font-size: 0.9rem;
+}
+
+button.button--secondary:hover {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+button.button--secondary:active {
+  background: var(--color-primary-active);
+  color: var(--color-on-primary);
+}
+
+@media (prefers-color-scheme: dark) {
+  button.button--secondary {
+    color: #bfdbfe;
+  }
 }
 
 .filters {
@@ -158,8 +275,8 @@ button:disabled {
   left: 1rem;
   top: 1rem;
   z-index: 10;
-  background: var(--color-bg);
+  background: var(--color-surface);
   padding: 0.5rem 1rem;
-  border-radius: 8px;
+  border-radius: 10px;
   border: 1px solid var(--color-border);
 }

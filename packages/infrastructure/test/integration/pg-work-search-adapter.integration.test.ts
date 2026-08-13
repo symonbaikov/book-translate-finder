@@ -120,4 +120,26 @@ describe('PgWorkSearchAdapter (real Postgres, pg_trgm)', () => {
     expect(results.map((r) => r.id)).toContain('work-1');
     expect(results[0]?.originalTitle).toBe('Мастер и Маргарита');
   });
+
+  it('finds a romanized-stored work by its Cyrillic query (cross-script fallback)', async () => {
+    // Found live in Phase 3: Open Library stores Russian editions romanized ("Voina i mir"), so
+    // the Cyrillic query «Война и мир» shares zero trigrams with anything stored — the primary
+    // pass finds nothing and the adapter retries with the romanized query.
+    await seed('work-1', 'War and Peace', 'Leo Tolstoy', 1869);
+    const editionRepo = new PgEditionRepository(testDb.db);
+    await editionRepo.save(
+      Edition.create({
+        id: 'edition-ru',
+        workId: 'work-1',
+        title: 'Voina i mir',
+        language: LanguageCode.create('ru'),
+        publisher: 'Nauka',
+        year: 1965,
+      }),
+    );
+
+    const results = await search.search('Война и мир', 10);
+
+    expect(results.map((r) => r.id)).toContain('work-1');
+  });
 });

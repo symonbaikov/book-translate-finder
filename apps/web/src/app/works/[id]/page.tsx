@@ -112,17 +112,7 @@ function EditionCard({ edition }: { edition: EditionSummary }) {
     <div className="card">
       <strong>{edition.title}</strong>
       {edition.linkCount > 0 && (
-        <span
-          style={{
-            marginLeft: '0.5rem',
-            fontSize: '0.8em',
-            padding: '0.1rem 0.5rem',
-            borderRadius: '1rem',
-            background: 'var(--badge-bg, #e6f4ea)',
-            color: 'var(--badge-fg, #1e7e34)',
-            whiteSpace: 'nowrap',
-          }}
-        >
+        <span className="badge badge--positive" style={{ marginLeft: '0.5rem' }}>
           sources available
         </span>
       )}
