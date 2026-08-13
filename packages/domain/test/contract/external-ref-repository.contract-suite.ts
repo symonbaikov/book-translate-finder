@@ -51,5 +51,29 @@ export function runExternalRefRepositoryContractTests(
         entityId: 'work-2',
       });
     });
+
+    it('findSourcesForEntity() returns an empty array for an entity with no refs', async () => {
+      const repo = createRepository();
+      expect(await repo.findSourcesForEntity('work-unknown')).toEqual([]);
+    });
+
+    it('findSourcesForEntity() returns every distinct source that has ever pointed at the entity', async () => {
+      const repo = createRepository();
+      await repo.save(ExternalRef.create('open-library', 'ID-1'), 'work', 'work-1');
+      await repo.save(ExternalRef.create('google-books', 'ID-2'), 'work', 'work-1');
+      // A different entity's ref must not leak in.
+      await repo.save(ExternalRef.create('open-library', 'ID-3'), 'work', 'work-2');
+
+      const sources = await repo.findSourcesForEntity('work-1');
+      expect(sources.sort()).toEqual(['google-books', 'open-library']);
+    });
+
+    it('findSourcesForEntity() does not duplicate a source that touched the entity more than once', async () => {
+      const repo = createRepository();
+      await repo.save(ExternalRef.create('open-library', 'ID-1'), 'edition', 'edition-1');
+      await repo.save(ExternalRef.create('open-library', 'ID-2'), 'edition', 'edition-1');
+
+      expect(await repo.findSourcesForEntity('edition-1')).toEqual(['open-library']);
+    });
   });
 }

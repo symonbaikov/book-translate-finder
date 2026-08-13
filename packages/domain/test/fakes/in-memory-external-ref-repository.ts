@@ -5,6 +5,7 @@ import type {
 import type { ExternalRef } from '../../src/value-objects/external-ref.js';
 
 interface StoredRef {
+  sourceName: string;
   entityType: ExternalRefEntityType;
   entityId: string;
 }
@@ -16,13 +17,24 @@ export class InMemoryExternalRefRepository implements ExternalRefRepository {
     return `${ref.sourceName}|${ref.externalId}`;
   }
 
-  async findBySourceAndExternalId(ref: ExternalRef): Promise<StoredRef | null> {
-    return this.byKey.get(this.key(ref)) ?? null;
+  async findBySourceAndExternalId(
+    ref: ExternalRef,
+  ): Promise<{ entityType: ExternalRefEntityType; entityId: string } | null> {
+    const stored = this.byKey.get(this.key(ref));
+    return stored ? { entityType: stored.entityType, entityId: stored.entityId } : null;
   }
 
   async save(ref: ExternalRef, entityType: ExternalRefEntityType, entityId: string): Promise<void> {
     // Upsert on (source_name, external_id) (docs/architecture.md §3.2) — re-saving the same ref
     // just overwrites what it points to, never adds a second row.
-    this.byKey.set(this.key(ref), { entityType, entityId });
+    this.byKey.set(this.key(ref), { sourceName: ref.sourceName, entityType, entityId });
+  }
+
+  async findSourcesForEntity(entityId: string): Promise<string[]> {
+    return [
+      ...new Set(
+        [...this.byKey.values()].filter((r) => r.entityId === entityId).map((r) => r.sourceName),
+      ),
+    ];
   }
 }

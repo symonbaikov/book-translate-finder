@@ -35,6 +35,14 @@ export class PgExternalRefRepository implements ExternalRefRepository {
     return { entityType: row.entityType, entityId: row.entityId };
   }
 
+  async findSourcesForEntity(entityId: string): Promise<string[]> {
+    const rows = await this.q
+      .selectDistinct({ sourceName: externalRef.sourceName })
+      .from(externalRef)
+      .where(eq(externalRef.entityId, entityId));
+    return rows.map((row) => row.sourceName);
+  }
+
   async save(ref: ExternalRef, entityType: ExternalRefEntityType, entityId: string): Promise<void> {
     await this.q
       .insert(externalRef)

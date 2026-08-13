@@ -16,6 +16,7 @@ import {
   LanguageCode,
   ProviderId,
   type ProviderEdition,
+  resolveFieldConflict,
   type SourceLinkRepository,
   type SyncLogRepository,
   type UnitOfWork,
@@ -95,14 +96,20 @@ export class SyncWorkFromSource implements UseCase<
         const workId =
           existingWorkLink?.entityId ?? workNaturalKeyMatch?.id ?? this.deps.idGenerator.newId();
 
-        const work = Work.create({
-          id: workId,
-          originalTitle: topMatch.title,
-          originalLanguage,
-          author,
-          firstPublishedYear: topMatch.firstPublishedYear,
-          syncedAt: this.deps.clock.now(),
-        });
+        const work = (await this.shouldApplyMetadata(input.source, workId))
+          ? Work.create({
+              id: workId,
+              originalTitle: topMatch.title,
+              originalLanguage,
+              author,
+              firstPublishedYear: topMatch.firstPublishedYear,
+              syncedAt: this.deps.clock.now(),
+            })
+          : // A higher-priority source already owns this work's metadata (docs/architecture.md
+            // §5 source priority) — still bump syncedAt to reflect the sync attempt, but keep the
+            // existing fields rather than overwrite them with this lower-priority source's data.
+            // `shouldApplyMetadata` returning false guarantees the work already exists.
+            (await this.deps.workRepository.findById(workId))!.withSyncedAt(this.deps.clock.now());
         await this.deps.workRepository.save(work);
         await this.deps.externalRefRepository.save(workExternalRef, 'work', work.id);
 
@@ -165,17 +172,23 @@ export class SyncWorkFromSource implements UseCase<
     const editionId =
       existingEditionLink?.entityId ?? naturalKeyMatch?.id ?? this.deps.idGenerator.newId();
 
-    const edition = Edition.create({
-      id: editionId,
-      workId,
-      title,
-      language,
-      translator: providerEdition.translator,
-      translatedFrom,
-      publisher,
-      year,
-      isbn,
-    });
+    // A higher-priority source already owns this edition's metadata (docs/architecture.md §5
+    // source priority) — keep its fields as-is rather than overwrite them with this
+    // lower-priority source's data. `shouldApplyMetadata` returning false guarantees the edition
+    // already exists.
+    const edition = (await this.shouldApplyMetadata(source, editionId))
+      ? Edition.create({
+          id: editionId,
+          workId,
+          title,
+          language,
+          translator: providerEdition.translator,
+          translatedFrom,
+          publisher,
+          year,
+          isbn,
+        })
+      : (await this.deps.editionRepository.findById(editionId))!;
     await this.deps.editionRepository.save(edition);
     await this.deps.externalRefRepository.save(editionExternalRef, 'edition', edition.id);
 
@@ -213,6 +226,25 @@ export class SyncWorkFromSource implements UseCase<
       if (error instanceof DomainError) return false;
       throw error;
     }
+  }
+
+  /**
+   * Whether `source`'s metadata should overwrite `entityId`'s current fields. Sync stores merged
+   * field values, not raw per-source snapshots, so the only record of "who's contributed here" is
+   * every distinct source that has ever saved an `ExternalRef` to this entity (docs/architecture.md
+   * §5). Feeding those sources — plus this sync's own — through `resolveFieldConflict` as
+   * `{source, value: source}` candidates answers "does this source have the entity's top
+   * metadata priority (self included)?": true when it does (including a brand-new entity, where
+   * the only known source is this sync's own), false when a higher-priority source is already on
+   * record and should stay authoritative.
+   */
+  private async shouldApplyMetadata(source: string, entityId: string): Promise<boolean> {
+    const knownSources = await this.deps.externalRefRepository.findSourcesForEntity(entityId);
+    const candidates = [...new Set([...knownSources, source])].map((s) => ({
+      source: s,
+      value: s,
+    }));
+    return resolveFieldConflict('metadata', candidates) === source;
   }
 
   private tryParseLanguage(code: string | null): LanguageCode | null {

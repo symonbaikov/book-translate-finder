@@ -1,7 +1,8 @@
-import { Edition, LanguageCode, NotFoundError, Work } from '@btf/domain';
+import { Edition, ExternalRef, LanguageCode, NotFoundError, Work } from '@btf/domain';
 import { describe, expect, it } from 'vitest';
 import { InMemoryCache } from '../../../domain/test/fakes/in-memory-cache.js';
 import { InMemoryEditionRepository } from '../../../domain/test/fakes/in-memory-edition-repository.js';
+import { InMemoryExternalRefRepository } from '../../../domain/test/fakes/in-memory-external-ref-repository.js';
 import { InMemoryWorkRepository } from '../../../domain/test/fakes/in-memory-work-repository.js';
 import {
   GetWorkCard,
@@ -12,9 +13,15 @@ import {
 function makeDeps() {
   const workRepository = new InMemoryWorkRepository();
   const editionRepository = new InMemoryEditionRepository();
+  const externalRefRepository = new InMemoryExternalRefRepository();
   const cache = new InMemoryCache();
-  const deps: GetWorkCardDeps = { workRepository, editionRepository, cache };
-  return { deps, workRepository, editionRepository, cache };
+  const deps: GetWorkCardDeps = {
+    workRepository,
+    editionRepository,
+    externalRefRepository,
+    cache,
+  };
+  return { deps, workRepository, editionRepository, externalRefRepository, cache };
 }
 
 async function seedWork(workRepository: InMemoryWorkRepository): Promise<Work> {
@@ -71,6 +78,22 @@ describe('GetWorkCard', () => {
 
     expect(result.editionCount).toBe(3);
     expect(result.translatedLanguages).toEqual(['en', 'fr']);
+  });
+
+  it('returns every distinct source that has contributed to the work, sorted alphabetically', async () => {
+    const { deps, workRepository, externalRefRepository } = makeDeps();
+    await seedWork(workRepository);
+    await externalRefRepository.save(ExternalRef.create('google-books', 'gb-1'), 'work', 'work-1');
+    await externalRefRepository.save(
+      ExternalRef.create('open-library', '/works/OL1W'),
+      'work',
+      'work-1',
+    );
+
+    const useCase = new GetWorkCard(deps);
+    const result = await useCase.execute({ workId: 'work-1' });
+
+    expect(result.sources).toEqual(['google-books', 'open-library']);
   });
 
   it('caches the card so a repeat call skips the repositories', async () => {

@@ -9,6 +9,7 @@ export const WorkCardResponseSchema = z.object({
   firstPublishedYear: z.number().int().nullable(),
   translatedLanguages: z.array(z.string()),
   editionCount: z.number().int().nonnegative(),
+  sources: z.array(z.string()),
 });
 
 export type WorkCardResponse = z.infer<typeof WorkCardResponseSchema>;

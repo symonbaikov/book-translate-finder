@@ -4,6 +4,7 @@ import {
   createDb,
   createRedisClient,
   PgEditionRepository,
+  PgExternalRefRepository,
   PgIdempotencyStore,
   PgSourceLinkRepository,
   PgWorkRepository,
@@ -46,6 +47,7 @@ export function buildApiContext(env: ApiEnv): ApiContext {
   const workRepository = new PgWorkRepository(db.db);
   const editionRepository = new PgEditionRepository(db.db);
   const sourceLinkRepository = new PgSourceLinkRepository(db.db);
+  const externalRefRepository = new PgExternalRefRepository(db.db);
   const workSearch = new PgWorkSearchAdapter(db.db);
   const idempotencyStore = new PgIdempotencyStore(db.db);
 
@@ -54,7 +56,12 @@ export function buildApiContext(env: ApiEnv): ApiContext {
   const backfillQueue = new BullMqQueue('backfill', bullConnection);
 
   const searchWorks = new SearchWorks({ workSearch, cache, backfillQueue, clock });
-  const getWorkCard = new GetWorkCard({ workRepository, editionRepository, cache });
+  const getWorkCard = new GetWorkCard({
+    workRepository,
+    editionRepository,
+    externalRefRepository,
+    cache,
+  });
   const listEditionsForWork = new ListEditionsForWork({ workRepository, editionRepository, cache });
   const getEditionLinks = new GetEditionLinks({ editionRepository, sourceLinkRepository, cache });
   const enqueueSourceSync = new EnqueueSourceSync({ idempotencyStore, syncQueue, clock });

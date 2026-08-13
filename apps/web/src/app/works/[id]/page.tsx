@@ -29,6 +29,11 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
         {work.firstPublishedYear ? `, ${work.firstPublishedYear}` : ''} · оригинал:{' '}
         {work.originalLanguage}
       </p>
+      {work.sources.length > 0 && (
+        <p className="muted" style={{ fontSize: '0.85em' }}>
+          Источник данных: {work.sources.join(', ')}
+        </p>
+      )}
 
       <section aria-labelledby="translations-heading" style={{ marginTop: '1.5rem' }}>
         <h2 id="translations-heading">Переведено на</h2>

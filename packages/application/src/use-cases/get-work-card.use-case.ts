@@ -2,6 +2,7 @@ import {
   NotFoundError,
   type CachePort,
   type EditionRepository,
+  type ExternalRefRepository,
   type WorkRepository,
 } from '@btf/domain';
 import type { UseCase } from '../use-case.js';
@@ -18,11 +19,17 @@ export interface GetWorkCardOutput {
   firstPublishedYear: number | null;
   translatedLanguages: string[];
   editionCount: number;
+  /** Every distinct source that has contributed data to this work (docs/architecture.md §5) —
+   * lets the UI show where a work's metadata came from. Sorted alphabetically for a stable,
+   * cache-friendly order (not priority order — that's an internal sync-time decision, not
+   * something worth surfacing to a reader). */
+  sources: string[];
 }
 
 export interface GetWorkCardDeps {
   workRepository: WorkRepository;
   editionRepository: EditionRepository;
+  externalRefRepository: ExternalRefRepository;
   cache: CachePort;
 }
 
@@ -54,6 +61,7 @@ export class GetWorkCard implements UseCase<GetWorkCardInput, GetWorkCardOutput>
           .filter((language) => language !== work.originalLanguage.value),
       ),
     ].sort();
+    const sources = (await this.deps.externalRefRepository.findSourcesForEntity(work.id)).sort();
 
     const output: GetWorkCardOutput = {
       id: work.id,
@@ -63,6 +71,7 @@ export class GetWorkCard implements UseCase<GetWorkCardInput, GetWorkCardOutput>
       firstPublishedYear: work.firstPublishedYear,
       translatedLanguages,
       editionCount: editions.length,
+      sources,
     };
 
     await this.deps.cache.set(cacheKey, output, CARD_TTL_SECONDS);

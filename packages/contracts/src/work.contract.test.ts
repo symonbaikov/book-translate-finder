@@ -15,6 +15,7 @@ describe('WorkCardResponseSchema', () => {
       firstPublishedYear: 1869,
       translatedLanguages: ['en', 'fr'],
       editionCount: 12,
+      sources: ['open-library'],
     });
     expect(result.success).toBe(true);
   });
@@ -28,6 +29,7 @@ describe('WorkCardResponseSchema', () => {
       firstPublishedYear: null,
       translatedLanguages: [],
       editionCount: -1,
+      sources: [],
     });
     expect(result.success).toBe(false);
   });

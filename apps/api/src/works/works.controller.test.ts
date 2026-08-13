@@ -24,6 +24,7 @@ const CARD: GetWorkCardOutput = {
   firstPublishedYear: 1869,
   translatedLanguages: ['en'],
   editionCount: 2,
+  sources: ['open-library'],
 };
 
 describe('WorksController', () => {
