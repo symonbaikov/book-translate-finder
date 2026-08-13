@@ -181,16 +181,41 @@ Clean Architecture и идемпотентность не получится с�
   в CI отдельной джобой. Пороги пока scoped на domain — расширять по мере появления
   протестированной логики в остальных пакетах, не раньше.
 
-### 1.2 Хранилище
+### 1.2 Хранилище ✅ (закрыто 2026-08-13)
 
-- ⬜ Drizzle-схема: `work`, `edition`, `source_link`, `language`, `external_ref`, `sync_log`,
-  `idempotency_key`.
-- ⬜ Уникальные ограничения по natural key и `(source_name, external_id)` — основа идемпотентности.
-- ⬜ `CHECK`-ограничение на нелегальные комбинации `type`/`is_legal_free`.
-- ⬜ Индексы: trigram по названию и автору, `(work_id, language)`, partial unique по ISBN-13.
-- ⬜ Первая миграция, сид справочника языков ISO 639-1.
-- ⬜ Postgres-реализации репозиториев с `ON CONFLICT DO UPDATE` + integration-тесты, включая
-  тест «двойной прогон не создаёт дублей».
+- ✅ Drizzle-схема: `work`, `edition`, `source_link`, `language`, `external_ref`, `sync_log`,
+  `idempotency_key`. Все id/reference-колонки — `text`, не нативный Postgres `uuid`: находка
+  прямо в процессе — `IdGenerator`-порт из Фазы 1.1 явно не требует конкретного формата, а
+  contract-suite намеренно использует короткие читаемые id вроде `"work-1"`; нативный `uuid`
+  такие отклоняет (`invalid input syntax for type uuid`), поймано интеграционным тестом.
+- ✅ Уникальные ограничения по natural key и `(source_name, external_id)`, плюс составной ключ
+  `source_link (edition_id, provider, type, url_hash)` и PK `idempotency_key (key, endpoint)`.
+- ✅ `CHECK`-ограничение на нелегальные комбинации `type`/`is_legal_free`, плюс CHECK на все
+  текстовые enum-подобные поля (`rights_status`, `entity_type`, `status`) — защита на уровне
+  хранилища, независимая от доменного кода.
+- ✅ Индексы: trigram (GIN, `gin_trgm_ops`) по `original_title`/`author` — добавлены вручную
+  через `drizzle-kit generate --custom`, Drizzle не поддерживает этот operator class нативно;
+  `(work_id, language)`; partial unique по ISBN-13.
+- ✅ Первая миграция (`drizzle/0000_*.sql` + `0001_trigram_indexes.sql`), сид справочника языков
+  из `LANGUAGE_NAMES` домена (`pnpm db:seed`, идемпотентно — проверено повторным запуском).
+- ✅ Postgres-реализации репозиториев (`Pg{Work,Edition,SourceLink,ExternalRef,SyncLog}Repository`,
+  `PgIdempotencyStore`) с `ON CONFLICT DO UPDATE`, где `id` намеренно исключён из `SET` —
+  конфликтующая запись сохраняет исходный id, как и обычный insert не в SET. **Contract-suite из
+  Фазы 1.1 переиспользованы буквально**, без переписывания под Postgres — ровно то, ради чего
+  они создавались. Тест «двойной прогон не создаёт дублей» (docs/rules.md §2.6) — не отдельный
+  тест, а прямое следствие того, что контракт-suite это уже проверяет и теперь гоняется против
+  настоящей БД через Testcontainers (26 тестов, включая harness).
+- ✅ Побочная находка: две contract-suite (`Edition`, `SourceLink`) пришлось расширить
+  опциональным хуком (`ensureWorkExists`/`ensureEditionExists`, no-op по умолчанию) — in-memory
+  фейк не проверяет ссылочную целостность, а реальный FK на `edition.work_id`/
+  `source_link.edition_id` требует существования родительской записи. Хук — заготовка родительской
+  строки только для интеграционных прогонов, in-memory тесты Фазы 1.1 не изменились по поведению.
+- ⬜ **`PgUnitOfWork` осознанно не реализован** в этой фазе. Наивная обёртка вокруг
+  `db.transaction()`, не пробрасывающая транзакционный handle в репозитории внутри `work()`,
+  выглядела бы рабочей, но не давала бы настоящей атомарности — хуже, чем открыто отложить.
+  Нужен механизм transaction-context (тип `Queryable` у репозиториев + `AsyncLocalStorage` или
+  явный scope-объект), который стоит проектировать вместе с реальным многотабличным сценарием
+  (`SyncWorkFromSource`, §1.3), а не вслепую.
 
 ### 1.3 Источники и синхронизация
 
@@ -198,6 +223,12 @@ Clean Architecture и идемпотентность не получится с�
   уважение rate limit, кэш ответов на уровне адаптера, условные запросы.
 - ⬜ Use case `SyncWorkFromSource`: нормализация → дедупликация изданий → `LinkPolicy` → upsert
   в одной транзакции → `sync_log` → инвалидация кэша.
+- ⬜ **`PgUnitOfWork` + transaction-context** (отложено из §1.2): репозитории должны принимать
+  `Db | Tx` (Drizzle транзакционный handle структурно совместим с обычным `Db`, кастинг не
+  нужен при правильном типе), `PgUnitOfWork.runInTransaction` — оборачивать `db.transaction()`
+  и прокидывать `tx` в репозитории, которые вызывает `work()`. Проектировать вместе с
+  `SyncWorkFromSource`, не раньше — там первый реальный многотабличный сценарий, на котором
+  это можно осмысленно протестировать.
 - ⬜ BullMQ: очередь на источник, детерминированный `jobId`, DLQ для упавших задач.
 - ⬜ Cron `RefreshStaleWorks`: обновление активных записей не реже раза в неделю.
 - ⬜ Дедупликация изданий: ISBN-13 → нормализованные (язык, издатель, год, название).

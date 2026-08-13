@@ -1,9 +1,22 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { Edition } from '../../src/entities/edition.js';
 import type { EditionRepository } from '../../src/ports/edition-repository.port.js';
 import { LanguageCode } from '../../src/value-objects/language-code.js';
 
-export function runEditionRepositoryContractTests(createRepository: () => EditionRepository): void {
+export interface EditionRepositoryContractOptions {
+  /**
+   * Every edition in this suite references `workId: 'work-1'`. The in-memory fake doesn't
+   * enforce referential integrity, but a real database's `edition.work_id` foreign key
+   * (docs/architecture.md §3.1) does — so a Postgres-backed run needs a real `work` row to exist
+   * first. No-op by default (the in-memory fake needs nothing).
+   */
+  ensureWorkExists?: (workId: string) => Promise<void>;
+}
+
+export function runEditionRepositoryContractTests(
+  createRepository: () => EditionRepository,
+  options: EditionRepositoryContractOptions = {},
+): void {
   const makeEdition = (overrides: Partial<Parameters<typeof Edition.create>[0]> = {}) =>
     Edition.create({
       id: 'edition-1',
@@ -16,6 +29,10 @@ export function runEditionRepositoryContractTests(createRepository: () => Editio
     });
 
   describe('EditionRepository contract', () => {
+    beforeEach(async () => {
+      await options.ensureWorkExists?.('work-1');
+    });
+
     it('returns null / empty for editions that were never saved', async () => {
       const repo = createRepository();
       expect(await repo.findById('missing')).toBeNull();

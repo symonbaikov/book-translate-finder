@@ -1,0 +1,72 @@
+import { eq } from 'drizzle-orm';
+import { Edition, type EditionRepository, Isbn, LanguageCode } from '@btf/domain';
+import type { Db } from '../db/client.js';
+import { edition } from '../db/schema.js';
+
+function toDomain(row: typeof edition.$inferSelect): Edition {
+  return Edition.create({
+    id: row.id,
+    workId: row.workId,
+    title: row.title,
+    language: LanguageCode.create(row.language),
+    translator: row.translator,
+    translatedFrom: row.translatedFrom ? LanguageCode.create(row.translatedFrom) : null,
+    publisher: row.publisher,
+    year: row.year,
+    isbn: row.isbn13 ? Isbn.create(row.isbn13) : null,
+  });
+}
+
+export class PgEditionRepository implements EditionRepository {
+  constructor(private readonly db: Db) {}
+
+  async findByNaturalKey(naturalKey: string): Promise<Edition | null> {
+    const [row] = await this.db
+      .select()
+      .from(edition)
+      .where(eq(edition.naturalKey, naturalKey))
+      .limit(1);
+    return row ? toDomain(row) : null;
+  }
+
+  async findById(id: string): Promise<Edition | null> {
+    const [row] = await this.db.select().from(edition).where(eq(edition.id, id)).limit(1);
+    return row ? toDomain(row) : null;
+  }
+
+  async findByWorkId(workId: string): Promise<Edition[]> {
+    const rows = await this.db.select().from(edition).where(eq(edition.workId, workId));
+    return rows.map(toDomain);
+  }
+
+  async save(entity: Edition): Promise<void> {
+    await this.db
+      .insert(edition)
+      .values({
+        id: entity.id,
+        workId: entity.workId,
+        title: entity.title,
+        language: entity.language.value,
+        translator: entity.translator,
+        translatedFrom: entity.translatedFrom?.value ?? null,
+        publisher: entity.publisher,
+        year: entity.year,
+        isbn13: entity.isbn?.value ?? null,
+        naturalKey: entity.naturalKey,
+      })
+      .onConflictDoUpdate({
+        target: edition.naturalKey,
+        set: {
+          // `id` deliberately excluded — same upsert contract as PgWorkRepository.
+          workId: entity.workId,
+          title: entity.title,
+          language: entity.language.value,
+          translator: entity.translator,
+          translatedFrom: entity.translatedFrom?.value ?? null,
+          publisher: entity.publisher,
+          year: entity.year,
+          isbn13: entity.isbn?.value ?? null,
+        },
+      });
+  }
+}
