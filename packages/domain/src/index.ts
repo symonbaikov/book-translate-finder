@@ -37,6 +37,8 @@ export {
   type FieldCategory,
 } from './policy/source-priority.js';
 
+export { coverUrlFromIsbn } from './policy/cover-url.js';
+
 export {
   BOOKSTORES,
   WORLDWIDE,

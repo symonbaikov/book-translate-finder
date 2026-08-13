@@ -1,4 +1,5 @@
 import {
+  coverUrlFromIsbn,
   NotFoundError,
   type CachePort,
   type EditionRepository,
@@ -27,6 +28,10 @@ export interface EditionSummaryDto {
   /** How many legal source links this edition has — lets the list surface "where to get it"
    * upfront instead of hiding it behind a per-edition expand (Phase 3 live-UX finding). */
   linkCount: number;
+  /** Whether bookstore lookups are possible for this edition (it has an ISBN). Separate from
+   * `linkCount` because a bookstore lookup is derived, not a discovered source link — but the
+   * list still needs it: an edition with only bookstores looked empty until this existed. */
+  hasBookstores: boolean;
 }
 
 export interface ListEditionsForWorkOutput {
@@ -85,8 +90,12 @@ export class ListEditionsForWork implements UseCase<
         publisher: edition.publisher,
         year: edition.year,
         isbn: edition.isbn?.value ?? null,
-        coverUrl: edition.coverUrl,
+        // Sources often have a cover for an ISBN without putting one on the edition record —
+        // deriving the fallback here (not at sync time) also repairs rows synced before covers
+        // existed, with no re-sync (see cover-url.ts).
+        coverUrl: edition.coverUrl ?? coverUrlFromIsbn(edition.isbn?.value),
         linkCount: linkCounts.get(edition.id) ?? 0,
+        hasBookstores: edition.isbn !== null,
       })),
     };
 

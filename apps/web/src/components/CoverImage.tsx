@@ -1,9 +1,17 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+
 /**
  * Book cover with a graceful placeholder. A plain `<img>` rather than `next/image`: covers come
  * from external hosts (covers.openlibrary.org, books.google.com) that would each need remote-
  * pattern config and would funnel every self-hosted instance's cover traffic through the Next
  * image optimizer for no real gain at these sizes. `loading="lazy"` keeps long edition lists
  * cheap; the fixed width/height prevents layout shift while a cover loads.
+ *
+ * A cover URL is a *guess* when derived from an ISBN (see the domain's `cover-url.ts`) — the
+ * image may simply not exist. `onError` is therefore load-bearing, not defensive polish: without
+ * it the reader gets a broken-image icon instead of the 📖 placeholder.
  */
 export function CoverImage({
   src,
@@ -21,7 +29,15 @@ export function CoverImage({
   /** Eager-load — for the above-the-fold hero cover (it is the page's LCP candidate). */
   priority?: boolean;
 }) {
-  if (!src) {
+  const [failed, setFailed] = useState(false);
+
+  // A new `src` deserves a fresh attempt — otherwise a card reused for a different book (React
+  // keeping the same element) would stay stuck on the previous book's failure.
+  useEffect(() => {
+    setFailed(false);
+  }, [src]);
+
+  if (!src || failed) {
     return (
       <div
         className={`cover cover--placeholder ${className}`}
@@ -32,6 +48,7 @@ export function CoverImage({
       </div>
     );
   }
+
   return (
     <img
       className={`cover ${className}`}
@@ -40,6 +57,7 @@ export function CoverImage({
       width={width}
       height={height}
       loading={priority ? 'eager' : 'lazy'}
+      onError={() => setFailed(true)}
     />
   );
 }

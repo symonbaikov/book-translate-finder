@@ -1,6 +1,7 @@
 import {
   assertLinkAllowed,
   Edition,
+  Isbn,
   LanguageCode,
   NotFoundError,
   ProviderId,
@@ -168,5 +169,52 @@ describe('ListEditionsForWork', () => {
     expect(byId.get('e1')).toBe(1);
     expect(byId.get('e2')).toBe(0);
     expect(byId.get('e3')).toBe(0);
+  });
+
+  it('flags editions that have an ISBN as buyable, so the list never looks empty', async () => {
+    // Found live in Phase 3: an edition with no borrow/download link but a perfectly good ISBN
+    // showed no badge at all, even though every bookstore lookup was available behind the expand.
+    const { deps, workRepository, editionRepository } = makeDeps();
+    await seed(workRepository, editionRepository);
+    await editionRepository.save(
+      Edition.create({
+        id: 'e-isbn',
+        workId: 'work-1',
+        title: 'War and Peace',
+        language: LanguageCode.create('en'),
+        publisher: 'Vintage',
+        year: 2008,
+        isbn: Isbn.create('9780140447934'),
+      }),
+    );
+    const useCase = new ListEditionsForWork(deps);
+
+    const result = await useCase.execute({ workId: 'work-1' });
+
+    const byId = new Map(result.editions.map((e) => [e.id, e.hasBookstores]));
+    expect(byId.get('e-isbn')).toBe(true);
+    expect(byId.get('e1')).toBe(false); // seeded without an ISBN
+  });
+
+  it('derives a cover from the ISBN when the source gave none — repairs rows synced before covers existed', async () => {
+    const { deps, workRepository, editionRepository } = makeDeps();
+    await seed(workRepository, editionRepository);
+    await editionRepository.save(
+      Edition.create({
+        id: 'e-isbn',
+        workId: 'work-1',
+        title: 'War and Peace',
+        language: LanguageCode.create('en'),
+        publisher: 'Vintage',
+        year: 2008,
+        isbn: Isbn.create('9780140447934'),
+      }),
+    );
+    const useCase = new ListEditionsForWork(deps);
+
+    const result = await useCase.execute({ workId: 'work-1' });
+
+    const derived = result.editions.find((e) => e.id === 'e-isbn');
+    expect(derived?.coverUrl).toContain('9780140447934');
   });
 });

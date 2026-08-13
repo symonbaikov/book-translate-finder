@@ -70,6 +70,7 @@ describe('EditionsResponseSchema', () => {
           isbn: null,
           coverUrl: null,
           linkCount: 0,
+          hasBookstores: false,
         },
       ],
     });

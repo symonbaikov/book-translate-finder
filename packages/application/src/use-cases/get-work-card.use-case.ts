@@ -1,6 +1,8 @@
 import {
+  coverUrlFromIsbn,
   NotFoundError,
   type CachePort,
+  type Edition,
   type EditionRepository,
   type ExternalRefRepository,
   type WorkRepository,
@@ -42,6 +44,14 @@ export function workCacheKey(workId: string): string {
   return `${CACHE_KEY_VERSION}:work:${workId}:card`;
 }
 
+function firstEditionCover(editions: readonly Edition[]): string | null {
+  for (const edition of editions) {
+    const cover = edition.coverUrl ?? coverUrlFromIsbn(edition.isbn?.value);
+    if (cover) return cover;
+  }
+  return null;
+}
+
 /** `GET /api/works/:id` (docs/architecture.md §4). */
 export class GetWorkCard implements UseCase<GetWorkCardInput, GetWorkCardOutput> {
   constructor(private readonly deps: GetWorkCardDeps) {}
@@ -73,7 +83,10 @@ export class GetWorkCard implements UseCase<GetWorkCardInput, GetWorkCardOutput>
       author: work.author,
       firstPublishedYear: work.firstPublishedYear,
       description: work.description,
-      coverUrl: work.coverUrl,
+      // A work without its own cover borrows the first edition that has one (or that has an
+      // ISBN we can derive one from) — a book card with a blank cover is the most visible
+      // failure in the whole UI, and one of its editions almost always has an image.
+      coverUrl: work.coverUrl ?? firstEditionCover(editions),
       translatedLanguages,
       editionCount: editions.length,
       sources,

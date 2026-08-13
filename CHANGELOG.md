@@ -57,6 +57,19 @@ them before the API starts).
 
 ### Fixed
 
+- **Only 87 of 183 ISO 639-1 languages were supported, and editions in the rest were silently
+  dropped.** `SyncWorkFromSource` skips any edition whose language it cannot parse, so the
+  "likely codes" shortcut in the language table was quiet data loss — 116 three-letter codes are
+  now accepted that previously were not, including French `fra`, German `deu`, Greek `ell`, and
+  Icelandic `isl` (both the bibliographic /B and terminological /T forms are mapped now).
+- **Covers often missing.** Two causes: rows synced before covers existed never re-sync, and
+  many edition records carry no cover of their own even when Open Library has one for their
+  ISBN. Covers are now derived from the ISBN at read time, which fixes existing rows without a
+  re-sync, and a work with no cover borrows one from its first edition. A derived URL is a
+  guess, so a 404 now falls back to the 📖 placeholder instead of a broken-image icon.
+- **Editions with only bookstore links looked empty.** They now carry an "in bookstores" badge,
+  distinct from the "read or borrow" badge for editions with real source links.
+
 - Response-cache keys are now versioned through a single `CACHE_KEY_VERSION` constant (bumped to
   `v2`). Found live: adding `coverUrl` to the editions response left pre-change entries cached,
   the use case returned them verbatim, and the controller's output validation correctly refused

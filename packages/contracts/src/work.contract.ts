@@ -36,6 +36,8 @@ export const EditionSummarySchema = z.object({
   coverUrl: z.string().url().nullable(),
   /** Legal source links this edition has — lets the client surface availability on the list itself. */
   linkCount: z.number().int().nonnegative(),
+  /** Whether bookstore lookups exist for this edition (i.e. it has an ISBN). */
+  hasBookstores: z.boolean(),
 });
 
 export type EditionSummary = z.infer<typeof EditionSummarySchema>;

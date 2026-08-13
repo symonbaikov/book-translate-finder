@@ -18,8 +18,8 @@ interface WorkPageProps {
  */
 function sortEditions(editions: EditionSummary[]): EditionSummary[] {
   return [...editions].sort((a, b) => {
-    const aHasLinks = a.linkCount > 0 ? 0 : 1;
-    const bHasLinks = b.linkCount > 0 ? 0 : 1;
+    const aHasLinks = a.linkCount > 0 || a.hasBookstores ? 0 : 1;
+    const bHasLinks = b.linkCount > 0 || b.hasBookstores ? 0 : 1;
     if (aHasLinks !== bHasLinks) return aHasLinks - bHasLinks;
     const byLanguage = languageName(a.language).localeCompare(languageName(b.language), 'en');
     if (byLanguage !== 0) return byLanguage;
@@ -137,11 +137,15 @@ function EditionCard({ edition }: { edition: EditionSummary }) {
         <CoverImage src={edition.coverUrl} alt="" width={56} height={84} />
         <div className="media-row__body">
           <strong>{edition.title}</strong>
-          {edition.linkCount > 0 && (
+          {edition.linkCount > 0 ? (
             <span className="badge badge--positive" style={{ marginLeft: '0.5rem' }}>
-              sources available
+              read or borrow
             </span>
-          )}
+          ) : edition.hasBookstores ? (
+            <span className="badge badge--neutral" style={{ marginLeft: '0.5rem' }}>
+              in bookstores
+            </span>
+          ) : null}
           <div className="muted">
             {languageName(edition.language)}
             {edition.publisher ? ` · ${edition.publisher}` : ''}

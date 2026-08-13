@@ -62,11 +62,15 @@ test('search finds a known book, opens its card, and shows the edition-links blo
   const firstLinksButton = page.getByRole('button', { name: 'Show links' }).first();
   await firstLinksButton.click();
 
-  // Either real links render or the explicit empty state does — both prove the block resolved;
-  // the point is that it's neither stuck loading nor showing an error.
-  await expect(
-    page
-      .getByText('No legal links for this edition yet.')
-      .or(page.locator('a[target="_blank"]').first()),
-  ).toBeVisible({ timeout: 10_000 });
+  // The panel resolved — neither stuck on the loading skeleton nor showing an error. It may
+  // legitimately contain source links, the explicit "no legal links" empty state, bookstore
+  // lookups, or a combination (an edition with an ISBN but no lendable copy shows the empty
+  // state *and* bookstores), so assert on the resolved container rather than on one shape.
+  const panel = page.locator('[aria-live="polite"]').filter({
+    hasText:
+      /No legal links for this edition yet\.|Find in a bookstore|Borrow from a library|Download|Buy/,
+  });
+  await expect(panel.first()).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator('.skeleton')).toHaveCount(0);
+  await expect(page.locator('.error-box')).toHaveCount(0);
 });
