@@ -66,8 +66,10 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: pnpm }
       - run: pnpm install --frozen-lockfile
-      # Scoped to packages/domain (≥90%, docs/rules.md §5) — the only package with real tested
-      # logic as of Phase 1.1. Expands as application/infrastructure/apps earn tested logic too.
+      # Scoped to packages/domain + packages/application (≥90%, docs/rules.md §5) — the two
+      # layers with pure, fake-backed unit tests. infrastructure/apps are exercised by
+      # integration/e2e instead (real Postgres/Redis, real HTTP), where a line-coverage
+      # percentage isn't the right signal.
       - run: pnpm test:coverage
 
   test-integration:

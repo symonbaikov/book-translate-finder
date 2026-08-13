@@ -18,7 +18,7 @@
     "test:unit": "vitest run --project unit",
     "test:contract": "vitest run --project contract",
     "test:integration": "vitest run --project integration",
-    "test:coverage": "vitest run --project unit --project contract --coverage --coverage.include=\"packages/domain/src/**/*.ts\" --coverage.exclude=\"**/*.test.ts\" --coverage.exclude=\"**/index.ts\" --coverage.thresholds.statements=90 --coverage.thresholds.branches=90 --coverage.thresholds.functions=90 --coverage.thresholds.lines=90",
+    "test:coverage": "vitest run --project unit --project contract --coverage --coverage.include=\"packages/domain/src/**/*.ts\" --coverage.include=\"packages/application/src/**/*.ts\" --coverage.exclude=\"**/*.test.ts\" --coverage.exclude=\"**/index.ts\" --coverage.thresholds.statements=90 --coverage.thresholds.branches=90 --coverage.thresholds.functions=90 --coverage.thresholds.lines=90",
     "test:e2e": "pnpm --filter @btf/web run e2e",
     "test:watch": "vitest",
     "build": "pnpm -r --filter \"./packages/*\" run build && pnpm -r --filter \"./apps/*\" run build",

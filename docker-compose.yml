@@ -1,0 +1,154 @@
+name: book-translate-finder
+
+# Self-host production compose (docs/architecture.md §9.1). Pulls pinned, pre-built images from
+# GHCR for api/worker/migrate — the one deliberate exception is `web`, built locally from source:
+# Next.js inlines NEXT_PUBLIC_* values into the browser bundle at BUILD time, so a generic
+# pre-built image can't be reconfigured for a self-hoster's own domain at container startup the
+# way api/worker can (see the NEXT_PUBLIC_API_URL comment in .env.example).
+#
+# Quickstart: cp .env.example .env, fill in the real values, then `docker compose up -d`.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: btf
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: btf
+    volumes:
+      - btf_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U btf -d btf']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - btf_redisdata:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # One-shot: applies migrations then seeds the (idempotent) language table, then exits. Never a
+  # step inside api's/worker's own entrypoint — running migrations from multiple starting
+  # containers at once is a race (docs/architecture.md §9.1).
+  migrate:
+    image: ghcr.io/symonbaikov/book-translate-finder-migrate:${IMAGE_TAG:-latest}
+    restart: 'no'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://btf:${POSTGRES_PASSWORD}@postgres:5432/btf
+
+  api:
+    image: ghcr.io/symonbaikov/book-translate-finder-api:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      # Override .env's DATABASE_URL/REDIS_URL (those are for local dev against localhost) —
+      # inside this compose network the real services are named `postgres`/`redis`.
+      DATABASE_URL: postgres://btf:${POSTGRES_PASSWORD}@postgres:5432/btf
+      REDIS_URL: redis://redis:6379
+      # .env's own default is `development` (correct for `pnpm dev`, docs/rules.md "Запуск") —
+      # this compose always runs a production deployment regardless of what's in .env. Matters
+      # for real behavior, not just labeling: apps/api only restricts CORS to PUBLIC_URL and
+      # switches pino to structured JSON (vs. pretty-printed) when NODE_ENV is `production`
+      # (found live, docs/plan.md §1.6 — the "три команды" flow would otherwise self-host with
+      # CORS wide open).
+      NODE_ENV: production
+    ports:
+      - '3001:3001'
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "require('http').get('http://localhost:3001/health/ready',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  worker:
+    image: ghcr.io/symonbaikov/book-translate-finder-worker:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://btf:${POSTGRES_PASSWORD}@postgres:5432/btf
+      REDIS_URL: redis://redis:6379
+      NODE_ENV: production
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/web.Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      # Server-side (SSR) fetches run inside this container, where NEXT_PUBLIC_API_URL's
+      # browser-facing value (e.g. localhost or a public domain) does not reach the api
+      # container — found live (docs/plan.md §1.6). Not NEXT_PUBLIC_-prefixed on purpose: it must
+      # stay a real runtime env var, never inlined into the browser bundle. See web-env.ts.
+      INTERNAL_API_URL: http://api:3001
+    ports:
+      - '3000:3000'
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "require('http').get('http://localhost:3000/',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  # Optional reverse proxy with automatic Let's Encrypt TLS: `docker compose --profile tls up -d`.
+  # Fronts both web and api on one public domain — see docker/Caddyfile. Requires DOMAIN in .env.
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    profiles: [tls]
+    depends_on:
+      - web
+      - api
+    ports:
+      - '80:80'
+      - '443:443'
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN in .env to use the tls profile}
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - btf_caddy_data:/data
+      - btf_caddy_config:/config
+
+volumes:
+  btf_pgdata:
+  btf_redisdata:
+  btf_caddy_data:
+  btf_caddy_config:

@@ -1,0 +1,19 @@
+# Optional reverse proxy for the `tls` compose profile (docs/architecture.md §9.1) — fronts both
+# apps/web and apps/api on one public domain with automatic Let's Encrypt TLS. Routing /api/* to
+# the api service on the SAME origin as web also sidesteps the NEXT_PUBLIC_API_URL build-time
+# constraint (see .env.example): point NEXT_PUBLIC_API_URL at this same DOMAIN and the browser's
+# same-origin fetches from apps/web land here and get routed to api.
+
+{$DOMAIN} {
+	handle /api/* {
+		reverse_proxy api:3001
+	}
+
+	handle /health/* {
+		reverse_proxy api:3001
+	}
+
+	handle {
+		reverse_proxy web:3000
+	}
+}
