@@ -8,24 +8,79 @@
  */
 const STORAGE_KEY = 'btf.country';
 
-/** Countries with at least one bookstore — mirrors `supportedBookstoreCountries()` in the domain.
- * Duplicated deliberately: apps/web may only import `@btf/contracts` (docs/architecture.md §2
- * boundaries), and shipping this list through an API call for a static selector would be worse. */
-export const COUNTRY_OPTIONS: readonly { code: string; name: string }[] = [
-  { code: 'AU', name: 'Australia' },
-  { code: 'BR', name: 'Brazil' },
-  { code: 'CA', name: 'Canada' },
-  { code: 'FR', name: 'France' },
-  { code: 'DE', name: 'Germany' },
-  { code: 'IT', name: 'Italy' },
-  { code: 'JP', name: 'Japan' },
-  { code: 'NL', name: 'Netherlands' },
-  { code: 'PL', name: 'Poland' },
-  { code: 'RU', name: 'Russia' },
-  { code: 'ES', name: 'Spain' },
-  { code: 'GB', name: 'United Kingdom' },
-  { code: 'US', name: 'United States' },
+/**
+ * Countries with at least one local bookstore — mirrors `supportedBookstoreCountries()` in the
+ * domain. Duplicated deliberately: apps/web may only import `@btf/contracts`
+ * (docs/architecture.md §2 boundaries), and shipping a static selector's contents through an API
+ * call would be worse. Codes only — the names come from the platform's own `Intl.DisplayNames`,
+ * so there is no hand-maintained country-name table to drift.
+ *
+ * Listing a country the catalog has no store for would be worse than omitting it: picking it
+ * would silently give the same worldwide-only list as picking nothing, which reads as a bug.
+ */
+const COUNTRY_CODES: readonly string[] = [
+  'AE',
+  'AR',
+  'AT',
+  'AU',
+  'BE',
+  'BG',
+  'BR',
+  'CA',
+  'CH',
+  'CL',
+  'CN',
+  'CO',
+  'CZ',
+  'DE',
+  'DK',
+  'EE',
+  'EG',
+  'ES',
+  'FI',
+  'FR',
+  'GB',
+  'GR',
+  'HU',
+  'ID',
+  'IE',
+  'IN',
+  'IT',
+  'JP',
+  'KR',
+  'LT',
+  'MX',
+  'NL',
+  'NO',
+  'NZ',
+  'PL',
+  'PT',
+  'RO',
+  'RU',
+  'SA',
+  'SE',
+  'SG',
+  'SK',
+  'TR',
+  'TW',
+  'UA',
+  'US',
+  'ZA',
 ];
+
+const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+
+export const COUNTRY_OPTIONS: readonly { code: string; name: string }[] = COUNTRY_CODES.map(
+  (code) => ({ code, name: safeRegionName(code) }),
+).sort((a, b) => a.name.localeCompare(b.name, 'en'));
+
+function safeRegionName(code: string): string {
+  try {
+    return regionNames.of(code) ?? code;
+  } catch {
+    return code;
+  }
+}
 
 export function readCountry(): string | null {
   if (typeof window === 'undefined') return null;

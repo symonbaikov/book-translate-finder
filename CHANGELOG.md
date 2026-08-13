@@ -18,6 +18,20 @@ them before the API starts).
 
 ### Added
 
+- **Bookstores in 47 countries, up from 13.** ~90 retailers, every ISBN-lookup URL checked live
+  before being added; a shop whose URL shape could not be confirmed was left out rather than
+  guessed at. The country selector now names countries via the platform's own `Intl.DisplayNames`
+  instead of a hand-maintained table.
+
+### Fixed
+
+- **A book's translations were being silently truncated.** `editions.json` was read one page deep,
+  so a work with 536 editions contributed 50 — and since Open Library returns editions in no
+  meaningful order, that page is mostly English reprints. The provider now walks every page,
+  trusting the response's own `size` rather than "a short page means the last page" (Open Library
+  was observed serving 50 entries for a `limit=500` request). Measured on real data: _1984_ went
+  from 48 editions / 10 languages to 344 / 22, _The Little Prince_ from 54 / 8 to 447 / 31.
+
 - **Real download links, per format.** A third source — Project Gutenberg, via the key-free
   Gutendex API — supplies actual downloadable files for public domain books: EPUB, MOBI, plain
   text and HTML, each a separate link labeled with its format ("Download EPUB"). Verified live:

@@ -150,6 +150,71 @@ describe('OpenLibraryProvider.fetchEditions', () => {
   });
 });
 
+describe('OpenLibraryProvider.fetchEditions paging', () => {
+  /** Serves `size` editions in pages of `pageSize`, honouring the requested `offset`. */
+  function makePagingFetcher(size: number, pageSize: number): ResilientFetcher {
+    return {
+      fetch: vi.fn(async (url: string) => {
+        if (url.includes('search.json')) {
+          return new Response(JSON.stringify({ docs: [{ ia: [] }] }), { status: 200 });
+        }
+        const offset = Number(new URL(url).searchParams.get('offset') ?? 0);
+        const entries = Array.from(
+          { length: Math.max(0, Math.min(pageSize, size - offset)) },
+          (_, i) =>
+            editionEntry(`OL${offset + i}M`, { languages: [{ key: `/languages/l${offset + i}` }] }),
+        );
+        return new Response(JSON.stringify({ size, entries }), { status: 200 });
+      }),
+    };
+  }
+
+  it('walks every page instead of stopping at the first one', async () => {
+    // The bug this guards: taking only the first page. Open Library returns editions in no
+    // meaningful order, so for a heavily reprinted classic the first page is nearly all English
+    // reprints — measured live on "1984", the first 50 of 536 editions carry 10 languages while
+    // the full set carries 23.
+    const provider = new OpenLibraryProvider(
+      makePagingFetcher(1200, 500),
+      makeInMemoryCache(),
+      'a',
+    );
+
+    const results = await provider.fetchEditions('/works/OL1W');
+
+    expect(results).toHaveLength(1000); // MAX_EDITIONS, the deliberate hard stop
+  });
+
+  it('keeps paging when the server silently serves a smaller page than requested', async () => {
+    // Observed live: a `limit=500` request for /works/OL1168083W came back with 50 entries even
+    // though the work has 536. Treating a short page as "the last page" truncated the work to 48
+    // editions and 10 languages, so the loop trusts the response's own `size` instead.
+    const provider = new OpenLibraryProvider(makePagingFetcher(536, 50), makeInMemoryCache(), 'a');
+
+    const results = await provider.fetchEditions('/works/OL1W');
+
+    expect(results).toHaveLength(536);
+  });
+
+  it('stops on an empty page even when `size` claims there is more', async () => {
+    // Without this, a `size` that can never be reached (a filtered or deleted record) would spin
+    // all the way to MAX_EDITIONS, firing a request per page against someone else's API.
+    const fetcher: ResilientFetcher = {
+      fetch: vi.fn(async (url: string) => {
+        if (url.includes('search.json')) {
+          return new Response(JSON.stringify({ docs: [{ ia: [] }] }), { status: 200 });
+        }
+        return new Response(JSON.stringify({ size: 9999, entries: [] }), { status: 200 });
+      }),
+    };
+    const provider = new OpenLibraryProvider(fetcher, makeInMemoryCache(), 'a');
+
+    await expect(provider.fetchEditions('/works/OL1W')).resolves.toEqual([]);
+    // One editions page + the work-ia lookup, and nothing more.
+    expect(fetcher.fetch).toHaveBeenCalledTimes(2);
+  });
+});
+
 describe('OpenLibraryProvider.fetchEditions availability (Open Library Lending)', () => {
   it('maps an exact "full access" match to a public-domain download link from internet-archive', async () => {
     const fetcher = makeFetcherRouting([

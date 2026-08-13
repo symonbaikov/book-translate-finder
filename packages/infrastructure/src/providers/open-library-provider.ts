@@ -21,6 +21,20 @@ const AVAILABILITY_BATCH_SIZE = 50;
  * copy — bounding this keeps one popular work's sync from firing dozens of extra HTTP requests.
  */
 const MAX_EXTRA_AVAILABILITY_EDITIONS = 5;
+/** Editions fetched per `editions.json` request — the endpoint's own accepted maximum, confirmed
+ * live (`limit=500` returns 500 entries; `limit=1000` returns everything a work has). */
+const EDITIONS_PAGE_SIZE = 500;
+/** Hard stop on how many editions one work may contribute, so a pathological record cannot turn a
+ * single sync into an unbounded crawl. Well above the largest real work observed (1984, 536). */
+const MAX_EDITIONS = 1000;
+/**
+ * Caps how many of a work's own editions get an availability lookup. Paging editions turned a
+ * 50-edition batch into a possible 1000, and at `AVAILABILITY_BATCH_SIZE` per request that would
+ * be twenty extra calls per sync. Borrow links do not need every edition anyway: the work's `ia`
+ * list (added unconditionally below) already names every digitized copy, which is where lendable
+ * editions actually come from.
+ */
+const MAX_AVAILABILITY_EDITION_KEYS = 100;
 
 interface OpenLibrarySearchDoc {
   key: string;
@@ -54,6 +68,8 @@ interface OpenLibraryEditionEntry {
 
 interface OpenLibraryEditionsResponse {
   entries?: OpenLibraryEditionEntry[];
+  /** Total editions the work has, independent of this page's size. See `fetchAllEditionEntries`. */
+  size?: number;
 }
 
 /** `/api/volumes/brief/json/...` — docs/plan.md §2 research: undocumented on openlibrary.org's
@@ -204,12 +220,7 @@ export class OpenLibraryProvider implements BookMetadataProvider {
     const cached = await this.cache.get<ProviderEdition[]>(cacheKey);
     if (cached) return cached;
 
-    const url = `https://openlibrary.org${externalWorkId}/editions.json?limit=50`;
-    const res = await this.fetcher.fetch(url, { headers: { 'User-Agent': this.userAgent } });
-    if (!res.ok) throw new Error(`Open Library editions failed with status ${res.status}`);
-
-    const data = (await res.json()) as OpenLibraryEditionsResponse;
-    const entries = data.entries ?? [];
+    const entries = await this.fetchAllEditionEntries(externalWorkId);
     const editions = entries.map(mapEditionEntry);
     const knownOlids = new Set(entries.map(editionOlid));
 
@@ -222,7 +233,7 @@ export class OpenLibraryProvider implements BookMetadataProvider {
     // (from search.json, not capped like editions.json) doesn't have that blind spot.
     const iaIds = await this.fetchWorkIaIds(externalWorkId);
     const requestKeys = [
-      ...entries.map((e) => `olid:${editionOlid(e)}`),
+      ...entries.slice(0, MAX_AVAILABILITY_EDITION_KEYS).map((e) => `olid:${editionOlid(e)}`),
       ...iaIds.map((id) => `ocaid:${id}`),
     ];
     const availability = await this.fetchAvailability(requestKeys);
@@ -315,6 +326,60 @@ export class OpenLibraryProvider implements BookMetadataProvider {
    * one edition's lending status to another. Batched (`AVAILABILITY_BATCH_SIZE`) rather than one
    * request per key — the same etiquette reasoning as `editions.json`'s own `limit=50`.
    */
+  /**
+   * Walks `editions.json` to the end of the work instead of taking the first page.
+   *
+   * This is the whole reason the app used to show four languages for a book translated into
+   * twenty. Open Library returns editions in no meaningful order, and for a heavily reprinted
+   * classic the first page is almost entirely English reprints: measured live on "1984"
+   * (536 editions) the first 50 carry 10 languages, the full set carries 23. Paging is the
+   * difference between "this book exists in English and Spanish" and the truth.
+   *
+   * Bounded on both ends — `EDITIONS_PAGE_SIZE` pages (so even a 536-edition work costs two
+   * requests, not eleven) and a hard `MAX_EDITIONS` stop, because a work with a pathological
+   * edition count must not turn one sync into an unbounded crawl of someone else's API.
+   */
+  private async fetchAllEditionEntries(externalWorkId: string): Promise<OpenLibraryEditionEntry[]> {
+    const entries: OpenLibraryEditionEntry[] = [];
+    // The work's true edition count, learned from the first response. Trusting it — rather than
+    // "a short page means the last page" — is deliberate: Open Library sometimes serves a page of
+    // 50 for a `limit=500` request (observed live on /works/OL1168083W, "1984", while the same
+    // URL from a shell returned 500). Treating that as the end silently truncated the work to 50
+    // editions and 10 languages when it has 536 and 23.
+    let total = MAX_EDITIONS;
+
+    while (entries.length < Math.min(total, MAX_EDITIONS)) {
+      const url =
+        `https://openlibrary.org${externalWorkId}/editions.json` +
+        `?limit=${EDITIONS_PAGE_SIZE}&offset=${entries.length}`;
+      const res = await this.fetcher.fetch(url, { headers: { 'User-Agent': this.userAgent } });
+      // Only the first page is load-bearing: without it there is nothing to sync. A later page
+      // failing costs some editions, and reporting the whole work as broken over that would be
+      // strictly worse than syncing what we already have.
+      if (!res.ok) {
+        if (entries.length === 0) {
+          throw new Error(`Open Library editions failed with status ${res.status}`);
+        }
+        break;
+      }
+
+      const data = (await res.json()) as OpenLibraryEditionsResponse;
+      const page = data.entries ?? [];
+      // An empty page always stops the walk — without it a `size` that can never be reached (a
+      // filtered or deleted record) would spin all the way to MAX_EDITIONS.
+      if (page.length === 0) break;
+      entries.push(...page);
+
+      if (typeof data.size === 'number') {
+        total = data.size;
+      } else if (page.length < EDITIONS_PAGE_SIZE) {
+        break; // no `size` to trust, so a short page is the only end-of-list signal left
+      }
+    }
+
+    return entries.slice(0, MAX_EDITIONS);
+  }
+
   private async fetchAvailability(requestKeys: string[]): Promise<Map<string, AvailabilityItem>> {
     const result = new Map<string, AvailabilityItem>();
     if (requestKeys.length === 0) return result;

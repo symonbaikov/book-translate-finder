@@ -75,4 +75,62 @@ describe('supportedBookstoreCountries', () => {
     expect(countries).not.toContain(WORLDWIDE);
     expect([...countries].sort()).toEqual(countries);
   });
+
+  /**
+   * Pinned deliberately. `apps/web/src/lib/country.ts` keeps its own copy of this list (it may not
+   * import the domain — docs/architecture.md §2 boundaries), so a country added here without
+   * being added there is invisible to the reader: the store exists but nothing in the UI can
+   * select it. Failing this test is the reminder to update both.
+   */
+  it('matches the country list the web selector ships (apps/web/src/lib/country.ts)', () => {
+    expect(supportedBookstoreCountries()).toEqual([
+      'AE',
+      'AR',
+      'AT',
+      'AU',
+      'BE',
+      'BG',
+      'BR',
+      'CA',
+      'CH',
+      'CL',
+      'CN',
+      'CO',
+      'CZ',
+      'DE',
+      'DK',
+      'EE',
+      'EG',
+      'ES',
+      'FI',
+      'FR',
+      'GB',
+      'GR',
+      'HU',
+      'ID',
+      'IE',
+      'IN',
+      'IT',
+      'JP',
+      'KR',
+      'LT',
+      'MX',
+      'NL',
+      'NO',
+      'NZ',
+      'PL',
+      'PT',
+      'RO',
+      'RU',
+      'SA',
+      'SE',
+      'SG',
+      'SK',
+      'TR',
+      'TW',
+      'UA',
+      'US',
+      'ZA',
+    ]);
+  });
 });
