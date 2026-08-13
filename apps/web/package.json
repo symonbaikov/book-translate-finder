@@ -9,7 +9,7 @@
     "start": "next start -p 3000",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf .next",
-    "e2e": "echo 'Playwright e2e suite lands in Phase 1.5 (docs/plan.md §1.5)' && exit 1"
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@btf/contracts": "workspace:*",
@@ -19,6 +19,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@playwright/test": "^1.47.2",
     "@types/node": "^20.14.0",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",

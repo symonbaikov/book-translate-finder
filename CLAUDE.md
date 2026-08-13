@@ -81,7 +81,15 @@ pnpm install
 ```
 
 ```bash
+cp .env.example .env
+```
+
+```bash
 docker compose -f docker/docker-compose.dev.yml up -d
+```
+
+```bash
+pnpm db:migrate && pnpm db:seed
 ```
 
 ```bash
@@ -91,6 +99,15 @@ pnpm dev
 `pnpm dev` поднимает web (`http://localhost:3000`), api (`http://localhost:3001`) и worker
 параллельно. Отдельно: `pnpm --filter @btf/web dev`, `pnpm --filter @btf/api dev`,
 `pnpm --filter @btf/worker dev`.
+
+apps/api и apps/worker читают корневой `.env` напрямую (`tsx --env-file=../../.env`). apps/web —
+Next.js-приложение и читает переменные окружения только из **своей собственной** директории
+(`apps/web/.env.local`), не из корня монорепо — это ограничение самого Next.js, а не решение
+проекта. Разово:
+
+```bash
+cp apps/web/.env.example apps/web/.env.local
+```
 
 ### Качество кода
 

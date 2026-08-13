@@ -6,6 +6,7 @@ coverage/
 *.tsbuildinfo
 
 .env
+.env.local
 .env.*.local
 !.env.example
 
@@ -21,3 +22,6 @@ Thumbs.db
 .idea/
 
 .turbo/
+
+playwright-report/
+test-results/
