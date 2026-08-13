@@ -104,6 +104,8 @@ export const sourceLink = pgTable(
     provider: text('provider').notNull(),
     rightsStatus: text('rights_status').notNull(),
     isLegalFree: boolean('is_legal_free').notNull(),
+    /** `epub`/`txt`/… for downloads; null for buy/borrow links, which land on a page not a file. */
+    format: text('format'),
     verifiedAt: timestamp('verified_at', { withTimezone: true }).notNull(),
   },
   (table) => [

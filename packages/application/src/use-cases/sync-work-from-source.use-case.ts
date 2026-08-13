@@ -123,7 +123,7 @@ export class SyncWorkFromSource implements UseCase<
           const outcome = await this.syncEdition(input.source, work.id, providerEdition);
           if (outcome) {
             editionsSynced += 1;
-            linksSynced += outcome.linkSynced ? 1 : 0;
+            linksSynced += outcome.linksSynced;
           }
         }
 
@@ -151,7 +151,7 @@ export class SyncWorkFromSource implements UseCase<
     source: string,
     workId: string,
     providerEdition: ProviderEdition,
-  ): Promise<{ linkSynced: boolean } | null> {
+  ): Promise<{ linksSynced: number } | null> {
     const language = this.tryParseLanguage(providerEdition.language);
     if (!language) return null;
 
@@ -197,40 +197,44 @@ export class SyncWorkFromSource implements UseCase<
     await this.deps.editionRepository.save(edition);
     await this.deps.externalRefRepository.save(editionExternalRef, 'edition', edition.id);
 
-    const linkSynced = await this.trySyncLink(source, edition.id, providerEdition);
-    return { linkSynced };
+    const linksSynced = await this.syncLinks(source, edition.id, providerEdition);
+    return { linksSynced };
   }
 
   /**
-   * A provider-offered link that `LinkPolicy` rejects (docs/legal-policy.md) is skipped, not
-   * fatal — a provider suggesting a link is never the same as that link being allowed. Any
-   * *other* error still propagates and fails the whole sync.
+   * Saves every provider-offered link that `LinkPolicy` accepts, and returns how many made it
+   * through. A rejected link (docs/legal-policy.md) is skipped, not fatal — a provider offering
+   * a link is never the same as that link being allowed — and one rejection must not discard the
+   * edition's other formats. Any *other* error still propagates and fails the whole sync.
    */
-  private async trySyncLink(
+  private async syncLinks(
     source: string,
     editionId: string,
     providerEdition: ProviderEdition,
-  ): Promise<boolean> {
-    if (!providerEdition.link) return false;
-
-    try {
-      const sourceLink = assertLinkAllowed({
-        id: this.deps.idGenerator.newId(),
-        editionId,
-        type: providerEdition.link.type,
-        url: providerEdition.link.url,
-        // A link's actual legal origin can differ from the adapter that surfaced it — see the
-        // `link.provider` doc comment on ProviderEdition.
-        provider: ProviderId.create(providerEdition.link.provider ?? source),
-        rightsStatus: providerEdition.rightsSignal,
-        verifiedAt: this.deps.clock.now(),
-      });
-      await this.deps.sourceLinkRepository.save(sourceLink);
-      return true;
-    } catch (error) {
-      if (error instanceof DomainError) return false;
-      throw error;
+  ): Promise<number> {
+    let saved = 0;
+    for (const candidate of providerEdition.links ?? []) {
+      try {
+        const sourceLink = assertLinkAllowed({
+          id: this.deps.idGenerator.newId(),
+          editionId,
+          type: candidate.type,
+          url: candidate.url,
+          // A link's actual legal origin can differ from the adapter that surfaced it — see the
+          // `links` doc comment on ProviderEdition.
+          provider: ProviderId.create(candidate.provider ?? source),
+          rightsStatus: providerEdition.rightsSignal,
+          format: candidate.format ?? null,
+          verifiedAt: this.deps.clock.now(),
+        });
+        await this.deps.sourceLinkRepository.save(sourceLink);
+        saved += 1;
+      } catch (error) {
+        if (error instanceof DomainError) continue;
+        throw error;
+      }
     }
+    return saved;
   }
 
   /**

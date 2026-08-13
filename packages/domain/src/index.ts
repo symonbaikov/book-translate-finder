@@ -52,6 +52,7 @@ export {
   type BookMetadataProvider,
   type ProviderEdition,
   type ProviderWork,
+  type ProviderWorkDetails,
   type SearchQuery,
 } from './ports/book-metadata-provider.port.js';
 export { type CachePort } from './ports/cache.port.js';

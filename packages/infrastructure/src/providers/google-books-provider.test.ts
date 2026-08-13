@@ -129,7 +129,7 @@ describe('GoogleBooksProvider.fetchEditions', () => {
         isbn13: '9780140447934',
         isbn10: '0140447938',
         rightsSignal: 'unknown',
-        link: { type: 'buy', url: 'https://books.google.com/books?id=abc123' },
+        links: [{ type: 'buy', url: 'https://books.google.com/books?id=abc123' }],
       },
     ]);
   });
@@ -144,7 +144,7 @@ describe('GoogleBooksProvider.fetchEditions', () => {
 
     const [edition] = await provider.fetchEditions('xyz');
 
-    expect(edition!.link).toBeUndefined();
-    expect('link' in edition!).toBe(false);
+    expect(edition!.links).toBeUndefined();
+    expect('links' in edition!).toBe(false);
   });
 });

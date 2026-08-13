@@ -12,6 +12,8 @@ export const SourceLinkSchema = z.object({
   providerName: z.string().optional(),
   rightsStatus: z.enum(['public_domain', 'open_license', 'copyrighted', 'unknown']),
   url: z.string().url(),
+  /** File format for downloads (`epub`, `txt`, …) — tells the reader what they will get. */
+  format: z.string().nullish(),
 });
 
 export type SourceLinkDto = z.infer<typeof SourceLinkSchema>;

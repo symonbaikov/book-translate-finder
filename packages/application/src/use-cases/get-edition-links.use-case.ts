@@ -26,6 +26,8 @@ export interface SourceLinkDto {
   url: string;
   /** Human-readable store/provider name, when the link is a bookstore lookup. */
   providerName?: string;
+  /** File format for downloads (`epub`, `txt`, …); absent for buy/borrow links. */
+  format?: string | null;
 }
 
 export interface GetEditionLinksOutput {
@@ -87,6 +89,7 @@ export class GetEditionLinks implements UseCase<GetEditionLinksInput, GetEdition
         provider: link.provider.value,
         rightsStatus: link.rightsStatus,
         url: link.url,
+        format: link.format,
       })),
       bookstores: this.buildBookstoreLinks(edition, country),
     };

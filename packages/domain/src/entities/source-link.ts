@@ -11,6 +11,10 @@ export interface SourceLinkParams {
   provider: ProviderId;
   rightsStatus: RightsStatus;
   isLegalFree: boolean;
+  /** File format for `download` links (`epub`, `mobi`, `txt`, `html`, `pdf`) — a reader choosing
+   * where to get a book needs to know what they will actually get. Absent for buy/borrow links,
+   * which land on a page rather than a file. */
+  format?: string | null;
   verifiedAt: Date;
 }
 
@@ -41,6 +45,7 @@ export class SourceLink {
     readonly provider: ProviderId,
     readonly rightsStatus: RightsStatus,
     readonly isLegalFree: boolean,
+    readonly format: string | null,
     readonly verifiedAt: Date,
   ) {}
 
@@ -54,6 +59,7 @@ export class SourceLink {
       params.provider,
       params.rightsStatus,
       params.isLegalFree,
+      params.format ?? null,
       params.verifiedAt,
     );
   }
@@ -68,6 +74,7 @@ export class SourceLink {
       params.provider,
       params.rightsStatus,
       params.isLegalFree,
+      params.format ?? null,
       params.verifiedAt,
     );
   }

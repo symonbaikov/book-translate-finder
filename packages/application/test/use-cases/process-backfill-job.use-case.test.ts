@@ -95,3 +95,74 @@ describe('ProcessBackfillJob', () => {
     expect(result).toEqual({ status: 'synced', source: 'google-books' });
   });
 });
+
+describe('ProcessBackfillJob enrichment sources', () => {
+  it('runs enrichment sources even after another source already won', async () => {
+    // Gutenberg is the only source that yields downloadable files. Stopping at the first
+    // successful source would mean a public domain book Open Library found first shows borrow
+    // links and no way to just download it.
+    const cache = new InMemoryCache();
+    const calls: string[] = [];
+    const runner: SourceSyncRunner = {
+      async execute({ source }) {
+        calls.push(source);
+        return source === 'open-library'
+          ? { status: 'synced', workId: 'w1' }
+          : { status: 'not_found' };
+      },
+    };
+    const useCase = new ProcessBackfillJob({
+      syncWorkFromSource: runner,
+      cache,
+      sources: ['open-library', 'google-books'],
+      enrichmentSources: ['gutenberg'],
+    });
+
+    const result = await useCase.execute({ query: 'War and Peace' });
+
+    expect(result).toEqual({ status: 'synced', source: 'open-library' });
+    expect(calls).toEqual(['open-library', 'gutenberg']);
+  });
+
+  it('never lets an enrichment failure undo a successful sync', async () => {
+    const cache = new InMemoryCache();
+    const runner: SourceSyncRunner = {
+      async execute({ source }) {
+        if (source === 'gutenberg') throw new Error('gutenberg is down');
+        return { status: 'synced', workId: 'w1' };
+      },
+    };
+    const useCase = new ProcessBackfillJob({
+      syncWorkFromSource: runner,
+      cache,
+      sources: ['open-library'],
+      enrichmentSources: ['gutenberg'],
+    });
+
+    await expect(useCase.execute({ query: 'War and Peace' })).resolves.toEqual({
+      status: 'synced',
+      source: 'open-library',
+    });
+  });
+
+  it('does not run the winner twice when it is also an enrichment source', async () => {
+    const cache = new InMemoryCache();
+    const calls: string[] = [];
+    const runner: SourceSyncRunner = {
+      async execute({ source }) {
+        calls.push(source);
+        return { status: 'synced', workId: 'w1' };
+      },
+    };
+    const useCase = new ProcessBackfillJob({
+      syncWorkFromSource: runner,
+      cache,
+      sources: ['gutenberg'],
+      enrichmentSources: ['gutenberg'],
+    });
+
+    await useCase.execute({ query: 'War and Peace' });
+
+    expect(calls).toEqual(['gutenberg']);
+  });
+});

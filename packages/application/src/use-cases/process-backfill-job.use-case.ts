@@ -19,6 +19,15 @@ export interface ProcessBackfillJobDeps {
   cache: CachePort;
   /** Tried in order; the first source that finds and syncs the work wins. */
   sources: readonly string[];
+  /**
+   * Sources run *in addition to* the winner, not instead of it. Discovery stops at the first
+   * source that has the book, but some sources contribute something no other one can — Project
+   * Gutenberg is the only one that hands over actual downloadable files — and skipping them
+   * because Open Library answered first would mean a public domain book shows borrow links and
+   * no way to simply download it. Failure here is never fatal: most books are in copyright and
+   * legitimately absent from these sources.
+   */
+  enrichmentSources?: readonly string[];
 }
 
 /**
@@ -54,6 +63,7 @@ export class ProcessBackfillJob implements UseCase<
     for (const source of this.deps.sources) {
       const result = await this.deps.syncWorkFromSource.execute({ source, query: input.query });
       if (result.status === 'synced') {
+        await this.enrich(input.query, source);
         return { status: 'synced', source };
       }
       if (result.status === 'error') {
@@ -67,5 +77,21 @@ export class ProcessBackfillJob implements UseCase<
 
     await markSearchNotFound(this.deps.cache, input.query);
     return { status: 'not_found' };
+  }
+
+  /**
+   * Runs the enrichment sources after a successful discovery. Every failure is swallowed: the
+   * work is already synced and useful, and losing it over a missing download would be a strictly
+   * worse outcome than simply not having that download.
+   */
+  private async enrich(query: string, winner: string): Promise<void> {
+    for (const source of this.deps.enrichmentSources ?? []) {
+      if (source === winner) continue;
+      try {
+        await this.deps.syncWorkFromSource.execute({ source, query });
+      } catch {
+        // Intentionally ignored — see the doc comment.
+      }
+    }
   }
 }

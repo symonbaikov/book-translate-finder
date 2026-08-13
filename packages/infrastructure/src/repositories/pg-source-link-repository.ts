@@ -24,6 +24,7 @@ function toDomain(row: typeof sourceLink.$inferSelect): SourceLink {
     provider: ProviderId.create(row.provider),
     rightsStatus: row.rightsStatus,
     isLegalFree: row.isLegalFree,
+    format: row.format,
     verifiedAt: row.verifiedAt,
   });
 }
@@ -63,6 +64,7 @@ export class PgSourceLinkRepository implements SourceLinkRepository {
         provider: link.provider.value,
         rightsStatus: link.rightsStatus,
         isLegalFree: link.isLegalFree,
+        format: link.format,
         verifiedAt: link.verifiedAt,
       })
       .onConflictDoUpdate({
@@ -72,6 +74,7 @@ export class PgSourceLinkRepository implements SourceLinkRepository {
           // fields that can legitimately change on re-verification are refreshed.
           rightsStatus: link.rightsStatus,
           isLegalFree: link.isLegalFree,
+          format: link.format,
           verifiedAt: link.verifiedAt,
         },
       });

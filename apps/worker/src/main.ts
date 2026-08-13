@@ -1,6 +1,6 @@
 import { createLogger, loadEnv } from '@btf/infrastructure';
 import { Queue, Worker, type Job } from 'bullmq';
-import { buildWorkerContext } from './composition-root.js';
+import { buildWorkerContext, REGISTERED_SOURCES } from './composition-root.js';
 import { workerEnvSchema } from './config/worker-env.schema.js';
 
 const CRON_QUEUE_NAME = 'cron-refresh-stale-works';
@@ -67,7 +67,7 @@ async function main(): Promise<void> {
   }
 
   logger.info(
-    { concurrency: env.WORKER_CONCURRENCY, sources: ['open-library', 'google-books'] },
+    { concurrency: env.WORKER_CONCURRENCY, sources: REGISTERED_SOURCES },
     'apps/worker started: sync, backfill, and cron-refresh-stale-works consumers running',
   );
 

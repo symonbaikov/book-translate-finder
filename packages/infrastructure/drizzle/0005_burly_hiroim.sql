@@ -1,0 +1,1 @@
+ALTER TABLE "source_link" ADD COLUMN "format" text;

@@ -148,6 +148,10 @@ curl 'http://localhost:3001/api/editions/<editionId>/links?country=GB'
 
 - `type`: `download` (public domain / open license from the allowlist only) · `buy` · `borrow`.
 - `rightsStatus`: `public_domain` · `open_license` · `copyrighted` · `unknown`.
+- `format`: for downloads, the file format the link actually yields (`epub`, `mobi`, `txt`,
+  `html`, `pdf`); `null` for buy/borrow links, which land on a page rather than a file. Project
+  Gutenberg supplies several formats for the same public domain book, so an edition can
+  legitimately carry one download link per format.
 
 ## POST /api/sync/:source
 

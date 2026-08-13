@@ -25,6 +25,9 @@ export interface LinkCandidate {
   url: string;
   provider: ProviderId;
   rightsStatus: RightsStatus;
+  /** File format for downloads (`epub`, `txt`, …) — carried through so the UI can tell the
+   * reader what they will actually get, not just that "a download exists". */
+  format?: string | null;
   verifiedAt: Date;
 }
 
@@ -121,6 +124,7 @@ export function assertLinkAllowed(candidate: LinkCandidate): SourceLink {
     rightsStatus: candidate.rightsStatus,
     isLegalFree:
       candidate.rightsStatus === 'public_domain' || candidate.rightsStatus === 'open_license',
+    format: candidate.format ?? null,
     verifiedAt: candidate.verifiedAt,
   });
 }

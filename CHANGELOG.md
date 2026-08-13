@@ -18,6 +18,13 @@ them before the API starts).
 
 ### Added
 
+- **Real download links, per format.** A third source — Project Gutenberg, via the key-free
+  Gutendex API — supplies actual downloadable files for public domain books: EPUB, MOBI, plain
+  text and HTML, each a separate link labeled with its format ("Download EPUB"). Verified live:
+  War and Peace resolves to a real 1.8 MB EPUB. An edition can now carry several links, and
+  Gutenberg runs as an _enrichment_ source — even when another source already found the work —
+  so a public domain book never shows only borrow links when the file is freely available.
+
 - Bookstore purchase links with a country filter. The reader picks the country they shop in and
   every edition's link panel offers that country's bookstores (plus worldwide ones) as ISBN
   lookups — Waterstones/Blackwell's/Bookshop.org UK for GB, Thalia/Hugendubel for DE,

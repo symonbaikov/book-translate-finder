@@ -5,6 +5,7 @@ import {
   createRedisClient,
   createResilientFetcher,
   GoogleBooksProvider,
+  GutenbergProvider,
   OpenLibraryProvider,
   PgEditionRepository,
   PgExternalRefRepository,
@@ -23,7 +24,7 @@ import type { Redis } from 'ioredis';
 import type { WorkerEnv } from './config/worker-env.schema.js';
 
 /** Every provider apps/worker knows about, in priority order (docs/architecture.md §5 source priority). */
-export const REGISTERED_SOURCES = ['open-library', 'google-books'] as const;
+export const REGISTERED_SOURCES = ['open-library', 'gutenberg', 'google-books'] as const;
 
 export interface WorkerContext {
   db: DbHandle;
@@ -60,6 +61,7 @@ export function buildWorkerContext(env: WorkerEnv): WorkerContext {
   const userAgent = `BookTranslateFinder/0.1 (+${env.CONTACT_URL})`;
   const providers = new Map<string, BookMetadataProvider>([
     ['open-library', new OpenLibraryProvider(fetcher, cache, userAgent)],
+    ['gutenberg', new GutenbergProvider(fetcher, cache, userAgent)],
     ['google-books', new GoogleBooksProvider(fetcher, cache, env.GOOGLE_BOOKS_API_KEY)],
   ]);
 
@@ -93,6 +95,9 @@ export function buildWorkerContext(env: WorkerEnv): WorkerContext {
     syncWorkFromSource,
     cache,
     sources: REGISTERED_SOURCES,
+    // Gutenberg is the only source that yields downloadable files, so it runs even when another
+    // source already found the work — see `enrichmentSources`.
+    enrichmentSources: ['gutenberg'],
   });
 
   return {

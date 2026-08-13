@@ -94,7 +94,11 @@ function LinkList({ links }: { links: SourceLinkDto[] }) {
       {links.map((link) => (
         <li key={link.url} style={{ marginTop: '0.4rem' }}>
           <a href={link.url} target="_blank" rel="noopener noreferrer">
-            {linkTypeLabel(link.type)}
+            {/* The format matters as much as the fact a download exists — a reader with an
+                e-reader wants EPUB, not "a download". */}
+            {link.format
+              ? `${linkTypeLabel(link.type)} ${link.format.toUpperCase()}`
+              : linkTypeLabel(link.type)}
           </a>{' '}
           <span className={`badge badge--${rightsStatusTone(link.rightsStatus)}`}>
             {rightsStatusLabel(link.rightsStatus)}

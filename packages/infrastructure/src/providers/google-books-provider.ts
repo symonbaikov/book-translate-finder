@@ -88,9 +88,9 @@ function mapVolumeToProviderEdition(volume: GoogleBooksVolume): ProviderEdition 
     // No reliable public-domain signal in Google Books' API either — 'unknown' is honest, not a
     // guess (docs/legal-policy.md §3).
     rightsSignal: 'unknown',
-    // `exactOptionalPropertyTypes` forbids `link: undefined` explicitly — the key must be
+    // `exactOptionalPropertyTypes` forbids `links: undefined` explicitly — the key must be
     // absent, not present-with-undefined, when there's no sale link.
-    ...(isForSale ? { link: { type: 'buy' as const, url: buyLink! } } : {}),
+    ...(isForSale ? { links: [{ type: 'buy' as const, url: buyLink! }] } : {}),
   };
 }
 

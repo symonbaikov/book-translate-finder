@@ -233,7 +233,7 @@ export class OpenLibraryProvider implements BookMetadataProvider {
       if (!item) continue;
       const mapped = mapAvailability(item);
       if (!mapped) continue;
-      editions[i] = { ...editions[i]!, rightsSignal: mapped.rightsSignal, link: mapped.link };
+      editions[i] = { ...editions[i]!, rightsSignal: mapped.rightsSignal, links: [mapped.link] };
     }
 
     // An `ocaid:`-sourced match can point at an edition outside the fetched batch entirely — fetch
@@ -247,7 +247,7 @@ export class OpenLibraryProvider implements BookMetadataProvider {
       const extra = await this.fetchSingleEdition(olid);
       extraFetched += 1;
       if (!extra) continue;
-      editions.push({ ...extra, rightsSignal: mapped.rightsSignal, link: mapped.link });
+      editions.push({ ...extra, rightsSignal: mapped.rightsSignal, links: [mapped.link] });
       knownOlids.add(olid);
     }
 

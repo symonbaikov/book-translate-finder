@@ -131,7 +131,7 @@ describe('OpenLibraryProvider.fetchEditions', () => {
     // Every edition mapped honestly declines to guess a rights status — see the comment in
     // open-library-provider.ts on why editions.json has no reliable per-edition signal.
     expect(results.every((e) => e.rightsSignal === 'unknown')).toBe(true);
-    expect(results.every((e) => e.link === undefined)).toBe(true);
+    expect(results.every((e) => e.links === undefined)).toBe(true);
   });
 
   it('caches editions per work id', async () => {
@@ -176,7 +176,7 @@ describe('OpenLibraryProvider.fetchEditions availability (Open Library Lending)'
     const [edition] = await provider.fetchEditions('/works/OL1W');
 
     expect(edition?.rightsSignal).toBe('public_domain');
-    expect(edition?.link).toEqual({
+    expect(edition?.links?.[0]).toEqual({
       type: 'download',
       url: 'https://archive.org/details/foo',
       provider: 'internet-archive',
@@ -210,7 +210,7 @@ describe('OpenLibraryProvider.fetchEditions availability (Open Library Lending)'
       const [edition] = await provider.fetchEditions('/works/OL2W');
 
       expect(edition?.rightsSignal).toBe('copyrighted');
-      expect(edition?.link).toEqual({
+      expect(edition?.links?.[0]).toEqual({
         type: 'borrow',
         url: 'https://archive.org/details/bar',
         provider: 'internet-archive',
@@ -243,7 +243,7 @@ describe('OpenLibraryProvider.fetchEditions availability (Open Library Lending)'
     const [edition] = await provider.fetchEditions('/works/OL3W');
 
     expect(edition?.rightsSignal).toBe('unknown');
-    expect(edition?.link).toBeUndefined();
+    expect(edition?.links?.[0]).toBeUndefined();
   });
 
   it('never attributes a "similar" match to the edition — only an exact match counts', async () => {
@@ -271,7 +271,7 @@ describe('OpenLibraryProvider.fetchEditions availability (Open Library Lending)'
     const [edition] = await provider.fetchEditions('/works/OL4W');
 
     expect(edition?.rightsSignal).toBe('unknown');
-    expect(edition?.link).toBeUndefined();
+    expect(edition?.links?.[0]).toBeUndefined();
   });
 
   it('does not call the availability endpoint at all when there are no editions and no ia ids', async () => {
@@ -319,11 +319,13 @@ describe('OpenLibraryProvider.fetchEditions availability (Open Library Lending)'
       title: 'Extra Edition',
       language: 'eng',
       rightsSignal: 'public_domain',
-      link: {
-        type: 'download',
-        url: 'https://archive.org/details/scan001',
-        provider: 'internet-archive',
-      },
+      links: [
+        {
+          type: 'download',
+          url: 'https://archive.org/details/scan001',
+          provider: 'internet-archive',
+        },
+      ],
     });
   });
 

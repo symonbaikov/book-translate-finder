@@ -33,7 +33,16 @@ async function main(): Promise<void> {
     const result = await ctx.syncWorkFromSource.execute({ source: 'open-library', query });
     if (result.status === 'synced') {
       synced += 1;
-      console.log(`ok (${result.editionsSynced} editions, ${result.linksSynced} links)`);
+      // Gutenberg is synced too, not instead: Open Library brings the translations, editions and
+      // borrow links, Gutenberg brings actual downloadable files for whatever is public domain.
+      // Failing to find it there is normal (most books are in copyright) and never fatal.
+      const gutenberg = await ctx.syncWorkFromSource.execute({ source: 'gutenberg', query });
+      const downloads = gutenberg.status === 'synced' ? (gutenberg.linksSynced ?? 0) : 0;
+      console.log(
+        `ok (${result.editionsSynced} editions, ${result.linksSynced} links` +
+          (downloads > 0 ? `, ${downloads} downloadable formats` : '') +
+          ')',
+      );
     } else {
       failed += 1;
       console.log(result.status === 'error' ? `error: ${result.error}` : 'not found');

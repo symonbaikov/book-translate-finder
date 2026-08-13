@@ -98,6 +98,7 @@ describe('GetEditionLinks', () => {
         provider: 'gutenberg',
         rightsStatus: 'public_domain',
         url: 'https://gutenberg.org/ebooks/1',
+        format: null,
       },
     ]);
   });

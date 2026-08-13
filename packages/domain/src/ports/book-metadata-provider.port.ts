@@ -55,21 +55,21 @@ export interface ProviderEdition {
    */
   rightsSignal: RightsStatus;
   /**
-   * A candidate source link the provider found for this edition, if any (e.g. Google Books'
-   * `saleInfo.buyLink`). Not every provider has one — Open Library's own edition metadata alone
-   * doesn't confidently establish a legal link (docs/legal-policy.md §3), so `OpenLibraryProvider`
-   * only sets this from its separate availability lookup, never guesses from editions.json alone.
-   * The use case still runs whatever is supplied through `LinkPolicy` (docs/architecture.md
-   * §2.2) — a provider offering a link is not the same as that link being allowed.
+   * Candidate source links the provider found for this edition. Several are normal, not
+   * exceptional: Project Gutenberg offers the same public domain book as EPUB, MOBI, plain text
+   * and HTML, and a reader picking a download wants the format choice.
    *
-   * `provider` defaults to the sync's own source name when omitted (e.g. Google Books' buy links
+   * The use case still runs every one through `LinkPolicy` (docs/architecture.md §2.2) — a
+   * provider offering a link is never the same as that link being allowed.
+   *
+   * `provider` defaults to the sync's own source name when omitted (Google Books' buy links
    * really do come from `google-books`) — but a provider adapter may name a *different* one when
    * the link's actual legal origin differs from the adapter discovering it. Open Library's
-   * availability lookup surfaces Internet Archive-hosted lending/full-text links, so those are
-   * attributed to `internet-archive` (the allowlisted, legally-relevant host, docs/legal-policy.md
-   * I-1), not to `open-library` itself.
+   * availability lookup surfaces Internet Archive-hosted content, so those are attributed to
+   * `internet-archive` (the allowlisted, legally-relevant host, docs/legal-policy.md I-1), not
+   * to `open-library` itself.
    */
-  link?: { type: LinkType; url: string; provider?: string };
+  links?: { type: LinkType; url: string; provider?: string; format?: string }[];
 }
 
 /**
