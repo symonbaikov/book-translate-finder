@@ -35,4 +35,11 @@ export class InMemoryWorkRepository implements WorkRepository {
     this.byId.set(work.id, work);
     this.idByNaturalKey.set(work.naturalKey, work.id);
   }
+
+  async findStale(olderThan: Date, limit: number): Promise<Work[]> {
+    return [...this.byId.values()]
+      .filter((work) => work.syncedAt < olderThan)
+      .sort((a, b) => a.syncedAt.getTime() - b.syncedAt.getTime())
+      .slice(0, limit);
+  }
 }

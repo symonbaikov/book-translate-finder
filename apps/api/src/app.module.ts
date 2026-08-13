@@ -1,8 +1,26 @@
-import { Module } from '@nestjs/common';
+import { Module, type DynamicModule } from '@nestjs/common';
+import type { ApiContext } from './composition-root.js';
+import type { ApiEnv } from './config/api-env.schema.js';
+import { EditionsModule } from './editions/editions.module.js';
 import { HealthModule } from './health/health.module.js';
+import { InfrastructureModule } from './infrastructure.module.js';
+import { SearchModule } from './search/search.module.js';
+import { SyncModule } from './sync/sync.module.js';
+import { WorksModule } from './works/works.module.js';
 
-// Phase 1.0 skeleton: only health. Search/works/editions/sync modules land in Phase 1.4
-// (docs/plan.md §1.4), each composing use cases from @btf/application with adapters from
-// @btf/infrastructure — this module is the composition root (docs/architecture.md §2.5).
-@Module({ imports: [HealthModule] })
-export class AppModule {}
+@Module({})
+export class AppModule {
+  static forRoot(ctx: ApiContext, env: ApiEnv): DynamicModule {
+    return {
+      module: AppModule,
+      imports: [
+        InfrastructureModule.forRoot(ctx, env),
+        HealthModule,
+        SearchModule,
+        WorksModule,
+        EditionsModule,
+        SyncModule,
+      ],
+    };
+  }
+}

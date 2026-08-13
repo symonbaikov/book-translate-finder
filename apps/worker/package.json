@@ -15,6 +15,8 @@
     "@btf/application": "workspace:*",
     "@btf/domain": "workspace:*",
     "@btf/infrastructure": "workspace:*",
+    "bullmq": "^5.28.1",
+    "ioredis": "^5.4.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {

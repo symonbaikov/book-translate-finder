@@ -1,0 +1,94 @@
+import { describe, expect, it } from 'vitest';
+import { InMemoryCache } from '../../../domain/test/fakes/in-memory-cache.js';
+import { searchNegativeCacheKey } from '../../src/use-cases/search-works.use-case.js';
+import type { SyncWorkFromSourceOutput } from '../../src/use-cases/sync-work-from-source.use-case.js';
+import {
+  ProcessBackfillJob,
+  type ProcessBackfillJobDeps,
+  type SourceSyncRunner,
+} from '../../src/use-cases/process-backfill-job.use-case.js';
+
+function makeRunner(bySource: Record<string, SyncWorkFromSourceOutput>): SourceSyncRunner {
+  return {
+    async execute({ source }) {
+      return bySource[source] ?? { status: 'not_found' };
+    },
+  };
+}
+
+describe('ProcessBackfillJob', () => {
+  it('stops at the first source that syncs successfully', async () => {
+    const cache = new InMemoryCache();
+    const calls: string[] = [];
+    const runner: SourceSyncRunner = {
+      async execute({ source }) {
+        calls.push(source);
+        if (source === 'open-library') return { status: 'synced', workId: 'w1' };
+        return { status: 'not_found' };
+      },
+    };
+    const deps: ProcessBackfillJobDeps = {
+      syncWorkFromSource: runner,
+      cache,
+      sources: ['open-library', 'google-books'],
+    };
+    const useCase = new ProcessBackfillJob(deps);
+
+    const result = await useCase.execute({ query: 'War and Peace' });
+
+    expect(result).toEqual({ status: 'synced', source: 'open-library' });
+    expect(calls).toEqual(['open-library']);
+  });
+
+  it('tries every source and marks the negative cache when all report not_found', async () => {
+    const cache = new InMemoryCache();
+    const deps: ProcessBackfillJobDeps = {
+      syncWorkFromSource: makeRunner({}),
+      cache,
+      sources: ['open-library', 'google-books'],
+    };
+    const useCase = new ProcessBackfillJob(deps);
+
+    const result = await useCase.execute({ query: 'Nonexistent Book' });
+
+    expect(result).toEqual({ status: 'not_found' });
+    expect(await cache.get(searchNegativeCacheKey('Nonexistent Book'))).toBe(true);
+  });
+
+  it('does not mark the negative cache when a source errored (transient failure)', async () => {
+    const cache = new InMemoryCache();
+    const runner = makeRunner({
+      'open-library': { status: 'error', error: 'timeout' },
+      'google-books': { status: 'not_found' },
+    });
+    const deps: ProcessBackfillJobDeps = {
+      syncWorkFromSource: runner,
+      cache,
+      sources: ['open-library', 'google-books'],
+    };
+    const useCase = new ProcessBackfillJob(deps);
+
+    const result = await useCase.execute({ query: 'Some Book' });
+
+    expect(result).toEqual({ status: 'not_found' });
+    expect(await cache.get(searchNegativeCacheKey('Some Book'))).toBeNull();
+  });
+
+  it('tries the second source when the first comes back not_found', async () => {
+    const cache = new InMemoryCache();
+    const runner = makeRunner({
+      'open-library': { status: 'not_found' },
+      'google-books': { status: 'synced', workId: 'w2' },
+    });
+    const deps: ProcessBackfillJobDeps = {
+      syncWorkFromSource: runner,
+      cache,
+      sources: ['open-library', 'google-books'],
+    };
+    const useCase = new ProcessBackfillJob(deps);
+
+    const result = await useCase.execute({ query: 'Some Book' });
+
+    expect(result).toEqual({ status: 'synced', source: 'google-books' });
+  });
+});

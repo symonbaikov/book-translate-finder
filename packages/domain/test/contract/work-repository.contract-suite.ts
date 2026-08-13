@@ -91,5 +91,45 @@ export function runWorkRepositoryContractTests(createRepository: () => WorkRepos
       expect(await repo.findById('work-1')).not.toBeNull();
       expect(await repo.findById('work-2')).not.toBeNull();
     });
+
+    it('findStale() returns only works synced before the cutoff, oldest first', async () => {
+      const repo = createRepository();
+      await repo.save(makeWork({ id: 'work-1', syncedAt: new Date('2026-01-01T00:00:00Z') }));
+      await repo.save(
+        makeWork({
+          id: 'work-2',
+          originalTitle: 'Anna Karenina',
+          syncedAt: new Date('2026-03-01T00:00:00Z'),
+        }),
+      );
+      await repo.save(
+        makeWork({
+          id: 'work-3',
+          originalTitle: 'The Death of Ivan Ilyich',
+          syncedAt: new Date('2026-07-01T00:00:00Z'),
+        }),
+      );
+
+      const stale = await repo.findStale(new Date('2026-06-01T00:00:00Z'), 10);
+
+      expect(stale.map((w) => w.id)).toEqual(['work-1', 'work-2']);
+    });
+
+    it('findStale() respects the limit', async () => {
+      const repo = createRepository();
+      await repo.save(makeWork({ id: 'work-1', syncedAt: new Date('2026-01-01T00:00:00Z') }));
+      await repo.save(
+        makeWork({
+          id: 'work-2',
+          originalTitle: 'Anna Karenina',
+          syncedAt: new Date('2026-02-01T00:00:00Z'),
+        }),
+      );
+
+      const stale = await repo.findStale(new Date('2026-06-01T00:00:00Z'), 1);
+
+      expect(stale).toHaveLength(1);
+      expect(stale[0]?.id).toBe('work-1');
+    });
   });
 }

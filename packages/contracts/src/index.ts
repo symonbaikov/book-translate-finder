@@ -1,7 +1,43 @@
-// Phase 1.0 skeleton: only the health contract exists, backing apps/api's health endpoints.
-// Search/work/edition/link contracts land with the API surface in Phase 1.4 (docs/plan.md §1.4).
 export {
   HealthResponseSchema,
   HealthStatusSchema,
   type HealthResponse,
 } from './health.contract.js';
+
+export { ApiErrorResponseSchema, type ApiErrorResponse } from './error.contract.js';
+
+export {
+  EditionLinksResponseSchema,
+  SourceLinkSchema,
+  type EditionLinksResponse,
+  type SourceLinkDto,
+} from './edition-links.contract.js';
+
+export {
+  SearchHitSchema,
+  SearchQuerySchema,
+  SearchResponseSchema,
+  type SearchHit,
+  type SearchQuery,
+  type SearchResponse,
+} from './search.contract.js';
+
+export {
+  SyncParamsSchema,
+  SyncRequestBodySchema,
+  SyncResponseSchema,
+  type SyncParams,
+  type SyncRequestBody,
+  type SyncResponse,
+} from './sync.contract.js';
+
+export {
+  EditionSummarySchema,
+  EditionsQuerySchema,
+  EditionsResponseSchema,
+  WorkCardResponseSchema,
+  type EditionsQuery,
+  type EditionsResponse,
+  type EditionSummary,
+  type WorkCardResponse,
+} from './work.contract.js';

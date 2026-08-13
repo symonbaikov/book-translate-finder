@@ -29,3 +29,13 @@ export class NotFoundError extends DomainError {
 export class ConflictError extends DomainError {
   readonly code = 'conflict';
 }
+
+/**
+ * Thrown when a caller fails to authenticate for an operation that requires it (e.g. a missing
+ * or wrong `X-Admin-Token` on `POST /api/sync/:source`, docs/architecture.md §4). Routed through
+ * `DomainError` like every other error here so apps/api's catch-all `UnhandledErrorFilter`
+ * (reserved for genuinely unexpected failures) never has to see it — see that filter's docstring.
+ */
+export class UnauthorizedError extends DomainError {
+  readonly code = 'unauthorized';
+}

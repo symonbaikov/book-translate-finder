@@ -8,3 +8,65 @@ export {
   type SyncWorkFromSourceInput,
   type SyncWorkFromSourceOutput,
 } from './use-cases/sync-work-from-source.use-case.js';
+
+export {
+  SearchWorks,
+  backfillJobId,
+  markSearchNotFound,
+  searchNegativeCacheKey,
+  searchResultsCacheKey,
+  type SearchWorksDeps,
+  type SearchWorksHit,
+  type SearchWorksInput,
+  type SearchWorksOutput,
+} from './use-cases/search-works.use-case.js';
+
+export {
+  GetWorkCard,
+  workCacheKey,
+  type GetWorkCardDeps,
+  type GetWorkCardInput,
+  type GetWorkCardOutput,
+} from './use-cases/get-work-card.use-case.js';
+
+export {
+  ListEditionsForWork,
+  editionsCacheKey,
+  type EditionSummaryDto,
+  type ListEditionsForWorkDeps,
+  type ListEditionsForWorkInput,
+  type ListEditionsForWorkOutput,
+} from './use-cases/list-editions-for-work.use-case.js';
+
+export {
+  GetEditionLinks,
+  editionLinksCacheKey,
+  type GetEditionLinksDeps,
+  type GetEditionLinksInput,
+  type GetEditionLinksOutput,
+  type SourceLinkDto as EditionLinkDto,
+} from './use-cases/get-edition-links.use-case.js';
+
+export {
+  EnqueueSourceSync,
+  syncJobId,
+  type EnqueueSourceSyncDeps,
+  type EnqueueSourceSyncInput,
+  type EnqueueSourceSyncOutput,
+} from './use-cases/enqueue-source-sync.use-case.js';
+
+export {
+  RefreshStaleWorks,
+  refreshJobId,
+  type RefreshStaleWorksDeps,
+  type RefreshStaleWorksInput,
+  type RefreshStaleWorksOutput,
+} from './use-cases/refresh-stale-works.use-case.js';
+
+export {
+  ProcessBackfillJob,
+  type ProcessBackfillJobDeps,
+  type ProcessBackfillJobInput,
+  type ProcessBackfillJobOutput,
+  type SourceSyncRunner,
+} from './use-cases/process-backfill-job.use-case.js';

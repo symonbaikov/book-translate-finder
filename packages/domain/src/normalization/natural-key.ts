@@ -1,7 +1,12 @@
 import { createHash } from 'node:crypto';
 import { normalizeText } from './normalize-text.js';
 
-function sha256Hex(input: string): string {
+/**
+ * Exported so `@btf/application` use cases needing a deterministic hash (backfill `jobId`,
+ * `Idempotency-Key` request hashing, docs/rules.md §2.4) don't each need their own `node:crypto`
+ * import — keeps that import in one place.
+ */
+export function sha256Hex(input: string): string {
   return createHash('sha256').update(input, 'utf8').digest('hex');
 }
 

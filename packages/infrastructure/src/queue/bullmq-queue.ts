@@ -1,5 +1,16 @@
 import { InvalidInputError, type JobQueuePort } from '@btf/domain';
 import { Queue, type ConnectionOptions } from 'bullmq';
+import { Redis } from 'ioredis';
+
+/**
+ * BullMQ hard-requires `maxRetriesPerRequest: null` on its Redis connection (it does its own
+ * blocking-command retry loop) — `createRedisClient` in `cache/redis-client.ts` sets a finite
+ * retry count instead, which is correct for `RedisCache` but wrong here, so BullMQ always gets
+ * its own connection, never a shared one.
+ */
+export function createBullMqConnection(redisUrl: string): Redis {
+  return new Redis(redisUrl, { maxRetriesPerRequest: null });
+}
 
 export interface BullMqQueueOptions {
   attempts?: number;

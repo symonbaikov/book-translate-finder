@@ -297,17 +297,75 @@ runWithTransactionContext(tx, work))` — репозитории прозрач�
   тоже, но локальные фейки в `SyncWorkFromSource`-тестах не переделывались обратно — рабочее и
   осознанное решение, трогать не стали.
 
-### 1.4 API
+### 1.4 API ✅ (закрыто 2026-08-13)
 
-- ⬜ `GET /api/search`, `GET /api/works/:id`, `GET /api/works/:id/editions`,
-  `GET /api/editions/:id/links`.
-- ⬜ Состояние `202 pending` у `GET /api/search` для lazy backfill: статус, `pollAfterMs`,
-  описание в OpenAPI.
-- ⬜ `POST /api/sync/:source` с обязательным `Idempotency-Key`, служебным токеном и семантикой
-  повторов (тот же ответ / `409` при другом теле).
-- ⬜ Zod-схемы в `packages/contracts`, генерация OpenAPI.
-- ⬜ Redis-кэш ответов с версионированным префиксом и явной инвалидацией по `work_id`.
-- ⬜ Базовый rate limiting по IP.
+- ✅ Zod-схемы в `packages/contracts` для всей поверхности API (`search`, `work`, `edition-links`,
+  `sync`, общий `error`), с табличными unit-тестами на каждую.
+- ✅ Домен: `WorkSearchPort` (Postgres-специфичный ранжированный поиск — сознательно отдельный
+  порт от `WorkRepository`, docs/rules.md §1 ISP) и `WorkRepository.findStale()` для Cron.
+  Реализация — `PgWorkSearchAdapter` на `similarity()`/`gin_trgm_ops` (индексы уже были с Фазы
+  1.2) плюс `ILIKE`-фолбэк для коротких запросов, где триграммное сходство слишком слабое.
+- ✅ Use cases в `packages/application`: `SearchWorks` (lazy backfill, ADR-0003), `GetWorkCard`,
+  `ListEditionsForWork`, `GetEditionLinks` (все — с Redis-кэшем через `CachePort`, TTL из
+  docs/architecture.md §4), `EnqueueSourceSync` (Idempotency-Key, docs/rules.md §2.4),
+  `RefreshStaleWorks` (Cron), `ProcessBackfillJob` (консьюмер очереди `backfill`).
+- ✅ `apps/worker`: composition root (`buildWorkerContext`) регистрирует оба провайдера
+  (`open-library`, `google-books` — Google Books работает и без ключа, просто с более низким
+  лимитом, docs/architecture.md §9.2, поэтому не исключается из реестра), три BullMQ `Worker`
+  (`sync`, `backfill` — с меньшей concurrency, ADR-0003, `cron-refresh-stale-works` —
+  `upsertJobScheduler`, ежедневно, что комфортно перекрывает требование «не реже раза в
+  неделю»). `pnpm sync -- --source=<name> --work=<workId>` (был затычкой с Фазы 1.0) наконец
+  реализован по-настоящему.
+- ✅ `apps/api`: `SearchController`, `WorksController`, `EditionsController`, `SyncController`
+  (guard на `X-Admin-Token` через новый `UnauthorizedError` — 401 — в доменной иерархии ошибок,
+  та же `DomainErrorFilter`, что и остальные коды). DI — `@Global() InfrastructureModule`,
+  собирающий use case'ы один раз при старте (`buildApiContext`), тот же паттерн composition
+  root, что и в `apps/worker` (Фаза 1.3). Redis-backed rate limiting (`@fastify/rate-limit`,
+  60 запросов/мин на IP).
+- ✅ `POST /api/sync/:source`: только ставит задачу в ту же очередь `sync`, что и Cron — сам
+  `SyncWorkFromSource` в API-процессе никогда не запускается (docs/architecture.md §5, диаграмма
+  потока). Это потребовало на ходу переделать первый черновик `SyncResponseSchema` (изначально
+  ошибочно смоделированный как синхронный ответ с результатами синка) на `{status: 'queued',
+jobId, replayed}`.
+- ✅ Полный цикл ADR-0003 проверен вживую против реального Open Library + Postgres + Redis:
+  промах поиска → `202 pending` → воркер реально синкает книгу → повторный запрос → `200 found`
+  (docs/plan.md — «первый в жизни инсталляции запрос» из Definition of Done ADR-0003).
+- 🐛 **Четыре реальные находки, пойманные только живым прогоном** (не тестами, не тайпчеком —
+  ловится только когда реальный HTTP-запрос идёт через реальный процесс):
+  1. Забыт `app.setGlobalPrefix('api', ...)` — все роуты висели без `/api`.
+  2. **NestJS переворачивает массив глобальных фильтров исключений** (`filters.reverse()` в
+     `RouterExceptionFilters`) перед сопоставлением — значит из двух `app.useGlobalFilters(A, B)`
+     первым проверяется **B**, не A. Порядок `useGlobalFilters(DomainErrorFilter,
+UnhandledErrorFilter)` — интуитивно правильный на вид — на деле означал, что
+     catch-all `UnhandledErrorFilter` (`@Catch()` без аргументов матчит всё) перехватывал
+     `NotFoundError`/`ConflictError`/`UnauthorizedError` раньше специфичного
+     `DomainErrorFilter`, превращая честные 404/409/401 в общий 500. Порядок исправлен на
+     `(catch-all, специфичный)`; добавлен явный тест на маппинг кодов в статусы.
+  3. `UnhandledErrorFilter`, ловя абсолютно всё (`@Catch()`), заодно проглатывал собственные
+     исключения Nest (`NotFoundException` на несуществующий роут) и ошибки Fastify-плагинов
+     (`@fastify/rate-limit` кидает обычный `Error` с полем `statusCode`, не `HttpException`) —
+     оба случая превращались в 500 вместо честных 404/429. Фильтр научили распознавать оба
+     случая явно и транслировать их реальный статус.
+  4. **Триграммный порог поиска 0.1 был слишком мягким**: запрос на несуществующую книгу («The
+     Little Prince Saint-Exupery») находил «The Hobbit» с похожестью 0.1025 — исключительно из-за
+     общего слова «The». Поднят до 0.3 (собственный дефолт `pg_trgm`), добавлен
+     регрессионный интеграционный тест на этот конкретный случай.
+- 📝 **Известное ограничение, не бага**: поиск сравнивает запрос только с `work.original_title`/
+  `author` (оригинальным языком произведения), не с переводными названиями изданий. Живой тест
+  на «Le petit prince» / запрос «The Little Prince» (0.237 сходства — ниже нового порога 0.3)
+  показал: пока задача не синкнута, это выглядит как обычный `pending`, что честно и не ломает
+  контракт — но после успешного синка запрос на англоязычное название всё ещё не находит
+  французскую оригинальную работу по одному лишь триграммному сходству заголовка/автора. Полное
+  решение (индексировать также `edition.title` по всем языкам) — заметно больший объём работы,
+  сознательно отложено в Фазу 2, а не встроено сейчас незаметно.
+- 📝 `ProcessBackfillJob` помечает 24-часовой негативный кэш (ADR-0003) только когда **все**
+  зарегистрированные источники вернули чистый `not_found` — если хоть один вернул `error`
+  (таймаут, недоступность), кэш не выставляется, чтобы временный сбой не заморозил результат на
+  сутки. Осознанный компромисс, а не полная модель повторных попыток per-source.
+- ⬜ **Генерация OpenAPI из Zod-схем не сделана** — сознательно отложено: рабочий, живо
+  проверенный контракт важнее документационного артефакта в конце и без того большой фазы;
+  Zod-схемы уже являются машиночитаемым источником истины и могут быть прогнаны через
+  `zod-to-openapi` в любой момент без изменения самого API.
 
 ### 1.5 Web
 

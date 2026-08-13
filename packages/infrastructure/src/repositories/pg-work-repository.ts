@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { asc, eq, lt } from 'drizzle-orm';
 import { LanguageCode, Work, type WorkRepository } from '@btf/domain';
 import type { Db } from '../db/client.js';
 import { resolveDb } from '../db/transaction-context.js';
@@ -31,6 +31,16 @@ export class PgWorkRepository implements WorkRepository {
   async findById(id: string): Promise<Work | null> {
     const [row] = await this.q.select().from(work).where(eq(work.id, id)).limit(1);
     return row ? toDomain(row) : null;
+  }
+
+  async findStale(olderThan: Date, limit: number): Promise<Work[]> {
+    const rows = await this.q
+      .select()
+      .from(work)
+      .where(lt(work.syncedAt, olderThan))
+      .orderBy(asc(work.syncedAt))
+      .limit(limit);
+    return rows.map(toDomain);
   }
 
   async save(entity: Work): Promise<void> {

@@ -11,4 +11,6 @@ export interface WorkRepository {
   findById(id: string): Promise<Work | null>;
   /** Upsert on `natural_key` (docs/rules.md §2.2) — never a bare insert. */
   save(work: Work): Promise<void>;
+  /** Cron `RefreshStaleWorks` (docs/architecture.md §5): oldest-`syncedAt`-first, capped at `limit`. */
+  findStale(olderThan: Date, limit: number): Promise<Work[]>;
 }

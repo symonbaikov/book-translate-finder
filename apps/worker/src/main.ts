@@ -1,7 +1,14 @@
 import { createLogger, loadEnv } from '@btf/infrastructure';
+import { Queue, Worker, type Job } from 'bullmq';
+import { buildWorkerContext } from './composition-root.js';
 import { workerEnvSchema } from './config/worker-env.schema.js';
 
-function main(): void {
+const CRON_QUEUE_NAME = 'cron-refresh-stale-works';
+const CRON_SCHEDULER_ID = 'refresh-stale-works';
+/** Daily, well inside the "no less often than once a week" requirement (docs/architecture.md §5). */
+const CRON_PATTERN = '0 3 * * *';
+
+async function main(): Promise<void> {
   const env = loadEnv(workerEnvSchema);
   const logger = createLogger({
     service: '@btf/worker',
@@ -9,22 +16,77 @@ function main(): void {
     pretty: env.NODE_ENV === 'development',
   });
 
-  // Phase 1.0: the process boots, logs, and stays alive under a supervisor (Docker/pm2) so
-  // `pnpm dev` has something real to run. BullMQ queues (sync, backfill) and their consumers
-  // are registered here starting Phase 1.3 (docs/plan.md §1.3, docs/adr/0003-lazy-backfill.md) —
-  // there is no queue infrastructure or use case to wire in yet.
+  const ctx = buildWorkerContext(env);
+
+  const syncWorker = new Worker(
+    'sync',
+    async (job: Job<{ source: string; query: string }>) => {
+      const result = await ctx.syncWorkFromSource.execute(job.data);
+      logger.info({ jobId: job.id, ...result }, 'sync job processed');
+      return result;
+    },
+    { connection: ctx.bullConnection, concurrency: env.WORKER_CONCURRENCY },
+  );
+
+  // Lower concurrency than the regular sync worker (ADR-0003: backfill must not eat the rate
+  // limit budget scheduled/manual syncs rely on) — fixed at 2, not WORKER_CONCURRENCY-scaled.
+  const backfillWorker = new Worker(
+    'backfill',
+    async (job: Job<{ query: string }>) => {
+      const result = await ctx.processBackfillJob.execute(job.data);
+      logger.info({ jobId: job.id, ...result }, 'backfill job processed');
+      return result;
+    },
+    { connection: ctx.bullConnection, concurrency: 2 },
+  );
+
+  const cronQueue = new Queue(CRON_QUEUE_NAME, { connection: ctx.bullConnection });
+  await cronQueue.upsertJobScheduler(
+    CRON_SCHEDULER_ID,
+    { pattern: CRON_PATTERN },
+    { name: 'refresh-stale-works' },
+  );
+
+  const cronWorker = new Worker(
+    CRON_QUEUE_NAME,
+    async () => {
+      const result = await ctx.refreshStaleWorks.execute({
+        olderThanDays: env.REFRESH_STALE_AFTER_DAYS,
+        batchSize: env.REFRESH_BATCH_SIZE,
+      });
+      logger.info(result, 'RefreshStaleWorks cron run complete');
+      return result;
+    },
+    { connection: ctx.bullConnection, concurrency: 1 },
+  );
+
+  for (const worker of [syncWorker, backfillWorker, cronWorker]) {
+    worker.on('failed', (job: Job | undefined, error: Error) => {
+      logger.error({ jobId: job?.id, queue: worker.name, err: error }, 'job failed');
+    });
+  }
+
   logger.info(
-    { concurrency: env.WORKER_CONCURRENCY },
-    'apps/worker started, no queues registered yet',
+    { concurrency: env.WORKER_CONCURRENCY, sources: ['open-library', 'google-books'] },
+    'apps/worker started: sync, backfill, and cron-refresh-stale-works consumers running',
   );
 
   const shutdown = (signal: string): void => {
     logger.info({ signal }, 'apps/worker shutting down');
-    process.exit(0);
+    void Promise.all([
+      syncWorker.close(),
+      backfillWorker.close(),
+      cronWorker.close(),
+      cronQueue.close(),
+      ctx.close(),
+    ]).finally(() => process.exit(0));
   };
 
   process.on('SIGTERM', () => shutdown('SIGTERM'));
   process.on('SIGINT', () => shutdown('SIGINT'));
 }
 
-main();
+main().catch((error: unknown) => {
+  console.error('apps/worker failed to start:', error);
+  process.exitCode = 1;
+});

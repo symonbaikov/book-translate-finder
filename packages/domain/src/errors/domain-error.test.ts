@@ -1,11 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import { ConflictError, DomainError, InvalidInputError, NotFoundError } from './domain-error.js';
+import {
+  ConflictError,
+  DomainError,
+  InvalidInputError,
+  NotFoundError,
+  UnauthorizedError,
+} from './domain-error.js';
 
 describe('DomainError hierarchy', () => {
   it.each([
     [InvalidInputError, 'invalid_input'],
     [NotFoundError, 'not_found'],
     [ConflictError, 'conflict'],
+    [UnauthorizedError, 'unauthorized'],
   ] as const)('%s carries a stable machine-readable code', (ErrorClass, expectedCode) => {
     const error = new ErrorClass('something went wrong');
 

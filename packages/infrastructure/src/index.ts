@@ -28,7 +28,11 @@ export { OpenLibraryProvider } from './providers/open-library-provider.js';
 export { Uuid7Generator } from './id/uuid7-generator.js';
 export { SystemClock } from './time/system-clock.js';
 
-export { BullMqQueue, type BullMqQueueOptions } from './queue/bullmq-queue.js';
+export {
+  BullMqQueue,
+  createBullMqConnection,
+  type BullMqQueueOptions,
+} from './queue/bullmq-queue.js';
 
 export { PgEditionRepository } from './repositories/pg-edition-repository.js';
 export { PgExternalRefRepository } from './repositories/pg-external-ref-repository.js';
@@ -36,3 +40,4 @@ export { PgIdempotencyStore } from './repositories/pg-idempotency-store.js';
 export { PgSourceLinkRepository } from './repositories/pg-source-link-repository.js';
 export { PgSyncLogRepository } from './repositories/pg-sync-log-repository.js';
 export { PgWorkRepository } from './repositories/pg-work-repository.js';
+export { PgWorkSearchAdapter } from './repositories/pg-work-search-adapter.js';

@@ -8,6 +8,7 @@ export {
   DomainError,
   InvalidInputError,
   NotFoundError,
+  UnauthorizedError,
 } from './errors/domain-error.js';
 
 export { Edition, type CreateEditionParams } from './entities/edition.js';
@@ -19,6 +20,7 @@ export {
   computeEditionNaturalKey,
   computeUrlHash,
   computeWorkNaturalKey,
+  sha256Hex,
   type EditionNaturalKeyInput,
 } from './normalization/natural-key.js';
 export { normalizeText } from './normalization/normalize-text.js';
@@ -55,6 +57,7 @@ export { type SourceLinkRepository } from './ports/source-link-repository.port.j
 export { type SyncLogEntry, type SyncLogRepository } from './ports/sync-log-repository.port.js';
 export { type UnitOfWork } from './ports/unit-of-work.port.js';
 export { type WorkRepository } from './ports/work-repository.port.js';
+export { type WorkSearchHit, type WorkSearchPort } from './ports/work-search.port.js';
 
 export { ExternalRef } from './value-objects/external-ref.js';
 export { Isbn } from './value-objects/isbn.js';
