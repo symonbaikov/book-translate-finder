@@ -18,6 +18,14 @@ them before the API starts).
 
 ### Added
 
+- **Personal recommendations on the home page**, from the books you open — and computed without a
+  profile. The reading history stays in your browser; the server is sent a list of genres and
+  never learns whose they are, so the "no profile, no tracking" promise on the sign-in page stays
+  true and the feature works for signed-out readers with no identifier at all. Each suggestion
+  names the genre it shares with what you have been reading, and there is a "forget my history"
+  link that really deletes it, because there is only one copy. See
+  [ADR-0006](docs/adr/0006-local-recommendations.md).
+
 - **Genre tags are links.** Clicking one opens a catalogue of every book this instance knows under
   that tag. If the reader already picked a book language, that choice carries over automatically
   and the page says which filter is in effect, with one click to drop it — asking again for

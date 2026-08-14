@@ -134,4 +134,10 @@ export const tr: Dictionary = {
     'Bu etikette henüz bir şey yok. Etiketler bu kurulumun daha önce getirdiği kitaplardan gelir.',
   'featured.year': '{year}',
   'nav.browse': 'Türe göre',
+  'recommend.heading': 'Okuduklarınıza göre',
+  'recommend.becauseOf': '“{title}” kitabını açtınız — işte aynı türlerden kitaplar.',
+  'recommend.blurb': 'Açtığınız türlerdeki kitaplar.',
+  'recommend.privacy':
+    'Bu hesap tarayıcınızda yapılır — sunucuya türler bildirilir, kim olduğunuz asla.',
+  'recommend.forget': 'geçmişimi unut',
 };

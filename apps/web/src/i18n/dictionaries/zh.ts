@@ -123,4 +123,9 @@ export const zh: Dictionary = {
   'subject.empty': '这个标签下还没有内容。标签来自本站已经获取过的书。',
   'featured.year': '{year} 年',
   'nav.browse': '按体裁浏览',
+  'recommend.heading': '根据你读过的书',
+  'recommend.becauseOf': '你打开过《{title}》，这里是同类体裁的书。',
+  'recommend.blurb': '你一直在看的那些体裁的书。',
+  'recommend.privacy': '这是在你的浏览器里算出来的 — 服务器只知道体裁，永远不知道你是谁。',
+  'recommend.forget': '忘记我的记录',
 };

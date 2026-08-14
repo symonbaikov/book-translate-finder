@@ -147,4 +147,10 @@ export const fr: Dictionary = {
     "Rien sous cette étiquette pour l'instant. Les étiquettes viennent des livres déjà récupérés par cette instance.",
   'featured.year': '{year}',
   'nav.browse': 'Par genre',
+  'recommend.heading': 'D’après vos lectures',
+  'recommend.becauseOf': 'Vous avez ouvert « {title} » : voici des livres des mêmes genres.',
+  'recommend.blurb': 'Des livres dans les genres que vous avez ouverts.',
+  'recommend.privacy':
+    'Le calcul se fait dans votre navigateur — le serveur reçoit les genres, jamais votre identité.',
+  'recommend.forget': 'oublier mon historique',
 };

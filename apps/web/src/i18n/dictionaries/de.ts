@@ -149,4 +149,10 @@ export const de: Dictionary = {
     'Unter diesem Schlagwort gibt es noch nichts. Schlagwörter stammen aus den Büchern, die diese Instanz bereits geholt hat.',
   'featured.year': '{year}',
   'nav.browse': 'Nach Genre',
+  'recommend.heading': 'Aufgrund dessen, was Sie gelesen haben',
+  'recommend.becauseOf': 'Sie haben „{title}“ geöffnet — hier sind Bücher derselben Genres.',
+  'recommend.blurb': 'Bücher aus den Genres, die Sie geöffnet haben.',
+  'recommend.privacy':
+    'Das wird in Ihrem Browser berechnet — der Server erfährt die Genres, nie wer Sie sind.',
+  'recommend.forget': 'meinen Verlauf vergessen',
 };

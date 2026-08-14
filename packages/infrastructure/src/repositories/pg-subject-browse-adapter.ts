@@ -1,6 +1,16 @@
 import { sql } from 'drizzle-orm';
-import type { SubjectBrowsePort, SubjectBrowseQuery, WorkSearchHit } from '@btf/domain';
+import type {
+  RecommendationHit,
+  RecommendBySubjectsQuery,
+  SubjectBrowsePort,
+  SubjectBrowseQuery,
+  WorkSearchHit,
+} from '@btf/domain';
 import type { Db } from '../db/client.js';
+
+interface RecommendRow extends SubjectRow {
+  matched: string[];
+}
 
 interface SubjectRow extends Record<string, unknown> {
   id: string;
@@ -48,6 +58,41 @@ export class PgSubjectBrowseAdapter implements SubjectBrowsePort {
       author: row.author,
       firstPublishedYear: row.first_published_year,
       coverUrl: row.cover_url,
+    }));
+  }
+
+  async recommendBySubjects(query: RecommendBySubjectsQuery): Promise<RecommendationHit[]> {
+    const subjects = [...new Set(query.subjects.map((s) => s.trim().toLowerCase()))].filter(
+      Boolean,
+    );
+    if (subjects.length === 0) return [];
+
+    // Ranked by how many of the reader's subjects a work shares, so a book matching three of
+    // their genres outranks one that merely shares "Fiction" with everything else in the table.
+    //
+    // The subject list is built into an explicit ARRAY[...] literal rather than passed as one
+    // parameter: postgres.js sends a JS array untyped, and Postgres rejects that outright with
+    // "op ANY/ALL (array) requires array on right side" — found live.
+    const rows = await this.db.execute<Record<string, unknown> & RecommendRow>(sql`
+      SELECT w.id, w.original_title, w.author, w.first_published_year, w.cover_url,
+             array_agg(DISTINCT lower(s.value)) AS matched
+      FROM work w, jsonb_array_elements_text(w.subjects) AS s(value)
+      WHERE lower(s.value) = ANY(ARRAY[${sql.join(
+        subjects.map((subject) => sql`${subject}`),
+        sql`, `,
+      )}]::text[])
+      GROUP BY w.id
+      ORDER BY count(DISTINCT lower(s.value)) DESC, w.first_published_year DESC NULLS LAST
+      LIMIT ${query.limit}
+    `);
+
+    return rows.map((row) => ({
+      id: row.id,
+      originalTitle: row.original_title,
+      author: row.author,
+      firstPublishedYear: row.first_published_year,
+      coverUrl: row.cover_url,
+      matchedSubjects: row.matched,
     }));
   }
 

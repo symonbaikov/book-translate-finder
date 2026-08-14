@@ -132,4 +132,10 @@ export const ko: Dictionary = {
     '이 태그에는 아직 아무것도 없습니다. 태그는 이 인스턴스가 이미 가져온 책에서 나옵니다.',
   'featured.year': '{year}년',
   'nav.browse': '장르별',
+  'recommend.heading': '읽으신 책을 바탕으로',
+  'recommend.becauseOf': '‘{title}’을(를) 여셨기에 같은 장르의 책을 모았습니다.',
+  'recommend.blurb': '그동안 여신 장르의 책들입니다.',
+  'recommend.privacy':
+    '이 계산은 브라우저 안에서 이뤄집니다 — 서버에는 장르만 전달되고, 누구인지는 전달되지 않습니다.',
+  'recommend.forget': '기록 지우기',
 };

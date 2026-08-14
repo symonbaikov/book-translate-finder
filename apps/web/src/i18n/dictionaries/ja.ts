@@ -132,4 +132,10 @@ export const ja: Dictionary = {
     'このタグにはまだ何もありません。タグは、この環境がすでに取得した本から集まります。',
   'featured.year': '{year}年',
   'nav.browse': 'ジャンル別',
+  'recommend.heading': 'これまで読んだ本から',
+  'recommend.becauseOf': '「{title}」を開いたので、同じジャンルの本を集めました。',
+  'recommend.blurb': 'あなたが開いてきたジャンルの本です。',
+  'recommend.privacy':
+    'この計算はブラウザー内で行われます。サーバーに伝わるのはジャンルだけで、あなたが誰かは伝わりません。',
+  'recommend.forget': '履歴を消す',
 };

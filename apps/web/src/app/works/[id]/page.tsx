@@ -10,6 +10,7 @@ import { getWorkCard, listEditions } from '../../../lib/api-client';
 import { languageName } from '../../../lib/language-names';
 import { getT } from '../../../i18n/server';
 import { RememberBookLanguage } from '../../../components/RememberBookLanguage';
+import { RecordVisit } from '../../../components/RecordVisit';
 import type { Translate } from '../../../i18n/dictionary';
 
 interface WorkPageProps {
@@ -105,6 +106,7 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
         )}
       </section>
 
+      <RecordVisit workId={work.id} title={work.originalTitle} subjects={[...work.subjects]} />
       <RememberBookLanguage language={searchParams.language ?? null} />
       <section aria-labelledby="editions-heading" style={{ marginTop: '2rem' }}>
         <h2 id="editions-heading">

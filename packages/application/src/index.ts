@@ -97,3 +97,10 @@ export {
   type BrowseBySubjectInput,
   type BrowseBySubjectOutput,
 } from './use-cases/browse-by-subject.use-case.js';
+export {
+  RecommendBooks,
+  recommendationsCacheKey,
+  type RecommendBooksDeps,
+  type RecommendBooksInput,
+  type RecommendBooksOutput,
+} from './use-cases/recommend-books.use-case.js';

@@ -82,6 +82,8 @@ export { type SyncLogEntry, type SyncLogRepository } from './ports/sync-log-repo
 export { type UnitOfWork } from './ports/unit-of-work.port.js';
 export { type WorkRepository } from './ports/work-repository.port.js';
 export {
+  type RecommendationHit,
+  type RecommendBySubjectsQuery,
   type SubjectBrowsePort,
   type SubjectBrowseQuery,
   type WorkSearchHit,

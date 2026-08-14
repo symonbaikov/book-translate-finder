@@ -132,4 +132,10 @@ export const pl: Dictionary = {
     'Pod tym tagiem nic jeszcze nie ma. Tagi pochodzą z książek, które ta instancja już pobrała.',
   'featured.year': '{year}',
   'nav.browse': 'Według gatunku',
+  'recommend.heading': 'Na podstawie tego, co czytasz',
+  'recommend.becauseOf': 'Otworzyłeś „{title}” — oto książki z tych samych gatunków.',
+  'recommend.blurb': 'Książki z gatunków, które otwierasz.',
+  'recommend.privacy':
+    'Liczone jest to w Twojej przeglądarce — serwer poznaje gatunki, nigdy to, kim jesteś.',
+  'recommend.forget': 'zapomnij moją historię',
 };

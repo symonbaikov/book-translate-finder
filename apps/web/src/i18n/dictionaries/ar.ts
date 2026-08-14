@@ -129,4 +129,9 @@ export const ar: Dictionary = {
     'لا يوجد شيء تحت هذا الوسم بعد. الوسوم تأتي من الكتب التي جلبتها هذه النسخة بالفعل.',
   'featured.year': '{year}',
   'nav.browse': 'حسب النوع',
+  'recommend.heading': 'بناءً على ما كنت تقرأ',
+  'recommend.becauseOf': 'فتحت «{title}»، وهذه كتب من الأنواع نفسها.',
+  'recommend.blurb': 'كتب من الأنواع التي كنت تفتحها.',
+  'recommend.privacy': 'يُحسب هذا في متصفحك — يُخبَر الخادم بالأنواع، لا بمن تكون.',
+  'recommend.forget': 'انسَ سجلي',
 };

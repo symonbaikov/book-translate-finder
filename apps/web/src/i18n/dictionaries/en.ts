@@ -158,4 +158,10 @@ export const en = {
     'Nothing under this tag yet. Tags come from the books this instance has already fetched.',
   'featured.year': '{year}',
   'nav.browse': 'Browse by genre',
+  'recommend.heading': 'Because of what you have been reading',
+  'recommend.becauseOf': 'You opened “{title}”, so here are books sharing its genres.',
+  'recommend.blurb': 'Books sharing the genres you have been opening.',
+  'recommend.privacy':
+    'This is worked out in your browser — the server is told the genres, never who you are.',
+  'recommend.forget': 'forget my history',
 } as const;

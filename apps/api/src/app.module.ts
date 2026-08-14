@@ -4,6 +4,7 @@ import type { ApiEnv } from './config/api-env.schema.js';
 import { AuthModule } from './auth/auth.module.js';
 import { FeaturedModule } from './featured/featured.module.js';
 import { SubjectsModule } from './subjects/subjects.module.js';
+import { RecommendationsModule } from './recommendations/recommendations.module.js';
 import { EditionsModule } from './editions/editions.module.js';
 import { HealthModule } from './health/health.module.js';
 import { InfrastructureModule } from './infrastructure.module.js';
@@ -26,6 +27,7 @@ export class AppModule {
         AuthModule,
         FeaturedModule,
         SubjectsModule,
+        RecommendationsModule,
       ],
     };
   }

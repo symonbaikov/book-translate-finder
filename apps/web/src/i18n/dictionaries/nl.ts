@@ -133,4 +133,10 @@ export const nl: Dictionary = {
     'Onder dit label staat nog niets. Labels komen uit de boeken die deze installatie al heeft opgehaald.',
   'featured.year': '{year}',
   'nav.browse': 'Op genre',
+  'recommend.heading': 'Op basis van wat u hebt gelezen',
+  'recommend.becauseOf': 'U opende ‘{title}’ — hier zijn boeken uit dezelfde genres.',
+  'recommend.blurb': 'Boeken uit de genres die u hebt geopend.',
+  'recommend.privacy':
+    'Dit wordt in uw browser berekend — de server hoort de genres, nooit wie u bent.',
+  'recommend.forget': 'mijn geschiedenis vergeten',
 };

@@ -46,3 +46,4 @@ export {
 export * from './auth.contract.js';
 export * from './featured.contract.js';
 export * from './subject.contract.js';
+export * from './recommendations.contract.js';

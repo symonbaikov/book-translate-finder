@@ -147,4 +147,10 @@ export const es: Dictionary = {
     'Todavía no hay nada con esta etiqueta. Las etiquetas provienen de los libros que esta instancia ya ha obtenido.',
   'featured.year': '{year}',
   'nav.browse': 'Por género',
+  'recommend.heading': 'A partir de lo que has leído',
+  'recommend.becauseOf': 'Abriste «{title}», así que aquí tienes libros de sus mismos géneros.',
+  'recommend.blurb': 'Libros de los géneros que has estado abriendo.',
+  'recommend.privacy':
+    'Esto se calcula en tu navegador — al servidor se le dicen los géneros, nunca quién eres.',
+  'recommend.forget': 'olvidar mi historial',
 };

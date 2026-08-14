@@ -30,7 +30,26 @@ export interface SubjectBrowseQuery {
  * folding a tag filter into a fuzzy text search would rank works by how much their *title*
  * resembles the genre name.
  */
+export interface RecommendBySubjectsQuery {
+  /** Lowercased subject headings the reader has actually been reading. */
+  subjects: readonly string[];
+  limit: number;
+}
+
+export interface RecommendationHit extends WorkSearchHit {
+  /** Which of the requested subjects this work shares — the reason it is being suggested. */
+  matchedSubjects: string[];
+}
+
 export interface SubjectBrowsePort {
+  /**
+   * Works sharing the given subjects, most-overlapping first.
+   *
+   * Deliberately takes only subjects, never a reader identifier: recommendations here are
+   * computed from a list of genres the browser sends, and the server keeps no profile of anyone
+   * (docs/adr/0006-local-recommendations.md).
+   */
+  recommendBySubjects(query: RecommendBySubjectsQuery): Promise<RecommendationHit[]>;
   browseBySubject(query: SubjectBrowseQuery): Promise<WorkSearchHit[]>;
   /** The tags that actually have works behind them, most used first. */
   popularSubjects(limit: number): Promise<{ subject: string; workCount: number }[]>;
