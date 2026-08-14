@@ -863,6 +863,43 @@ both verified live:
 
 ---
 
+## Phase 4 — the reader's product layer (in progress)
+
+Requested as one batch. Grouped by whether the data behind them exists, because that is what
+decides how much of each can honestly be built.
+
+### Done
+
+| #   | Item                                                          | Notes                                                                                                                                              |
+| --- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 4.1 | Shops for **every** edition, chosen by the edition's language | Title+author fallback when there is no ISBN (16% of real editions); shops offered by reader's country → the edition's language markets → worldwide |
+| 4.2 | Genre tags, page counts, binding                              | From Open Library `subjects` / `number_of_pages` / `physical_format`                                                                               |
+| 4.3 | Edition comparison                                            | Two or three editions side by side, rows where they agree hidden                                                                                   |
+
+### Buildable, not yet built
+
+| #   | Item                                       | What it needs                                                                                                                                                                                                                                                                             |
+| --- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 4.4 | Audiobooks                                 | LibriVox has an open, key-free API with per-book download URLs (verified live). A `librivox` provider mirroring `GutenbergProvider`, plus an `audio` link type. Public domain only — no open source lists commercial audiobook availability                                               |
+| 4.5 | Accounts + bookmarks                       | Email/password with a `user` + `session` + `bookmark` table; Google OAuth behind `GOOGLE_CLIENT_ID` so a Docker self-host with no key simply does not show the button; welcome email behind `SMTP_URL`, skipped when unset. The soft prompt to sign in belongs on the search results page |
+| 4.6 | Homepage bestsellers / "books of the year" | No open API ranks bestsellers. Same shape as `authorized-free-catalog.ts`: a curated, dated list in the repo, extended by PR. Anything else would be inventing a ranking                                                                                                                  |
+| 4.7 | Nearby bookshops by geolocation            | OpenStreetMap Overpass answers "bookshops within N km of a point" (verified live, no key). It cannot answer "this shop has this book" — no such open data exists — so the UI must say "bookshops near you", never "in stock"                                                              |
+| 4.8 | Global language filter in search           | The card already lists every language a work has; search has no language facet yet                                                                                                                                                                                                        |
+| 4.9 | Formal plugin registry + README rewrite    | The ports/adapters split already isolates each source; what is missing is the registry doc and the "why Goodreads is stale and shops mislead you" README                                                                                                                                  |
+
+### Blocked, and why
+
+| #    | Item                   | Blocker                                                                                                                                                                                                                                                                                                                                                                            |
+| ---- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 4.10 | Prices in shop links   | Google Books `saleInfo` carries a real `listPrice`/`retailPrice`, but only for Google Play and only with a `GOOGLE_BOOKS_API_KEY` (the keyless quota is zero — confirmed live: `RESOURCE_EXHAUSTED`). Every other retailer requires an affiliate agreement with prior sales. So: a Google Play price where a key is configured, and no price anywhere else — never an invented one |
+| 4.11 | Price filter in search | Follows 4.10. A filter over a field known for a small minority of editions silently hides everything else, so it can only ship as "only show books with a known price", clearly labeled                                                                                                                                                                                            |
+
+The rule that keeps these honest is unchanged: the app may show what a source actually states, and
+must not present a guess as a fact. A shop lookup is a lookup, not a stock check; a nearby shop is
+nearby, not known to stock the book; an absent price is absent, not zero.
+
+---
+
 ## Next step
 
 Phase 0, data scouting: assemble the 50-book sample and get the completeness numbers. Everything

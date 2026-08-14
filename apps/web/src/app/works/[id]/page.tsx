@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import type { EditionSummary } from '@btf/contracts';
 import { CountrySelector } from '../../../components/CountrySelector';
+import { EditionComparison } from '../../../components/EditionComparison';
 import { CoverImage } from '../../../components/CoverImage';
 import { EditionLinks } from '../../../components/EditionLinks';
 import { getWorkCard, listEditions } from '../../../lib/api-client';
@@ -135,6 +136,8 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
           editions.map((edition) => <EditionCard key={edition.id} edition={edition} />)
         )}
       </section>
+
+      <EditionComparison editions={editions} />
     </main>
   );
 }
