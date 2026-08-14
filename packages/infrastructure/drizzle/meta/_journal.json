@@ -43,6 +43,13 @@
       "when": 1786661799254,
       "tag": "0005_burly_hiroim",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1786669522838,
+      "tag": "0006_complex_george_stacy",
+      "breakpoints": true
     }
   ]
 }

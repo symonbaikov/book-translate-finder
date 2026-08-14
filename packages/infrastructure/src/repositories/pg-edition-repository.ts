@@ -16,6 +16,8 @@ function toDomain(row: typeof edition.$inferSelect): Edition {
     year: row.year,
     isbn: row.isbn13 ? Isbn.create(row.isbn13) : null,
     coverUrl: row.coverUrl,
+    pages: row.pages,
+    binding: row.binding,
   });
 }
 
@@ -60,6 +62,8 @@ export class PgEditionRepository implements EditionRepository {
         year: entity.year,
         isbn13: entity.isbn?.value ?? null,
         coverUrl: entity.coverUrl,
+        pages: entity.pages,
+        binding: entity.binding,
         naturalKey: entity.naturalKey,
       })
       .onConflictDoUpdate({
@@ -75,6 +79,8 @@ export class PgEditionRepository implements EditionRepository {
           year: entity.year,
           isbn13: entity.isbn?.value ?? null,
           coverUrl: entity.coverUrl,
+          pages: entity.pages,
+          binding: entity.binding,
         },
       });
   }

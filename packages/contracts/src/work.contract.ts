@@ -9,6 +9,8 @@ export const WorkCardResponseSchema = z.object({
   firstPublishedYear: z.number().int().nullable(),
   description: z.string().nullable(),
   coverUrl: z.string().url().nullable(),
+  /** Genre tags from the source. Free contributor text, capped by the domain — not a taxonomy. */
+  subjects: z.array(z.string()).default([]),
   translatedLanguages: z.array(z.string()),
   editionCount: z.number().int().nonnegative(),
   sources: z.array(z.string()),
@@ -34,9 +36,14 @@ export const EditionSummarySchema = z.object({
   year: z.number().int().nullable(),
   isbn: z.string().nullable(),
   coverUrl: z.string().url().nullable(),
+  /** Printed page count, when the source states one. */
+  pages: z.number().int().positive().nullable().default(null),
+  /** Physical format as the source words it ("Paperback", "Hardcover"). */
+  binding: z.string().nullable().default(null),
   /** Legal source links this edition has — lets the client surface availability on the list itself. */
   linkCount: z.number().int().nonnegative(),
-  /** Whether bookstore lookups exist for this edition (i.e. it has an ISBN). */
+  /** Whether bookstore lookups are offered for this edition. Always true now that a missing ISBN
+   * falls back to a title search — kept in the response so a client need not encode that rule. */
   hasBookstores: z.boolean(),
 });
 

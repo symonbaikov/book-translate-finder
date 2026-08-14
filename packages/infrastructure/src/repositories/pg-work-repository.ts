@@ -13,6 +13,7 @@ function toDomain(row: typeof work.$inferSelect): Work {
     firstPublishedYear: row.firstPublishedYear,
     description: row.description,
     coverUrl: row.coverUrl,
+    subjects: row.subjects ?? [],
     syncedAt: row.syncedAt,
   });
 }
@@ -56,6 +57,7 @@ export class PgWorkRepository implements WorkRepository {
         firstPublishedYear: entity.firstPublishedYear,
         description: entity.description,
         coverUrl: entity.coverUrl,
+        subjects: [...entity.subjects],
         naturalKey: entity.naturalKey,
         syncedAt: entity.syncedAt,
       })
@@ -71,6 +73,7 @@ export class PgWorkRepository implements WorkRepository {
           firstPublishedYear: entity.firstPublishedYear,
           description: entity.description,
           coverUrl: entity.coverUrl,
+          subjects: [...entity.subjects],
           syncedAt: entity.syncedAt,
         },
       });

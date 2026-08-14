@@ -138,6 +138,7 @@ export class SyncWorkFromSource implements UseCase<
             author,
             firstPublishedYear: topMatch.firstPublishedYear,
             description: workDetails.description,
+            subjects: workDetails.subjects ?? [],
             coverUrl: workDetails.coverUrl ?? topMatch.coverUrl,
             syncedAt: this.deps.clock.now(),
           });
@@ -225,6 +226,8 @@ export class SyncWorkFromSource implements UseCase<
         year,
         isbn,
         coverUrl: providerEdition.coverUrl,
+        pages: providerEdition.pages ?? null,
+        binding: providerEdition.binding ?? null,
       });
     await this.deps.editionRepository.save(edition);
     await this.deps.externalRefRepository.save(editionExternalRef, 'edition', edition.id);

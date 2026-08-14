@@ -61,6 +61,15 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
             {work.firstPublishedYear ? `, ${work.firstPublishedYear}` : ''} · original:{' '}
             {languageName(work.originalLanguage)}
           </p>
+          {work.subjects.length > 0 && (
+            <ul className="tag-list" aria-label="Genres and subjects">
+              {work.subjects.map((subject) => (
+                <li key={subject} className="tag">
+                  {subject}
+                </li>
+              ))}
+            </ul>
+          )}
           {work.sources.length > 0 && (
             <p className="muted" style={{ fontSize: '0.85em' }}>
               Data sources: {work.sources.join(', ')}
@@ -151,6 +160,8 @@ function EditionCard({ edition }: { edition: EditionSummary }) {
             {edition.publisher ? ` · ${edition.publisher}` : ''}
             {edition.year ? ` · ${edition.year}` : ''}
             {edition.translator ? ` · translated by ${edition.translator}` : ''}
+            {edition.binding ? ` · ${edition.binding}` : ''}
+            {edition.pages ? ` · ${edition.pages} pages` : ''}
             {edition.isbn ? ` · ISBN ${edition.isbn}` : ''}
           </div>
           <EditionLinks editionId={edition.id} />

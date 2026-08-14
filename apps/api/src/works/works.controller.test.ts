@@ -24,6 +24,7 @@ const CARD: GetWorkCardOutput = {
   firstPublishedYear: 1869,
   description: null,
   coverUrl: null,
+  subjects: ['dystopia'],
   translatedLanguages: ['en'],
   editionCount: 2,
   sources: ['open-library'],

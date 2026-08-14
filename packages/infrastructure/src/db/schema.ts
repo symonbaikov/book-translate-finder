@@ -50,6 +50,9 @@ export const work = pgTable(
     firstPublishedYear: integer('first_published_year'),
     description: text('description'),
     coverUrl: text('cover_url'),
+    /** Genre tags from the source. Stored as a JSON array rather than a join table: they are
+     * free contributor text, never queried relationally, and always read whole with the work. */
+    subjects: jsonb('subjects').$type<string[]>().notNull().default([]),
     naturalKey: varchar('natural_key', { length: 64 }).notNull(),
     syncedAt: timestamp('synced_at', { withTimezone: true }).notNull(),
   },
@@ -76,6 +79,8 @@ export const edition = pgTable(
     year: integer('year'),
     isbn13: varchar('isbn13', { length: 13 }),
     coverUrl: text('cover_url'),
+    pages: integer('pages'),
+    binding: text('binding'),
     naturalKey: varchar('natural_key', { length: 64 }).notNull(),
   },
   (table) => [

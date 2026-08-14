@@ -3,6 +3,7 @@ import type {
   CachePort,
   ProviderEdition,
   ProviderWork,
+  ProviderWorkDetails,
   RightsStatus,
   SearchQuery,
 } from '@btf/domain';
@@ -63,6 +64,8 @@ interface OpenLibraryEditionEntry {
   publish_date?: string;
   isbn_10?: string[];
   isbn_13?: string[];
+  number_of_pages?: number;
+  physical_format?: string;
   covers?: number[];
 }
 
@@ -86,6 +89,8 @@ interface AvailabilityItem {
 interface OpenLibraryWorkResponse {
   description?: string | { value?: string };
   covers?: number[];
+  /** Contributor-written subject headings — the closest thing Open Library has to genre tags. */
+  subjects?: string[];
 }
 
 interface AvailabilityResponse {
@@ -137,6 +142,8 @@ function mapEditionEntry(entry: OpenLibraryEditionEntry): ProviderEdition {
     year: extractYear(entry.publish_date),
     isbn13: entry.isbn_13?.[0] ?? null,
     isbn10: entry.isbn_10?.[0] ?? null,
+    pages: entry.number_of_pages ?? null,
+    binding: entry.physical_format ?? null,
     // Overwritten below from the availability lookup when it has a confident, exact-match
     // answer for this specific edition. editions.json alone has no reliable per-edition
     // public-vs-lending signal (docs/legal-policy.md §3: absence of a clear signal is never
@@ -266,27 +273,26 @@ export class OpenLibraryProvider implements BookMetadataProvider {
     return editions;
   }
 
-  async fetchWorkDetails(externalWorkId: string): Promise<{
-    description: string | null;
-    coverUrl: string | null;
-  }> {
+  async fetchWorkDetails(externalWorkId: string): Promise<ProviderWorkDetails> {
     const cacheKey = `provider:open-library:work-details:${externalWorkId}`;
-    const cached = await this.cache.get<{ description: string | null; coverUrl: string | null }>(
-      cacheKey,
-    );
+    const cached = await this.cache.get<ProviderWorkDetails>(cacheKey);
     if (cached) return cached;
 
     const url = `https://openlibrary.org${externalWorkId}.json`;
     const res = await this.fetcher.fetch(url, { headers: { 'User-Agent': this.userAgent } });
     // Best-effort by port contract: a missing/failing work record must not fail the sync.
-    if (!res.ok) return { description: null, coverUrl: null };
+    if (!res.ok) return { description: null, coverUrl: null, subjects: [] };
 
     const data = (await res.json()) as OpenLibraryWorkResponse;
     const description =
       typeof data.description === 'string' ? data.description : (data.description?.value ?? null);
-    const details = {
+    const details: ProviderWorkDetails = {
       description,
       coverUrl: coverIdToUrl(data.covers?.[0]),
+      // Open Library's subjects are the only genre signal any of the sources offer. They are
+      // contributor-written free text, so they are passed through as-is; `Work` caps and
+      // de-duplicates them rather than this adapter inventing a taxonomy.
+      subjects: data.subjects ?? [],
     };
     await this.cache.set(cacheKey, details, EDITIONS_CACHE_TTL_SECONDS);
     return details;

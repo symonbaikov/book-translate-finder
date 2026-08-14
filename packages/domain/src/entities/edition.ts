@@ -22,6 +22,13 @@ export interface CreateEditionParams {
   isbn?: Isbn | null;
   /** Cover image URL from the source, when it has one — display-only, never part of the natural key. */
   coverUrl?: string | null;
+  /** Printed page count, when the source states one. Not part of the natural key: two records of
+   * the same edition often disagree by a page or two, and that must not split them in two. */
+  pages?: number | null;
+  /** Physical format as the source words it ("Paperback", "Hardcover", "Mass Market Paperback").
+   * Kept verbatim rather than mapped to an enum — sources use dozens of spellings, and inventing
+   * a taxonomy would mean guessing which bucket an unfamiliar one belongs in. */
+  binding?: string | null;
 }
 
 /** Immutable, same rationale as `Work` (docs/rules.md §3). */
@@ -37,6 +44,8 @@ export class Edition {
     readonly year: number | null,
     readonly isbn: Isbn | null,
     readonly coverUrl: string | null,
+    readonly pages: number | null,
+    readonly binding: string | null,
     readonly naturalKey: string,
   ) {}
 
@@ -46,6 +55,9 @@ export class Edition {
     if (!params.workId.trim()) throw new InvalidInputError('Edition.workId must not be empty');
     if (params.year != null && !Number.isInteger(params.year)) {
       throw new InvalidInputError('Edition.year must be an integer or null');
+    }
+    if (params.pages != null && (!Number.isInteger(params.pages) || params.pages <= 0)) {
+      throw new InvalidInputError('Edition.pages must be a positive integer or null');
     }
 
     const translator = params.translator?.trim() || null;
@@ -70,6 +82,8 @@ export class Edition {
       year,
       isbn,
       params.coverUrl?.trim() || null,
+      params.pages ?? null,
+      params.binding?.trim() || null,
       naturalKey,
     );
   }

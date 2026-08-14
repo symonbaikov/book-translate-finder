@@ -22,6 +22,7 @@ export interface GetWorkCardOutput {
   firstPublishedYear: number | null;
   description: string | null;
   coverUrl: string | null;
+  subjects: readonly string[];
   translatedLanguages: string[];
   editionCount: number;
   /** Every distinct source that has contributed data to this work (docs/architecture.md §5) —
@@ -87,6 +88,7 @@ export class GetWorkCard implements UseCase<GetWorkCardInput, GetWorkCardOutput>
       // ISBN we can derive one from) — a book card with a blank cover is the most visible
       // failure in the whole UI, and one of its editions almost always has an image.
       coverUrl: work.coverUrl ?? firstEditionCover(editions),
+      subjects: work.subjects,
       translatedLanguages,
       editionCount: editions.length,
       sources,

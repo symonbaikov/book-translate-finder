@@ -28,6 +28,8 @@ export interface ProviderWork {
 
 /** Work-level facts that need their own source request beyond the search hit (docs/architecture.md §2.2). */
 export interface ProviderWorkDetails {
+  /** Subject headings used as genre tags. Free contributor text, not a taxonomy. */
+  subjects?: readonly string[];
   description: string | null;
   coverUrl: string | null;
 }
@@ -38,6 +40,10 @@ export interface ProviderEdition {
   language: string;
   /** Cover image URL for this specific edition, when the source has one. */
   coverUrl: string | null;
+  /** Printed page count, when the source states one. */
+  pages?: number | null;
+  /** Physical format as the source words it ("Paperback", "Hardcover"). */
+  binding?: string | null;
   translator: string | null;
   /** The language this edition was translated from, when the source states it — see Edition.translatedFrom. */
   translatedFrom: string | null;

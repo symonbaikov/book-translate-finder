@@ -171,9 +171,10 @@ describe('ListEditionsForWork', () => {
     expect(byId.get('e3')).toBe(0);
   });
 
-  it('flags editions that have an ISBN as buyable, so the list never looks empty', async () => {
-    // Found live in Phase 3: an edition with no borrow/download link but a perfectly good ISBN
-    // showed no badge at all, even though every bookstore lookup was available behind the expand.
+  it('flags every edition as buyable — a missing ISBN falls back to a title search', async () => {
+    // Found live in Phase 3: an edition with no borrow/download link showed no badge at all, even
+    // though bookstore lookups were available behind the expand. Since shops fall back to a title
+    // search, that is true of every edition — including the 16% that carry no ISBN.
     const { deps, workRepository, editionRepository } = makeDeps();
     await seed(workRepository, editionRepository);
     await editionRepository.save(
@@ -193,7 +194,7 @@ describe('ListEditionsForWork', () => {
 
     const byId = new Map(result.editions.map((e) => [e.id, e.hasBookstores]));
     expect(byId.get('e-isbn')).toBe(true);
-    expect(byId.get('e1')).toBe(false); // seeded without an ISBN
+    expect(byId.get('e1')).toBe(true); // seeded without an ISBN — searched by title instead
   });
 
   it('derives a cover from the ISBN when the source gave none — repairs rows synced before covers existed', async () => {
