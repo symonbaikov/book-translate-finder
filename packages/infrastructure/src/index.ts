@@ -24,6 +24,7 @@ export {
 
 export { GoogleBooksProvider } from './providers/google-books-provider.js';
 export { GutenbergProvider } from './providers/gutenberg-provider.js';
+export { AuthorizedFreeProvider } from './providers/authorized-free-provider.js';
 export { OpenLibraryProvider } from './providers/open-library-provider.js';
 
 export { Uuid7Generator } from './id/uuid7-generator.js';

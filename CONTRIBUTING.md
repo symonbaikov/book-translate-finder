@@ -44,6 +44,25 @@ Details — in [CLAUDE.md](CLAUDE.md) (the command contract) and [README.md](REA
 - Secrets and source API keys — only via environment variables; `.env` is not committed.
 - One PR — one meaningful change. Split "while we're at it" refactoring into separate PRs.
 
+## How to add a book the author publishes for free
+
+A book still under copyright whose author or publisher gives it away legally belongs in
+`packages/domain/src/policy/authorized-free-catalog.ts`. Adding one is a single PR with a single
+entry — no code, no migration.
+
+The entry must include:
+
+- `authorization` — the rights holder's **own** page granting the free copy. Not a mirror, not an
+  aggregator, not a search result. This is the evidence the review checks.
+- `license` — the permission as the rights holder words it (e.g. "CC BY-NC-SA 3.0, released by
+  the author").
+- `verifiedOn` — today's date, meaning you opened that page and it still says so.
+- `downloads` — direct https URLs, one per format, each of which you actually downloaded.
+
+What will be rejected: links found by web search, links to "free ebook" aggregators, and anything
+where the permission is assumed rather than stated. If the author's page is gone, the book does
+not go in — see [ADR-0004](docs/adr/0004-authorized-free-catalog.md).
+
 ## How to propose a new data source
 
 Open an issue describing: what the source is, what official API/data dumps it has, its terms

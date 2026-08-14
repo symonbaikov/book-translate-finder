@@ -57,6 +57,28 @@ export interface SyncWorkFromSourceDeps {
 const FALLBACK_LANGUAGE = 'en';
 
 /**
+ * Builds the work's author line, dropping repeats.
+ *
+ * A source can list the same person twice — Open Library returns `["Peter Watts", "Peter Watts"]`
+ * for /works/OL17091839W, verified live. Joined naively that becomes "Peter Watts, Peter Watts",
+ * a different natural key from every other source's "Peter Watts", so the same book splits into
+ * two works: one carrying the editions, the other carrying the download links. The reader then
+ * opens the card that has neither half of what they wanted.
+ */
+export function joinAuthorNames(names: readonly string[]): string {
+  const seen = new Set<string>();
+  const unique: string[] = [];
+  for (const name of names) {
+    const trimmed = name.trim();
+    const key = trimmed.toLowerCase();
+    if (trimmed.length === 0 || seen.has(key)) continue;
+    seen.add(key);
+    unique.push(trimmed);
+  }
+  return unique.join(', ') || 'Unknown';
+}
+
+/**
  * docs/architecture.md §2.3 / §5: normalize → dedupe editions → `LinkPolicy` → upsert in one
  * transaction → `sync_log` → cache invalidation. This is the first real use case in the
  * project — everything in Phase 1.1/1.2 (entities, natural keys, `LinkPolicy`, repositories,
@@ -85,7 +107,7 @@ export class SyncWorkFromSource implements UseCase<
       const workDetails = await provider.fetchWorkDetails(topMatch.externalId);
 
       const result = await this.deps.unitOfWork.runInTransaction(async () => {
-        const author = topMatch.authorNames.join(', ') || 'Unknown';
+        const author = joinAuthorNames(topMatch.authorNames);
         const originalLanguage = this.inferOriginalLanguage(providerEditions);
 
         const workExternalRef = ExternalRef.create(input.source, topMatch.externalId);
@@ -98,22 +120,27 @@ export class SyncWorkFromSource implements UseCase<
         const workId =
           existingWorkLink?.entityId ?? workNaturalKeyMatch?.id ?? this.deps.idGenerator.newId();
 
-        const work = (await this.shouldApplyMetadata(input.source, workId))
-          ? Work.create({
-              id: workId,
-              originalTitle: topMatch.title,
-              originalLanguage,
-              author,
-              firstPublishedYear: topMatch.firstPublishedYear,
-              description: workDetails.description,
-              coverUrl: workDetails.coverUrl ?? topMatch.coverUrl,
-              syncedAt: this.deps.clock.now(),
-            })
-          : // A higher-priority source already owns this work's metadata (docs/architecture.md
-            // §5 source priority) — still bump syncedAt to reflect the sync attempt, but keep the
-            // existing fields rather than overwrite them with this lower-priority source's data.
-            // `shouldApplyMetadata` returning false guarantees the work already exists.
-            (await this.deps.workRepository.findById(workId))!.withSyncedAt(this.deps.clock.now());
+        // A higher-priority source already owns this work's metadata (docs/architecture.md §5
+        // source priority) — keep its fields and only bump syncedAt, rather than overwrite them
+        // with this lower-priority source's data. The lookup is not asserted non-null: `workId`
+        // can come from an `external_ref` row whose entity no longer exists, and a stale pointer
+        // must degrade to "write the work" rather than crash the whole sync.
+        const existingWork = (await this.shouldApplyMetadata(input.source, workId))
+          ? null
+          : await this.deps.workRepository.findById(workId);
+
+        const work =
+          existingWork?.withSyncedAt(this.deps.clock.now()) ??
+          Work.create({
+            id: workId,
+            originalTitle: topMatch.title,
+            originalLanguage,
+            author,
+            firstPublishedYear: topMatch.firstPublishedYear,
+            description: workDetails.description,
+            coverUrl: workDetails.coverUrl ?? topMatch.coverUrl,
+            syncedAt: this.deps.clock.now(),
+          });
         await this.deps.workRepository.save(work);
         await this.deps.externalRefRepository.save(workExternalRef, 'work', work.id);
 
@@ -178,22 +205,27 @@ export class SyncWorkFromSource implements UseCase<
 
     // A higher-priority source already owns this edition's metadata (docs/architecture.md §5
     // source priority) — keep its fields as-is rather than overwrite them with this
-    // lower-priority source's data. `shouldApplyMetadata` returning false guarantees the edition
-    // already exists.
-    const edition = (await this.shouldApplyMetadata(source, editionId))
-      ? Edition.create({
-          id: editionId,
-          workId,
-          title,
-          language,
-          translator: providerEdition.translator,
-          translatedFrom,
-          publisher,
-          year,
-          isbn,
-          coverUrl: providerEdition.coverUrl,
-        })
-      : (await this.deps.editionRepository.findById(editionId))!;
+    // lower-priority source's data. As with the work above, a missing row is treated as "create
+    // it", not as an impossible state: asserting non-null here turned a stale `external_ref` into
+    // a failed sync with the opaque message "Cannot read properties of null (reading 'id')".
+    const existingEdition = (await this.shouldApplyMetadata(source, editionId))
+      ? null
+      : await this.deps.editionRepository.findById(editionId);
+
+    const edition =
+      existingEdition ??
+      Edition.create({
+        id: editionId,
+        workId,
+        title,
+        language,
+        translator: providerEdition.translator,
+        translatedFrom,
+        publisher,
+        year,
+        isbn,
+        coverUrl: providerEdition.coverUrl,
+      });
     await this.deps.editionRepository.save(edition);
     await this.deps.externalRefRepository.save(editionExternalRef, 'edition', edition.id);
 

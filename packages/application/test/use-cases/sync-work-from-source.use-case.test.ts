@@ -22,6 +22,7 @@ import { InvalidInputError, ProviderId } from '@btf/domain';
 import { describe, expect, it } from 'vitest';
 import { CACHE_KEY_VERSION } from '../../src/cache-key-version.js';
 import {
+  joinAuthorNames,
   SyncWorkFromSource,
   type SyncWorkFromSourceDeps,
 } from '../../src/use-cases/sync-work-from-source.use-case.js';
@@ -469,5 +470,27 @@ describe('SyncWorkFromSource', () => {
       expect(editions).toHaveLength(1); // same natural key — one edition, not two
       expect(editions[0]?.translator).toBe('Aylmer Maude'); // open-library's value, not overwritten
     });
+  });
+});
+
+describe('joinAuthorNames', () => {
+  it('drops a repeated author instead of building "X, X"', () => {
+    // Open Library really returns this for Blindsight (/works/OL17091839W). "Peter Watts, Peter
+    // Watts" is a different natural key from "Peter Watts", which split the book into two works:
+    // one with the editions, one with the download links.
+    expect(joinAuthorNames(['Peter Watts', 'Peter Watts'])).toBe('Peter Watts');
+  });
+
+  it('ignores case and surrounding whitespace when deciding what is a repeat', () => {
+    expect(joinAuthorNames([' Cory Doctorow ', 'cory doctorow'])).toBe('Cory Doctorow');
+  });
+
+  it('keeps genuine co-authors, in order', () => {
+    expect(joinAuthorNames(['Scott Chacon', 'Ben Straub'])).toBe('Scott Chacon, Ben Straub');
+  });
+
+  it('falls back to Unknown rather than an empty author', () => {
+    expect(joinAuthorNames([])).toBe('Unknown');
+    expect(joinAuthorNames(['   '])).toBe('Unknown');
   });
 });

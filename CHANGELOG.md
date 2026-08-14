@@ -18,6 +18,23 @@ them before the API starts).
 
 ### Added
 
+- **Free copies the author or publisher gives away.** A fourth answer to "where do I get this
+  book", alongside public domain, borrow and buy: a hand-curated catalog of books still under
+  copyright whose rights holder publishes them for free (Cory Doctorow's novels, Peter Watts',
+  _Pro Git_). Each entry names the page where the permission is granted and the date a human last
+  read it; links are `open_license`, never `public_domain`. Adding a book is a one-entry PR — see
+  CONTRIBUTING.md and [ADR-0004](docs/adr/0004-authorized-free-catalog.md).
+
+### Fixed
+
+- **The same book could split into two cards.** Open Library sometimes lists an author twice
+  (`["Peter Watts", "Peter Watts"]`), which produced the author line "Peter Watts, Peter Watts" —
+  a different natural key from every other source's "Peter Watts". The book then existed twice:
+  one card with the editions, one with the download links. Repeated authors are now collapsed.
+- **A stale `external_ref` failed an entire sync** with "Cannot read properties of null (reading
+  'id')". Two lookups assumed a row must exist because a pointer to it did; a missing row is now
+  treated as "create it".
+
 - **Bookstores in 47 countries, up from 13.** ~90 retailers, every ISBN-lookup URL checked live
   before being added; a shop whose URL shape could not be confirmed was left out rather than
   guessed at. The country selector now names countries via the platform's own `Intl.DisplayNames`

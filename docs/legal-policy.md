@@ -12,8 +12,19 @@ Priority: if these rules conflict with any product or technical task, these rule
 
 **I-1. Direct download — only public domain or an explicit open license.**
 A `download` link is allowed only if the provider is in the allowlist (Project Gutenberg,
-Internet Archive, Wikisource, Standard Ebooks) **and** the edition's rights status is
-`public_domain` or `open_license`.
+Internet Archive, Wikisource, Standard Ebooks, and the curated `authorized-free` catalog) **and**
+the edition's rights status is `public_domain` or `open_license`.
+
+The `authorized-free` entry is different in kind from the others: it is not a repository trusted
+wholesale, but a hand-curated list of individual books whose rights holder publishes them for free
+(see [ADR-0004](adr/0004-authorized-free-catalog.md)). Each entry names the page where the author
+or publisher grants the permission and the date a human last read it, and each is reviewed one
+book at a time. Such links are always `open_license` — the book is in copyright, and free only
+because permission was given.
+
+Generating download links by searching the open web (`"<title>" filetype:pdf` and the like) is
+**not** an acceptable route to this and never will be: for a copyrighted book such a query returns
+unauthorized copies, so shipping it would be I-3 laundered through a search engine.
 
 **I-2. For copyrighted works — deeplinks only.**
 Purchase from a retailer/publisher (`buy`) or legal library lending
@@ -43,7 +54,7 @@ The single place in the system where the admissibility of a link is decided. Liv
 
 ```ts
 // packages/domain/src/policy/link-policy.ts
-const DOWNLOAD_ALLOWLIST = new Set(['gutenberg', 'internet-archive', 'wikisource', 'standard-ebooks']);
+const DOWNLOAD_ALLOWLIST = new Set(['gutenberg', 'internet-archive', 'wikisource', 'standard-ebooks', 'authorized-free']);
 // Full registrable domains, not bare fragments — a fragment like "libgen" would false-positive
 // on an unrelated domain that merely starts with it (e.g. a hypothetical "libgenuine-authors.com").
 const DENYLIST_DOMAINS = ['libgen.rs', 'libgen.is', 'annas-archive.org', 'z-lib.io', 'sci-hub.se', /* … */];

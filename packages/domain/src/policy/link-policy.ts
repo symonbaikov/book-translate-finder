@@ -40,6 +40,10 @@ const DOWNLOAD_ALLOWLIST: ReadonlySet<string> = new Set([
   'internet-archive',
   'wikisource',
   'standard-ebooks',
+  // Books the rights holder themselves publishes for free — see `authorized-free-catalog.ts` and
+  // ADR-0004. Unlike the others this is not a repository we trust wholesale: each entry names the
+  // page where the author or publisher grants the permission, and is reviewed one book at a time.
+  'authorized-free',
 ]);
 
 /**

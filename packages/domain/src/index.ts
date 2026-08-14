@@ -38,6 +38,12 @@ export {
 } from './policy/source-priority.js';
 
 export { coverUrlFromIsbn } from './policy/cover-url.js';
+export {
+  AUTHORIZED_FREE_BOOKS,
+  findAuthorizedFreeBooks,
+  type AuthorizedFreeBook,
+  type AuthorizedFreeDownload,
+} from './policy/authorized-free-catalog.js';
 
 export {
   BOOKSTORES,
