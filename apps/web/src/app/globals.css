@@ -676,3 +676,27 @@ button.button--secondary:active {
   white-space: nowrap;
   border: 0;
 }
+
+/* A year is a heading, not a caption: the "books of the year" list is organised by year, and a
+   reader scanning for 2023 should find it as a label, not in small print under a cover. */
+.featured-year + .featured-year {
+  margin-top: 1.4rem;
+}
+
+.featured-year__label {
+  font-size: 0.95rem;
+  margin: 0.9rem 0 0;
+  color: var(--color-text-muted, inherit);
+}
+
+/* Tags are links now; keep the chip look and add the affordance. */
+a.tag {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+}
+
+a.tag:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}

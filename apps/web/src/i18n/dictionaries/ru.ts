@@ -136,4 +136,12 @@ export const ru: Dictionary = {
   'search.notFoundHint': 'Ничего не нашлось. Попробуйте уточнить название или автора.',
   'search.timedOut':
     'Источники отвечают медленно, данных пока нет. Фоновая синхронизация могла уже завершиться — попробуйте ещё раз.',
+  'home.tagline': 'Найдите свой следующий magnum opus',
+  'subject.allLanguages': 'Все языки.',
+  'subject.filteredByLanguage': 'Только книги с изданием на языке: {language}.',
+  'subject.dropLanguageFilter': 'показать все языки',
+  'subject.empty':
+    'Под этим тегом пока ничего нет. Теги берутся из книг, которые эта копия уже загрузила.',
+  'featured.year': '{year}',
+  'nav.browse': 'По жанрам',
 };

@@ -126,4 +126,12 @@ export const tr: Dictionary = {
   'search.notFoundHint': 'Bir şey bulunamadı. Başlığı veya yazarı netleştirmeyi deneyin.',
   'search.timedOut':
     'Kaynaklar yavaş yanıt veriyor ve henüz veri yok. Arka plandaki eşitleme bitmiş olabilir — tekrar deneyin.',
+  'home.tagline': 'Sıradaki başyapıtınızı bulun',
+  'subject.allLanguages': 'Tüm diller.',
+  'subject.filteredByLanguage': 'Yalnızca {language} baskısı olan kitaplar.',
+  'subject.dropLanguageFilter': 'tüm dilleri göster',
+  'subject.empty':
+    'Bu etikette henüz bir şey yok. Etiketler bu kurulumun daha önce getirdiği kitaplardan gelir.',
+  'featured.year': '{year}',
+  'nav.browse': 'Türe göre',
 };

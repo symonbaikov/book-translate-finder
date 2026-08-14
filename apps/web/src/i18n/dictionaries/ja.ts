@@ -124,4 +124,12 @@ export const ja: Dictionary = {
   'search.notFoundHint': '見つかりませんでした。書名や著者名をより正確に入力してみてください。',
   'search.timedOut':
     'ソースの応答が遅く、まだデータがありません。バックグラウンドの同期はすでに終わっているかもしれません — もう一度お試しください。',
+  'home.tagline': '次の一冊、あなたの代表作を見つける',
+  'subject.allLanguages': 'すべての言語。',
+  'subject.filteredByLanguage': '{language}の版がある本のみ。',
+  'subject.dropLanguageFilter': 'すべての言語を表示',
+  'subject.empty':
+    'このタグにはまだ何もありません。タグは、この環境がすでに取得した本から集まります。',
+  'featured.year': '{year}年',
+  'nav.browse': 'ジャンル別',
 };

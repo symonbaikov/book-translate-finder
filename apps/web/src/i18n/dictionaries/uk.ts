@@ -135,4 +135,12 @@ export const uk: Dictionary = {
   'search.notFoundHint': 'Нічого не знайшлося. Спробуйте уточнити назву або автора.',
   'search.timedOut':
     'Джерела відповідають повільно, даних поки немає. Фонова синхронізація могла вже завершитися — спробуйте ще раз.',
+  'home.tagline': 'Знайдіть свій наступний magnum opus',
+  'subject.allLanguages': 'Усі мови.',
+  'subject.filteredByLanguage': 'Лише книжки з виданням мовою: {language}.',
+  'subject.dropLanguageFilter': 'показати всі мови',
+  'subject.empty':
+    'Під цим тегом поки нічого немає. Теги беруться з книжок, які ця копія вже завантажила.',
+  'featured.year': '{year}',
+  'nav.browse': 'За жанрами',
 };

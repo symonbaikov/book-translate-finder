@@ -58,12 +58,12 @@ export function FeaturedBooks() {
 
   return (
     <>
-      <FeaturedSection
-        id="books-of-the-year"
+      <YearSection
         heading={t('featured.yearHeading')}
         blurb={t('featured.yearBlurb')}
         books={ofTheYear}
         freeLabel={t('featured.freeCopy')}
+        yearLabel={(year) => t('featured.year', { year })}
       />
       <FeaturedSection
         id="popular"
@@ -78,6 +78,71 @@ export function FeaturedBooks() {
         </p>
       )}
     </>
+  );
+}
+
+/**
+ * "Books of the year", one row per year.
+ *
+ * Grouped rather than shown as one flat grid because the year is the organising idea of this
+ * list — a reader scanning it is looking for "what came out in 2023", and a wall of covers with
+ * the year in small print underneath does not answer that.
+ */
+function YearSection({
+  heading,
+  blurb,
+  books,
+  freeLabel,
+  yearLabel,
+}: {
+  heading: string;
+  blurb: string;
+  books: FeaturedBook[];
+  freeLabel: string;
+  yearLabel: (year: number) => string;
+}) {
+  if (books.length === 0) return null;
+
+  const years = [...new Set(books.map((b) => b.year))].sort((a, b) => b - a);
+
+  return (
+    <section aria-labelledby="books-of-the-year" style={{ marginTop: '2.5rem' }}>
+      <h2 id="books-of-the-year" style={{ marginBottom: '0.2rem' }}>
+        {heading}
+      </h2>
+      <p className="muted" style={{ marginTop: 0, fontSize: '0.88em' }}>
+        {blurb}
+      </p>
+      {years.map((year) => (
+        <div key={year} className="featured-year">
+          <h3 className="featured-year__label">{yearLabel(year)}</h3>
+          <ul className="featured-grid">
+            {books
+              .filter((book) => book.year === year)
+              .map((book) => (
+                <FeaturedCard key={book.workId} book={book} freeLabel={freeLabel} />
+              ))}
+          </ul>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+function FeaturedCard({ book, freeLabel }: { book: FeaturedBook; freeLabel: string }) {
+  return (
+    <li>
+      <Link href={`/works/${book.workId}`} className="featured-card">
+        <CoverImage src={book.coverUrl} alt="" width={110} height={165} />
+        <span className="featured-card__title">{book.title}</span>
+        <span className="muted featured-card__meta">
+          {book.author} · {book.year}
+        </span>
+        {/* Only claimed when a legal free copy actually exists — the badge is the reason to
+            click, so it must never be decoration. */}
+        {book.hasFreeCopy && <span className="badge badge--positive">{freeLabel}</span>}
+      </Link>
+    </li>
   );
 }
 
@@ -106,18 +171,7 @@ function FeaturedSection({
       </p>
       <ul className="featured-grid">
         {books.map((book) => (
-          <li key={book.workId}>
-            <Link href={`/works/${book.workId}`} className="featured-card">
-              <CoverImage src={book.coverUrl} alt="" width={110} height={165} />
-              <span className="featured-card__title">{book.title}</span>
-              <span className="muted featured-card__meta">
-                {book.author} · {book.year}
-              </span>
-              {/* Only claimed when a legal free copy actually exists — the badge is the reason to
-                  click, so it must never be decoration. */}
-              {book.hasFreeCopy && <span className="badge badge--positive">{freeLabel}</span>}
-            </Link>
-          </li>
+          <FeaturedCard key={book.workId} book={book} freeLabel={freeLabel} />
         ))}
       </ul>
     </section>

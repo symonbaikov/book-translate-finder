@@ -7,7 +7,7 @@ export default async function HomePage() {
 
   return (
     <main id="main-content" className="container">
-      <h1>{t('home.title')}</h1>
+      <h1>{t('home.tagline')}</h1>
       <p className="muted">{t('home.subtitle')}</p>
       <SearchBox />
       <FeaturedBooks />

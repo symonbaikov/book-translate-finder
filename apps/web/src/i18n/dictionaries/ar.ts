@@ -121,4 +121,12 @@ export const ar: Dictionary = {
   'search.notFoundHint': 'لم يُعثر على شيء. حاول تدقيق العنوان أو اسم المؤلف.',
   'search.timedOut':
     'المصادر تستجيب ببطء ولا توجد بيانات بعد. ربما انتهت المزامنة في الخلفية — حاول مرة أخرى.',
+  'home.tagline': 'اعثر على تحفتك القادمة',
+  'subject.allLanguages': 'كل اللغات.',
+  'subject.filteredByLanguage': 'الكتب التي لها طبعة بلغة {language} فقط.',
+  'subject.dropLanguageFilter': 'إظهار كل اللغات',
+  'subject.empty':
+    'لا يوجد شيء تحت هذا الوسم بعد. الوسوم تأتي من الكتب التي جلبتها هذه النسخة بالفعل.',
+  'featured.year': '{year}',
+  'nav.browse': 'حسب النوع',
 };

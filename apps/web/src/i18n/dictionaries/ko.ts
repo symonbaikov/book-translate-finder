@@ -124,4 +124,12 @@ export const ko: Dictionary = {
   'search.notFoundHint': '찾지 못했습니다. 제목이나 저자를 더 정확히 입력해 보세요.',
   'search.timedOut':
     '출처들의 응답이 느려 아직 자료가 없습니다. 백그라운드 동기화가 이미 끝났을 수도 있습니다 — 다시 시도해 주세요.',
+  'home.tagline': '다음에 읽을 역작을 찾아보세요',
+  'subject.allLanguages': '모든 언어.',
+  'subject.filteredByLanguage': '{language} 판본이 있는 책만.',
+  'subject.dropLanguageFilter': '모든 언어 보기',
+  'subject.empty':
+    '이 태그에는 아직 아무것도 없습니다. 태그는 이 인스턴스가 이미 가져온 책에서 나옵니다.',
+  'featured.year': '{year}년',
+  'nav.browse': '장르별',
 };

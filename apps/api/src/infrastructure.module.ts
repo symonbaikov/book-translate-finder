@@ -23,6 +23,8 @@ export class InfrastructureModule {
         { provide: TOKENS.GET_EDITION_LINKS, useValue: ctx.getEditionLinks },
         { provide: TOKENS.ENQUEUE_SOURCE_SYNC, useValue: ctx.enqueueSourceSync },
         { provide: TOKENS.GET_FEATURED_BOOKS, useValue: ctx.getFeaturedBooks },
+        { provide: TOKENS.LIST_SUBJECTS, useValue: ctx.listSubjects },
+        { provide: TOKENS.BROWSE_BY_SUBJECT, useValue: ctx.browseBySubject },
         { provide: TOKENS.AUTH_SERVICE, useValue: ctx.authService },
         { provide: TOKENS.BOOKMARK_SERVICE, useValue: ctx.bookmarkService },
         { provide: TOKENS.WORK_REPOSITORY, useValue: ctx.workRepository },

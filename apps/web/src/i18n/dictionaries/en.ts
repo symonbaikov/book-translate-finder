@@ -150,4 +150,12 @@ export const en = {
   'search.notFoundHint': 'Nothing found. Try refining the title or author.',
   'search.timedOut':
     'The sources are responding slowly and we have no data yet. The background sync may have already finished — try again.',
+  'home.tagline': 'Find your next magnum opus',
+  'subject.allLanguages': 'All languages.',
+  'subject.filteredByLanguage': 'Only books with a {language} edition.',
+  'subject.dropLanguageFilter': 'show all languages',
+  'subject.empty':
+    'Nothing under this tag yet. Tags come from the books this instance has already fetched.',
+  'featured.year': '{year}',
+  'nav.browse': 'Browse by genre',
 } as const;

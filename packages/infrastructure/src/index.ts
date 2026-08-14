@@ -62,3 +62,4 @@ export {
   PgSessionRepository,
   PgUserRepository,
 } from './repositories/pg-auth-repositories.js';
+export { PgSubjectBrowseAdapter } from './repositories/pg-subject-browse-adapter.js';

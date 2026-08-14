@@ -89,3 +89,11 @@ export {
   type GetFeaturedBooksDeps,
   type GetFeaturedBooksOutput,
 } from './use-cases/get-featured-books.use-case.js';
+export {
+  BrowseBySubject,
+  ListSubjects,
+  subjectCacheKey,
+  type BrowseBySubjectDeps,
+  type BrowseBySubjectInput,
+  type BrowseBySubjectOutput,
+} from './use-cases/browse-by-subject.use-case.js';

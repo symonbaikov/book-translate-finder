@@ -17,6 +17,7 @@ import {
   PgIdempotencyStore,
   PgSourceLinkRepository,
   PgWorkRepository,
+  PgSubjectBrowseAdapter,
   PgWorkSearchAdapter,
   RedisCache,
   SystemClock,
@@ -26,7 +27,9 @@ import {
   AuthService,
   BookmarkService,
   EnqueueSourceSync,
+  BrowseBySubject,
   GetFeaturedBooks,
+  ListSubjects,
   GetEditionLinks,
   GetWorkCard,
   ListEditionsForWork,
@@ -45,6 +48,8 @@ export interface ApiContext {
   getEditionLinks: GetEditionLinks;
   enqueueSourceSync: EnqueueSourceSync;
   getFeaturedBooks: GetFeaturedBooks;
+  listSubjects: ListSubjects;
+  browseBySubject: BrowseBySubject;
   authService: AuthService;
   bookmarkService: BookmarkService;
   workRepository: PgWorkRepository;
@@ -98,11 +103,16 @@ export function buildApiContext(env: ApiEnv): ApiContext {
 
   const getFeaturedBooks = new GetFeaturedBooks({
     workRepository,
+    workSearch,
     editionRepository,
     sourceLinkRepository,
     cache,
     backfillQueue,
   });
+
+  const subjectBrowse = new PgSubjectBrowseAdapter(db.db);
+  const listSubjects = new ListSubjects({ subjectBrowse, cache });
+  const browseBySubject = new BrowseBySubject({ subjectBrowse, cache });
 
   const idGenerator = new Uuid7Generator();
   // No SMTP configured is the documented self-hosting default, not a misconfiguration: sign-up
@@ -151,6 +161,8 @@ export function buildApiContext(env: ApiEnv): ApiContext {
     getEditionLinks,
     enqueueSourceSync,
     getFeaturedBooks,
+    listSubjects,
+    browseBySubject,
     authService,
     bookmarkService,
     workRepository,

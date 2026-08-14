@@ -127,4 +127,12 @@ export const it: Dictionary = {
   'search.notFoundHint': "Nessun risultato. Prova a precisare il titolo o l'autore.",
   'search.timedOut':
     'Le fonti rispondono lentamente e non abbiamo ancora dati. La sincronizzazione in background potrebbe essere già finita — riprova.',
+  'home.tagline': 'Trova il tuo prossimo magnum opus',
+  'subject.allLanguages': 'Tutte le lingue.',
+  'subject.filteredByLanguage': 'Solo libri con un’edizione in {language}.',
+  'subject.dropLanguageFilter': 'mostra tutte le lingue',
+  'subject.empty':
+    'Sotto questa etichetta non c’è ancora nulla. Le etichette vengono dai libri già recuperati da questa istanza.',
+  'featured.year': '{year}',
+  'nav.browse': 'Per genere',
 };

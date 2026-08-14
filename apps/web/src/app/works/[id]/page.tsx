@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { EditionSummary } from '@btf/contracts';
 import { CountrySelector } from '../../../components/CountrySelector';
@@ -8,6 +9,7 @@ import { EditionLinks } from '../../../components/EditionLinks';
 import { getWorkCard, listEditions } from '../../../lib/api-client';
 import { languageName } from '../../../lib/language-names';
 import { getT } from '../../../i18n/server';
+import { RememberBookLanguage } from '../../../components/RememberBookLanguage';
 import type { Translate } from '../../../i18n/dictionary';
 
 interface WorkPageProps {
@@ -69,8 +71,10 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
           {work.subjects.length > 0 && (
             <ul className="tag-list" aria-label="Genres and subjects">
               {work.subjects.map((subject) => (
-                <li key={subject} className="tag">
-                  {subject}
+                <li key={subject}>
+                  <Link className="tag" href={`/subjects/${encodeURIComponent(subject)}`}>
+                    {subject}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -101,6 +105,7 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
         )}
       </section>
 
+      <RememberBookLanguage language={searchParams.language ?? null} />
       <section aria-labelledby="editions-heading" style={{ marginTop: '2rem' }}>
         <h2 id="editions-heading">
           {t('work.editions', { shown: editions.length, total: work.editionCount })}

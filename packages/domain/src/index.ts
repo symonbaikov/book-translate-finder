@@ -81,7 +81,12 @@ export { type SourceLinkRepository } from './ports/source-link-repository.port.j
 export { type SyncLogEntry, type SyncLogRepository } from './ports/sync-log-repository.port.js';
 export { type UnitOfWork } from './ports/unit-of-work.port.js';
 export { type WorkRepository } from './ports/work-repository.port.js';
-export { type WorkSearchHit, type WorkSearchPort } from './ports/work-search.port.js';
+export {
+  type SubjectBrowsePort,
+  type SubjectBrowseQuery,
+  type WorkSearchHit,
+  type WorkSearchPort,
+} from './ports/work-search.port.js';
 
 export { ExternalRef } from './value-objects/external-ref.js';
 export { Isbn } from './value-objects/isbn.js';

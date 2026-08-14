@@ -141,4 +141,12 @@ export const de: Dictionary = {
   'search.notFoundHint': 'Nichts gefunden. Versuchen Sie es mit einem genaueren Titel oder Autor.',
   'search.timedOut':
     'Die Quellen antworten langsam und wir haben noch keine Daten. Die Hintergrundsynchronisierung ist womöglich schon fertig — versuchen Sie es erneut.',
+  'home.tagline': 'Finden Sie Ihr nächstes Opus magnum',
+  'subject.allLanguages': 'Alle Sprachen.',
+  'subject.filteredByLanguage': 'Nur Bücher mit einer Ausgabe auf {language}.',
+  'subject.dropLanguageFilter': 'alle Sprachen anzeigen',
+  'subject.empty':
+    'Unter diesem Schlagwort gibt es noch nichts. Schlagwörter stammen aus den Büchern, die diese Instanz bereits geholt hat.',
+  'featured.year': '{year}',
+  'nav.browse': 'Nach Genre',
 };

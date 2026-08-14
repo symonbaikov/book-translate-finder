@@ -116,4 +116,11 @@ export const zh: Dictionary = {
   'search.pendingLong': '仍在搜索：某本书的首次请求需要从各来源收集数据，可能要花上几分钟',
   'search.notFoundHint': '没有找到。试着把书名或作者写得更准确一些。',
   'search.timedOut': '各来源响应缓慢，暂时还没有数据。后台同步可能已经完成 — 请重试。',
+  'home.tagline': '找到你的下一部传世之作',
+  'subject.allLanguages': '所有语言。',
+  'subject.filteredByLanguage': '仅显示有{language}版本的书。',
+  'subject.dropLanguageFilter': '显示所有语言',
+  'subject.empty': '这个标签下还没有内容。标签来自本站已经获取过的书。',
+  'featured.year': '{year} 年',
+  'nav.browse': '按体裁浏览',
 };

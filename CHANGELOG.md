@@ -18,6 +18,24 @@ them before the API starts).
 
 ### Added
 
+- **Genre tags are links.** Clicking one opens a catalogue of every book this instance knows under
+  that tag. If the reader already picked a book language, that choice carries over automatically
+  and the page says which filter is in effect, with one click to drop it — asking again for
+  something already answered is what makes a site feel like a form.
+- **"Books of the year" is grouped by year**, because the year is the organising idea of that
+  list; a wall of covers with the year in small print does not answer "what came out in 2023".
+- The home page headline is now **"Find your next magnum opus"**, translated in all 15 languages.
+
+### Fixed
+
+- **The home page showed three books instead of seventeen.** Curated entries were matched to the
+  database by exact natural key, so _James_ never matched because Open Library files it under
+  "Percival L. Everett" rather than "Percival Everett". Matching is now fuzzy on the author and
+  exact on the title — loosening both would have put "Summary of Hamnet by Maggie O'Farrell", a
+  study guide by a different author, on the home page under the novel's name. The list also
+  re-checks every minute while it is still filling instead of caching a short list for half an
+  hour, and queues twice as many missing books per request.
+
 - **The interface speaks 15 languages.** A selector in the header, defaulting to English:
   English, Русский, Українська, Deutsch, Français, Español, Português, Italiano, Nederlands,
   Polski, Türkçe, العربية, 日本語, 中文, 한국어. Arabic renders right-to-left. The choice lives in a

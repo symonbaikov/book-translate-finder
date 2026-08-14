@@ -45,3 +45,4 @@ export {
 } from './work.contract.js';
 export * from './auth.contract.js';
 export * from './featured.contract.js';
+export * from './subject.contract.js';

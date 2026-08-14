@@ -139,4 +139,12 @@ export const fr: Dictionary = {
   'search.notFoundHint': "Aucun résultat. Essayez de préciser le titre ou l'auteur.",
   'search.timedOut':
     "Les sources répondent lentement et nous n'avons pas encore de données. La synchronisation en arrière-plan est peut-être déjà terminée — réessayez.",
+  'home.tagline': 'Trouvez votre prochain magnum opus',
+  'subject.allLanguages': 'Toutes les langues.',
+  'subject.filteredByLanguage': 'Uniquement les livres ayant une édition en {language}.',
+  'subject.dropLanguageFilter': 'afficher toutes les langues',
+  'subject.empty':
+    "Rien sous cette étiquette pour l'instant. Les étiquettes viennent des livres déjà récupérés par cette instance.",
+  'featured.year': '{year}',
+  'nav.browse': 'Par genre',
 };

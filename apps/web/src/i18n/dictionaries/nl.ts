@@ -125,4 +125,12 @@ export const nl: Dictionary = {
   'search.notFoundHint': 'Niets gevonden. Probeer de titel of auteur te preciseren.',
   'search.timedOut':
     'De bronnen reageren traag en we hebben nog geen gegevens. De synchronisatie op de achtergrond is misschien al klaar — probeer het opnieuw.',
+  'home.tagline': 'Vind uw volgende magnum opus',
+  'subject.allLanguages': 'Alle talen.',
+  'subject.filteredByLanguage': 'Alleen boeken met een editie in het {language}.',
+  'subject.dropLanguageFilter': 'alle talen tonen',
+  'subject.empty':
+    'Onder dit label staat nog niets. Labels komen uit de boeken die deze installatie al heeft opgehaald.',
+  'featured.year': '{year}',
+  'nav.browse': 'Op genre',
 };
