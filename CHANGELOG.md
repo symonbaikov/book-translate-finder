@@ -18,6 +18,46 @@ them before the API starts).
 
 ### Added
 
+- **Hide a genre from your recommendations.** Each suggestion carries a "hide this genre" control;
+  hidden genres are dropped in the browser _before_ the request is made, so a hidden genre is
+  never sent to the server rather than merely filtered out of the reply. The list ships empty and
+  is per reader — no built-in list of what to hide, and one person's choice shapes one person's
+  home page and nobody else's.
+
+- **A plugin architecture, and three modules built on it** ([ADR-0007](docs/adr/0007-plugin-architecture.md)).
+  A new leaf package, `packages/plugins`, holds the integrations that have to run on the reader's
+  own device — imported by the web app (into the browser) and by the API alike, depending on no
+  other workspace package. A shop or catalog changing shape can now break its own adapter and
+  nothing else. The plugin manifest declares how an integration gets its data, and there is
+  deliberately no way to declare "scrapes a page": the project's scraping invariant is now
+  expressed in the type system.
+
+  - **OPDS, properly.** A full OPDS 1.2 (Atom) and 2.0 (JSON) client behind one normalized model:
+    acquisition relations, MIME types mapped to reader-facing format buttons ("Download EPUB", not
+    "Download"), indirect acquisition chains, file sizes, pagination and OpenSearch. Links that
+    cost money or hand over a DRM licence are labelled as such instead of being dressed up as
+    downloads.
+  - **Your own library server.** Add a Calibre-Web, COPS, Kavita or Audiobookshelf address on the
+    new **Shelf** page and browse it alongside Project Gutenberg and Standard Ebooks. Addresses and
+    passwords are kept in your browser and fetched from it — a server on `192.168.x.x` is
+    unreachable from this instance by definition, and its address is not ours to hold. Project
+    Gutenberg is relayed by the API instead, because it sends no CORS headers; that relay accepts a
+    catalog id, never an arbitrary URL. (Standard Ebooks was meant to ship alongside it and does
+    not: its OPDS feeds require a Patrons Circle account. Patrons can add it themselves.)
+  - **Bookshops near you**, from OpenStreetMap. Your position is rounded to about 110 m before it
+    is used and goes straight from your browser to OpenStreetMap — never to this site. A city or
+    postcode field sits next to the button rather than appearing after you decline. The results say
+    "bookshops near you": no open dataset publishes what a shop has in stock, so none of them
+    claims to.
+  - **Prices and shops per edition**, grouped by binding, polled in parallel with a short cache.
+    A shop that does not answer is named in the response rather than dropped from a list that would
+    otherwise look complete. Only Google Play publishes a price we can read, so most rows say
+    "price not published" — the honest answer rather than a plausible number.
+
+  New endpoints: `GET /api/editions/:id/prices`, `GET /api/opds/feeds`,
+  `GET /api/opds/feeds/:id`, and `GET /api/stores/nearby` (off unless `ENABLE_SERVER_GEO_LOOKUP=true`).
+  All fifteen interface languages were extended to cover the new screens.
+
 - **A logo.** Original 16×16 pixel art — an open book with a ribbon — in the site header, as the
   favicon, and at the top of the README. Drawn for this project rather than borrowed, so a fork
   inherits a mark it is allowed to use; swapping in your own is one file and one line

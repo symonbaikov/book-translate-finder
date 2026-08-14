@@ -164,4 +164,58 @@ export const en = {
   'recommend.privacy':
     'This is worked out in your browser — the server is told the genres, never who you are.',
   'recommend.forget': 'forget my history',
+
+  // --- Shelf: OPDS catalogs (Module A) -------------------------------------
+  'nav.shelf': 'Shelf',
+  'shelf.title': 'Shelf',
+  'shelf.intro':
+    'Open catalogs, and any library server you run yourself. Catalogs you add stay in this browser and are never sent to this site.',
+  'shelf.openCatalogs': 'Open catalogs',
+  'shelf.yourCatalogs': 'Your catalogs',
+  'shelf.addCatalog': 'Add a catalog',
+  'shelf.name': 'Name',
+  'shelf.address': 'OPDS address',
+  'shelf.username': 'Username (optional)',
+  'shelf.password': 'Password (optional)',
+  'shelf.credentialsNote': 'The address and any credentials are stored in this browser only.',
+  'shelf.add': 'Add',
+  'shelf.remove': 'Remove',
+  'shelf.loading': 'Loading catalog…',
+  'shelf.empty': 'This catalog has no entries.',
+  'shelf.noCatalogs':
+    'None of your own yet. Add a Calibre-Web, COPS, Kavita or Audiobookshelf address below.',
+  'shelf.unreachable':
+    'Your browser could not read this catalog. A server on your own network will work; public sites often refuse cross-origin requests.',
+  'shelf.nextPage': 'Next page',
+  'shelf.previousPage': 'Previous page',
+  'shelf.drm': 'Needs a DRM app',
+  'shelf.notFree': 'Not a free download',
+  'shelf.download': 'Download',
+
+  // --- Bookshops nearby (Module B) -----------------------------------------
+  'stores.title': 'Bookshops near you',
+  'stores.useMyLocation': 'Use my location',
+  'stores.placeLabel': 'City or postcode',
+  'stores.find': 'Find',
+  'stores.locating': 'Looking…',
+  'stores.failed': 'Location unavailable. Type a city or postcode instead.',
+  'stores.none': 'No bookshops mapped within {radius} km.',
+  'stores.distance': '{distance} km away',
+  'stores.stockUnknown': 'Map data only — nobody publishes what a shop has in stock.',
+  'stores.lookupFailed': 'Could not reach OpenStreetMap just now. Try again in a moment.',
+  'stores.privacy':
+    'Your location is rounded to about 100 m and sent only to OpenStreetMap — never to this site.',
+
+  // --- Prices across shops (Module C) --------------------------------------
+  'prices.title': 'Prices and shops',
+  'prices.loading': 'Asking the shops…',
+  'prices.unknown': 'Price not published',
+  'prices.degraded': 'No answer from: {providers}',
+  'prices.format.hardcover': 'Hardcover',
+  'prices.format.paperback': 'Paperback',
+  'prices.format.ebook': 'Ebook',
+  'prices.format.audiobook': 'Audiobook',
+  'prices.format.unknown': 'Format not stated',
+  'recommend.hideGenre': 'hide “{genre}”',
+  'recommend.hiddenList': 'Hidden genres (click to bring one back):',
 } as const;

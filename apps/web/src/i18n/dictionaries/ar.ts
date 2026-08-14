@@ -134,4 +134,58 @@ export const ar: Dictionary = {
   'recommend.blurb': 'كتب من الأنواع التي كنت تفتحها.',
   'recommend.privacy': 'يُحسب هذا في متصفحك — يُخبَر الخادم بالأنواع، لا بمن تكون.',
   'recommend.forget': 'انسَ سجلي',
+
+  // --- Shelf: OPDS catalogs (Module A) -------------------------------------
+  'nav.shelf': 'الرَّف',
+  'shelf.title': 'الرَّف',
+  'shelf.intro':
+    'فهارس مفتوحة، وأي خادم مكتبة تُشغّله بنفسك. تبقى الفهارس التي تضيفها في هذا المتصفّح ولا تُرسَل إلى هذا الموقع أبدًا.',
+  'shelf.openCatalogs': 'فهارس مفتوحة',
+  'shelf.yourCatalogs': 'فهارسك',
+  'shelf.addCatalog': 'إضافة فهرس',
+  'shelf.name': 'الاسم',
+  'shelf.address': 'عنوان OPDS',
+  'shelf.username': 'اسم المستخدم (اختياري)',
+  'shelf.password': 'كلمة المرور (اختيارية)',
+  'shelf.credentialsNote': 'يُحفظ العنوان وبيانات الدخول في هذا المتصفّح فقط.',
+  'shelf.add': 'إضافة',
+  'shelf.remove': 'إزالة',
+  'shelf.loading': 'جارٍ تحميل الفهرس…',
+  'shelf.empty': 'لا توجد مُدخلات في هذا الفهرس.',
+  'shelf.noCatalogs':
+    'لا يوجد فهرس خاص بك بعد. أضِف أدناه عنوان Calibre-Web أو COPS أو Kavita أو Audiobookshelf.',
+  'shelf.unreachable':
+    'تعذّر على متصفّحك قراءة هذا الفهرس. الخادم داخل شبكتك سيعمل؛ أمّا المواقع العامة فكثيرًا ما ترفض الطلبات عبر النطاقات.',
+  'shelf.nextPage': 'الصفحة التالية',
+  'shelf.previousPage': 'الصفحة السابقة',
+  'shelf.drm': 'يتطلّب تطبيق DRM',
+  'shelf.notFree': 'ليس تنزيلًا مجانيًا',
+  'shelf.download': 'تنزيل',
+
+  // --- Bookshops nearby (Module B) -----------------------------------------
+  'stores.title': 'مكتبات قريبة منك',
+  'stores.useMyLocation': 'استخدام موقعي',
+  'stores.placeLabel': 'المدينة أو الرمز البريدي',
+  'stores.find': 'ابحث',
+  'stores.locating': 'جارٍ البحث…',
+  'stores.failed': 'الموقع غير متاح. اكتب اسم مدينة أو رمزًا بريديًا بدلًا من ذلك.',
+  'stores.none': 'لا توجد مكتبات على الخريطة ضمن {radius} كم.',
+  'stores.distance': 'على بُعد {distance} كم',
+  'stores.stockUnknown': 'بيانات الخريطة فقط — لا أحد ينشر ما يتوفّر في المكتبة من نسخ.',
+  'stores.lookupFailed': 'تعذّر الوصول إلى OpenStreetMap الآن. حاول مرّة أخرى بعد قليل.',
+  'stores.privacy':
+    'يُقرَّب موقعك إلى نحو 100 متر ويُرسَل إلى OpenStreetMap فقط، ولا يُرسَل إلى هذا الموقع أبدًا.',
+
+  // --- Prices across shops (Module C) --------------------------------------
+  'prices.title': 'الأسعار والمكتبات',
+  'prices.loading': 'جارٍ سؤال المكتبات…',
+  'prices.unknown': 'السعر غير منشور',
+  'prices.degraded': 'لم تُجب: {providers}',
+  'prices.format.hardcover': 'غلاف مُقوّى',
+  'prices.format.paperback': 'غلاف ورقي',
+  'prices.format.ebook': 'كتاب إلكتروني',
+  'prices.format.audiobook': 'كتاب صوتي',
+  'prices.format.unknown': 'الصيغة غير مذكورة',
+  'recommend.hideGenre': 'إخفاء «{genre}»',
+  'recommend.hiddenList': 'الأنواع المخفية (اضغط لاستعادة واحد):',
 };

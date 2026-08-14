@@ -139,4 +139,60 @@ export const nl: Dictionary = {
   'recommend.privacy':
     'Dit wordt in uw browser berekend — de server hoort de genres, nooit wie u bent.',
   'recommend.forget': 'mijn geschiedenis vergeten',
+
+  // --- Shelf: OPDS catalogs (Module A) -------------------------------------
+  'nav.shelf': 'Plank',
+  'shelf.title': 'Plank',
+  'shelf.intro':
+    'Open catalogi en elke bibliotheekserver die je zelf draait. Catalogi die je toevoegt blijven in deze browser en worden nooit naar deze site gestuurd.',
+  'shelf.openCatalogs': 'Open catalogi',
+  'shelf.yourCatalogs': 'Jouw catalogi',
+  'shelf.addCatalog': 'Catalogus toevoegen',
+  'shelf.name': 'Naam',
+  'shelf.address': 'OPDS-adres',
+  'shelf.username': 'Gebruikersnaam (optioneel)',
+  'shelf.password': 'Wachtwoord (optioneel)',
+  'shelf.credentialsNote':
+    'Het adres en eventuele inloggegevens worden alleen in deze browser bewaard.',
+  'shelf.add': 'Toevoegen',
+  'shelf.remove': 'Verwijderen',
+  'shelf.loading': 'Catalogus laden…',
+  'shelf.empty': 'Deze catalogus bevat geen items.',
+  'shelf.noCatalogs':
+    'Nog geen eigen catalogus. Voeg hieronder een adres van Calibre-Web, COPS, Kavita of Audiobookshelf toe.',
+  'shelf.unreachable':
+    'Je browser kon deze catalogus niet lezen. Een server in je eigen netwerk werkt wel; publieke sites weigeren cross-origin-verzoeken vaak.',
+  'shelf.nextPage': 'Volgende pagina',
+  'shelf.previousPage': 'Vorige pagina',
+  'shelf.drm': 'Vereist een DRM-app',
+  'shelf.notFree': 'Geen gratis download',
+  'shelf.download': 'Downloaden',
+
+  // --- Bookshops nearby (Module B) -----------------------------------------
+  'stores.title': 'Boekhandels bij jou in de buurt',
+  'stores.useMyLocation': 'Mijn locatie gebruiken',
+  'stores.placeLabel': 'Plaats of postcode',
+  'stores.find': 'Zoeken',
+  'stores.locating': 'Zoeken…',
+  'stores.failed': 'Locatie niet beschikbaar. Typ in plaats daarvan een plaats of postcode.',
+  'stores.none': 'Binnen {radius} km staat geen boekhandel op de kaart.',
+  'stores.distance': '{distance} km verderop',
+  'stores.stockUnknown':
+    'Alleen kaartgegevens — niemand publiceert wat een winkel op voorraad heeft.',
+  'stores.lookupFailed': 'OpenStreetMap is nu niet bereikbaar. Probeer het zo nog eens.',
+  'stores.privacy':
+    'Je locatie wordt afgerond tot ongeveer 100 m en alleen naar OpenStreetMap gestuurd, nooit naar deze site.',
+
+  // --- Prices across shops (Module C) --------------------------------------
+  'prices.title': 'Prijzen en winkels',
+  'prices.loading': 'Winkels worden bevraagd…',
+  'prices.unknown': 'Prijs niet gepubliceerd',
+  'prices.degraded': 'Geen antwoord van: {providers}',
+  'prices.format.hardcover': 'Gebonden',
+  'prices.format.paperback': 'Paperback',
+  'prices.format.ebook': 'E-boek',
+  'prices.format.audiobook': 'Luisterboek',
+  'prices.format.unknown': 'Formaat niet vermeld',
+  'recommend.hideGenre': '‘{genre}’ verbergen',
+  'recommend.hiddenList': 'Verborgen genres (klik om er een terug te halen):',
 };

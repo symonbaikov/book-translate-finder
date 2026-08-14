@@ -150,4 +150,59 @@ export const ru: Dictionary = {
   'recommend.privacy':
     'Это вычисляется в вашем браузере — серверу сообщаются жанры, но не то, кто вы.',
   'recommend.forget': 'забыть мою историю',
+
+  // --- Shelf: OPDS catalogs (Module A) -------------------------------------
+  'nav.shelf': 'Полка',
+  'shelf.title': 'Полка',
+  'shelf.intro':
+    'Открытые каталоги и любой библиотечный сервер, который вы держите сами. Добавленные каталоги остаются в этом браузере и никогда не отправляются на сайт.',
+  'shelf.openCatalogs': 'Открытые каталоги',
+  'shelf.yourCatalogs': 'Ваши каталоги',
+  'shelf.addCatalog': 'Добавить каталог',
+  'shelf.name': 'Название',
+  'shelf.address': 'Адрес OPDS',
+  'shelf.username': 'Имя пользователя (необязательно)',
+  'shelf.password': 'Пароль (необязательно)',
+  'shelf.credentialsNote': 'Адрес и любые учётные данные хранятся только в этом браузере.',
+  'shelf.add': 'Добавить',
+  'shelf.remove': 'Удалить',
+  'shelf.loading': 'Загружаем каталог…',
+  'shelf.empty': 'В этом каталоге нет записей.',
+  'shelf.noCatalogs':
+    'Своих пока нет. Добавьте ниже адрес Calibre-Web, COPS, Kavita или Audiobookshelf.',
+  'shelf.unreachable':
+    'Браузер не смог прочитать этот каталог. Сервер в вашей сети работать будет; публичные сайты часто запрещают межсайтовые запросы.',
+  'shelf.nextPage': 'Следующая страница',
+  'shelf.previousPage': 'Предыдущая страница',
+  'shelf.drm': 'Нужно приложение с DRM',
+  'shelf.notFree': 'Не бесплатное скачивание',
+  'shelf.download': 'Скачать',
+
+  // --- Bookshops nearby (Module B) -----------------------------------------
+  'stores.title': 'Книжные магазины рядом',
+  'stores.useMyLocation': 'Определить моё местоположение',
+  'stores.placeLabel': 'Город или индекс',
+  'stores.find': 'Найти',
+  'stores.locating': 'Ищем…',
+  'stores.failed': 'Местоположение недоступно. Введите город или индекс.',
+  'stores.none': 'В радиусе {radius} км книжных магазинов на карте нет.',
+  'stores.distance': '{distance} км от вас',
+  'stores.stockUnknown': 'Только данные карты — никто не публикует, что есть в магазине в наличии.',
+  'stores.lookupFailed':
+    'Сейчас не удалось связаться с OpenStreetMap. Попробуйте ещё раз через минуту.',
+  'stores.privacy':
+    'Ваши координаты округляются примерно до 100 м и отправляются только в OpenStreetMap — никогда на этот сайт.',
+
+  // --- Prices across shops (Module C) --------------------------------------
+  'prices.title': 'Цены и магазины',
+  'prices.loading': 'Спрашиваем магазины…',
+  'prices.unknown': 'Цена не опубликована',
+  'prices.degraded': 'Не ответили: {providers}',
+  'prices.format.hardcover': 'Твёрдый переплёт',
+  'prices.format.paperback': 'Мягкая обложка',
+  'prices.format.ebook': 'Электронная книга',
+  'prices.format.audiobook': 'Аудиокнига',
+  'prices.format.unknown': 'Формат не указан',
+  'recommend.hideGenre': 'скрыть «{genre}»',
+  'recommend.hiddenList': 'Скрытые жанры (нажмите, чтобы вернуть):',
 };

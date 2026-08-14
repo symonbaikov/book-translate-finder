@@ -149,4 +149,59 @@ export const uk: Dictionary = {
   'recommend.privacy':
     'Це обчислюється у вашому браузері — серверу повідомляються жанри, але не те, хто ви.',
   'recommend.forget': 'забути мою історію',
+
+  // --- Shelf: OPDS catalogs (Module A) -------------------------------------
+  'nav.shelf': 'Полиця',
+  'shelf.title': 'Полиця',
+  'shelf.intro':
+    'Відкриті каталоги та будь-який бібліотечний сервер, який ви тримаєте самі. Додані каталоги лишаються в цьому браузері й ніколи не надсилаються на сайт.',
+  'shelf.openCatalogs': 'Відкриті каталоги',
+  'shelf.yourCatalogs': 'Ваші каталоги',
+  'shelf.addCatalog': 'Додати каталог',
+  'shelf.name': 'Назва',
+  'shelf.address': 'Адреса OPDS',
+  'shelf.username': "Ім'я користувача (необов'язково)",
+  'shelf.password': "Пароль (необов'язково)",
+  'shelf.credentialsNote': 'Адреса та будь-які облікові дані зберігаються лише в цьому браузері.',
+  'shelf.add': 'Додати',
+  'shelf.remove': 'Вилучити',
+  'shelf.loading': 'Завантажуємо каталог…',
+  'shelf.empty': 'У цьому каталозі немає записів.',
+  'shelf.noCatalogs':
+    'Своїх поки немає. Додайте нижче адресу Calibre-Web, COPS, Kavita або Audiobookshelf.',
+  'shelf.unreachable':
+    'Браузер не зміг прочитати цей каталог. Сервер у вашій мережі працюватиме; публічні сайти часто забороняють міжсайтові запити.',
+  'shelf.nextPage': 'Наступна сторінка',
+  'shelf.previousPage': 'Попередня сторінка',
+  'shelf.drm': 'Потрібен застосунок із DRM',
+  'shelf.notFree': 'Не безкоштовне завантаження',
+  'shelf.download': 'Завантажити',
+
+  // --- Bookshops nearby (Module B) -----------------------------------------
+  'stores.title': 'Книгарні поруч',
+  'stores.useMyLocation': 'Визначити моє місцеположення',
+  'stores.placeLabel': 'Місто або поштовий індекс',
+  'stores.find': 'Знайти',
+  'stores.locating': 'Шукаємо…',
+  'stores.failed': 'Місцеположення недоступне. Введіть місто або індекс.',
+  'stores.none': 'У радіусі {radius} км книгарень на мапі немає.',
+  'stores.distance': '{distance} км від вас',
+  'stores.stockUnknown': 'Лише дані мапи — ніхто не публікує, що є в книгарні в наявності.',
+  'stores.lookupFailed':
+    'Зараз не вдалося звʼязатися з OpenStreetMap. Спробуйте ще раз за хвилину.',
+  'stores.privacy':
+    'Ваші координати округлюються приблизно до 100 м і надсилаються лише до OpenStreetMap — ніколи на цей сайт.',
+
+  // --- Prices across shops (Module C) --------------------------------------
+  'prices.title': 'Ціни та магазини',
+  'prices.loading': 'Питаємо магазини…',
+  'prices.unknown': 'Ціну не опубліковано',
+  'prices.degraded': 'Не відповіли: {providers}',
+  'prices.format.hardcover': 'Тверда палітурка',
+  'prices.format.paperback': "М'яка обкладинка",
+  'prices.format.ebook': 'Електронна книга',
+  'prices.format.audiobook': 'Аудіокнига',
+  'prices.format.unknown': 'Формат не вказано',
+  'recommend.hideGenre': 'сховати «{genre}»',
+  'recommend.hiddenList': 'Приховані жанри (натисніть, щоб повернути):',
 };

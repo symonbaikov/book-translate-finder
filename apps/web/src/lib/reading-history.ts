@@ -78,7 +78,13 @@ export interface TasteProfile {
  * A genre seen once is dropped when there is enough history to be choosy: single sightings are
  * where Open Library's contributor tags are at their most arbitrary ("thrushes", "Arkenstone").
  */
-export function buildTasteProfile(history: HistoryEntry[] = readHistory()): TasteProfile {
+export function buildTasteProfile(
+  history: HistoryEntry[] = readHistory(),
+  hiddenTags: readonly string[] = [],
+): TasteProfile {
+  // Hidden genres are dropped before anything is weighted, so a hidden tag never reaches the
+  // server at all — not merely filtered out of what comes back.
+  const hidden = new Set(hiddenTags.map((tag) => tag.trim().toLowerCase()));
   const weights = new Map<string, number>();
   const sightings = new Map<string, number>();
 
@@ -86,7 +92,7 @@ export function buildTasteProfile(history: HistoryEntry[] = readHistory()): Tast
     // 1.0 for the newest, decaying gently; the tenth-most-recent still carries about a third.
     const recency = 1 / (1 + index * 0.2);
     for (const subject of new Set(entry.subjects.map((s) => s.trim().toLowerCase()))) {
-      if (!subject) continue;
+      if (!subject || hidden.has(subject)) continue;
       weights.set(subject, (weights.get(subject) ?? 0) + recency);
       sightings.set(subject, (sightings.get(subject) ?? 0) + 1);
     }

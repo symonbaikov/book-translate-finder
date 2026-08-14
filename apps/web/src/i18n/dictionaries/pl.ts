@@ -138,4 +138,59 @@ export const pl: Dictionary = {
   'recommend.privacy':
     'Liczone jest to w Twojej przeglądarce — serwer poznaje gatunki, nigdy to, kim jesteś.',
   'recommend.forget': 'zapomnij moją historię',
+
+  // --- Shelf: OPDS catalogs (Module A) -------------------------------------
+  'nav.shelf': 'Półka',
+  'shelf.title': 'Półka',
+  'shelf.intro':
+    'Otwarte katalogi i dowolny serwer biblioteczny, który prowadzisz sam. Dodane katalogi zostają w tej przeglądarce i nigdy nie trafiają na tę stronę.',
+  'shelf.openCatalogs': 'Otwarte katalogi',
+  'shelf.yourCatalogs': 'Twoje katalogi',
+  'shelf.addCatalog': 'Dodaj katalog',
+  'shelf.name': 'Nazwa',
+  'shelf.address': 'Adres OPDS',
+  'shelf.username': 'Nazwa użytkownika (opcjonalnie)',
+  'shelf.password': 'Hasło (opcjonalnie)',
+  'shelf.credentialsNote': 'Adres i dane logowania są przechowywane wyłącznie w tej przeglądarce.',
+  'shelf.add': 'Dodaj',
+  'shelf.remove': 'Usuń',
+  'shelf.loading': 'Wczytywanie katalogu…',
+  'shelf.empty': 'Ten katalog nie ma żadnych pozycji.',
+  'shelf.noCatalogs':
+    'Jeszcze żadnego własnego. Dodaj poniżej adres Calibre-Web, COPS, Kavity lub Audiobookshelf.',
+  'shelf.unreachable':
+    'Przeglądarka nie mogła odczytać tego katalogu. Serwer w Twojej sieci zadziała; publiczne strony często odrzucają żądania z innych źródeł.',
+  'shelf.nextPage': 'Następna strona',
+  'shelf.previousPage': 'Poprzednia strona',
+  'shelf.drm': 'Wymaga aplikacji z DRM',
+  'shelf.notFree': 'To nie jest darmowe pobranie',
+  'shelf.download': 'Pobierz',
+
+  // --- Bookshops nearby (Module B) -----------------------------------------
+  'stores.title': 'Księgarnie w pobliżu',
+  'stores.useMyLocation': 'Użyj mojej lokalizacji',
+  'stores.placeLabel': 'Miasto lub kod pocztowy',
+  'stores.find': 'Szukaj',
+  'stores.locating': 'Szukanie…',
+  'stores.failed': 'Lokalizacja niedostępna. Wpisz miasto lub kod pocztowy.',
+  'stores.none': 'W promieniu {radius} km nie ma na mapie żadnej księgarni.',
+  'stores.distance': '{distance} km stąd',
+  'stores.stockUnknown': 'Tylko dane mapy — nikt nie publikuje, co księgarnia ma na stanie.',
+  'stores.lookupFailed':
+    'Nie udało się teraz połączyć z OpenStreetMap. Spróbuj ponownie za chwilę.',
+  'stores.privacy':
+    'Twoja lokalizacja jest zaokrąglana do około 100 m i wysyłana wyłącznie do OpenStreetMap — nigdy na tę stronę.',
+
+  // --- Prices across shops (Module C) --------------------------------------
+  'prices.title': 'Ceny i księgarnie',
+  'prices.loading': 'Pytamy księgarnie…',
+  'prices.unknown': 'Cena nieopublikowana',
+  'prices.degraded': 'Brak odpowiedzi od: {providers}',
+  'prices.format.hardcover': 'Twarda oprawa',
+  'prices.format.paperback': 'Miękka oprawa',
+  'prices.format.ebook': 'E-book',
+  'prices.format.audiobook': 'Audiobook',
+  'prices.format.unknown': 'Nie podano formatu',
+  'recommend.hideGenre': 'ukryj „{genre}”',
+  'recommend.hiddenList': 'Ukryte gatunki (kliknij, aby przywrócić):',
 };

@@ -7,6 +7,7 @@ import { webEnv } from '../config/web-env';
 import { CoverImage } from './CoverImage';
 import { useT } from '../i18n/I18nProvider';
 import { buildTasteProfile, clearHistory, type TasteProfile } from '../lib/reading-history';
+import { hideTag, readHiddenTags, unhideTag } from '../lib/hidden-tags';
 
 type Book = RecommendationsResponse['books'][number];
 
@@ -22,9 +23,14 @@ export function Recommendations() {
   const t = useT();
   const [profile, setProfile] = useState<TasteProfile | null>(null);
   const [books, setBooks] = useState<Book[] | null>(null);
+  const [hidden, setHidden] = useState<string[]>([]);
+  // Bumped to re-run the effect after the reader hides or restores a genre.
+  const [revision, setRevision] = useState(0);
 
   useEffect(() => {
-    const taste = buildTasteProfile();
+    const hiddenNow = readHiddenTags();
+    setHidden(hiddenNow);
+    const taste = buildTasteProfile(undefined, hiddenNow);
     setProfile(taste);
     if (taste.subjects.length === 0) return;
 
@@ -47,12 +53,22 @@ export function Recommendations() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [revision]);
 
   function forget(): void {
     clearHistory();
     setProfile(null);
     setBooks(null);
+  }
+
+  function hide(tag: string): void {
+    hideTag(tag);
+    setRevision((n) => n + 1);
+  }
+
+  function restore(tag: string): void {
+    unhideTag(tag);
+    setRevision((n) => n + 1);
   }
 
   if (!profile || profile.subjects.length === 0 || !books || books.length === 0) return null;
@@ -87,9 +103,32 @@ export function Recommendations() {
                 <span className="muted featured-card__meta">{book.matchedSubjects[0]}</span>
               )}
             </Link>
+            {book.matchedSubjects[0] && (
+              <button
+                type="button"
+                className="link-button featured-card__hide"
+                onClick={() => hide(book.matchedSubjects[0]!)}
+              >
+                {t('recommend.hideGenre', { genre: book.matchedSubjects[0] })}
+              </button>
+            )}
           </li>
         ))}
       </ul>
+
+      {hidden.length > 0 && (
+        <p className="muted" style={{ fontSize: '0.82em', marginTop: '0.9rem' }}>
+          {t('recommend.hiddenList')}{' '}
+          {hidden.map((tag, i) => (
+            <span key={tag}>
+              {i > 0 && ', '}
+              <button type="button" className="link-button" onClick={() => restore(tag)}>
+                {tag}
+              </button>
+            </span>
+          ))}
+        </p>
+      )}
     </section>
   );
 }

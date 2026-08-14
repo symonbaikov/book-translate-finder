@@ -140,4 +140,59 @@ export const tr: Dictionary = {
   'recommend.privacy':
     'Bu hesap tarayıcınızda yapılır — sunucuya türler bildirilir, kim olduğunuz asla.',
   'recommend.forget': 'geçmişimi unut',
+
+  // --- Shelf: OPDS catalogs (Module A) -------------------------------------
+  'nav.shelf': 'Raf',
+  'shelf.title': 'Raf',
+  'shelf.intro':
+    'Açık kataloglar ve kendi işlettiğiniz herhangi bir kütüphane sunucusu. Eklediğiniz kataloglar bu tarayıcıda kalır ve bu siteye asla gönderilmez.',
+  'shelf.openCatalogs': 'Açık kataloglar',
+  'shelf.yourCatalogs': 'Kataloglarınız',
+  'shelf.addCatalog': 'Katalog ekle',
+  'shelf.name': 'Ad',
+  'shelf.address': 'OPDS adresi',
+  'shelf.username': 'Kullanıcı adı (isteğe bağlı)',
+  'shelf.password': 'Parola (isteğe bağlı)',
+  'shelf.credentialsNote': 'Adres ve varsa kimlik bilgileri yalnızca bu tarayıcıda saklanır.',
+  'shelf.add': 'Ekle',
+  'shelf.remove': 'Kaldır',
+  'shelf.loading': 'Katalog yükleniyor…',
+  'shelf.empty': 'Bu katalogda kayıt yok.',
+  'shelf.noCatalogs':
+    'Henüz kendinize ait yok. Aşağıya bir Calibre-Web, COPS, Kavita ya da Audiobookshelf adresi ekleyin.',
+  'shelf.unreachable':
+    'Tarayıcınız bu katalogu okuyamadı. Kendi ağınızdaki bir sunucu çalışır; genel siteler çapraz kaynak isteklerini sıkça reddeder.',
+  'shelf.nextPage': 'Sonraki sayfa',
+  'shelf.previousPage': 'Önceki sayfa',
+  'shelf.drm': 'DRM uygulaması gerekir',
+  'shelf.notFree': 'Ücretsiz bir indirme değil',
+  'shelf.download': 'İndir',
+
+  // --- Bookshops nearby (Module B) -----------------------------------------
+  'stores.title': 'Yakınınızdaki kitapçılar',
+  'stores.useMyLocation': 'Konumumu kullan',
+  'stores.placeLabel': 'Şehir veya posta kodu',
+  'stores.find': 'Bul',
+  'stores.locating': 'Aranıyor…',
+  'stores.failed': 'Konum alınamadı. Bunun yerine bir şehir ya da posta kodu yazın.',
+  'stores.none': '{radius} km içinde haritada kitapçı yok.',
+  'stores.distance': '{distance} km uzakta',
+  'stores.stockUnknown':
+    'Yalnızca harita verisi — bir kitapçının stoğunda ne olduğunu kimse yayımlamıyor.',
+  'stores.lookupFailed': 'OpenStreetMap’e şu anda ulaşılamadı. Birazdan yeniden deneyin.',
+  'stores.privacy':
+    'Konumunuz yaklaşık 100 m’ye yuvarlanır ve yalnızca OpenStreetMap’e gönderilir, bu siteye asla.',
+
+  // --- Prices across shops (Module C) --------------------------------------
+  'prices.title': 'Fiyatlar ve kitapçılar',
+  'prices.loading': 'Kitapçılara soruluyor…',
+  'prices.unknown': 'Fiyat yayımlanmamış',
+  'prices.degraded': 'Yanıt vermeyenler: {providers}',
+  'prices.format.hardcover': 'Ciltli',
+  'prices.format.paperback': 'Ciltsiz',
+  'prices.format.ebook': 'E-kitap',
+  'prices.format.audiobook': 'Sesli kitap',
+  'prices.format.unknown': 'Biçim belirtilmemiş',
+  'recommend.hideGenre': '“{genre}” türünü gizle',
+  'recommend.hiddenList': 'Gizlenen türler (geri getirmek için tıklayın):',
 };

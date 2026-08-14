@@ -138,4 +138,58 @@ export const ko: Dictionary = {
   'recommend.privacy':
     '이 계산은 브라우저 안에서 이뤄집니다 — 서버에는 장르만 전달되고, 누구인지는 전달되지 않습니다.',
   'recommend.forget': '기록 지우기',
+
+  // --- Shelf: OPDS catalogs (Module A) -------------------------------------
+  'nav.shelf': '책장',
+  'shelf.title': '책장',
+  'shelf.intro':
+    '공개 카탈로그와, 직접 운영하는 장서 서버. 추가한 카탈로그는 이 브라우저에만 남고 이 사이트로는 절대 전송되지 않습니다.',
+  'shelf.openCatalogs': '공개 카탈로그',
+  'shelf.yourCatalogs': '내 카탈로그',
+  'shelf.addCatalog': '카탈로그 추가',
+  'shelf.name': '이름',
+  'shelf.address': 'OPDS 주소',
+  'shelf.username': '사용자 이름(선택)',
+  'shelf.password': '비밀번호(선택)',
+  'shelf.credentialsNote': '주소와 인증 정보는 이 브라우저에만 저장됩니다.',
+  'shelf.add': '추가',
+  'shelf.remove': '삭제',
+  'shelf.loading': '카탈로그 불러오는 중…',
+  'shelf.empty': '이 카탈로그에는 항목이 없습니다.',
+  'shelf.noCatalogs':
+    '아직 내 카탈로그가 없습니다. 아래에 Calibre-Web, COPS, Kavita, Audiobookshelf 주소를 추가하세요.',
+  'shelf.unreachable':
+    '브라우저가 이 카탈로그를 읽지 못했습니다. 내 네트워크의 서버는 동작합니다. 공개 사이트는 교차 출처 요청을 거부하는 경우가 많습니다.',
+  'shelf.nextPage': '다음 쪽',
+  'shelf.previousPage': '이전 쪽',
+  'shelf.drm': 'DRM 앱이 필요합니다',
+  'shelf.notFree': '무료 내려받기가 아닙니다',
+  'shelf.download': '내려받기',
+
+  // --- Bookshops nearby (Module B) -----------------------------------------
+  'stores.title': '가까운 서점',
+  'stores.useMyLocation': '내 위치 사용',
+  'stores.placeLabel': '도시 또는 우편번호',
+  'stores.find': '찾기',
+  'stores.locating': '찾는 중…',
+  'stores.failed': '위치를 가져올 수 없습니다. 도시나 우편번호를 입력하세요.',
+  'stores.none': '{radius} km 안에 지도에 등록된 서점이 없습니다.',
+  'stores.distance': '{distance} km 거리',
+  'stores.stockUnknown': '지도 데이터뿐입니다 — 서점 재고를 공개하는 곳은 없습니다.',
+  'stores.lookupFailed': '지금 OpenStreetMap에 연결하지 못했습니다. 잠시 후 다시 시도하세요.',
+  'stores.privacy':
+    '위치는 약 100 m로 반올림되어 OpenStreetMap에만 전송되며, 이 사이트로는 보내지 않습니다.',
+
+  // --- Prices across shops (Module C) --------------------------------------
+  'prices.title': '가격과 서점',
+  'prices.loading': '서점에 문의하는 중…',
+  'prices.unknown': '가격 미공개',
+  'prices.degraded': '응답 없음: {providers}',
+  'prices.format.hardcover': '양장본',
+  'prices.format.paperback': '문고본',
+  'prices.format.ebook': '전자책',
+  'prices.format.audiobook': '오디오북',
+  'prices.format.unknown': '형태 미표기',
+  'recommend.hideGenre': '‘{genre}’ 숨기기',
+  'recommend.hiddenList': '숨긴 장르 (클릭하면 되돌립니다):',
 };

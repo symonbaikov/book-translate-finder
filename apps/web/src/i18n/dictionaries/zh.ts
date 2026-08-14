@@ -128,4 +128,57 @@ export const zh: Dictionary = {
   'recommend.blurb': '你一直在看的那些体裁的书。',
   'recommend.privacy': '这是在你的浏览器里算出来的 — 服务器只知道体裁，永远不知道你是谁。',
   'recommend.forget': '忘记我的记录',
+
+  // --- Shelf: OPDS catalogs (Module A) -------------------------------------
+  'nav.shelf': '书架',
+  'shelf.title': '书架',
+  'shelf.intro':
+    '开放目录，以及你自己运行的任何藏书服务器。你添加的目录只留在这个浏览器里，绝不会发送到本站。',
+  'shelf.openCatalogs': '开放目录',
+  'shelf.yourCatalogs': '你的目录',
+  'shelf.addCatalog': '添加目录',
+  'shelf.name': '名称',
+  'shelf.address': 'OPDS 地址',
+  'shelf.username': '用户名（可选）',
+  'shelf.password': '密码（可选）',
+  'shelf.credentialsNote': '地址和登录信息只保存在这个浏览器里。',
+  'shelf.add': '添加',
+  'shelf.remove': '移除',
+  'shelf.loading': '正在载入目录…',
+  'shelf.empty': '这个目录里没有条目。',
+  'shelf.noCatalogs':
+    '还没有你自己的目录。在下面添加 Calibre-Web、COPS、Kavita 或 Audiobookshelf 的地址。',
+  'shelf.unreachable':
+    '你的浏览器读不到这个目录。你自己网络里的服务器可以；公开站点常常拒绝跨源请求。',
+  'shelf.nextPage': '下一页',
+  'shelf.previousPage': '上一页',
+  'shelf.drm': '需要 DRM 应用',
+  'shelf.notFree': '不是免费下载',
+  'shelf.download': '下载',
+
+  // --- Bookshops nearby (Module B) -----------------------------------------
+  'stores.title': '你附近的书店',
+  'stores.useMyLocation': '使用我的位置',
+  'stores.placeLabel': '城市或邮政编码',
+  'stores.find': '查找',
+  'stores.locating': '正在查找…',
+  'stores.failed': '拿不到位置。请改为输入城市或邮政编码。',
+  'stores.none': '{radius} 公里内地图上没有书店。',
+  'stores.distance': '{distance} 公里外',
+  'stores.stockUnknown': '仅有地图数据 — 没有人公布书店里有什么现货。',
+  'stores.lookupFailed': '现在连不上 OpenStreetMap。请稍后再试。',
+  'stores.privacy': '你的位置会被取整到约 100 米，并且只发给 OpenStreetMap，绝不发给本站。',
+
+  // --- Prices across shops (Module C) --------------------------------------
+  'prices.title': '价格和书店',
+  'prices.loading': '正在问书店…',
+  'prices.unknown': '未公布价格',
+  'prices.degraded': '没有回应：{providers}',
+  'prices.format.hardcover': '精装',
+  'prices.format.paperback': '平装',
+  'prices.format.ebook': '电子书',
+  'prices.format.audiobook': '有声书',
+  'prices.format.unknown': '未注明形态',
+  'recommend.hideGenre': '隐藏“{genre}”',
+  'recommend.hiddenList': '已隐藏的体裁（点击可恢复）：',
 };

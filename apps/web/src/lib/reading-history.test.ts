@@ -73,3 +73,37 @@ describe('buildTasteProfile', () => {
     expect(profile.lastTitle).toBe('newest');
   });
 });
+
+describe('buildTasteProfile with hidden genres', () => {
+  it('never sends a hidden genre — it is dropped before anything is weighted', () => {
+    // Filtering the response instead would still tell the server the reader is interested.
+    const profile = buildTasteProfile(
+      [entry('a', ['fantasy', 'romance']), entry('b', ['fantasy', 'romance'])],
+      ['romance'],
+    );
+
+    expect(profile.subjects).toContain('fantasy');
+    expect(profile.subjects).not.toContain('romance');
+  });
+
+  it('ignores case and padding, since the list is edited by clicking a label', () => {
+    const profile = buildTasteProfile(
+      [entry('a', ['Fantasy']), entry('b', ['Fantasy'])],
+      [' FANTASY '],
+    );
+    expect(profile.subjects).not.toContain('fantasy');
+  });
+
+  it('hides nothing by default — there is no built-in list', () => {
+    const profile = buildTasteProfile([entry('a', ['fantasy']), entry('b', ['fantasy'])]);
+    expect(profile.subjects).toContain('fantasy');
+  });
+
+  it('leaves a reader with everything hidden with no section rather than a wrong one', () => {
+    const profile = buildTasteProfile(
+      [entry('a', ['fantasy']), entry('b', ['fantasy'])],
+      ['fantasy'],
+    );
+    expect(profile.subjects).toEqual([]);
+  });
+});

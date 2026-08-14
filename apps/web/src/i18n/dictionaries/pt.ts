@@ -141,4 +141,59 @@ export const pt: Dictionary = {
   'recommend.privacy':
     'Isto é calculado no seu navegador — ao servidor são indicados os géneros, nunca quem é.',
   'recommend.forget': 'esquecer o meu histórico',
+
+  // --- Shelf: OPDS catalogs (Module A) -------------------------------------
+  'nav.shelf': 'Estante',
+  'shelf.title': 'Estante',
+  'shelf.intro':
+    'Catálogos abertos e qualquer servidor de biblioteca que você mesmo hospede. Os catálogos que adicionar ficam neste navegador e nunca são enviados a este site.',
+  'shelf.openCatalogs': 'Catálogos abertos',
+  'shelf.yourCatalogs': 'Seus catálogos',
+  'shelf.addCatalog': 'Adicionar um catálogo',
+  'shelf.name': 'Nome',
+  'shelf.address': 'Endereço OPDS',
+  'shelf.username': 'Utilizador (opcional)',
+  'shelf.password': 'Palavra-passe (opcional)',
+  'shelf.credentialsNote': 'O endereço e as credenciais ficam guardados apenas neste navegador.',
+  'shelf.add': 'Adicionar',
+  'shelf.remove': 'Remover',
+  'shelf.loading': 'A carregar o catálogo…',
+  'shelf.empty': 'Este catálogo não tem entradas.',
+  'shelf.noCatalogs':
+    'Ainda nenhum seu. Adicione abaixo um endereço de Calibre-Web, COPS, Kavita ou Audiobookshelf.',
+  'shelf.unreachable':
+    'O seu navegador não conseguiu ler este catálogo. Um servidor na sua própria rede funciona; sites públicos recusam muitas vezes pedidos entre origens.',
+  'shelf.nextPage': 'Página seguinte',
+  'shelf.previousPage': 'Página anterior',
+  'shelf.drm': 'Precisa de uma aplicação com DRM',
+  'shelf.notFree': 'Não é um download gratuito',
+  'shelf.download': 'Descarregar',
+
+  // --- Bookshops nearby (Module B) -----------------------------------------
+  'stores.title': 'Livrarias perto de si',
+  'stores.useMyLocation': 'Usar a minha localização',
+  'stores.placeLabel': 'Cidade ou código postal',
+  'stores.find': 'Procurar',
+  'stores.locating': 'A procurar…',
+  'stores.failed': 'Localização indisponível. Escreva antes uma cidade ou código postal.',
+  'stores.none': 'Não há livrarias mapeadas num raio de {radius} km.',
+  'stores.distance': 'a {distance} km',
+  'stores.stockUnknown': 'Apenas dados do mapa — ninguém publica o que uma livraria tem em stock.',
+  'stores.lookupFailed':
+    'Não foi possível contactar o OpenStreetMap agora. Tente de novo daqui a pouco.',
+  'stores.privacy':
+    'A sua localização é arredondada para cerca de 100 m e enviada só para o OpenStreetMap — nunca para este site.',
+
+  // --- Prices across shops (Module C) --------------------------------------
+  'prices.title': 'Preços e livrarias',
+  'prices.loading': 'A perguntar às livrarias…',
+  'prices.unknown': 'Preço não publicado',
+  'prices.degraded': 'Sem resposta de: {providers}',
+  'prices.format.hardcover': 'Capa dura',
+  'prices.format.paperback': 'Brochura',
+  'prices.format.ebook': 'Livro digital',
+  'prices.format.audiobook': 'Audiolivro',
+  'prices.format.unknown': 'Formato não indicado',
+  'recommend.hideGenre': 'ocultar «{genre}»',
+  'recommend.hiddenList': 'Géneros ocultos (clique para repor um):',
 };

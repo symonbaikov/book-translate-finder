@@ -735,3 +735,10 @@ a.tag:hover {
   align-items: center;
   gap: 0.55rem;
 }
+
+/* The per-card "hide this genre" control. Outside the card's link, because a button nested in an
+   anchor is invalid HTML and behaves unpredictably for keyboard and screen-reader users. */
+.featured-card__hide {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}

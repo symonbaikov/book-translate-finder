@@ -138,4 +138,59 @@ export const ja: Dictionary = {
   'recommend.privacy':
     'この計算はブラウザー内で行われます。サーバーに伝わるのはジャンルだけで、あなたが誰かは伝わりません。',
   'recommend.forget': '履歴を消す',
+
+  // --- Shelf: OPDS catalogs (Module A) -------------------------------------
+  'nav.shelf': '本棚',
+  'shelf.title': '本棚',
+  'shelf.intro':
+    'オープンなカタログと、あなた自身が運用している蔵書サーバー。追加したカタログはこのブラウザーに留まり、このサイトへ送られることはありません。',
+  'shelf.openCatalogs': 'オープンなカタログ',
+  'shelf.yourCatalogs': 'あなたのカタログ',
+  'shelf.addCatalog': 'カタログを追加',
+  'shelf.name': '名前',
+  'shelf.address': 'OPDS アドレス',
+  'shelf.username': 'ユーザー名（任意）',
+  'shelf.password': 'パスワード（任意）',
+  'shelf.credentialsNote': 'アドレスと認証情報はこのブラウザーにのみ保存されます。',
+  'shelf.add': '追加',
+  'shelf.remove': '削除',
+  'shelf.loading': 'カタログを読み込み中…',
+  'shelf.empty': 'このカタログには項目がありません。',
+  'shelf.noCatalogs':
+    'まだ自分のカタログがありません。下に Calibre-Web、COPS、Kavita、Audiobookshelf のアドレスを追加してください。',
+  'shelf.unreachable':
+    'ブラウザーからこのカタログを読み取れませんでした。自分のネットワーク上のサーバーなら動きます。公開サイトはクロスオリジンの要求をよく拒否します。',
+  'shelf.nextPage': '次のページ',
+  'shelf.previousPage': '前のページ',
+  'shelf.drm': 'DRM アプリが必要',
+  'shelf.notFree': '無料のダウンロードではありません',
+  'shelf.download': 'ダウンロード',
+
+  // --- Bookshops nearby (Module B) -----------------------------------------
+  'stores.title': '近くの書店',
+  'stores.useMyLocation': '現在地を使う',
+  'stores.placeLabel': '市区町村または郵便番号',
+  'stores.find': '探す',
+  'stores.locating': '検索中…',
+  'stores.failed': '位置情報を取得できません。市区町村名か郵便番号を入力してください。',
+  'stores.none': '{radius} km 以内に地図上の書店はありません。',
+  'stores.distance': '{distance} km 先',
+  'stores.stockUnknown': '地図データのみ — 書店の在庫を公開している情報源はありません。',
+  'stores.lookupFailed':
+    'いま OpenStreetMap に接続できませんでした。少ししてからもう一度お試しください。',
+  'stores.privacy':
+    '現在地は約 100 m に丸めて OpenStreetMap にのみ送信され、このサイトへは送られません。',
+
+  // --- Prices across shops (Module C) --------------------------------------
+  'prices.title': '価格と書店',
+  'prices.loading': '書店に問い合わせ中…',
+  'prices.unknown': '価格は公開されていません',
+  'prices.degraded': '応答なし: {providers}',
+  'prices.format.hardcover': 'ハードカバー',
+  'prices.format.paperback': 'ペーパーバック',
+  'prices.format.ebook': '電子書籍',
+  'prices.format.audiobook': 'オーディオブック',
+  'prices.format.unknown': '形態の記載なし',
+  'recommend.hideGenre': '「{genre}」を非表示にする',
+  'recommend.hiddenList': '非表示のジャンル（クリックで戻せます）:',
 };
