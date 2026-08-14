@@ -1,0 +1,121 @@
+.intro {
+  color: var(--text-muted);
+  max-inline-size: var(--container-prose);
+  margin-block-end: var(--space-6);
+}
+
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+  margin-block-end: var(--space-6);
+}
+
+.address {
+  flex: 1 1 22rem;
+}
+
+.list {
+  display: grid;
+  gap: var(--space-3);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.identity {
+  flex: 1 1 16rem;
+  min-inline-size: 0;
+}
+
+.name {
+  font-weight: var(--weight-semibold);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* The host list is the part a reader is meant to be able to check at a glance, so it is not
+   allowed to become a smaller, greyer footnote than the addon's own name. */
+.hosts,
+.version {
+  color: var(--text-muted);
+  font-size: var(--step--1);
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.disabled {
+  opacity: 0.6;
+}
+
+.consent {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.consentPoints {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.consentPoints li {
+  padding-inline-start: var(--space-4);
+  border-inline-start: 2px solid var(--hairline-strong);
+  line-height: var(--leading-relaxed);
+}
+
+.failure {
+  color: var(--danger-text);
+}
+
+.empty {
+  color: var(--text-muted);
+}
+
+.library {
+  display: grid;
+  gap: var(--space-3);
+  margin-block-end: var(--space-6);
+}
+
+.libraryItem {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.libraryInfo {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.libraryInfo h3 {
+  margin: 0;
+  font-size: var(--step-0);
+  font-weight: var(--weight-semibold);
+}
+
+.libraryInfo p {
+  margin: var(--space-1) 0 0 0;
+  color: var(--text-muted);
+  font-size: var(--step--1);
+}
