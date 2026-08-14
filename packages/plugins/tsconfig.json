@@ -5,7 +5,11 @@
     "outDir": "dist",
     // No "node" types on purpose: this package is compiled into the browser bundle of apps/web
     // as well as run in the API/worker processes, so anything Node-only must not typecheck here.
-    "types": []
+    "types": [],
+    // `URL` and the timer functions are standard in both runtimes, but with "types": [] nothing
+    // declares them — `lib.dom` does, without dragging in the Node-only surface that the empty
+    // "types" above exists to keep out.
+    "lib": ["ES2022", "DOM"]
   },
   "include": ["src"]
 }
