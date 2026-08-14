@@ -121,7 +121,7 @@ export const sourceLink = pgTable(
       table.urlHash,
     ),
     index('source_link_edition_id_idx').on(table.editionId),
-    check('source_link_type_check', sql`${table.type} IN ('download', 'buy', 'borrow')`),
+    check('source_link_type_check', sql`${table.type} IN ('download', 'buy', 'borrow', 'listen')`),
     check(
       'source_link_rights_status_check',
       sql`${table.rightsStatus} IN ('public_domain', 'open_license', 'copyrighted', 'unknown')`,
@@ -131,7 +131,7 @@ export const sourceLink = pgTable(
     // invariant enforced again at the storage boundary, independent of application code.
     check(
       'source_link_download_is_legal_free_check',
-      sql`${table.type} != 'download' OR ${table.isLegalFree} = true`,
+      sql`${table.type} NOT IN ('download', 'listen') OR ${table.isLegalFree} = true`,
     ),
   ],
 );

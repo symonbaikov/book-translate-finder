@@ -7,6 +7,8 @@ import { CoverImage } from '../../../components/CoverImage';
 import { EditionLinks } from '../../../components/EditionLinks';
 import { getWorkCard, listEditions } from '../../../lib/api-client';
 import { languageName } from '../../../lib/language-names';
+import { getT } from '../../../i18n/server';
+import type { Translate } from '../../../i18n/dictionary';
 
 interface WorkPageProps {
   params: { id: string };
@@ -30,6 +32,7 @@ function sortEditions(editions: EditionSummary[]): EditionSummary[] {
 }
 
 export default async function WorkPage({ params, searchParams }: WorkPageProps) {
+  const t = await getT();
   const work = await getWorkCard(params.id);
   if (!work) notFound();
 
@@ -60,7 +63,7 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
           <h1 style={{ marginTop: 0 }}>{work.originalTitle}</h1>
           <p className="muted">
             {work.author}
-            {work.firstPublishedYear ? `, ${work.firstPublishedYear}` : ''} · original:{' '}
+            {work.firstPublishedYear ? `, ${work.firstPublishedYear}` : ''} · {t('work.original')}:{' '}
             {languageName(work.originalLanguage)}
           </p>
           {work.subjects.length > 0 && (
@@ -77,30 +80,30 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
           </div>
           {work.sources.length > 0 && (
             <p className="muted" style={{ fontSize: '0.85em' }}>
-              Data sources: {work.sources.join(', ')}
+              {t('work.dataSources')}: {work.sources.join(', ')}
             </p>
           )}
         </div>
       </div>
       {work.description && (
         <section aria-labelledby="about-heading" style={{ marginTop: '1.5rem' }}>
-          <h2 id="about-heading">About this book</h2>
+          <h2 id="about-heading">{t('work.about')}</h2>
           <p style={{ whiteSpace: 'pre-line' }}>{work.description}</p>
         </section>
       )}
 
       <section aria-labelledby="translations-heading" style={{ marginTop: '1.5rem' }}>
-        <h2 id="translations-heading">Translated into</h2>
+        <h2 id="translations-heading">{t('work.translatedInto')}</h2>
         {work.translatedLanguages.length > 0 ? (
           <p>{work.translatedLanguages.map(languageName).join(', ')}</p>
         ) : (
-          <p className="muted">No translations found yet.</p>
+          <p className="muted">{t('work.noTranslations')}</p>
         )}
       </section>
 
       <section aria-labelledby="editions-heading" style={{ marginTop: '2rem' }}>
         <h2 id="editions-heading">
-          Editions ({editions.length} of {work.editionCount})
+          {t('work.editions', { shown: editions.length, total: work.editionCount })}
         </h2>
 
         <div style={{ marginBottom: '1rem' }}>
@@ -109,9 +112,9 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
 
         <form method="get" className="filters" style={{ marginBottom: '1rem' }}>
           <div className="field">
-            <label htmlFor="language-filter">Language</label>
+            <label htmlFor="language-filter">{t('work.filterLanguage')}</label>
             <select id="language-filter" name="language" defaultValue={searchParams.language ?? ''}>
-              <option value="">All languages</option>
+              <option value="">{t('work.filterAllLanguages')}</option>
               {languageOptions.map((code) => (
                 <option key={code} value={code}>
                   {languageName(code)}
@@ -128,16 +131,16 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
               inputMode="numeric"
             />
           </div>
-          <button type="submit">Filter</button>
+          <button type="submit">{t('work.filterApply')}</button>
           {(searchParams.language || searchParams.year) && (
-            <a href={`/works/${params.id}`}>Reset</a>
+            <a href={`/works/${params.id}`}>{t('work.filterReset')}</a>
           )}
         </form>
 
         {editions.length === 0 ? (
-          <p className="muted">No editions match these filters.</p>
+          <p className="muted">{t('work.noEditionsMatch')}</p>
         ) : (
-          editions.map((edition) => <EditionCard key={edition.id} edition={edition} />)
+          editions.map((edition) => <EditionCard key={edition.id} edition={edition} t={t} />)
         )}
       </section>
 
@@ -146,7 +149,7 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
   );
 }
 
-function EditionCard({ edition }: { edition: EditionSummary }) {
+function EditionCard({ edition, t }: { edition: EditionSummary; t: Translate }) {
   return (
     <div className="card animate-in">
       <div className="media-row">
@@ -155,20 +158,20 @@ function EditionCard({ edition }: { edition: EditionSummary }) {
           <strong>{edition.title}</strong>
           {edition.linkCount > 0 ? (
             <span className="badge badge--positive" style={{ marginLeft: '0.5rem' }}>
-              read or borrow
+              {t('work.badgeReadBorrow')}
             </span>
           ) : edition.hasBookstores ? (
             <span className="badge badge--neutral" style={{ marginLeft: '0.5rem' }}>
-              in bookstores
+              {t('work.badgeInBookstores')}
             </span>
           ) : null}
           <div className="muted">
             {languageName(edition.language)}
             {edition.publisher ? ` · ${edition.publisher}` : ''}
             {edition.year ? ` · ${edition.year}` : ''}
-            {edition.translator ? ` · translated by ${edition.translator}` : ''}
+            {edition.translator ? ` · ${t('work.translatedBy', { name: edition.translator })}` : ''}
             {edition.binding ? ` · ${edition.binding}` : ''}
-            {edition.pages ? ` · ${edition.pages} pages` : ''}
+            {edition.pages ? ` · ${t('work.pages', { count: edition.pages })}` : ''}
             {edition.isbn ? ` · ISBN ${edition.isbn}` : ''}
           </div>
           <EditionLinks editionId={edition.id} language={languageName(edition.language)} />

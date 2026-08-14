@@ -44,3 +44,4 @@ export {
   type WorkCardResponse,
 } from './work.contract.js';
 export * from './auth.contract.js';
+export * from './featured.contract.js';

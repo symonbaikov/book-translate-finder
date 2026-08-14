@@ -8,6 +8,7 @@ export const LINK_TYPE_LABELS: Record<string, string> = {
   download: 'Download',
   buy: 'Buy',
   borrow: 'Borrow from a library',
+  listen: 'Listen (audiobook)',
 };
 
 export const RIGHTS_STATUS_LABELS: Record<string, string> = {

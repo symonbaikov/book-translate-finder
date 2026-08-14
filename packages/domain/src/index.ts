@@ -109,3 +109,9 @@ export type {
   VerifiedGoogleProfile,
   WelcomeEmail,
 } from './ports/auth.port.js';
+export {
+  FEATURED_BOOKS,
+  featuredBooksIn,
+  type FeaturedBook,
+  type FeaturedList,
+} from './policy/featured-books-catalog.js';

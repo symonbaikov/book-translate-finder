@@ -7,6 +7,7 @@ import {
   GoogleBooksProvider,
   AuthorizedFreeProvider,
   GutenbergProvider,
+  LibriVoxProvider,
   OpenLibraryProvider,
   PgEditionRepository,
   PgExternalRefRepository,
@@ -29,6 +30,7 @@ export const REGISTERED_SOURCES = [
   'open-library',
   'gutenberg',
   'authorized-free',
+  'librivox',
   'google-books',
 ] as const;
 
@@ -69,6 +71,7 @@ export function buildWorkerContext(env: WorkerEnv): WorkerContext {
     ['open-library', new OpenLibraryProvider(fetcher, cache, userAgent)],
     ['gutenberg', new GutenbergProvider(fetcher, cache, userAgent)],
     ['authorized-free', new AuthorizedFreeProvider()],
+    ['librivox', new LibriVoxProvider(fetcher, cache, userAgent)],
     ['google-books', new GoogleBooksProvider(fetcher, cache, env.GOOGLE_BOOKS_API_KEY)],
   ]);
 
@@ -104,7 +107,7 @@ export function buildWorkerContext(env: WorkerEnv): WorkerContext {
     sources: REGISTERED_SOURCES,
     // Gutenberg is the only source that yields downloadable files, so it runs even when another
     // source already found the work — see `enrichmentSources`.
-    enrichmentSources: ['gutenberg', 'authorized-free'],
+    enrichmentSources: ['gutenberg', 'authorized-free', 'librivox'],
   });
 
   return {

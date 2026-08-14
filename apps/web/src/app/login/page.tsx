@@ -6,26 +6,28 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { MIN_PASSWORD_LENGTH } from '@btf/contracts';
 import { googleSignInUrl, login, register } from '../../lib/auth-client';
 import { useSession } from '../../components/SessionProvider';
+import { useT } from '../../i18n/I18nProvider';
 
 type Mode = 'login' | 'register';
-
-const GOOGLE_ERRORS: Record<string, string> = {
-  google_state: 'That sign-in link expired or was opened in a different browser. Please try again.',
-  google_failed: 'Google sign-in did not complete. You can use an email and password instead.',
-};
 
 function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
   const { googleEnabled, setUser, refresh } = useSession();
+  const t = useT();
 
   const [mode, setMode] = useState<Mode>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [busy, setBusy] = useState(false);
+  const googleError = params.get('error');
   const [error, setError] = useState<string | null>(
-    GOOGLE_ERRORS[params.get('error') ?? ''] ?? null,
+    googleError === 'google_state'
+      ? t('auth.errorGoogleState')
+      : googleError === 'google_failed'
+        ? t('auth.errorGoogleFailed')
+        : null,
   );
 
   async function submit(event: React.FormEvent): Promise<void> {
@@ -41,7 +43,7 @@ function LoginForm() {
       await refresh();
       router.push('/bookmarks');
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : 'Something went wrong.');
+      setError(caught instanceof Error ? caught.message : t('auth.errorGeneric'));
     } finally {
       setBusy(false);
     }
@@ -49,17 +51,15 @@ function LoginForm() {
 
   return (
     <main className="container" id="main-content">
-      <h1>{mode === 'login' ? 'Sign in' : 'Create an account'}</h1>
+      <h1>{mode === 'login' ? t('auth.signInTitle') : t('auth.registerTitle')}</h1>
       <p className="muted" style={{ maxWidth: '34rem' }}>
-        An account exists for one reason: to save books you find and come back to them — with the
-        languages they were translated into, the editions that exist, and where to get each one
-        legally. No newsletter, no profile, no tracking.
+        {t('auth.blurb')}
       </p>
 
       <form onSubmit={(event) => void submit(event)} className="auth-form">
         {mode === 'register' && (
           <div className="field">
-            <label htmlFor="displayName">Name (optional)</label>
+            <label htmlFor="displayName">{t('auth.name')}</label>
             <input
               id="displayName"
               value={displayName}
@@ -69,7 +69,7 @@ function LoginForm() {
           </div>
         )}
         <div className="field">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">{t('auth.email')}</label>
           <input
             id="email"
             type="email"
@@ -80,7 +80,7 @@ function LoginForm() {
           />
         </div>
         <div className="field">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">{t('auth.password')}</label>
           <input
             id="password"
             type="password"
@@ -92,8 +92,7 @@ function LoginForm() {
           />
           {mode === 'register' && (
             <span className="muted" style={{ fontSize: '0.8em' }}>
-              At least {MIN_PASSWORD_LENGTH} characters. Length is all that is checked — a long
-              phrase you can remember beats a short one with punctuation in it.
+              {t('auth.passwordHint', { min: MIN_PASSWORD_LENGTH })}
             </span>
           )}
         </div>
@@ -101,7 +100,11 @@ function LoginForm() {
         {error && <p className="error-box">{error}</p>}
 
         <button type="submit" disabled={busy}>
-          {busy ? 'Working…' : mode === 'login' ? 'Sign in' : 'Create account'}
+          {busy
+            ? t('auth.working')
+            : mode === 'login'
+              ? t('auth.submitSignIn')
+              : t('auth.submitRegister')}
         </button>
       </form>
 
@@ -110,7 +113,7 @@ function LoginForm() {
       {googleEnabled && (
         <p style={{ marginTop: '1rem' }}>
           <a className="button--secondary" href={googleSignInUrl()}>
-            Continue with Google
+            {t('auth.google')}
           </a>
         </p>
       )}
@@ -118,16 +121,16 @@ function LoginForm() {
       <p style={{ marginTop: '1.5rem' }}>
         {mode === 'login' ? (
           <button type="button" className="link-button" onClick={() => setMode('register')}>
-            No account yet? Create one
+            {t('auth.toRegister')}
           </button>
         ) : (
           <button type="button" className="link-button" onClick={() => setMode('login')}>
-            Already have an account? Sign in
+            {t('auth.toSignIn')}
           </button>
         )}
       </p>
       <p className="muted" style={{ fontSize: '0.85em' }}>
-        <Link href="/">Back to search</Link>
+        <Link href="/">{t('auth.backToSearch')}</Link>
       </p>
     </main>
   );

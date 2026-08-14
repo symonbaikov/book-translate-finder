@@ -6,11 +6,13 @@ import type { BookmarksResponse } from '@btf/contracts';
 import { listBookmarks, setBookmark } from '../../lib/auth-client';
 import { CoverImage } from '../../components/CoverImage';
 import { useSession } from '../../components/SessionProvider';
+import { useT } from '../../i18n/I18nProvider';
 
 type Item = BookmarksResponse['bookmarks'][number];
 
 export default function BookmarksPage() {
   const { user, loading: sessionLoading } = useSession();
+  const t = useT();
   const [items, setItems] = useState<Item[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,7 +20,7 @@ export default function BookmarksPage() {
     try {
       setItems((await listBookmarks()).bookmarks);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : 'Could not load your saved books.');
+      setError(caught instanceof Error ? caught.message : t('bookmarks.loadFailed'));
     }
   }, []);
 
@@ -42,10 +44,9 @@ export default function BookmarksPage() {
   if (!user) {
     return (
       <main className="container" id="main-content">
-        <h1>Saved books</h1>
+        <h1>{t('bookmarks.title')}</h1>
         <p>
-          <Link href="/login">Sign in</Link> to keep the books you find — and to compare editions of
-          the same book side by side later.
+          <Link href="/login">{t('nav.signIn')}</Link> {t('bookmarks.signedOut')}
         </p>
       </main>
     );
@@ -53,13 +54,12 @@ export default function BookmarksPage() {
 
   return (
     <main className="container" id="main-content">
-      <h1>Saved books</h1>
+      <h1>{t('bookmarks.title')}</h1>
       {error && <p className="error-box">{error}</p>}
-      {items === null && !error && <p className="muted">Loading…</p>}
+      {items === null && !error && <p className="muted">{t('bookmarks.loading')}</p>}
       {items?.length === 0 && (
         <p className="muted">
-          Nothing saved yet. Find a book and use “Save this book” on its card.{' '}
-          <Link href="/">Search</Link>
+          {t('bookmarks.empty')} <Link href="/">{t('bookmarks.searchLink')}</Link>
         </p>
       )}
       {items?.map((item) => (
@@ -78,7 +78,7 @@ export default function BookmarksPage() {
               className="button--secondary"
               onClick={() => void remove(item.workId)}
             >
-              Remove
+              {t('bookmarks.remove')}
             </button>
           </div>
         </article>

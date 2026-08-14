@@ -26,6 +26,7 @@ import {
   AuthService,
   BookmarkService,
   EnqueueSourceSync,
+  GetFeaturedBooks,
   GetEditionLinks,
   GetWorkCard,
   ListEditionsForWork,
@@ -43,6 +44,7 @@ export interface ApiContext {
   listEditionsForWork: ListEditionsForWork;
   getEditionLinks: GetEditionLinks;
   enqueueSourceSync: EnqueueSourceSync;
+  getFeaturedBooks: GetFeaturedBooks;
   authService: AuthService;
   bookmarkService: BookmarkService;
   workRepository: PgWorkRepository;
@@ -94,6 +96,14 @@ export function buildApiContext(env: ApiEnv): ApiContext {
   });
   const enqueueSourceSync = new EnqueueSourceSync({ idempotencyStore, syncQueue, clock });
 
+  const getFeaturedBooks = new GetFeaturedBooks({
+    workRepository,
+    editionRepository,
+    sourceLinkRepository,
+    cache,
+    backfillQueue,
+  });
+
   const idGenerator = new Uuid7Generator();
   // No SMTP configured is the documented self-hosting default, not a misconfiguration: sign-up
   // must work on a fresh `docker compose up` (CLAUDE.md), so the greeting is simply skipped.
@@ -140,6 +150,7 @@ export function buildApiContext(env: ApiEnv): ApiContext {
     listEditionsForWork,
     getEditionLinks,
     enqueueSourceSync,
+    getFeaturedBooks,
     authService,
     bookmarkService,
     workRepository,

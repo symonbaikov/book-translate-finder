@@ -18,6 +18,21 @@ them before the API starts).
 
 ### Added
 
+- **The interface speaks 15 languages.** A selector in the header, defaulting to English:
+  English, Русский, Українська, Deutsch, Français, Español, Português, Italiano, Nederlands,
+  Polski, Türkçe, العربية, 日本語, 中文, 한국어. Arabic renders right-to-left. The choice lives in a
+  cookie so server-rendered pages arrive already translated rather than flashing English first.
+  Only languages with a complete dictionary are listed — a language in the menu is a promise the
+  page will be in that language. Adding one is a single file plus one line
+  (`apps/web/src/i18n/README.md`), and TypeScript refuses to compile a dictionary missing a key.
+- **Audiobooks.** LibriVox joins the sources: public domain recordings with a per-book MP3 archive
+  to keep and a page to listen on, shown as a new `listen` link type held to exactly the same
+  legal bar as a download (ADR-0005). Editions carry their running time — "Audiobook, 13:06:44".
+- **A curated home page.** "Books of the year" and "Widely read, widely translated", resolved
+  against whatever this instance knows and filled in lazily in the background for the rest, so a
+  fresh install populates itself over the first few minutes instead of showing an empty page. It
+  is an editorial list, and says so: no open source publishes a sales ranking.
+
 - **Accounts and saved books.** Sign in with an email and password, or with Google where the
   instance is configured for it, and keep the books you find. Saving is idempotent by
   `(user, work)`, so a double click or a retried request cannot produce two entries. Sessions are

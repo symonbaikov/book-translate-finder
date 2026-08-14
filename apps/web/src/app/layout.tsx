@@ -1,6 +1,10 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import './globals.css';
+import { I18nProvider } from '../i18n/I18nProvider';
+import { getDictionary } from '../i18n/server';
+import { isRtl } from '../i18n/locales';
+import { makeTranslate } from '../i18n/dictionary';
 import { SessionProvider } from '../components/SessionProvider';
 import { SiteHeader } from '../components/SiteHeader';
 
@@ -23,17 +27,22 @@ function GitHubMark() {
   );
 }
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const { locale, dictionary } = await getDictionary();
+  const t = makeTranslate(dictionary);
+
   return (
-    <html lang="en">
+    <html lang={locale} dir={isRtl(locale) ? 'rtl' : 'ltr'}>
       <body>
         <a className="skip-link" href="#main-content">
-          Skip to content
+          {t('nav.skipToContent')}
         </a>
-        <SessionProvider>
-          <SiteHeader />
-          {children}
-        </SessionProvider>
+        <I18nProvider locale={locale} dictionary={dictionary}>
+          <SessionProvider>
+            <SiteHeader />
+            {children}
+          </SessionProvider>
+        </I18nProvider>
         <footer className="site-footer">
           <div className="container">
             <p className="muted" style={{ fontSize: '0.85em', marginTop: 0 }}>
@@ -45,8 +54,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <a className="site-footer__repo" href={REPOSITORY_URL} rel="noopener noreferrer">
                 <GitHubMark />
                 <span>
-                  <strong>Open source</strong> — MIT licensed, self-hostable. View the code on
-                  GitHub.
+                  <strong>{t('footer.openSource')}</strong> {t('footer.openSourceRest')}
                 </span>
               </a>
             </div>

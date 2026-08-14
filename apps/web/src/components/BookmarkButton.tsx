@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { setBookmark } from '../lib/auth-client';
 import { useSession } from './SessionProvider';
+import { useT } from '../i18n/I18nProvider';
 
 /**
  * Saves a book to the reader's list.
@@ -19,6 +20,7 @@ export function BookmarkButton({
   initiallySaved?: boolean;
 }) {
   const { user, loading } = useSession();
+  const t = useT();
   const [saved, setSaved] = useState(initiallySaved ?? false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +35,7 @@ export function BookmarkButton({
   if (!user) {
     return (
       <Link className="button--secondary" href="/login">
-        Sign in to save
+        {t('bookmark.signInToSave')}
       </Link>
     );
   }
@@ -49,7 +51,7 @@ export function BookmarkButton({
       setSaved(await setBookmark(workId, next));
     } catch {
       setSaved(!next);
-      setError('Could not save. Try again.');
+      setError(t('bookmark.failed'));
     } finally {
       setBusy(false);
     }
@@ -64,7 +66,7 @@ export function BookmarkButton({
         disabled={busy}
         aria-pressed={saved}
       >
-        {saved ? '★ Saved' : '☆ Save this book'}
+        {saved ? `★ ${t('bookmark.saved')}` : `☆ ${t('bookmark.save')}`}
       </button>
       {error && <span className="error-box">{error}</span>}
     </>

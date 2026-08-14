@@ -40,6 +40,9 @@ const DOWNLOAD_ALLOWLIST: ReadonlySet<string> = new Set([
   'internet-archive',
   'wikisource',
   'standard-ebooks',
+  // Public domain audiobooks, read by volunteers and released into the public domain by
+  // LibriVox's own charter — the audio equivalent of Project Gutenberg (ADR-0005).
+  'librivox',
   // Books the rights holder themselves publishes for free — see `authorized-free-catalog.ts` and
   // ADR-0004. Unlike the others this is not a repository we trust wholesale: each entry names the
   // page where the author or publisher grants the permission, and is reviewed one book at a time.
@@ -105,15 +108,17 @@ export function assertLinkAllowed(candidate: LinkCandidate): SourceLink {
     throw new ForbiddenSourceError(hostname);
   }
 
-  if (candidate.type === 'download') {
+  // `listen` is held to the same bar as `download`: it is still us pointing a reader at a full
+  // copy of a work, and the fact that it streams rather than saves changes nothing legally.
+  if (candidate.type === 'download' || candidate.type === 'listen') {
     if (!DOWNLOAD_ALLOWLIST.has(candidate.provider.value)) {
       throw new IllegalDownloadLinkError(
-        `download links require an allowlisted provider, got: ${candidate.provider.value}`,
+        `${candidate.type} links require an allowlisted provider, got: ${candidate.provider.value}`,
       );
     }
     if (candidate.rightsStatus !== 'public_domain' && candidate.rightsStatus !== 'open_license') {
       throw new IllegalDownloadLinkError(
-        `download links require public_domain or open_license status, got: ${candidate.rightsStatus}`,
+        `${candidate.type} links require public_domain or open_license status, got: ${candidate.rightsStatus}`,
       );
     }
   }

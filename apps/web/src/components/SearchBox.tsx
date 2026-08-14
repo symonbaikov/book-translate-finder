@@ -4,8 +4,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { SearchHit } from '@btf/contracts';
 import Link from 'next/link';
 import { useSession } from './SessionProvider';
+import { useT } from '../i18n/I18nProvider';
 import { ApiRequestError, searchWorks } from '../lib/api-client';
 import { CoverImage, CoverSkeleton } from './CoverImage';
+import type { Translate } from '../i18n/dictionary';
 
 type SearchState =
   | { kind: 'idle' }
@@ -27,6 +29,7 @@ type SearchState =
 const MAX_POLL_ATTEMPTS = 30;
 
 export function SearchBox() {
+  const t = useT();
   const [query, setQuery] = useState('');
   const [state, setState] = useState<SearchState>({ kind: 'idle' });
   const requestIdRef = useRef(0);
@@ -48,7 +51,7 @@ export function SearchBox() {
       }
     } catch (error) {
       if (requestId !== requestIdRef.current) return;
-      const message = error instanceof ApiRequestError ? error.message : 'Search failed.';
+      const message = error instanceof ApiRequestError ? error.message : t('search.failed');
       setState({ kind: 'error', message });
     }
   }, []);
@@ -77,25 +80,25 @@ export function SearchBox() {
     <div>
       <form onSubmit={handleSubmit}>
         <div className="field">
-          <label htmlFor="search-query">Book title and author</label>
+          <label htmlFor="search-query">{t('home.searchLabel')}</label>
           <input
             id="search-query"
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="e.g. War and Peace Tolstoy"
+            placeholder={t('home.searchPlaceholder')}
             autoComplete="off"
           />
         </div>
         <p style={{ marginTop: '0.75rem' }}>
           <button type="submit" disabled={state.kind === 'loading' || !query.trim()}>
-            Search
+            {t('home.searchButton')}
           </button>
         </p>
       </form>
 
       <div aria-live="polite" style={{ marginTop: '1.5rem' }}>
-        <SearchResults state={state} onRetry={startSearch} />
+        <SearchResults state={state} onRetry={startSearch} t={t} />
       </div>
     </div>
   );
@@ -137,36 +140,37 @@ function SearchingIndicator({ text }: { text: string }) {
   );
 }
 
-function SearchResults({ state, onRetry }: { state: SearchState; onRetry: () => void }) {
+function SearchResults({
+  state,
+  onRetry,
+  t,
+}: {
+  state: SearchState;
+  onRetry: () => void;
+  t: Translate;
+}) {
   switch (state.kind) {
     case 'idle':
       return null;
     case 'loading':
-      return <SearchingIndicator text="Searching" />;
+      return <SearchingIndicator text={t('search.searching')} />;
     case 'pending':
       // A first-time sync of a popular book legitimately takes a while (several sequential
       // source requests) — after ~30s of silence, say so instead of looking frozen.
       return (
         <SearchingIndicator
-          text={
-            state.attempt < 10
-              ? 'Not in our database yet — checking the sources'
-              : 'Still searching: the first request for a book gathers data from the sources, which can take up to a couple of minutes'
-          }
+          text={state.attempt < 10 ? t('search.pending') : t('search.pendingLong')}
         />
       );
     case 'not_found':
-      return <p>Nothing found. Try refining the title or author.</p>;
+      return <p>{t('search.notFoundHint')}</p>;
     case 'timed_out':
       return (
         <div className="error-box">
-          <p style={{ margin: 0 }}>
-            The sources are responding slowly and we have no data yet. The background sync may have
-            already finished — try again.
-          </p>
+          <p style={{ margin: 0 }}>{t('search.timedOut')}</p>
           <p style={{ margin: '0.75rem 0 0' }}>
             <button type="button" onClick={onRetry}>
-              Try again
+              {t('search.retry')}
             </button>
           </p>
         </div>
@@ -210,12 +214,12 @@ function SearchResults({ state, onRetry }: { state: SearchState; onRetry: () => 
  */
 function SignInPrompt() {
   const { user, loading } = useSession();
+  const t = useT();
   if (loading || user) return null;
 
   return (
     <p className="signin-prompt">
-      <Link href="/login">Sign in</Link> to save the books you find here and come back to them — and
-      to compare editions from different years side by side before you choose one.
+      <Link href="/login">{t('nav.signIn')}</Link> {t('search.signInPrompt')}
     </p>
   );
 }

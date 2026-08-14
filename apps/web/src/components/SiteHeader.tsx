@@ -4,10 +4,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { logout } from '../lib/auth-client';
 import { useSession } from './SessionProvider';
+import { useT } from '../i18n/I18nProvider';
+import { LanguageSelector } from './LanguageSelector';
 
 /** The one place the reader's account state is visible: saved books, and a way in or out. */
 export function SiteHeader() {
   const { user, loading, setUser } = useSession();
+  const t = useT();
   const router = useRouter();
 
   async function handleLogout(): Promise<void> {
@@ -23,27 +26,29 @@ export function SiteHeader() {
         <Link href="/" className="site-header__brand">
           BookTranslate Finder
         </Link>
-        {/* Nothing is rendered until the session is known — flashing "Sign in" at someone who is
-            already signed in reads as being logged out. */}
-        {!loading && (
-          <nav className="site-header__nav">
-            {user ? (
+        <nav className="site-header__nav">
+          {/* The language selector is not gated on the session check — it must be usable while
+              the account state is still unknown, which is most of the first paint. */}
+          <LanguageSelector />
+          {/* The account links wait for the session — flashing "Sign in" at someone already
+              signed in reads as being logged out. */}
+          {!loading &&
+            (user ? (
               <>
-                <Link href="/bookmarks">Saved books</Link>
+                <Link href="/bookmarks">{t('nav.savedBooks')}</Link>
                 <span className="muted">{user.displayName}</span>
                 <button
                   type="button"
                   className="button--secondary"
                   onClick={() => void handleLogout()}
                 >
-                  Sign out
+                  {t('nav.signOut')}
                 </button>
               </>
             ) : (
-              <Link href="/login">Sign in</Link>
-            )}
-          </nav>
-        )}
+              <Link href="/login">{t('nav.signIn')}</Link>
+            ))}
+        </nav>
       </div>
     </header>
   );

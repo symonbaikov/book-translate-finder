@@ -624,3 +624,55 @@ button.button--secondary:active {
   border-radius: 10px;
   font-size: 0.9rem;
 }
+
+/* Featured books. A grid that reflows rather than a carousel: a reader scanning for a book should
+   see them all at once, not press an arrow ten times. */
+.featured-grid {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1.2rem 1rem;
+}
+
+.featured-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.featured-card:hover .featured-card__title {
+  text-decoration: underline;
+}
+
+.featured-card__title {
+  font-weight: 550;
+  font-size: 0.92rem;
+  line-height: 1.25;
+}
+
+.featured-card__meta {
+  font-size: 0.8rem;
+}
+
+/* Language selector in the header. Compact by design — it is set once and then ignored. */
+.language-selector select {
+  font-size: 0.85rem;
+  padding: 0.25rem 0.4rem;
+}
+
+/* Visible to screen readers only: the selector has a visual affordance but still needs a name. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

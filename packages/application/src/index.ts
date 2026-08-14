@@ -82,3 +82,10 @@ export {
   type BookmarkListItem,
   type SignInResult,
 } from './use-cases/auth.use-cases.js';
+export {
+  featuredCacheKey,
+  GetFeaturedBooks,
+  type FeaturedBookDto,
+  type GetFeaturedBooksDeps,
+  type GetFeaturedBooksOutput,
+} from './use-cases/get-featured-books.use-case.js';

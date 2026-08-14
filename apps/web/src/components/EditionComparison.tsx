@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import type { EditionSummary } from '@btf/contracts';
 import { languageName } from '../lib/language-names';
+import { useT } from '../i18n/I18nProvider';
+import type { Translate } from '../i18n/dictionary';
 
 /**
  * Side-by-side comparison of two or three editions.
@@ -14,6 +16,7 @@ import { languageName } from '../lib/language-names';
  * values buries the two lines that matter.
  */
 export function EditionComparison({ editions }: { editions: EditionSummary[] }) {
+  const t = useT();
   const [selected, setSelected] = useState<string[]>([]);
 
   if (editions.length < 2) return null;
@@ -33,9 +36,9 @@ export function EditionComparison({ editions }: { editions: EditionSummary[] }) 
 
   return (
     <section aria-labelledby="compare-heading" style={{ marginTop: '2rem' }}>
-      <h2 id="compare-heading">Compare editions</h2>
+      <h2 id="compare-heading">{t('compare.heading')}</h2>
       <p className="muted" style={{ marginTop: 0 }}>
-        Pick two or three editions to see what actually differs between them.
+        {t('compare.blurb')}
       </p>
 
       <div className="compare-picker">
@@ -56,9 +59,9 @@ export function EditionComparison({ editions }: { editions: EditionSummary[] }) 
       </div>
 
       {chosen.length >= 2 ? (
-        <ComparisonTable editions={chosen} />
+        <ComparisonTable editions={chosen} t={t} />
       ) : (
-        <p className="muted">Selected {chosen.length} of at least 2.</p>
+        <p className="muted">{t('compare.selected', { count: chosen.length })}</p>
       )}
     </section>
   );
@@ -69,22 +72,30 @@ interface ComparisonRow {
   values: string[];
 }
 
-function buildRows(editions: EditionSummary[]): ComparisonRow[] {
+function buildRows(editions: EditionSummary[], t: Translate): ComparisonRow[] {
   const rows: ComparisonRow[] = [
-    { label: 'Language', values: editions.map((e) => languageName(e.language)) },
-    { label: 'Published', values: editions.map((e) => (e.year ? String(e.year) : '—')) },
-    { label: 'Publisher', values: editions.map((e) => e.publisher ?? '—') },
-    { label: 'Translator', values: editions.map((e) => e.translator ?? '—') },
+    { label: t('compare.rowLanguage'), values: editions.map((e) => languageName(e.language)) },
     {
-      label: 'Translated from',
+      label: t('compare.rowPublished'),
+      values: editions.map((e) => (e.year ? String(e.year) : '—')),
+    },
+    { label: t('compare.rowPublisher'), values: editions.map((e) => e.publisher ?? '—') },
+    { label: t('compare.rowTranslator'), values: editions.map((e) => e.translator ?? '—') },
+    {
+      label: t('compare.rowTranslatedFrom'),
       values: editions.map((e) => (e.translatedFrom ? languageName(e.translatedFrom) : '—')),
     },
-    { label: 'Binding', values: editions.map((e) => e.binding ?? '—') },
-    { label: 'Pages', values: editions.map((e) => (e.pages ? String(e.pages) : '—')) },
-    { label: 'ISBN', values: editions.map((e) => e.isbn ?? '—') },
+    { label: t('compare.rowBinding'), values: editions.map((e) => e.binding ?? '—') },
     {
-      label: 'Free or borrowable copy',
-      values: editions.map((e) => (e.linkCount > 0 ? `yes (${e.linkCount})` : 'not found')),
+      label: t('compare.rowPages'),
+      values: editions.map((e) => (e.pages ? String(e.pages) : '—')),
+    },
+    { label: t('compare.rowIsbn'), values: editions.map((e) => e.isbn ?? '—') },
+    {
+      label: t('compare.rowFreeCopy'),
+      values: editions.map((e) =>
+        e.linkCount > 0 ? t('compare.yes', { count: e.linkCount }) : t('compare.no'),
+      ),
     },
   ];
 
@@ -93,15 +104,15 @@ function buildRows(editions: EditionSummary[]): ComparisonRow[] {
   return rows.filter((row) => new Set(row.values).size > 1);
 }
 
-function ComparisonTable({ editions }: { editions: EditionSummary[] }) {
-  const rows = buildRows(editions);
+function ComparisonTable({ editions, t }: { editions: EditionSummary[]; t: Translate }) {
+  const rows = buildRows(editions, t);
 
   return (
     <div style={{ overflowX: 'auto', marginTop: '1rem' }}>
       <table className="compare-table">
         <thead>
           <tr>
-            <th scope="col">Difference</th>
+            <th scope="col">{t('compare.columnDifference')}</th>
             {editions.map((edition) => (
               <th key={edition.id} scope="col">
                 {edition.title}
@@ -122,7 +133,7 @@ function ComparisonTable({ editions }: { editions: EditionSummary[] }) {
           ) : (
             <tr>
               <td colSpan={editions.length + 1} className="muted">
-                These editions are identical in everything the sources record.
+                {t('compare.identical')}
               </td>
             </tr>
           )}

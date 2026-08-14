@@ -4,7 +4,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { SourceLinkDto } from '@btf/contracts';
 import { ApiRequestError, getEditionLinks } from '../lib/api-client';
 import { COUNTRY_CHANGE_EVENT, readCountry } from '../lib/country';
-import { linkTypeLabel, rightsStatusLabel, rightsStatusTone } from '../lib/link-labels';
+import { rightsStatusTone } from '../lib/link-labels';
+import { useT } from '../i18n/I18nProvider';
+import type { Translate } from '../i18n/dictionary';
 
 type LinksState =
   | { kind: 'collapsed' }
@@ -13,6 +15,7 @@ type LinksState =
   | { kind: 'error'; message: string };
 
 export function EditionLinks({ editionId, language }: { editionId: string; language?: string }) {
+  const t = useT();
   const [state, setState] = useState<LinksState>({ kind: 'collapsed' });
   // Tracks the latest request so a country switch mid-flight can't be overwritten by the
   // slower, now-stale response of the previous country.
@@ -27,7 +30,7 @@ export function EditionLinks({ editionId, language }: { editionId: string; langu
       setState({ kind: 'loaded', links: result.links, bookstores: result.bookstores });
     } catch (error) {
       if (requestId !== requestIdRef.current) return;
-      const message = error instanceof ApiRequestError ? error.message : 'Failed to load links.';
+      const message = error instanceof ApiRequestError ? error.message : t('links.failed');
       setState({ kind: 'error', message });
     }
   }, [editionId]);
@@ -63,11 +66,11 @@ export function EditionLinks({ editionId, language }: { editionId: string; langu
         onClick={() => void handleToggle()}
         aria-expanded={state.kind === 'loaded'}
       >
-        {state.kind === 'loaded' ? 'Hide links' : 'Show links'}
+        {state.kind === 'loaded' ? t('links.hide') : t('links.show')}
       </button>
       <div aria-live="polite">
         {state.kind === 'loading' && (
-          <div style={{ marginTop: '0.6rem' }} aria-label="Loading links">
+          <div style={{ marginTop: '0.6rem' }} aria-label={t('links.loading')}>
             <div className="skeleton skeleton--text" style={{ width: '55%' }} />
             <div className="skeleton skeleton--text" style={{ width: '40%' }} />
           </div>
@@ -75,8 +78,8 @@ export function EditionLinks({ editionId, language }: { editionId: string; langu
         {state.kind === 'error' && <p className="error-box">{state.message}</p>}
         {state.kind === 'loaded' && (
           <div className="animate-in">
-            <LinkList links={state.links} />
-            <BookstoreList bookstores={state.bookstores} language={language ?? null} />
+            <LinkList links={state.links} t={t} />
+            <BookstoreList bookstores={state.bookstores} language={language ?? null} t={t} />
           </div>
         )}
       </div>
@@ -84,9 +87,9 @@ export function EditionLinks({ editionId, language }: { editionId: string; langu
   );
 }
 
-function LinkList({ links }: { links: SourceLinkDto[] }) {
+function LinkList({ links, t }: { links: SourceLinkDto[]; t: Translate }) {
   if (links.length === 0) {
-    return <p className="muted">No legal links for this edition yet.</p>;
+    return <p className="muted">{t('links.none')}</p>;
   }
 
   return (
@@ -97,11 +100,11 @@ function LinkList({ links }: { links: SourceLinkDto[] }) {
             {/* The format matters as much as the fact a download exists — a reader with an
                 e-reader wants EPUB, not "a download". */}
             {link.format
-              ? `${linkTypeLabel(link.type)} ${link.format.toUpperCase()}`
-              : linkTypeLabel(link.type)}
+              ? `${t(`linkType.${link.type}` as never)} ${link.format.toUpperCase()}`
+              : t(`linkType.${link.type}` as never)}
           </a>{' '}
           <span className={`badge badge--${rightsStatusTone(link.rightsStatus)}`}>
-            {rightsStatusLabel(link.rightsStatus)}
+            {t(`rights.${link.rightsStatus}` as never)}
           </span>{' '}
           <span className="muted">{link.provider}</span>
         </li>
@@ -112,8 +115,8 @@ function LinkList({ links }: { links: SourceLinkDto[] }) {
 
 const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
 
-function countryName(code: string | null): string {
-  if (!code) return 'your country';
+function countryName(code: string | null, fallback: string): string {
+  if (!code) return fallback;
   try {
     return regionNames.of(code) ?? code;
   } catch {
@@ -129,9 +132,11 @@ function countryName(code: string | null): string {
 function BookstoreList({
   bookstores,
   language,
+  t,
 }: {
   bookstores: SourceLinkDto[];
   language: string | null;
+  t: Translate;
 }) {
   if (bookstores.length === 0) return null;
 
@@ -141,19 +146,21 @@ function BookstoreList({
   const groups: { key: string; label: string; stores: SourceLinkDto[] }[] = [
     {
       key: 'country',
-      label: `In ${countryName(country)}`,
+      label: t('links.storesInCountry', {
+        country: countryName(country, t('links.storesYourCountry')),
+      }),
       stores: bookstores.filter((s) => s.group === 'country'),
     },
     {
       key: 'language',
       label: language
-        ? `Where ${language} books are sold`
-        : "Where this edition's language is sold",
+        ? t('links.storesLanguageMarket', { language })
+        : t('links.storesLanguageMarketGeneric'),
       stores: bookstores.filter((s) => s.group === 'language'),
     },
     {
       key: 'worldwide',
-      label: 'Ships worldwide',
+      label: t('links.storesWorldwide'),
       // Links stored before `group` existed carry none; treating them as worldwide keeps an old
       // cached response rendering rather than silently dropping its shops.
       stores: bookstores.filter((s) => s.group === 'worldwide' || s.group === undefined),
@@ -163,7 +170,7 @@ function BookstoreList({
   return (
     <div style={{ marginTop: '0.9rem' }}>
       <div className="muted" style={{ fontSize: '0.85em', fontWeight: 550 }}>
-        Find in a bookstore
+        {t('links.storesHeading')}
       </div>
       {groups
         .filter((group) => group.stores.length > 0)
@@ -196,8 +203,7 @@ function BookstoreList({
           </div>
         ))}
       <p className="muted" style={{ fontSize: '0.78em', margin: '0.6rem 0 0' }}>
-        Each link searches that store's own catalogue — availability and price are shown by the
-        store itself.
+        {t('links.storesCaption')}
       </p>
     </div>
   );
