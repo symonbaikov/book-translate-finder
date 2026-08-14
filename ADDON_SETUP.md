@@ -10,22 +10,30 @@
 
 ## 🚀 Quick Start
 
-### 1. Запусти Anna's Archive Addon в Docker
+### 1. Запусти Anna's Archive Addon
 
+**Самый простой способ (macOS/Linux):**
 ```bash
-# Из корня проекта book-translate-finder
 cd ../js-adon/addons/annas-archive
-
-# Запусти Docker контейнер
-docker-compose up --build
-
-# Сервер будет доступен на http://localhost:4301
-# Манифест: http://localhost:4301/manifest.json
+./run.sh
 ```
+
+**Или вручную:**
+```bash
+cd ../js-adon/addons/annas-archive
+PORT=5000 node server.mjs
+```
+
+**Или Docker:**
+```bash
+docker compose up --build
+```
+
+Сервер будет доступен на **http://localhost:5000**
 
 Лог вывода:
 ```
-Anna's Archive addon listening on http://localhost:4301/manifest.json
+Anna's Archive addon listening on http://localhost:5000/manifest.json
 ```
 
 ### 2. Установи Addon в Golden Library
@@ -33,7 +41,7 @@ Anna's Archive addon listening on http://localhost:4301/manifest.json
 1. Открой http://localhost:3000 (Golden Library)
 2. Перейди на страницу `/addons`
 3. **Новое!** В секции "Addon Library" нажми **Install** для "Anna's Archive"
-   - Или скопируй URL в "Addon from Server": `http://localhost:4301/manifest.json`
+   - Или скопируй URL в "Addon from Server": `http://localhost:5000/manifest.json`
 4. Нажми **Continue**, проверь permissions, нажми **Install**
 
 Статус: ✅ Установлен, включен
@@ -83,7 +91,7 @@ Golden Library (http://localhost:3000)
     ↓ searches
 Addon Registry
     ↓ installs from
-Anna's Archive Addon (http://localhost:4301)
+Anna's Archive Addon (http://localhost:5000)
     ↓ proxies searches to
 Anna's Archive Mirrors
     ↓ parses and returns
@@ -96,7 +104,7 @@ Book metadata + download links
 
 ```bash
 # Проверь, запущен ли сервер
-curl http://localhost:4301/manifest.json | jq .
+curl http://localhost:5000/manifest.json | jq .
 
 # Должен вернуться манифест
 {
@@ -112,7 +120,7 @@ curl http://localhost:4301/manifest.json | jq .
 
 ```bash
 # Поиск "dune"
-curl 'http://localhost:4301/catalog/book/search/search=dune.json' | jq .
+curl 'http://localhost:5000/catalog/book/search/search=dune.json' | jq .
 ```
 
 ### Monitor logs
@@ -126,10 +134,10 @@ docker-compose logs -f annas-archive-addon
 
 ### Addon не установился
 
-1. Проверь URL в форме: `http://localhost:4301/manifest.json`
-2. Убедись, что сервер запущен: `curl http://localhost:4301/manifest.json`
+1. Проверь URL в форме: `http://localhost:5000/manifest.json`
+2. Убедись, что сервер запущен: `curl http://localhost:5000/manifest.json`
 3. Посмотри на консоль браузера (F12) за CORS ошибками
-4. Проверь, что Golden Library может достучаться до `localhost:4301`
+4. Проверь, что Golden Library может достучаться до `localhost:5000`
 
 ### Поиск не возвращает результаты
 
