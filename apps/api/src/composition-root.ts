@@ -70,6 +70,7 @@ export function buildApiContext(env: ApiEnv): ApiContext {
   });
   const getEditionLinks = new GetEditionLinks({
     editionRepository,
+    workRepository,
     sourceLinkRepository,
     cache,
     clock,

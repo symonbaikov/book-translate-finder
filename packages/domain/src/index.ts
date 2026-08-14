@@ -52,6 +52,9 @@ export {
   supportedBookstoreCountries,
   type Bookstore,
   type CountryCode,
+  bookstoresFor,
+  countriesForMarketLanguage,
+  type BookstoreQuery,
 } from './policy/bookstore-catalog.js';
 
 export {

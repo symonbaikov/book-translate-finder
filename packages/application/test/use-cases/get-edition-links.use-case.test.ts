@@ -12,6 +12,7 @@ import { describe, expect, it } from 'vitest';
 import { CACHE_KEY_VERSION } from '../../src/cache-key-version.js';
 import { InMemoryCache } from '../../../domain/test/fakes/in-memory-cache.js';
 import { InMemoryEditionRepository } from '../../../domain/test/fakes/in-memory-edition-repository.js';
+import { InMemoryWorkRepository } from '../../../domain/test/fakes/in-memory-work-repository.js';
 import { InMemorySourceLinkRepository } from '../../../domain/test/fakes/in-memory-source-link-repository.js';
 import {
   editionLinksCacheKey,
@@ -23,15 +24,17 @@ const FIXED_CLOCK: Clock = { now: () => new Date('2026-01-01T00:00:00Z') };
 
 function makeDeps() {
   const editionRepository = new InMemoryEditionRepository();
+  const workRepository = new InMemoryWorkRepository();
   const sourceLinkRepository = new InMemorySourceLinkRepository();
   const cache = new InMemoryCache();
   const deps: GetEditionLinksDeps = {
     editionRepository,
+    workRepository,
     sourceLinkRepository,
     cache,
     clock: FIXED_CLOCK,
   };
-  return { deps, editionRepository, sourceLinkRepository, cache };
+  return { deps, editionRepository, workRepository, sourceLinkRepository, cache };
 }
 
 /** An edition with a real ISBN — bookstore lookups are keyed by it. */
@@ -160,14 +163,51 @@ describe('GetEditionLinks bookstores (country-aware buy links)', () => {
     }
   });
 
-  it('returns no bookstores for an edition with no ISBN — there is nothing to look up', async () => {
+  it('falls back to a title search for an edition with no ISBN', async () => {
+    // 16% of real editions carry no ISBN (measured live). Showing no shops for them read as
+    // "nobody sells this book"; the same shop one search away is the honest answer.
     const { deps, editionRepository } = makeDeps();
     await seedEdition(editionRepository); // seeded without an ISBN
     const useCase = new GetEditionLinks(deps);
 
     const result = await useCase.execute({ editionId: 'e1', country: 'GB' });
 
-    expect(result.bookstores).toEqual([]);
+    expect(result.bookstores.length).toBeGreaterThan(0);
+    expect(result.bookstores.every((b) => b.url.includes('War%20and%20Peace'))).toBe(true);
+  });
+
+  it("offers the shops of the countries where this edition's language is the market language", async () => {
+    // A German translation is sold by German shops whether or not the reader lives in Germany.
+    const { deps, editionRepository } = makeDeps();
+    await editionRepository.save(
+      Edition.create({
+        id: 'e-de',
+        workId: 'work-1',
+        title: 'Krieg und Frieden',
+        language: LanguageCode.create('de'),
+        isbn: Isbn.create('9780140447934'),
+      }),
+    );
+    const useCase = new GetEditionLinks(deps);
+
+    const result = await useCase.execute({ editionId: 'e-de', country: 'US' });
+    const providers = result.bookstores.map((b) => b.provider);
+
+    expect(providers).toContain('amazon-us'); // the reader's own country still comes first
+    expect(providers).toContain('thalia'); // …and the German market is offered too
+    expect(providers.indexOf('amazon-us')).toBeLessThan(providers.indexOf('thalia'));
+  });
+
+  it("lists every shop once, even when the reader's country is the language market", async () => {
+    const { deps, editionRepository } = makeDeps();
+    await seedEditionWithIsbn(editionRepository); // English edition
+    const useCase = new GetEditionLinks(deps);
+
+    const providers = (
+      await useCase.execute({ editionId: 'e-isbn', country: 'GB' })
+    ).bookstores.map((b) => b.provider);
+
+    expect(new Set(providers).size).toBe(providers.length);
   });
 
   it('falls back to worldwide stores when no country is given', async () => {
@@ -176,9 +216,12 @@ describe('GetEditionLinks bookstores (country-aware buy links)', () => {
     const useCase = new GetEditionLinks(deps);
 
     const result = await useCase.execute({ editionId: 'e-isbn' });
+    const providers = result.bookstores.map((b) => b.provider);
 
-    expect(result.bookstores.length).toBeGreaterThan(0);
-    expect(result.bookstores.map((b) => b.provider)).not.toContain('waterstones');
+    expect(providers).toContain('abebooks'); // worldwide, always offered
+    // An English edition still reaches the English-language markets — that is the point of the
+    // language pass. What must NOT appear is a market in an unrelated language.
+    expect(providers).not.toContain('thalia');
   });
 
   it("caches per country — switching country must not serve the previous country's stores", async () => {
@@ -189,8 +232,11 @@ describe('GetEditionLinks bookstores (country-aware buy links)', () => {
     const gb = await useCase.execute({ editionId: 'e-isbn', country: 'GB' });
     const de = await useCase.execute({ editionId: 'e-isbn', country: 'DE' });
 
-    expect(gb.bookstores.map((b) => b.provider)).toContain('waterstones');
-    expect(de.bookstores.map((b) => b.provider)).toContain('thalia');
-    expect(de.bookstores.map((b) => b.provider)).not.toContain('waterstones');
+    // The German reader gets German shops first; the English edition still reaches English
+    // markets in both, so the per-country difference is the ordering and the local shops.
+    expect(gb.bookstores[0]!.provider).toBe('bookshop-org-uk');
+    expect(de.bookstores[0]!.provider).toBe('thalia');
+    expect(de.bookstores.map((b) => b.provider)).toContain('amazon-de');
+    expect(gb.bookstores.map((b) => b.provider)).not.toContain('amazon-de');
   });
 });

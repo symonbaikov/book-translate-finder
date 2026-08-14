@@ -1,6 +1,6 @@
 import {
   assertLinkAllowed,
-  bookstoresForCountry,
+  bookstoresFor,
   DomainError,
   NotFoundError,
   ProviderId,
@@ -8,6 +8,7 @@ import {
   type Clock,
   type Edition,
   type EditionRepository,
+  type WorkRepository,
   type SourceLinkRepository,
 } from '@btf/domain';
 import type { UseCase } from '../use-case.js';
@@ -40,6 +41,8 @@ export interface GetEditionLinksOutput {
 
 export interface GetEditionLinksDeps {
   editionRepository: EditionRepository;
+  /** Only for the author name in the title+author shop fallback — see `buildBookstoreLinks`. */
+  workRepository: WorkRepository;
   sourceLinkRepository: SourceLinkRepository;
   cache: CachePort;
   clock: Clock;
@@ -91,7 +94,7 @@ export class GetEditionLinks implements UseCase<GetEditionLinksInput, GetEdition
         url: link.url,
         format: link.format,
       })),
-      bookstores: this.buildBookstoreLinks(edition, country),
+      bookstores: await this.buildBookstoreLinks(edition, country),
     };
 
     await this.deps.cache.set(cacheKey, output, LINKS_TTL_SECONDS);
@@ -106,18 +109,28 @@ export class GetEditionLinks implements UseCase<GetEditionLinksInput, GetEdition
    * docs/legal-policy.md is explicit that an unclear signal must never be read as permission.
    * Without an ISBN there is nothing to look up, so the list is simply empty.
    */
-  private buildBookstoreLinks(edition: Edition, country: string | null): SourceLinkDto[] {
-    const isbn = edition.isbn?.value;
-    if (!isbn) return [];
+  private async buildBookstoreLinks(
+    edition: Edition,
+    country: string | null,
+  ): Promise<SourceLinkDto[]> {
+    // An ISBN is the precise lookup, but its absence is not a reason to show nothing: 16% of real
+    // editions have none (measured live), and those cards used to read as "nobody sells this
+    // book". Falling back to title + author gives the reader the same shop, one search away.
+    let term = edition.isbn?.value ?? '';
+    if (!term) {
+      const work = await this.deps.workRepository.findById(edition.workId);
+      term = `${edition.title} ${work?.author ?? ''}`.trim();
+    }
+    if (!term) return [];
 
     const now = this.deps.clock.now();
-    return bookstoresForCountry(country).flatMap((store) => {
+    return bookstoresFor({ country, language: edition.language.value }).flatMap((store) => {
       try {
         const link = assertLinkAllowed({
           id: `${edition.id}-${store.id}`,
           editionId: edition.id,
           type: 'buy',
-          url: store.buildUrl(isbn),
+          url: store.buildUrl(term),
           provider: ProviderId.create(store.id),
           rightsStatus: 'copyrighted',
           verifiedAt: now,

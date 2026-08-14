@@ -37,8 +37,13 @@ export interface Bookstore {
   name: string;
   /** Country this store serves, or `WORLDWIDE`. */
   country: CountryCode | typeof WORLDWIDE;
-  /** Builds the ISBN lookup URL. Kept as a function so odd URL shapes stay expressible. */
-  buildUrl: (isbn: string) => string;
+  /**
+   * Builds a lookup URL for any search term — an ISBN when the edition has one, otherwise
+   * "title author". The fallback matters more than it looks: 16% of editions in a real database
+   * carry no ISBN (measured live), and those editions used to show no shops at all, which read as
+   * "nobody sells this book" rather than "we have no ISBN to look up".
+   */
+  buildUrl: (term: string) => string;
 }
 
 /**
@@ -51,7 +56,14 @@ function store(
   country: CountryCode | typeof WORLDWIDE,
   template: string,
 ): Bookstore {
-  return { id, name, country, buildUrl: (isbn) => template.replace('{isbn}', isbn) };
+  return {
+    id,
+    name,
+    country,
+    // Encoded because the term is no longer always a bare ISBN — "Le Petit Prince, Saint-Exupéry"
+    // has spaces, commas and accents that would otherwise break the URL.
+    buildUrl: (term) => template.replace('{isbn}', encodeURIComponent(term)),
+  };
 }
 
 /**
@@ -257,13 +269,104 @@ export function supportedBookstoreCountries(): CountryCode[] {
 }
 
 /**
- * Stores to offer for `country`: that country's own stores first (most useful — local currency,
- * local shipping), then the worldwide ones. An unknown/absent country yields worldwide only,
- * which is a sensible neutral default rather than an error.
+ * The book-market language of each country in the catalog — which language a reader is most
+ * likely to find on those shelves. Deliberately one language per country: this drives "who sells
+ * this German edition", and listing every language spoken somewhere would make the answer
+ * meaningless. Countries whose market is chiefly English are grouped under `en`.
  */
+const COUNTRY_MARKET_LANGUAGE: Readonly<Record<string, string>> = {
+  AE: 'ar',
+  AR: 'es',
+  AT: 'de',
+  AU: 'en',
+  BE: 'nl',
+  BG: 'bg',
+  BR: 'pt',
+  CA: 'en',
+  CH: 'de',
+  CL: 'es',
+  CN: 'zh',
+  CO: 'es',
+  CZ: 'cs',
+  DE: 'de',
+  DK: 'da',
+  EE: 'et',
+  EG: 'ar',
+  ES: 'es',
+  FI: 'fi',
+  FR: 'fr',
+  GB: 'en',
+  GR: 'el',
+  HU: 'hu',
+  ID: 'id',
+  IE: 'en',
+  IN: 'en',
+  IT: 'it',
+  JP: 'ja',
+  KR: 'ko',
+  LT: 'lt',
+  MX: 'es',
+  NL: 'nl',
+  NO: 'no',
+  NZ: 'en',
+  PL: 'pl',
+  PT: 'pt',
+  RO: 'ro',
+  RU: 'ru',
+  SA: 'ar',
+  SE: 'sv',
+  SG: 'en',
+  SK: 'sk',
+  TR: 'tr',
+  TW: 'zh',
+  UA: 'uk',
+  US: 'en',
+  ZA: 'en',
+};
+
+/** Countries whose book market is chiefly in `language`. */
+export function countriesForMarketLanguage(language: string): CountryCode[] {
+  const normalized = language.trim().toLowerCase();
+  return Object.entries(COUNTRY_MARKET_LANGUAGE)
+    .filter(([, marketLanguage]) => marketLanguage === normalized)
+    .map(([country]) => country)
+    .sort();
+}
+
+export interface BookstoreQuery {
+  /** ISO 3166-1 alpha-2 country the reader shops in, if they picked one. */
+  country?: CountryCode | null;
+  /** The edition's language — decides which national markets actually stock it. */
+  language?: string | null;
+}
+
+/**
+ * Stores to offer for one edition, in the order a reader wants them:
+ *
+ * 1. their own country's shops — local currency, local shipping, no import;
+ * 2. shops in the countries where this edition's language is the market language, because a
+ *    German translation is sold by German shops whether or not the reader lives there. This is
+ *    the whole reason the answer used to look empty: a reader in Poland opening a Spanish edition
+ *    was shown Polish shops that do not carry it, or nothing at all;
+ * 3. the worldwide shops, which ship anywhere.
+ *
+ * De-duplicated by id, so a reader in Germany looking at a German edition sees each shop once.
+ */
+export function bookstoresFor(query: BookstoreQuery): Bookstore[] {
+  const country = query.country?.trim().toUpperCase() || null;
+  const languageCountries = query.language ? countriesForMarketLanguage(query.language) : [];
+
+  const ordered = [
+    ...(country ? BOOKSTORES.filter((s) => s.country === country) : []),
+    ...BOOKSTORES.filter((s) => s.country !== country && languageCountries.includes(s.country)),
+    ...BOOKSTORES.filter((s) => s.country === WORLDWIDE),
+  ];
+
+  const seen = new Set<string>();
+  return ordered.filter((s) => !seen.has(s.id) && seen.add(s.id));
+}
+
+/** Country-only lookup, kept for callers that have no edition in hand. */
 export function bookstoresForCountry(country: CountryCode | null): Bookstore[] {
-  const normalized = country?.trim().toUpperCase() ?? null;
-  const local = normalized ? BOOKSTORES.filter((s) => s.country === normalized) : [];
-  const worldwide = BOOKSTORES.filter((s) => s.country === WORLDWIDE);
-  return [...local, ...worldwide];
+  return bookstoresFor({ country });
 }
