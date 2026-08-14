@@ -12,11 +12,13 @@ import {
   createBullMqConnection,
   createDb,
   createRedisClient,
+  createResilientFetcher,
   PgEditionRepository,
   PgExternalRefRepository,
   PgIdempotencyStore,
   PgSourceLinkRepository,
   PgWorkRepository,
+  OpenLibrarySubjectSource,
   PgSubjectBrowseAdapter,
   PgWorkSearchAdapter,
   RedisCache,
@@ -114,7 +116,16 @@ export function buildApiContext(env: ApiEnv): ApiContext {
 
   const subjectBrowse = new PgSubjectBrowseAdapter(db.db);
   const listSubjects = new ListSubjects({ subjectBrowse, cache });
-  const browseBySubject = new BrowseBySubject({ subjectBrowse, cache });
+  const browseBySubject = new BrowseBySubject({
+    subjectBrowse,
+    cache,
+    subjectSource: new OpenLibrarySubjectSource(
+      createResilientFetcher(),
+      cache,
+      `BookTranslateFinder/0.1 (+${env.CONTACT_URL})`,
+    ),
+    backfillQueue,
+  });
   const recommendBooks = new RecommendBooks({ subjectBrowse, cache });
 
   const idGenerator = new Uuid7Generator();

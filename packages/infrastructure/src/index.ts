@@ -63,3 +63,4 @@ export {
   PgUserRepository,
 } from './repositories/pg-auth-repositories.js';
 export { PgSubjectBrowseAdapter } from './repositories/pg-subject-browse-adapter.js';
+export { OpenLibrarySubjectSource } from './providers/open-library-subject-source.js';

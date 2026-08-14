@@ -31,6 +31,10 @@ export interface FeaturedBook {
 export const FEATURED_BOOKS: readonly FeaturedBook[] = [
   // --- Notable books, newest year first --------------------------------------
   // 2024
+  { title: 'Funny Story', author: 'Emily Henry', year: 2024, list: 'books-of-the-year' },
+  { title: 'The Women', author: 'Kristin Hannah', year: 2024, list: 'books-of-the-year' },
+  { title: 'You Like It Darker', author: 'Stephen King', year: 2024, list: 'books-of-the-year' },
+  { title: 'Held', author: 'Anne Michaels', year: 2024, list: 'books-of-the-year' },
   { title: 'James', author: 'Percival Everett', year: 2024, list: 'books-of-the-year' },
   {
     title: 'The Ministry of Time',
@@ -43,6 +47,20 @@ export const FEATURED_BOOKS: readonly FeaturedBook[] = [
   { title: 'Wandering Stars', author: 'Tommy Orange', year: 2024, list: 'books-of-the-year' },
   { title: 'All Fours', author: 'Miranda July', year: 2024, list: 'books-of-the-year' },
   // 2023
+  {
+    title: 'The Covenant of Water',
+    author: 'Abraham Verghese',
+    year: 2023,
+    list: 'books-of-the-year',
+  },
+  { title: 'Tom Lake', author: 'Ann Patchett', year: 2023, list: 'books-of-the-year' },
+  {
+    title: 'The Heaven & Earth Grocery Store',
+    author: 'James McBride',
+    year: 2023,
+    list: 'books-of-the-year',
+  },
+  { title: 'Happy Place', author: 'Emily Henry', year: 2023, list: 'books-of-the-year' },
   { title: 'Yellowface', author: 'R. F. Kuang', year: 2023, list: 'books-of-the-year' },
   { title: 'Prophet Song', author: 'Paul Lynch', year: 2023, list: 'books-of-the-year' },
   { title: 'The Bee Sting', author: 'Paul Murray', year: 2023, list: 'books-of-the-year' },
@@ -50,6 +68,15 @@ export const FEATURED_BOOKS: readonly FeaturedBook[] = [
   { title: 'Hello Beautiful', author: 'Ann Napolitano', year: 2023, list: 'books-of-the-year' },
   { title: 'Fourth Wing', author: 'Rebecca Yarros', year: 2023, list: 'books-of-the-year' },
   // 2022
+  {
+    title: 'The Marriage Portrait',
+    author: 'Maggie O’Farrell',
+    year: 2022,
+    list: 'books-of-the-year',
+  },
+  { title: 'Our Missing Hearts', author: 'Celeste Ng', year: 2022, list: 'books-of-the-year' },
+  { title: 'The Candy House', author: 'Jennifer Egan', year: 2022, list: 'books-of-the-year' },
+  { title: 'Bliss Montage', author: 'Ling Ma', year: 2022, list: 'books-of-the-year' },
   {
     title: 'Tomorrow, and Tomorrow, and Tomorrow',
     author: 'Gabrielle Zevin',
@@ -72,6 +99,15 @@ export const FEATURED_BOOKS: readonly FeaturedBook[] = [
   { title: 'Babel', author: 'R. F. Kuang', year: 2022, list: 'books-of-the-year' },
   { title: 'Trust', author: 'Hernan Diaz', year: 2022, list: 'books-of-the-year' },
   // 2021
+  {
+    title: 'No One Is Talking About This',
+    author: 'Patricia Lockwood',
+    year: 2021,
+    list: 'books-of-the-year',
+  },
+  { title: 'Harlem Shuffle', author: 'Colson Whitehead', year: 2021, list: 'books-of-the-year' },
+  { title: 'Great Circle', author: 'Maggie Shipstead', year: 2021, list: 'books-of-the-year' },
+  { title: 'The Every', author: 'Dave Eggers', year: 2021, list: 'books-of-the-year' },
   { title: 'Klara and the Sun', author: 'Kazuo Ishiguro', year: 2021, list: 'books-of-the-year' },
   { title: 'Project Hail Mary', author: 'Andy Weir', year: 2021, list: 'books-of-the-year' },
   { title: 'The Lincoln Highway', author: 'Amor Towles', year: 2021, list: 'books-of-the-year' },
@@ -84,6 +120,15 @@ export const FEATURED_BOOKS: readonly FeaturedBook[] = [
   },
   { title: 'Crossroads', author: 'Jonathan Franzen', year: 2021, list: 'books-of-the-year' },
   // 2020
+  { title: 'Transcendent Kingdom', author: 'Yaa Gyasi', year: 2020, list: 'books-of-the-year' },
+  { title: 'Luster', author: 'Raven Leilani', year: 2020, list: 'books-of-the-year' },
+  { title: 'Homeland Elegies', author: 'Ayad Akhtar', year: 2020, list: 'books-of-the-year' },
+  {
+    title: 'The Discomfort of Evening',
+    author: 'Marieke Lucas Rijneveld',
+    year: 2020,
+    list: 'books-of-the-year',
+  },
   { title: 'Hamnet', author: 'Maggie O’Farrell', year: 2020, list: 'books-of-the-year' },
   { title: 'The Midnight Library', author: 'Matt Haig', year: 2020, list: 'books-of-the-year' },
   { title: 'Piranesi', author: 'Susanna Clarke', year: 2020, list: 'books-of-the-year' },
@@ -96,6 +141,10 @@ export const FEATURED_BOOKS: readonly FeaturedBook[] = [
     list: 'books-of-the-year',
   },
   // 2019
+  { title: 'The Nickel Boys', author: 'Colson Whitehead', year: 2019, list: 'books-of-the-year' },
+  { title: 'Machines Like Me', author: 'Ian McEwan', year: 2019, list: 'books-of-the-year' },
+  { title: 'Trust Exercise', author: 'Susan Choi', year: 2019, list: 'books-of-the-year' },
+  { title: 'The Institute', author: 'Stephen King', year: 2019, list: 'books-of-the-year' },
   { title: 'The Testaments', author: 'Margaret Atwood', year: 2019, list: 'books-of-the-year' },
   {
     title: 'Girl, Woman, Other',
@@ -118,6 +167,15 @@ export const FEATURED_BOOKS: readonly FeaturedBook[] = [
   },
   { title: 'The Dutch House', author: 'Ann Patchett', year: 2019, list: 'books-of-the-year' },
   // 2018
+  { title: 'The Overstory', author: 'Richard Powers', year: 2018, list: 'books-of-the-year' },
+  { title: 'Washington Black', author: 'Esi Edugyan', year: 2018, list: 'books-of-the-year' },
+  { title: 'An American Marriage', author: 'Tayari Jones', year: 2018, list: 'books-of-the-year' },
+  {
+    title: 'My Sister, the Serial Killer',
+    author: 'Oyinkan Braithwaite',
+    year: 2018,
+    list: 'books-of-the-year',
+  },
   { title: 'Circe', author: 'Madeline Miller', year: 2018, list: 'books-of-the-year' },
   { title: 'Normal People', author: 'Sally Rooney', year: 2018, list: 'books-of-the-year' },
   { title: 'Educated', author: 'Tara Westover', year: 2018, list: 'books-of-the-year' },

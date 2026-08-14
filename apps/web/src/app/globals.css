@@ -173,21 +173,48 @@ input[type='search'] {
   max-width: 34rem;
 }
 
+/* Every text-entry type, listed out. Styling only `[type='search']` and `input:not([type])` left
+   the sign-in form's email and password fields as raw browser defaults — white, square, and
+   nothing like the rest of the site. */
 input[type='search'],
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='number'],
 input:not([type]),
 select {
   font: inherit;
+  /* Comfortably above the 16px below which iOS Safari zooms the page on focus — a "helpful"
+     behaviour that throws the reader out of the layout mid-sign-in. */
+  font-size: 1.05rem;
   color: inherit;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 10px;
-  padding: 0.65rem 0.9rem;
+  border-radius: 14px;
+  padding: 0.85rem 1.05rem;
   transition:
     border-color 0.15s ease,
     box-shadow 0.15s ease;
 }
 
+/* The sign-in form is the one place a reader types something they must get exactly right, so its
+   fields are given the full width of the form and a little more height than elsewhere. */
+.auth-form input {
+  width: 100%;
+  padding: 0.95rem 1.1rem;
+}
+
+.auth-form button[type='submit'] {
+  font-size: 1.02rem;
+  padding: 0.85rem 1.4rem;
+  border-radius: 14px;
+}
+
 input[type='search']:focus-visible,
+input[type='text']:focus-visible,
+input[type='email']:focus-visible,
+input[type='password']:focus-visible,
+input[type='number']:focus-visible,
 input:not([type]):focus-visible,
 select:focus-visible {
   outline: none;

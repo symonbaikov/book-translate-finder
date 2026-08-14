@@ -41,6 +41,19 @@ them before the API starts).
 
 ### Fixed
 
+- **A genre tag showed one or two books.** The browse page refused to fetch anything, on the
+  stated grounds that "a genre is not a query any source can answer". That was simply wrong: Open
+  Library has `/subjects/{name}.json`, which reports 3,979 works for "greeks" alone. A thin tag
+  page now queues that subject's best-known works through the ordinary sync pipeline. Measured
+  live: _Greeks_ went from 1 book to 13, led by the _Iliad_.
+- **Genre pages are ordered by how widely a book was published**, not by year. Edition count is
+  the only popularity signal open data actually provides, it is a fact the source states rather
+  than a ranking invented here, and it is how Open Library itself orders a subject.
+- **The sign-in fields looked unstyled** — white, square, small. Only `input[type='search']` and
+  untyped inputs were covered by the stylesheet, so email and password fell back to browser
+  defaults. Every text-entry type is now styled, larger, and rounded, at a font size above the
+  point where iOS Safari zooms the page on focus.
+
 - **"Books of the year" showed one book per year.** The curated catalogue literally held one entry
   per year, which read as a verdict this project has no standing to deliver. It now carries six
   notable books for each year from 2018 to 2024, and `pnpm db:seed:catalog` seeds them, so a fresh

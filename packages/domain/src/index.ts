@@ -122,3 +122,4 @@ export {
   type FeaturedBook,
   type FeaturedList,
 } from './policy/featured-books-catalog.js';
+export type { SubjectSourcePort, SubjectWork } from './ports/subject-source.port.js';

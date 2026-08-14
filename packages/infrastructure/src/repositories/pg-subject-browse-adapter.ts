@@ -48,7 +48,13 @@ export class PgSubjectBrowseAdapter implements SubjectBrowsePort {
           ? sql`AND EXISTS (SELECT 1 FROM edition e WHERE e.work_id = w.id AND e.language = ${query.language})`
           : sql``
       }
-      ORDER BY w.first_published_year DESC NULLS LAST, w.original_title ASC
+      -- Most-published first. Edition count is the only popularity signal open data actually
+      -- provides, it is a fact rather than a ranking this project invented, and it is how Open
+      -- Library itself orders a subject. Year breaks ties so two equally-published books are not
+      -- ordered arbitrarily.
+      ORDER BY (SELECT count(*) FROM edition e2 WHERE e2.work_id = w.id) DESC,
+               w.first_published_year DESC NULLS LAST,
+               w.original_title ASC
       LIMIT ${query.limit}
     `);
 
