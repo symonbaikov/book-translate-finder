@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import './globals.css';
+import { SessionProvider } from '../components/SessionProvider';
+import { SiteHeader } from '../components/SiteHeader';
 
 export const metadata: Metadata = {
   title: 'BookTranslate Finder',
@@ -28,7 +30,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <a className="skip-link" href="#main-content">
           Skip to content
         </a>
-        {children}
+        <SessionProvider>
+          <SiteHeader />
+          {children}
+        </SessionProvider>
         <footer className="site-footer">
           <div className="container">
             <p className="muted" style={{ fontSize: '0.85em', marginTop: 0 }}>

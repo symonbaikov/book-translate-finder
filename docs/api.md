@@ -178,3 +178,21 @@ curl -X POST 'http://localhost:3001/api/sync/open-library' \
 
 - `GET /health/live` — the process is alive.
 - `GET /health/ready` — alive and can see Postgres and Redis (for orchestrators and external monitoring).
+
+## Accounts and bookmarks
+
+All of these use a session cookie (`btf_session`), which is HttpOnly, SameSite=Lax, and marked
+`Secure` only when `PUBLIC_URL` is https — a `Secure` cookie is never sent over plain http, which
+would silently sign everyone out on a local run.
+
+| Method   | Path                        | Notes                                                                                                                                                     |
+| -------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET`    | `/api/auth/me`              | Current user or `null`, plus `googleEnabled` for this instance                                                                                            |
+| `POST`   | `/api/auth/register`        | `{email, password, displayName?}` — 409 if the address is taken                                                                                           |
+| `POST`   | `/api/auth/login`           | `{email, password}` — 400 with one message for both "no such account" and "wrong password", so it cannot be used to test whether an address is registered |
+| `POST`   | `/api/auth/logout`          | Ends the session server-side and clears the cookie                                                                                                        |
+| `GET`    | `/api/auth/google/start`    | Redirects to Google. 400 when the instance has no Google credentials                                                                                      |
+| `GET`    | `/api/auth/google/callback` | Redirects back to the web app; failures land on `/login?error=…`                                                                                          |
+| `GET`    | `/api/bookmarks`            | The reader's saved works, newest first. 401 when signed out                                                                                               |
+| `POST`   | `/api/bookmarks/:workId`    | Idempotent — saving twice yields one bookmark                                                                                                             |
+| `DELETE` | `/api/bookmarks/:workId`    | Removing something already gone is a success, not a 404                                                                                                   |

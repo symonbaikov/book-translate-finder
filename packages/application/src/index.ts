@@ -71,3 +71,14 @@ export {
   type ProcessBackfillJobOutput,
   type SourceSyncRunner,
 } from './use-cases/process-backfill-job.use-case.js';
+export {
+  AuthService,
+  BookmarkService,
+  MIN_PASSWORD_LENGTH,
+  SESSION_TTL_DAYS,
+  type AuthDeps,
+  type AuthenticatedUser,
+  type BookmarkDeps,
+  type BookmarkListItem,
+  type SignInResult,
+} from './use-cases/auth.use-cases.js';

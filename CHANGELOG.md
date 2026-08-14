@@ -18,6 +18,19 @@ them before the API starts).
 
 ### Added
 
+- **Accounts and saved books.** Sign in with an email and password, or with Google where the
+  instance is configured for it, and keep the books you find. Saving is idempotent by
+  `(user, work)`, so a double click or a retried request cannot produce two entries. Sessions are
+  server-side and opaque, so signing out really ends them.
+  - Google sign-in appears only when `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are both set —
+    a `docker compose up` instance with neither simply offers email and password.
+  - The welcome email is sent only when `SMTP_URL` is set, and a failure to send never blocks
+    registration: a self-hosted instance must work without mail credentials.
+  - Passwords are scrypt-hashed with `node:crypto` — no native addon, so `pnpm install` keeps
+    working everywhere. Session tokens are stored only as SHA-256.
+  - A soft invitation to sign in appears under search results, once there is something worth
+    keeping. Nothing on the site requires an account.
+
 - **A footer that says what this is.** The GitHub mark, "Open source — MIT licensed,
   self-hostable", and a link to the repository. The mark is inlined SVG: the page must stay
   renderable with no third-party requests.

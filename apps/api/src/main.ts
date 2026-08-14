@@ -46,7 +46,13 @@ async function bootstrap(): Promise<void> {
   // ever got a chance, turning every `NotFoundError`/etc. into a generic 500. Order here is
   // therefore intentionally [catch-all, specific].
   app.useGlobalFilters(new UnhandledErrorFilter(logger), new DomainErrorFilter(logger));
-  app.enableCors({ origin: env.NODE_ENV === 'development' ? true : env.PUBLIC_URL });
+  // `credentials` is required for the session cookie to travel at all: apps/web runs on its own
+  // origin in development, and a cross-origin fetch drops cookies unless both sides opt in. In a
+  // self-hosted deployment the reverse proxy puts both behind one origin and this is moot.
+  app.enableCors({
+    origin: env.NODE_ENV === 'development' ? true : [env.PUBLIC_URL, env.WEB_BASE_URL],
+    credentials: true,
+  });
 
   // Standard security headers on every response (docs/plan.md Phase 3 security audit). This is a
   // pure JSON API: nosniff stops content-type confusion, DENY stops framing, the restrictive CSP

@@ -43,3 +43,21 @@ export { PgSourceLinkRepository } from './repositories/pg-source-link-repository
 export { PgSyncLogRepository } from './repositories/pg-sync-log-repository.js';
 export { PgWorkRepository } from './repositories/pg-work-repository.js';
 export { PgWorkSearchAdapter } from './repositories/pg-work-search-adapter.js';
+
+export { ScryptPasswordHasher } from './auth/scrypt-password-hasher.js';
+export { CryptoTokenGenerator } from './auth/crypto-token-generator.js';
+export {
+  GoogleOAuthClient,
+  GoogleOAuthError,
+  type GoogleOAuthConfig,
+} from './auth/google-oauth-client.js';
+export {
+  NoopEmailSender,
+  SmtpEmailSender,
+  type SmtpEmailSenderOptions,
+} from './email/email-senders.js';
+export {
+  PgBookmarkRepository,
+  PgSessionRepository,
+  PgUserRepository,
+} from './repositories/pg-auth-repositories.js';

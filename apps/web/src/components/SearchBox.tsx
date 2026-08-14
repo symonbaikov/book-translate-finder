@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { SearchHit } from '@btf/contracts';
 import Link from 'next/link';
+import { useSession } from './SessionProvider';
 import { ApiRequestError, searchWorks } from '../lib/api-client';
 import { CoverImage, CoverSkeleton } from './CoverImage';
 
@@ -174,26 +175,47 @@ function SearchResults({ state, onRetry }: { state: SearchState; onRetry: () => 
       return <p className="error-box">{state.message}</p>;
     case 'found':
       return (
-        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-          {state.results.map((hit) => (
-            <li key={hit.id} className="card animate-in">
-              <div className="media-row">
-                <CoverImage src={hit.coverUrl} alt="" width={56} height={84} />
-                <div className="media-row__body">
-                  <Link href={`/works/${hit.id}`}>
-                    <strong>{hit.originalTitle}</strong>
-                  </Link>
-                  <div className="muted">
-                    {hit.author}
-                    {hit.firstPublishedYear ? `, ${hit.firstPublishedYear}` : ''}
+        <>
+          <SignInPrompt />
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+            {state.results.map((hit) => (
+              <li key={hit.id} className="card animate-in">
+                <div className="media-row">
+                  <CoverImage src={hit.coverUrl} alt="" width={56} height={84} />
+                  <div className="media-row__body">
+                    <Link href={`/works/${hit.id}`}>
+                      <strong>{hit.originalTitle}</strong>
+                    </Link>
+                    <div className="muted">
+                      {hit.author}
+                      {hit.firstPublishedYear ? `, ${hit.firstPublishedYear}` : ''}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </li>
-          ))}
-        </ul>
+              </li>
+            ))}
+          </ul>
+        </>
       );
     default:
       return null;
   }
+}
+
+/**
+ * The invitation to sign in, shown once results exist — at the moment the reader has something
+ * worth keeping, not on an empty page where it is just noise. It is an offer, not a gate: nothing
+ * on this site requires an account, and the wording says what they gain rather than what they are
+ * missing. Signed-in readers never see it.
+ */
+function SignInPrompt() {
+  const { user, loading } = useSession();
+  if (loading || user) return null;
+
+  return (
+    <p className="signin-prompt">
+      <Link href="/login">Sign in</Link> to save the books you find here and come back to them — and
+      to compare editions from different years side by side before you choose one.
+    </p>
+  );
 }

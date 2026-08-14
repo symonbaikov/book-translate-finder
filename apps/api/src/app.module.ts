@@ -1,6 +1,7 @@
 import { Module, type DynamicModule } from '@nestjs/common';
 import type { ApiContext } from './composition-root.js';
 import type { ApiEnv } from './config/api-env.schema.js';
+import { AuthModule } from './auth/auth.module.js';
 import { EditionsModule } from './editions/editions.module.js';
 import { HealthModule } from './health/health.module.js';
 import { InfrastructureModule } from './infrastructure.module.js';
@@ -20,6 +21,7 @@ export class AppModule {
         WorksModule,
         EditionsModule,
         SyncModule,
+        AuthModule,
       ],
     };
   }

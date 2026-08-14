@@ -1,5 +1,14 @@
 import {
   BullMqQueue,
+  CryptoTokenGenerator,
+  GoogleOAuthClient,
+  NoopEmailSender,
+  PgBookmarkRepository,
+  PgSessionRepository,
+  PgUserRepository,
+  ScryptPasswordHasher,
+  SmtpEmailSender,
+  Uuid7Generator,
   createBullMqConnection,
   createDb,
   createRedisClient,
@@ -14,6 +23,8 @@ import {
   type DbHandle,
 } from '@btf/infrastructure';
 import {
+  AuthService,
+  BookmarkService,
   EnqueueSourceSync,
   GetEditionLinks,
   GetWorkCard,
@@ -32,6 +43,12 @@ export interface ApiContext {
   listEditionsForWork: ListEditionsForWork;
   getEditionLinks: GetEditionLinks;
   enqueueSourceSync: EnqueueSourceSync;
+  authService: AuthService;
+  bookmarkService: BookmarkService;
+  workRepository: PgWorkRepository;
+  authConfig: { webBaseUrl: string; secureCookies: boolean };
+  /** Null unless both Google credentials are configured — see AuthController. */
+  googleOAuth: GoogleOAuthClient | null;
   close: () => Promise<void>;
 }
 
@@ -77,6 +94,43 @@ export function buildApiContext(env: ApiEnv): ApiContext {
   });
   const enqueueSourceSync = new EnqueueSourceSync({ idempotencyStore, syncQueue, clock });
 
+  const idGenerator = new Uuid7Generator();
+  // No SMTP configured is the documented self-hosting default, not a misconfiguration: sign-up
+  // must work on a fresh `docker compose up` (CLAUDE.md), so the greeting is simply skipped.
+  const emailSender = env.SMTP_URL
+    ? new SmtpEmailSender({
+        smtpUrl: env.SMTP_URL,
+        from: env.MAIL_FROM,
+        publicUrl: env.PUBLIC_URL,
+      })
+    : new NoopEmailSender();
+
+  const authService = new AuthService({
+    userRepository: new PgUserRepository(db.db),
+    sessionRepository: new PgSessionRepository(db.db),
+    passwordHasher: new ScryptPasswordHasher(),
+    tokenGenerator: new CryptoTokenGenerator(),
+    emailSender,
+    idGenerator,
+    clock,
+  });
+
+  const bookmarkService = new BookmarkService({
+    bookmarkRepository: new PgBookmarkRepository(db.db),
+    workRepository,
+    clock,
+  });
+
+  // Both halves or neither: a button that always fails is worse than no button at all.
+  const googleOAuth =
+    env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
+      ? new GoogleOAuthClient({
+          clientId: env.GOOGLE_CLIENT_ID,
+          clientSecret: env.GOOGLE_CLIENT_SECRET,
+          redirectUri: `${env.PUBLIC_URL.replace(/\/$/, '')}/api/auth/google/callback`,
+        })
+      : null;
+
   return {
     db,
     cacheRedis,
@@ -86,6 +140,16 @@ export function buildApiContext(env: ApiEnv): ApiContext {
     listEditionsForWork,
     getEditionLinks,
     enqueueSourceSync,
+    authService,
+    bookmarkService,
+    workRepository,
+    authConfig: {
+      webBaseUrl: env.WEB_BASE_URL.replace(/\/$/, ''),
+      // A `Secure` cookie is never sent over plain http, so marking it on a local run would sign
+      // everyone out silently. TLS in production is the reverse proxy's job (docker/Caddyfile).
+      secureCookies: env.PUBLIC_URL.startsWith('https://'),
+    },
+    googleOAuth,
     close: async () => {
       await syncQueue.close();
       await backfillQueue.close();

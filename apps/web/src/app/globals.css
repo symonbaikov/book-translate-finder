@@ -566,3 +566,61 @@ button.button--secondary:active {
   font-size: 0.82em;
   font-weight: 600;
 }
+
+/* Header. One row: what this is, and the reader's account. Nothing else belongs here — the search
+   box lives on the page it serves, not in a chrome that follows people around. */
+.site-header {
+  border-bottom: 1px solid var(--color-border, rgba(127, 127, 127, 0.25));
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.9rem;
+  padding-bottom: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.site-header__brand {
+  font-weight: 650;
+  text-decoration: none;
+  color: inherit;
+}
+
+.site-header__nav {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  font-size: 0.9rem;
+}
+
+.auth-form {
+  max-width: 26rem;
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+/* A button that is semantically a button but reads as a link — used for the sign-in/register
+   toggle, which changes state on this page rather than navigating anywhere. */
+.link-button {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--color-primary);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* The soft invitation on search results. Muted on purpose: it is an offer, not a gate. */
+.signin-prompt {
+  margin: 1rem 0;
+  padding: 0.8rem 1rem;
+  border: 1px dashed var(--color-border, rgba(127, 127, 127, 0.35));
+  border-radius: 10px;
+  font-size: 0.9rem;
+}

@@ -94,3 +94,18 @@ export {
   RIGHTS_STATUSES,
   type RightsStatus,
 } from './value-objects/rights-status.js';
+
+export { EmailAddress } from './value-objects/email-address.js';
+export { User, type CreateUserParams } from './entities/user.js';
+export { Session, type CreateSessionParams } from './entities/session.js';
+export { Bookmark, type CreateBookmarkParams } from './entities/bookmark.js';
+export type {
+  BookmarkRepository,
+  EmailSender,
+  PasswordHasher,
+  SessionRepository,
+  TokenGenerator,
+  UserRepository,
+  VerifiedGoogleProfile,
+  WelcomeEmail,
+} from './ports/auth.port.js';

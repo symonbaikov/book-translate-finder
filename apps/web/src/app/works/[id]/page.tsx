@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import type { EditionSummary } from '@btf/contracts';
 import { CountrySelector } from '../../../components/CountrySelector';
 import { EditionComparison } from '../../../components/EditionComparison';
+import { BookmarkButton } from '../../../components/BookmarkButton';
 import { CoverImage } from '../../../components/CoverImage';
 import { EditionLinks } from '../../../components/EditionLinks';
 import { getWorkCard, listEditions } from '../../../lib/api-client';
@@ -71,6 +72,9 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
               ))}
             </ul>
           )}
+          <div style={{ marginTop: '0.8rem' }}>
+            <BookmarkButton workId={work.id} />
+          </div>
           {work.sources.length > 0 && (
             <p className="muted" style={{ fontSize: '0.85em' }}>
               Data sources: {work.sources.join(', ')}

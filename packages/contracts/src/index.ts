@@ -43,3 +43,4 @@ export {
   type EditionSummary,
   type WorkCardResponse,
 } from './work.contract.js';
+export * from './auth.contract.js';

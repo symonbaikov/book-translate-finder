@@ -185,3 +185,65 @@ export const idempotencyKey = pgTable(
   },
   (table) => [primaryKey({ columns: [table.key, table.endpoint] })],
 );
+
+/**
+ * Accounts exist for one reason — bookmarks that survive a browser (docs/plan.md Phase 4.5).
+ * There are no roles and no profile fields: adding them later should be a deliberate decision.
+ */
+export const appUser = pgTable(
+  'app_user',
+  {
+    id: text('id').primaryKey(),
+    /** Stored lowercased by `EmailAddress`; the unique index is what makes that identity. */
+    email: text('email').notNull(),
+    displayName: text('display_name').notNull(),
+    /** Scrypt hash, or null for a Google-only account. */
+    passwordHash: text('password_hash'),
+    /** Google's stable `sub`. Not the email — people change their Google address. */
+    googleSubject: text('google_subject'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
+  },
+  (table) => [
+    unique('app_user_email_key').on(table.email),
+    uniqueIndex('app_user_google_subject_key')
+      .on(table.googleSubject)
+      .where(sql`${table.googleSubject} IS NOT NULL`),
+  ],
+);
+
+export const session = pgTable(
+  'session',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => appUser.id, { onDelete: 'cascade' }),
+    /** SHA-256 of the cookie token — the token itself is never stored. */
+    tokenHash: text('token_hash').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+  },
+  (table) => [
+    unique('session_token_hash_key').on(table.tokenHash),
+    index('session_expires_at_idx').on(table.expiresAt),
+  ],
+);
+
+export const bookmark = pgTable(
+  'bookmark',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => appUser.id, { onDelete: 'cascade' }),
+    workId: text('work_id')
+      .notNull()
+      .references(() => work.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
+  },
+  (table) => [
+    // The composite key IS the idempotency: saving twice cannot produce two rows, so nothing
+    // above this needs de-duplication logic (docs/rules.md §2.2).
+    primaryKey({ columns: [table.userId, table.workId] }),
+    index('bookmark_user_created_idx').on(table.userId, table.createdAt),
+  ],
+);
