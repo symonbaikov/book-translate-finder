@@ -352,18 +352,42 @@ export interface BookstoreQuery {
  *
  * De-duplicated by id, so a reader in Germany looking at a German edition sees each shop once.
  */
-export function bookstoresFor(query: BookstoreQuery): Bookstore[] {
+export type BookstoreGroup = 'country' | 'language' | 'worldwide';
+
+/** A store together with why it is being offered, so the UI can label the reader's own choice. */
+export interface GroupedBookstore {
+  store: Bookstore;
+  group: BookstoreGroup;
+}
+
+export function bookstoresForGrouped(query: BookstoreQuery): GroupedBookstore[] {
   const country = query.country?.trim().toUpperCase() || null;
   const languageCountries = query.language ? countriesForMarketLanguage(query.language) : [];
 
-  const ordered = [
-    ...(country ? BOOKSTORES.filter((s) => s.country === country) : []),
-    ...BOOKSTORES.filter((s) => s.country !== country && languageCountries.includes(s.country)),
-    ...BOOKSTORES.filter((s) => s.country === WORLDWIDE),
+  const ordered: GroupedBookstore[] = [
+    ...(country
+      ? BOOKSTORES.filter((s) => s.country === country).map((store): GroupedBookstore => ({
+          store,
+          group: 'country',
+        }))
+      : []),
+    ...BOOKSTORES.filter((s) => s.country !== country && languageCountries.includes(s.country)).map(
+      (store): GroupedBookstore => ({ store, group: 'language' }),
+    ),
+    ...BOOKSTORES.filter((s) => s.country === WORLDWIDE).map((store): GroupedBookstore => ({
+      store,
+      group: 'worldwide',
+    })),
   ];
 
+  // First occurrence wins, so a shop that is both the reader's country and the language market
+  // is labelled as theirs — the stronger reason to show it.
   const seen = new Set<string>();
-  return ordered.filter((s) => !seen.has(s.id) && seen.add(s.id));
+  return ordered.filter((s) => !seen.has(s.store.id) && seen.add(s.store.id));
+}
+
+export function bookstoresFor(query: BookstoreQuery): Bookstore[] {
+  return bookstoresForGrouped(query).map((s) => s.store);
 }
 
 /** Country-only lookup, kept for callers that have no edition in hand. */

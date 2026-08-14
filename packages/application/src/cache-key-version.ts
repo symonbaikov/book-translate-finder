@@ -10,4 +10,4 @@
  * v2: added `coverUrl` to search hits and edition summaries, `description`/`coverUrl` to the
  * work card.
  */
-export const CACHE_KEY_VERSION = 'v2';
+export const CACHE_KEY_VERSION = 'v3';

@@ -53,7 +53,10 @@ export {
   type Bookstore,
   type CountryCode,
   bookstoresFor,
+  bookstoresForGrouped,
   countriesForMarketLanguage,
+  type BookstoreGroup,
+  type GroupedBookstore,
   type BookstoreQuery,
 } from './policy/bookstore-catalog.js';
 

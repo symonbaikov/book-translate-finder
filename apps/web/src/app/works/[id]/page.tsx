@@ -167,7 +167,7 @@ function EditionCard({ edition }: { edition: EditionSummary }) {
             {edition.pages ? ` · ${edition.pages} pages` : ''}
             {edition.isbn ? ` · ISBN ${edition.isbn}` : ''}
           </div>
-          <EditionLinks editionId={edition.id} />
+          <EditionLinks editionId={edition.id} language={languageName(edition.language)} />
         </div>
       </div>
     </div>

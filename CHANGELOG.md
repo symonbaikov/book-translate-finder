@@ -18,6 +18,14 @@ them before the API starts).
 
 ### Added
 
+- **A footer that says what this is.** The GitHub mark, "Open source — MIT licensed,
+  self-hostable", and a link to the repository. The mark is inlined SVG: the page must stay
+  renderable with no third-party requests.
+- **Bookshops grouped by why they are offered.** The country picked in settings gets its own
+  heading ("In Germany"), then the markets where the edition's language is sold ("Where Arabic
+  books are sold"), then the shops that ship worldwide. The reader's choice is now visibly their
+  choice instead of being blended into one anonymous list.
+
 - **Free copies the author or publisher gives away.** A fourth answer to "where do I get this
   book", alongside public domain, borrow and buy: a hand-curated catalog of books still under
   copyright whose rights holder publishes them for free (Cory Doctorow's novels, Peter Watts',

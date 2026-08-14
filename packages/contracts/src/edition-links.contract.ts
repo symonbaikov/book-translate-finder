@@ -10,6 +10,9 @@ export const SourceLinkSchema = z.object({
   provider: z.string(),
   /** Human-readable store name — present on bookstore lookups, absent on source-discovered links. */
   providerName: z.string().optional(),
+  /** Why a bookstore is offered: the reader's chosen country, this edition's language market, or
+   * a shop that ships worldwide. Lets the UI label the reader's own choice as their choice. */
+  group: z.enum(['country', 'language', 'worldwide']).optional(),
   rightsStatus: z.enum(['public_domain', 'open_license', 'copyrighted', 'unknown']),
   url: z.string().url(),
   /** File format for downloads (`epub`, `txt`, …) — tells the reader what they will get. */

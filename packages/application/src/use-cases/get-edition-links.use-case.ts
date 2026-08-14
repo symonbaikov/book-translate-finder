@@ -1,6 +1,6 @@
 import {
   assertLinkAllowed,
-  bookstoresFor,
+  bookstoresForGrouped,
   DomainError,
   NotFoundError,
   ProviderId,
@@ -29,6 +29,16 @@ export interface SourceLinkDto {
   providerName?: string;
   /** File format for downloads (`epub`, `txt`, …); absent for buy/borrow links. */
   format?: string | null;
+  /**
+   * Why this shop is being offered, for bookstore links only:
+   * `country` — it is in the country the reader picked in settings;
+   * `language` — it is in a country where this edition's language is the market language;
+   * `worldwide` — it ships internationally.
+   *
+   * Sent to the client so the reader's own choice can be labelled as their choice, rather than
+   * disappearing into one undifferentiated list.
+   */
+  group?: 'country' | 'language' | 'worldwide';
 }
 
 export interface GetEditionLinksOutput {
@@ -107,7 +117,9 @@ export class GetEditionLinks implements UseCase<GetEditionLinksInput, GetEdition
    * invariant "every link the UI shows was policy-approved" holds for them too. `rightsStatus`
    * is `copyrighted` — a shop selling a book is never evidence it is public domain, and
    * docs/legal-policy.md is explicit that an unclear signal must never be read as permission.
-   * Without an ISBN there is nothing to look up, so the list is simply empty.
+   *
+   * Each link carries the reason it is offered (`group`), so the UI can put the reader's chosen
+   * country under its own heading instead of blending it into one anonymous list of shops.
    */
   private async buildBookstoreLinks(
     edition: Edition,
@@ -124,32 +136,35 @@ export class GetEditionLinks implements UseCase<GetEditionLinksInput, GetEdition
     if (!term) return [];
 
     const now = this.deps.clock.now();
-    return bookstoresFor({ country, language: edition.language.value }).flatMap((store) => {
-      try {
-        const link = assertLinkAllowed({
-          id: `${edition.id}-${store.id}`,
-          editionId: edition.id,
-          type: 'buy',
-          url: store.buildUrl(term),
-          provider: ProviderId.create(store.id),
-          rightsStatus: 'copyrighted',
-          verifiedAt: now,
-        });
-        return [
-          {
-            type: link.type,
-            provider: link.provider.value,
-            providerName: store.name,
-            rightsStatus: link.rightsStatus,
-            url: link.url,
-          },
-        ];
-      } catch (error) {
-        // A store the policy rejects is dropped, never surfaced — same contract as sync-time
-        // links (`SyncWorkFromSource.trySyncLink`). Anything else is a real bug: rethrow.
-        if (error instanceof DomainError) return [];
-        throw error;
-      }
-    });
+    return bookstoresForGrouped({ country, language: edition.language.value }).flatMap(
+      ({ store, group }) => {
+        try {
+          const link = assertLinkAllowed({
+            id: `${edition.id}-${store.id}`,
+            editionId: edition.id,
+            type: 'buy',
+            url: store.buildUrl(term),
+            provider: ProviderId.create(store.id),
+            rightsStatus: 'copyrighted',
+            verifiedAt: now,
+          });
+          return [
+            {
+              type: link.type,
+              provider: link.provider.value,
+              providerName: store.name,
+              rightsStatus: link.rightsStatus,
+              url: link.url,
+              group,
+            },
+          ];
+        } catch (error) {
+          // A store the policy rejects is dropped, never surfaced — same contract as sync-time
+          // links (`SyncWorkFromSource.trySyncLink`). Anything else is a real bug: rethrow.
+          if (error instanceof DomainError) return [];
+          throw error;
+        }
+      },
+    );
   }
 }
