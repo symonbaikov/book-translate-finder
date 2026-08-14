@@ -29,7 +29,7 @@ export const de: Dictionary = {
 
   'featured.yearHeading': 'Bücher des Jahres',
   'featured.yearBlurb':
-    'Ein bemerkenswertes Buch pro Jahr. Eine handverlesene Liste, keine Verkaufscharts — offene Verkaufsranglisten gibt es nicht.',
+    'Bemerkenswerte Bücher aus jedem der letzten Jahre. Eine handverlesene Liste, keine Verkaufscharts — offene Verkaufsranglisten gibt es nicht.',
   'featured.popularHeading': 'Viel gelesen, viel übersetzt',
   'featured.popularBlurb':
     'Bücher, die es in vielen Sprachen gibt — genau dafür ist diese Seite da.',

@@ -19,7 +19,7 @@ const FEATURED_TTL_SECONDS = 30 * 60;
  * the instance, and without a ceiling a cold database would enqueue the whole list on every
  * request until the first one lands.
  */
-const MAX_BACKFILL_PER_REQUEST = 6;
+const MAX_BACKFILL_PER_REQUEST = 10;
 /**
  * While entries are still resolving, the answer is worth re-computing often — a reader who comes
  * back in a minute should see a longer list, not a half-empty one cached for half an hour.
@@ -78,6 +78,9 @@ export class GetFeaturedBooks implements UseCase<void, GetFeaturedBooksOutput> {
 
     const books: FeaturedBookDto[] = [];
     const missing: string[] = [];
+    // Two curated entries can resolve to the same work — an author appearing in both lists, or
+    // two spellings of one title — and the same cover twice on one page reads as a bug.
+    const claimed = new Set<string>();
 
     for (const featured of FEATURED_BOOKS) {
       const hits = await this.deps.workSearch.search(`${featured.title} ${featured.author}`, 5);
@@ -86,6 +89,8 @@ export class GetFeaturedBooks implements UseCase<void, GetFeaturedBooksOutput> {
         missing.push(`${featured.title} ${featured.author}`);
         continue;
       }
+      if (claimed.has(match.id)) continue;
+      claimed.add(match.id);
 
       books.push({
         workId: match.id,

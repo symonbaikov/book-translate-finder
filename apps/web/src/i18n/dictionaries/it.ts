@@ -24,7 +24,7 @@ export const it: Dictionary = {
     ' per salvare i libri che trovi e tornarci — e confrontare edizioni di anni diversi prima di sceglierne una.',
   'featured.yearHeading': "Libri dell'anno",
   'featured.yearBlurb':
-    'Un libro significativo per ogni anno recente. Un elenco curato a mano, non una classifica di vendite — nessuna fonte aperta ne pubblica una.',
+    'Libri significativi per ciascuno degli anni recenti. Un elenco curato a mano, non una classifica di vendite — nessuna fonte aperta ne pubblica una.',
   'featured.popularHeading': 'Molto letti, molto tradotti',
   'featured.popularBlurb':
     'Libri che esistono in molte lingue — è esattamente a questo che serve il sito.',

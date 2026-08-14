@@ -41,6 +41,12 @@ them before the API starts).
 
 ### Fixed
 
+- **"Books of the year" showed one book per year.** The curated catalogue literally held one entry
+  per year, which read as a verdict this project has no standing to deliver. It now carries six
+  notable books for each year from 2018 to 2024, and `pnpm db:seed:catalog` seeds them, so a fresh
+  install fills its home page in one command instead of waiting for visitors to trigger the lazy
+  backfill.
+
 - **The home page showed three books instead of seventeen.** Curated entries were matched to the
   database by exact natural key, so _James_ never matched because Open Library files it under
   "Percival L. Everett" rather than "Percival Everett". Matching is now fuzzy on the author and

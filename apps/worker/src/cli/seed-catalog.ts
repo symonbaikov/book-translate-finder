@@ -7,14 +7,16 @@
 import { loadEnv } from '@btf/infrastructure';
 import { buildWorkerContext } from '../composition-root.js';
 import { workerEnvSchema } from '../config/worker-env.schema.js';
+import { FEATURED_BOOKS } from '@btf/domain';
 import { CATALOG_SEED_QUERIES } from './catalog-seed-list.js';
 
+/** No `--limit` means the whole list; the caller decides how much of it they have time for. */
 function parseLimit(argv: string[]): number {
   for (const arg of argv) {
     const match = /^--limit=(\d+)$/.exec(arg);
     if (match) return Number(match[1]);
   }
-  return CATALOG_SEED_QUERIES.length;
+  return Number.MAX_SAFE_INTEGER;
 }
 
 async function main(): Promise<void> {
@@ -22,7 +24,11 @@ async function main(): Promise<void> {
   const env = loadEnv(workerEnvSchema);
   const ctx = buildWorkerContext(env);
 
-  const queries = CATALOG_SEED_QUERIES.slice(0, limit);
+  // The home page's curated lists are seeded too: otherwise a fresh install shows an almost empty
+  // "Books of the year" until enough people happen to visit for the lazy backfill to catch up.
+  const featuredQueries = FEATURED_BOOKS.map((book) => `${book.title} ${book.author}`);
+  const allQueries = [...new Set([...CATALOG_SEED_QUERIES, ...featuredQueries])];
+  const queries = allQueries.slice(0, limit);
   let synced = 0;
   let failed = 0;
 

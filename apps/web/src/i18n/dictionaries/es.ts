@@ -29,7 +29,7 @@ export const es: Dictionary = {
 
   'featured.yearHeading': 'Libros del año',
   'featured.yearBlurb':
-    'Un libro destacado por cada año reciente. Una lista elegida a mano, no una lista de ventas — no existe ninguna fuente abierta que las publique.',
+    'Libros destacados de cada año reciente. Una lista elegida a mano, no una lista de ventas — no existe ninguna fuente abierta que las publique.',
   'featured.popularHeading': 'Muy leídos, muy traducidos',
   'featured.popularBlurb':
     'Libros que existen en muchos idiomas — que es justo para lo que sirve este sitio.',

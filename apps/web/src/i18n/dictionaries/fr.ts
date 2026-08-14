@@ -28,7 +28,7 @@ export const fr: Dictionary = {
 
   'featured.yearHeading': "Livres de l'année",
   'featured.yearBlurb':
-    "Un livre marquant par année récente. Une liste choisie à la main, pas un classement des ventes — aucune source ouverte n'en publie.",
+    "Des livres marquants pour chaque année récente. Une liste choisie à la main, pas un classement des ventes — aucune source ouverte n'en publie.",
   'featured.popularHeading': 'Très lus, très traduits',
   'featured.popularBlurb':
     "Des livres qui existent en de nombreuses langues — c'est précisément l'objet de ce site.",

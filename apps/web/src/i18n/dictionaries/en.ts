@@ -36,7 +36,7 @@ export const en = {
 
   'featured.yearHeading': 'Books of the year',
   'featured.yearBlurb':
-    'One notable book per recent year. A hand-curated list, not a sales chart — no open source publishes one.',
+    'Notable books from each recent year. A hand-curated list, not a sales chart — no open source publishes one.',
   'featured.popularHeading': 'Widely read, widely translated',
   'featured.popularBlurb': 'Books that exist in many languages — which is what this site is for.',
   'featured.filling':

@@ -22,7 +22,7 @@ export const zh: Dictionary = {
   'search.signInPrompt': '，即可保存找到的书并随时回来查看，还能在选择前并排比较不同年份的版本。',
   'featured.yearHeading': '年度之书',
   'featured.yearBlurb':
-    '近年每年挑选一本值得注意的书。这是人工编选的清单，不是销量榜 — 没有任何开放来源发布销量榜。',
+    '近年每年值得注意的书。这是人工编选的清单，不是销量榜 — 没有任何开放来源发布销量榜。',
   'featured.popularHeading': '读得多，译得也多',
   'featured.popularBlurb': '以多种语言存在的书 — 这正是本站的用途。',
   'featured.filling': '其中几本仍在后台获取。请过一分钟后刷新页面。',

@@ -24,7 +24,7 @@ export const nl: Dictionary = {
     ' om gevonden boeken te bewaren en er later op terug te komen — en om edities uit verschillende jaren naast elkaar te vergelijken voordat u kiest.',
   'featured.yearHeading': 'Boeken van het jaar',
   'featured.yearBlurb':
-    'Eén opvallend boek per recent jaar. Een met de hand samengestelde lijst, geen verkooplijst — die publiceert geen enkele open bron.',
+    'Opvallende boeken uit elk recent jaar. Een met de hand samengestelde lijst, geen verkooplijst — die publiceert geen enkele open bron.',
   'featured.popularHeading': 'Veel gelezen, veel vertaald',
   'featured.popularBlurb': 'Boeken die in veel talen bestaan — daar is deze site voor.',
   'featured.filling':

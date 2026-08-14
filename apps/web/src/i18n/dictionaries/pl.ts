@@ -23,7 +23,7 @@ export const pl: Dictionary = {
     ', aby zapisywać znalezione książki i do nich wracać — oraz porównywać wydania z różnych lat, zanim wybierzesz.',
   'featured.yearHeading': 'Książki roku',
   'featured.yearBlurb':
-    'Po jednej wyróżniającej się książce na każdy ostatni rok. Lista wybrana ręcznie, nie zestawienie sprzedaży — żadne otwarte źródło takiego nie publikuje.',
+    'Wyróżniające się książki z każdego ostatniego roku. Lista wybrana ręcznie, nie zestawienie sprzedaży — żadne otwarte źródło takiego nie publikuje.',
   'featured.popularHeading': 'Dużo czytane, dużo tłumaczone',
   'featured.popularBlurb': 'Książki istniejące w wielu językach — po to właśnie jest ten serwis.',
   'featured.filling': 'Część z nich wciąż pobieramy w tle. Odśwież stronę za minutę.',

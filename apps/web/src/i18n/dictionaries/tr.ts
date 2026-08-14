@@ -24,7 +24,7 @@ export const tr: Dictionary = {
     ' — bulduğunuz kitapları kaydedip sonra geri dönmek ve seçim yapmadan önce farklı yılların baskılarını karşılaştırmak için.',
   'featured.yearHeading': 'Yılın kitapları',
   'featured.yearBlurb':
-    'Son yılların her biri için dikkat çeken bir kitap. Elle seçilmiş bir liste, satış listesi değil — açık bir kaynak böyle bir liste yayımlamıyor.',
+    'Son yılların her birinden dikkat çeken kitaplar. Elle seçilmiş bir liste, satış listesi değil — açık bir kaynak böyle bir liste yayımlamıyor.',
   'featured.popularHeading': 'Çok okunan, çok çevrilen',
   'featured.popularBlurb': 'Birçok dilde var olan kitaplar — bu site tam da bunun için.',
   'featured.filling':

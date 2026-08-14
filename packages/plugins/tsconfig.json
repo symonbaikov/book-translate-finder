@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    // No "node" types on purpose: this package is compiled into the browser bundle of apps/web
+    // as well as run in the API/worker processes, so anything Node-only must not typecheck here.
+    "types": []
+  },
+  "include": ["src"]
+}

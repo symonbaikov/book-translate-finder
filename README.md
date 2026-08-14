@@ -13,6 +13,8 @@ The project is designed for self-hosting: deploy your own copy on your own serve
 
 ![Book card: cover, description, translation languages, editions, legal links](docs/images/work-card.png)
 
+![Home page: books of the year, several per year, with covers](docs/images/books-of-the-year.png)
+
 ## Legal policy
 
 This is not a footnote but an architectural invariant, enforced in the domain code and covered by
