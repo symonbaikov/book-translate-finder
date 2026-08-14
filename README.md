@@ -1,4 +1,8 @@
+<img src="docs/images/logo.svg" alt="" width="72" height="72" align="left" style="image-rendering: pixelated; margin-right: 16px">
+
 # BookTranslate Finder
+
+_Find your next magnum opus._
 
 An open book translation aggregator. Enter a title and author — the service shows which languages
 the book has been translated into, which editions exist, and where to get the text **legally**:
@@ -17,7 +21,10 @@ tests (details — [docs/legal-policy.md](docs/legal-policy.md)):
 - **No scraping and no links to shadow libraries** (Library Genesis, Anna's
   Archive, Z-Library, and the like) — neither as a data source nor as a link source.
 - A direct download link is allowed **only** for public domain / open-license works from the
-  provider allowlist (Project Gutenberg, Internet Archive, Wikisource, Standard Ebooks).
+  provider allowlist (Project Gutenberg, Internet Archive, Wikisource, LibriVox, Standard Ebooks,
+  and a hand-curated list of books their rights holder publishes for free).
+- The same rule applies to the project's own assets: the logo is original artwork, not a texture
+  borrowed from somewhere ([docs/images/README.md](docs/images/README.md)).
 - Every link in the API and UI carries an explicit rights status; the absence of a clear rights
   signal is treated as "under copyright", never as permission.
 - Data is taken only from the sources' official APIs (Open Library, Google Books), respecting

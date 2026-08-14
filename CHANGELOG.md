@@ -18,6 +18,11 @@ them before the API starts).
 
 ### Added
 
+- **A logo.** Original 16×16 pixel art — an open book with a ribbon — in the site header, as the
+  favicon, and at the top of the README. Drawn for this project rather than borrowed, so a fork
+  inherits a mark it is allowed to use; swapping in your own is one file and one line
+  ([docs/images/README.md](docs/images/README.md)).
+
 - **Personal recommendations on the home page**, from the books you open — and computed without a
   profile. The reading history stays in your browser; the server is sent a list of genres and
   never learns whose they are, so the "no profile, no tracking" promise on the sign-in page stays

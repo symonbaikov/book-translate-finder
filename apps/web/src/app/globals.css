@@ -700,3 +700,11 @@ a.tag:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
 }
+
+/* The mark sits beside the wordmark rather than replacing it: a 28px pixel-art book is a nice
+   thing to spot, but it is not something a first-time visitor can read the site's name from. */
+.site-header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}

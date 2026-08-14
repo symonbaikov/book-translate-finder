@@ -6,6 +6,7 @@ import { logout } from '../lib/auth-client';
 import { useSession } from './SessionProvider';
 import { useT } from '../i18n/I18nProvider';
 import { LanguageSelector } from './LanguageSelector';
+import { Logo } from './Logo';
 
 /** The one place the reader's account state is visible: saved books, and a way in or out. */
 export function SiteHeader() {
@@ -24,7 +25,8 @@ export function SiteHeader() {
     <header className="site-header">
       <div className="container site-header__inner">
         <Link href="/" className="site-header__brand">
-          BookTranslate Finder
+          <Logo />
+          <span>BookTranslate Finder</span>
         </Link>
         <nav className="site-header__nav">
           {/* The language selector is not gated on the session check — it must be usable while

@@ -10,6 +10,7 @@ import { SiteHeader } from '../components/SiteHeader';
 
 export const metadata: Metadata = {
   title: 'BookTranslate Finder',
+  icons: { icon: '/logo.svg' },
   description: 'An open book translation aggregator: languages, editions, legal sources.',
 };
 
