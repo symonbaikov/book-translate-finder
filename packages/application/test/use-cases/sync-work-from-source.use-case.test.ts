@@ -536,24 +536,31 @@ class ScriptSensitiveProvider implements BookMetadataProvider {
 }
 
 describe('SyncWorkFromSource attaching to a known work', () => {
-  /** A catalogue record for the same book under its translated title — the enrichment case. */
+  /**
+   * A catalogue record for the same book under its translated title — the enrichment case.
+   *
+   * The author is the same person as `PROVIDER_WORK`'s, spelled the way a French catalogue spells
+   * him. That is not decoration: the sync refuses to attach a source's answer to a known work
+   * unless the answer is plausibly about that work, so a fixture naming a different author would
+   * be describing a mismatch rather than a translation.
+   */
   const FRENCH_TRANSLATION: ProviderWork = {
-    externalId: 'query:Prilepine Obitel',
-    title: "L'archipel des Solovki",
-    authorNames: ['Zahar Prilepin'],
+    externalId: 'query:Tolstoi La Guerre et la Paix',
+    title: 'La Guerre et la Paix',
+    authorNames: ['Tolstoï, Léon'],
     languages: ['fre'],
-    firstPublishedYear: 2017,
+    firstPublishedYear: 1869,
     editionCount: 1,
     coverUrl: null,
   };
   const FRENCH_EDITION: ProviderEdition = {
     externalId: 'ark:/12148/cb45374973s',
-    title: "L'archipel des Solovki",
+    title: 'La Guerre et la Paix',
     language: 'fre',
     coverUrl: null,
-    translator: 'Joëlle Dublanchet',
+    translator: 'Boris de Schlœzer',
     translatedFrom: null,
-    publisher: 'Actes Sud (Arles)',
+    publisher: 'Gallimard (Paris)',
     year: 2017,
     isbn13: '9782330081881',
     isbn10: null,
@@ -567,7 +574,7 @@ describe('SyncWorkFromSource attaching to a known work', () => {
       '/works/OL1W': [RUSSIAN_EDITION],
     });
     const bnf = new FakeBookMetadataProvider([FRENCH_TRANSLATION], {
-      'query:Prilepine Obitel': [FRENCH_EDITION],
+      'query:Tolstoi La Guerre et la Paix': [FRENCH_EDITION],
     });
     const { deps, workRepository, editionRepository } = makeMultiSourceDeps({
       'open-library': openLibrary,
@@ -580,7 +587,7 @@ describe('SyncWorkFromSource attaching to a known work', () => {
     });
     await new SyncWorkFromSource(deps).execute({
       source: 'bnf',
-      query: 'Prilepine Obitel',
+      query: 'Tolstoi La Guerre et la Paix',
       attachToWorkId: discovered.workId!,
     });
 
@@ -596,7 +603,7 @@ describe('SyncWorkFromSource attaching to a known work', () => {
       '/works/OL1W': [RUSSIAN_EDITION],
     });
     const bnf = new FakeBookMetadataProvider([FRENCH_TRANSLATION], {
-      'query:Prilepine Obitel': [FRENCH_EDITION],
+      'query:Tolstoi La Guerre et la Paix': [FRENCH_EDITION],
     });
     const { deps, workRepository } = makeMultiSourceDeps({ 'open-library': openLibrary, bnf });
 
@@ -607,7 +614,7 @@ describe('SyncWorkFromSource attaching to a known work', () => {
     const before = await workRepository.findById(discovered.workId!);
     await new SyncWorkFromSource(deps).execute({
       source: 'bnf',
-      query: 'Prilepine Obitel',
+      query: 'Tolstoi La Guerre et la Paix',
       attachToWorkId: discovered.workId!,
     });
     const after = await workRepository.findById(discovered.workId!);

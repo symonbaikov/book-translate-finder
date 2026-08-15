@@ -15,6 +15,7 @@ import {
   InvalidInputError,
   Isbn,
   LanguageCode,
+  isPlausibleSameWork,
   ProviderId,
   type ProviderEdition,
   type ProviderWork,
@@ -138,6 +139,20 @@ export class SyncWorkFromSource implements UseCase<
         return { status: 'not_found' };
       }
 
+      // When the caller already knows which book this is, the source's answer has to be about that
+      // book before any of it is attached to it. Without this, a source that misreads the query
+      // contributes another book's editions and download links to the reader's card, and every
+      // step downstream is working with true facts about the wrong work.
+      if (input.attachToWorkId && !(await this.answersAboutWork(input.attachToWorkId, topMatch))) {
+        await this.recordSyncLog(
+          input.source,
+          null,
+          'error',
+          `mismatched_answer: ${input.query} → ${topMatch.title}`,
+        );
+        return { status: 'not_found' };
+      }
+
       // Concurrent, not sequential: the two calls share only the work id, and awaiting them in
       // turn made every sync pay for the slower one *after* the faster one. Against real Open
       // Library latency (9–22s per request, docs/research/coverage-phase0.md) that ordering was
@@ -245,6 +260,28 @@ export class SyncWorkFromSource implements UseCase<
    * at all. The romanized pass runs only when the first one finds nothing, so a query the source
    * does answer in Cyrillic keeps that answer.
    */
+  /**
+   * Whether a source's top match can plausibly be the work the caller named.
+   *
+   * Only consulted on the `attachToWorkId` path, and that asymmetry is the point. A plain search
+   * has no prior belief to check against — the query *is* the intent, and a source answering it
+   * differently than expected may simply know the book better. Enrichment is the opposite: the
+   * book is already identified, and a source's disagreement is a mismatch, not a discovery.
+   *
+   * A work id that no longer resolves is not treated as a failed check: `attachToWorkId` can
+   * outlive its row, and the rest of this use case already degrades that to "write the work"
+   * rather than crashing. Nothing is known to compare against, so nothing is objected to.
+   */
+  private async answersAboutWork(workId: string, topMatch: ProviderWork): Promise<boolean> {
+    const known = await this.deps.workRepository.findById(workId);
+    if (!known) return true;
+
+    return isPlausibleSameWork(
+      { title: known.originalTitle, author: known.author },
+      { title: topMatch.title, authorNames: topMatch.authorNames },
+    );
+  }
+
   private async findTopMatch(
     provider: BookMetadataProvider,
     query: string,

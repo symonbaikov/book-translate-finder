@@ -26,6 +26,11 @@ export {
 export { normalizeText } from './normalization/normalize-text.js';
 export { romanizeCyrillicQuery } from './normalization/romanize-query.js';
 export { hasConflictingNumbers } from './normalization/conflicting-numbers.js';
+export {
+  isPlausibleSameWork,
+  type CandidateWorkIdentity,
+  type KnownWorkIdentity,
+} from './normalization/plausible-same-work.js';
 
 export {
   assertLinkAllowed,
