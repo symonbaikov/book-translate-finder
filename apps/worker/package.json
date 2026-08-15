@@ -1,5 +1,5 @@
 {
-  "name": "@btf/worker",
+  "name": "@golden/worker",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -13,9 +13,9 @@
     "seed:catalog": "tsx --env-file=../../.env src/cli/seed-catalog.ts"
   },
   "dependencies": {
-    "@btf/application": "workspace:*",
-    "@btf/domain": "workspace:*",
-    "@btf/infrastructure": "workspace:*",
+    "@golden/application": "workspace:*",
+    "@golden/domain": "workspace:*",
+    "@golden/infrastructure": "workspace:*",
     "bullmq": "^5.28.1",
     "ioredis": "^5.4.1",
     "zod": "^3.23.8"

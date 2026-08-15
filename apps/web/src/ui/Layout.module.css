@@ -1,0 +1,97 @@
+/* --- Page containers ------------------------------------------------------ */
+
+.container {
+  inline-size: 100%;
+  max-inline-size: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+/* Long-form text gets its own width. 1240px of legal prose is unreadable no matter how good the
+   typeface is — the eye loses the start of the next line. */
+.prose {
+  max-inline-size: var(--container-prose);
+}
+
+.page {
+  padding-block: var(--space-7) var(--space-10);
+}
+
+/* --- Sections ------------------------------------------------------------- */
+
+.section {
+  margin-block-start: var(--space-8);
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-block-end: var(--space-4);
+}
+
+.sectionTitle {
+  margin: 0;
+}
+
+.sectionNote {
+  margin: var(--space-2) 0 0;
+  color: var(--text-muted);
+  max-inline-size: var(--container-prose);
+}
+
+/* --- The poster grid ------------------------------------------------------
+ * `auto-fill` with a minimum, not a fixed column count: the number of covers per row is a
+ * consequence of how wide the window is, which is the only thing that should decide it. Overriding
+ * `--poster-min` per section is how a "continue reading" row gets larger covers than a genre
+ * listing without a second grid definition. */
+
+.posterGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--poster-min, 160px), 1fr));
+  gap: var(--space-6) var(--space-4);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* --- The scrolling row ----------------------------------------------------
+ * For a list whose order means something — most recently read first. A grid would reflow that
+ * order into rows and lose it; a row keeps "next" to the right of "current". */
+
+.row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: var(--poster-min, 160px);
+  gap: var(--space-4);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  /* Room for the hover lift and the focus ring, which would otherwise be clipped by the scroll
+     container's own edge. */
+  padding-block: var(--space-2);
+  padding-inline: var(--space-1);
+  margin-inline: calc(var(--space-1) * -1);
+  list-style: none;
+  scrollbar-width: thin;
+  overscroll-behavior-inline: contain;
+}
+
+.row > * {
+  scroll-snap-align: start;
+}
+
+/* --- Stacks --------------------------------------------------------------- */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}

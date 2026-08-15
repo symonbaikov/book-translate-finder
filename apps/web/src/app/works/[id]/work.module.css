@@ -1,0 +1,182 @@
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--control-h-md);
+  padding-inline: var(--space-3);
+  margin-inline-start: calc(var(--space-3) * -1);
+  border-radius: var(--r-md);
+  color: var(--text-muted);
+  font-size: var(--step--1);
+  text-decoration: none;
+}
+
+.back:hover {
+  background: var(--surface-inset);
+  color: var(--text);
+}
+
+.backIcon {
+  inline-size: 1em;
+  block-size: 1em;
+  flex: none;
+}
+
+/* --- Hero -----------------------------------------------------------------
+ * The cover at the size a cover deserves on the page that is about this one book. Fixed column
+ * plus a flexible one rather than a percentage split: the cover has a correct size, and the text
+ * should take whatever is left. */
+
+.hero {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: var(--space-7);
+  align-items: start;
+  margin-block: var(--space-5) var(--space-8);
+}
+
+.cover {
+  /* The cover is the page's largest element and its LCP candidate; the glow underneath is what
+     stops a dark jacket from looking like a hole cut in the page. */
+  box-shadow: var(--elev-3), var(--cover-ring);
+  border-radius: var(--r-lg);
+}
+
+.title {
+  margin-block-end: var(--space-3);
+}
+
+.byline {
+  font-size: var(--step-1);
+  color: var(--text-muted);
+  margin-block: 0 var(--space-5);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-block: var(--space-5) var(--space-4);
+}
+
+.sources {
+  font-size: var(--step--2);
+  color: var(--text-faint);
+  margin-block: var(--space-4) 0;
+}
+
+/* On a phone the cover stops being a column and becomes a plate above the title, at a size that
+   still reads as a book rather than a thumbnail. */
+@media (max-width: 720px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+
+  .cover {
+    max-inline-size: 180px;
+  }
+}
+
+/* --- Prose ---------------------------------------------------------------- */
+
+.description {
+  max-inline-size: var(--container-prose);
+  white-space: pre-line;
+  line-height: var(--leading-relaxed);
+}
+
+.attribution {
+  max-inline-size: var(--container-prose);
+  font-size: var(--step--1);
+  color: var(--text-faint);
+  margin-block-start: var(--space-4);
+}
+
+/* --- Editions -------------------------------------------------------------
+ * The filter row is chips rather than a dropdown: a reader looking for the Spanish editions should
+ * see that Spanish exists without opening anything, and the count tells them whether it is worth
+ * the click. */
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+  margin-block: var(--space-5);
+}
+
+.yearField {
+  inline-size: 8rem;
+  flex: 0 0 auto;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: flex-end;
+  margin-block-end: var(--space-5);
+}
+
+.edition {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.edition + .edition {
+  margin-block-start: var(--space-4);
+}
+
+.editionHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+}
+
+.editionTitle {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* Publisher, year, translator, binding, pages, ISBN — one line of provenance. Tabular figures so
+   that a column of editions has its years and page counts lining up. */
+.editionMeta {
+  margin-block: var(--space-2) var(--space-4);
+  font-size: var(--step--1);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The free copies of an edition, above the links panel rather than inside it — this is the answer
+   the page exists to give, and it should not need a click to appear. */
+.freeDownloads {
+  margin-block-end: var(--space-4);
+}
+
+.freeDownloadsNote {
+  margin-block: var(--space-2) 0;
+  font-size: var(--step--2);
+  color: var(--text-faint);
+}
+
+.empty {
+  color: var(--text-muted);
+}
+
+.showMore {
+  margin-block-start: var(--space-4);
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .edition {
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+}

@@ -10,7 +10,7 @@ export const ko: Dictionary = {
     '합법적인 경로만 제공합니다. 직접 내려받기는 퍼블릭 도메인과 개방형 라이선스 저작물에 한하며, 저작권이 있는 책은 구매하거나 도서관에서 대출합니다. 모든 링크에 권리 상태를 명시합니다.',
   'footer.openSource': '오픈 소스',
   'footer.openSourceRest': '— MIT 라이선스, 직접 호스팅할 수 있습니다. 코드는 GitHub에 있습니다.',
-  'home.title': 'BookTranslate Finder',
+  'home.title': 'Golden Library',
   'home.subtitle': '열린 도서 번역 집계 서비스: 언어, 판본, 합법적인 입수 경로.',
   'home.searchLabel': '제목과 저자',
   'home.searchPlaceholder': '전쟁과 평화 톨스토이',
@@ -29,11 +29,39 @@ export const ko: Dictionary = {
   'featured.popularBlurb': '여러 언어로 존재하는 책들 — 이 사이트가 있는 이유입니다.',
   'featured.filling': '일부는 아직 백그라운드에서 가져오는 중입니다. 잠시 후 새로고침해 주세요.',
   'featured.freeCopy': '무료본 있음',
+
+  // --- Free books ---------------------------------------------------------
+  'free.homeHeading': '지금 무료로 읽기',
+  'free.homeBlurb': '이 인스턴스가 직접 건네줄 수 있는 퍼블릭 도메인과 공개 라이선스 도서.',
+  'free.seeAll': '더 보기',
+  'free.downloadable': '내려받기',
+  'free.pageTitle': '무료 도서',
+  'free.pageBlurb':
+    '여기 있는 책에는 합법적인 무료본이 최소 하나 있습니다. 퍼블릭 도메인이거나 권리자가 공개한 것입니다. 구매도, 도서관 카드도 필요 없습니다.',
+  'free.empty':
+    '아직 무료로 볼 책이 없습니다. 이 인스턴스가 책을 받아올수록 무료본이 나타납니다. 책을 검색한 뒤 다시 들러 주세요.',
+  'free.emptyForLanguage':
+    '아직 {language} 무료본이 없습니다. 위의 필터를 해제하면 전체 서가를 볼 수 있습니다.',
+  'free.showMore': '더 불러오기',
+  'free.shown': '{total}권 중 {shown}권을 표시합니다.',
+  'free.allLanguages': '모든 언어의 무료본.',
+  'free.filteredByLanguage': '{language} 무료본만.',
+  'free.filterByLanguage': '{language} 무료본만 보기.',
+  'free.dropLanguageFilter': '모든 언어 보기',
+  'free.loadFailed': '지금은 무료 도서를 불러오지 못했습니다.',
   'work.original': '원어',
   'work.dataSources': '데이터 출처',
   'work.about': '이 책에 대하여',
   'work.translatedInto': '번역된 언어',
+  'work.availableIn': '이용 가능한 언어',
+  'work.languagesNote':
+    '참조한 자료에 있는 것만 표시합니다. 여기에 없는 번역본도 존재할 수 있습니다.',
   'work.noTranslations': '아직 번역본을 찾지 못했습니다.',
+  'work.yourLanguage.title': '내 언어로',
+  'work.yourLanguage.yes': '{language} 번역본이 있습니다.',
+  'work.yourLanguage.original': '이 책의 원어는 {language}입니다.',
+  'work.yourLanguage.no': '확인된 판본 중에 {language} 번역본이 없습니다.',
+  'work.yourLanguage.show': '{language} 판본 보기',
   'work.editions': '판본 (총 {total}개 중 {shown}개)',
   'work.filterLanguage': '언어',
   'work.filterAllLanguages': '모든 언어',
@@ -41,6 +69,10 @@ export const ko: Dictionary = {
   'work.filterApply': '필터',
   'work.filterReset': '초기화',
   'work.noEditionsMatch': '이 조건에 맞는 판본이 없습니다.',
+  'work.showMoreEditions': '판본 더 보기 (남은 {remaining}개)',
+  'work.badgeFreeDownload': '무료 다운로드',
+  'work.freeDownloadFormat': '{format} 내려받기',
+  'work.freeDownloadNote': '{rights}. {provider}에서 무료 — 계정도 결제도 필요 없습니다.',
   'work.badgeReadBorrow': '읽기 또는 대출',
   'work.badgeInBookstores': '서점에서',
   'work.translatedBy': '옮긴이: {name}',
@@ -53,6 +85,7 @@ export const ko: Dictionary = {
   'links.hide': '링크 숨기기',
   'links.loading': '링크를 불러오는 중',
   'links.none': '이 판본에는 아직 합법적인 링크가 없습니다.',
+  'links.viaOtherEdition': '{label}판의 무료 사본',
   'links.failed': '링크를 불러오지 못했습니다.',
   'links.storesHeading': '서점에서 찾기',
   'links.storesInCountry': '{country}의 서점',
@@ -73,6 +106,8 @@ export const ko: Dictionary = {
   'compare.heading': '판본 비교',
   'compare.blurb': '두세 개의 판본을 고르면 실제로 다른 점만 보여 줍니다.',
   'compare.selected': '{count}개 선택됨 (최소 2개 필요).',
+  'compare.editSelection': '판본 변경',
+  'compare.showAllEditions': '전체 {count}개 판본 보기',
   'compare.columnDifference': '차이',
   'compare.identical': '출처가 기록한 모든 항목에서 이 판본들은 동일합니다.',
   'compare.rowLanguage': '언어',
@@ -124,6 +159,9 @@ export const ko: Dictionary = {
   'search.notFoundHint': '찾지 못했습니다. 제목이나 저자를 더 정확히 입력해 보세요.',
   'search.timedOut':
     '출처들의 응답이 느려 아직 자료가 없습니다. 백그라운드 동기화가 이미 끝났을 수도 있습니다 — 다시 시도해 주세요.',
+  'search.freeOnlyToggle': '무료본 있음',
+  'search.noFreeResults':
+    '이 결과 중에는 아직 무료로 받을 수 있는 책이 없습니다 — 필터를 꺼 보세요.',
   'home.tagline': '다음에 읽을 역작을 찾아보세요',
   'subject.allLanguages': '모든 언어.',
   'subject.filteredByLanguage': '{language} 판본이 있는 책만.',
@@ -192,4 +230,140 @@ export const ko: Dictionary = {
   'prices.format.unknown': '형태 미표기',
   'recommend.hideGenre': '‘{genre}’ 숨기기',
   'recommend.hiddenList': '숨긴 장르 (클릭하면 되돌립니다):',
+
+  // --- 설정 팝업 ---
+  'settings.status.saved': '저장됨',
+  'settings.status.cleared': '해제됨',
+  'settings.status.unstored': '저장 안 됨',
+  'settings.status.failed': '변경 없음',
+  'settings.notStored':
+    '이 브라우저가 변경 저장을 거부해서 아무 일도 일어나지 않았습니다. 이전 값이 그대로 적용됩니다.',
+  'settings.language.title': '인터페이스 언어',
+  'settings.language.changed':
+    '{from}에서 {to}(으)로 바꿨습니다. 화면이 {to}로 다시 불러와지며, 책 제목과 지은이 이름은 원래 언어 그대로 남습니다.',
+  'settings.country.title': '구매 국가',
+  'settings.country.changed':
+    '{country}(으)로 설정했습니다. 서점 링크에 전 세계 배송 서점과 함께 그곳으로 배송하는 서점도 표시됩니다.',
+  'settings.country.cleared': '국가를 고르지 않았습니다. 전 세계로 배송하는 서점만 제안합니다.',
+  'settings.bookLanguage.title': '책 언어',
+  'settings.bookLanguage.changed':
+    '{language}(으)로 설정했습니다. 필터를 해제할 때까지 장르 페이지는 {language} 판이 있는 책을 먼저 보여줍니다.',
+  'settings.bookLanguage.cleared': '해제했습니다. 장르 페이지가 다시 모든 언어의 책을 보여줍니다.',
+  'settings.hiddenGenres.title': '숨긴 장르',
+  'settings.hiddenGenres.hidden':
+    '“{genre}”을(를) 숨겼습니다. 추천을 받아올 때 더는 서버로 보내지 않으며, 숨긴 장르는 모두 {count}개입니다.',
+  'settings.hiddenGenres.restored':
+    '“{genre}”이(가) 추천에 다시 나옵니다. 아직 {count}개 장르가 숨겨져 있습니다.',
+  'settings.history.title': '읽은 기록',
+  'settings.history.cleared':
+    '열어 본 책 기록을 이 브라우저에서 지웠습니다. 다음 책을 열기 전까지는 추천이 나오지 않습니다.',
+  'settings.bookmarks.title': '저장한 책',
+  'settings.bookmarks.added': '“{title}”을(를) 저장한 책에 추가했습니다.',
+  'settings.bookmarks.removed': '“{title}”을(를) 저장한 책에서 뺐습니다.',
+  'settings.bookmarks.failed': '서버가 변경을 받아들이지 않아, 저장한 책은 그대로입니다.',
+  'settings.catalogs.title': '내 카탈로그',
+  'settings.catalogs.added':
+    '“{name}”을(를) {url} 주소로 추가했습니다. 주소는 이 브라우저에만 남고 이 사이트로 전송되지 않습니다.',
+  'settings.catalogs.addedWithCredentials':
+    '“{name}”을(를) {url} 주소로, 입력한 사용자 이름과 비밀번호와 함께 추가했습니다. 모두 이 브라우저에만 남고 이 사이트로는 전송되지 않습니다.',
+  'settings.catalogs.removed':
+    '“{name}”을(를) 이 브라우저에서, 저장돼 있던 로그인 정보와 함께 지웠습니다.',
+  'settings.catalogs.rejected': '아무것도 추가되지 않았습니다: {reason}',
+  // --- Addons ---------------------------------------------------------------
+  'nav.addons': '애드온',
+  'addons.title': '애드온',
+  'addons.intro':
+    '애드온은 자체 출처를 가져옵니다. 주소를 붙여넣어 설치하며, 샌드박스 안의 내 기기에서 돌거나 제작자의 서버에서 돕니다. Golden Library는 애드온을 함께 배포하지 않고, 목록도 두지 않으며, 무엇을 돌려주는지 검사하지 않습니다.',
+  'addons.addressLabel': '애드온 주소',
+  'addons.addressHint': '제작자가 알려준 매니페스트 URL.',
+  'addons.continue': '계속',
+  'addons.fromServer': '서버에서',
+  'addons.fromFile': '파일에서 (내 기기에서 실행)',
+  'addons.bundleLabel': '애드온 코드 주소',
+  'addons.bundleHint': '코드의 URL. 서버가 아니라 이 기기에서 돕니다.',
+  'addons.integrityLabel': '무결성 해시',
+  'addons.integrityHint':
+    '제작자가 sha256-… 형태로 알려줍니다. 필수입니다. 없으면 한 번 승인한 코드가 나중에 바뀌어도 알 수 없습니다.',
+  'addons.checking': '애드온을 읽는 중…',
+  'addons.installedHeading': '설치됨',
+  'addons.none': '아직 애드온이 없습니다. 지금 보이는 것은 모두 이 인스턴스 자체에서 온 것입니다.',
+  'addons.priorityHint': '순서가 곧 우선순위입니다. 맨 위 애드온이 먼저 답합니다.',
+  'addons.enable': '켜기',
+  'addons.disable': '끄기',
+  'addons.off': '꺼짐',
+  'addons.remove': '삭제',
+  'addons.moveUp': '위로',
+  'addons.moveDown': '아래로',
+  'addons.configure': '설정',
+  'addons.failedToStart': '“{name}”이(가) 시작되지 않았습니다: {reason}',
+  'addons.consentTitle': '“{name}”을(를) 설치할까요?',
+  'addons.consentHosts': '접속할 곳: {hosts}',
+  'addons.consentNoHosts': '어디에도 접속을 요청하지 않았습니다.',
+  'addons.consentSeesYou':
+    '이 애드온은 제작자의 서버에서 돕니다. 제작자는 당신의 주소와, 이 애드온을 통해 찾는 모든 것을 보게 됩니다.',
+  'addons.consentSandboxed':
+    '이 애드온은 내 기기의 샌드박스에서 돕니다. 쿠키도, 이 사이트의 데이터도, 열려 있는 다른 어떤 것도 읽을 수 없습니다.',
+  'addons.consentNotVetted':
+    'Golden Library는 애드온이 돌려주는 내용을 검사하지 않으며 이것을 추천하지도 않았습니다. 무엇을 설치할지는 당신의 선택입니다.',
+  'addons.install': '설치',
+  'addons.cancel': '취소',
+  'addons.via': '{name} 경유',
+  'addons.sourcesTitle': '내 애드온에서',
+  'addons.searchTitle': '내 애드온이 찾은 것',
+  'addons.showLinks': '다운로드 링크 표시',
+  'addons.unreadable': '이 애드온의 {count}개 항목을 읽지 못했습니다.',
+  'addons.browse': '카탈로그 보기',
+  'addons.browseTitle': '「{name}」 카탈로그',
+  'addons.browseNoCatalog': '이 애드온은 둘러볼 카탈로그를 제공하지 않습니다.',
+  'addons.browseEmpty': '이 애드온의 카탈로그가 현재 비어 있습니다.',
+  'addons.browseFailed': '「{name}」 카탈로그를 불러오지 못했습니다: {reason}',
+  'addons.loadMore': '더 보기',
+  'addons.notInstalled': '이 애드온은 설치되어 있지 않습니다.',
+
+  'settings.addons.title': '내 애드온',
+  'settings.addons.installed':
+    '“{name}”을(를) 설치했습니다. 다른 애드온과 함께 질의되며 {hosts}에 접속할 수 있습니다.',
+  'settings.addons.removed':
+    '“{name}”을(를) 삭제했습니다. 결과도, 여기 저장해 두었던 것도 이 브라우저에서 사라졌습니다.',
+  'settings.addons.enabled': '“{name}”을(를) 다시 켰습니다. 다른 애드온과 함께 질의됩니다.',
+  'settings.addons.disabled':
+    '“{name}”을(를) 껐습니다. 설정과 함께 설치된 채로 남지만, 돌려주는 내용은 표시되지 않습니다.',
+  'settings.addons.reordered': '“{name}”이(가) 이제 {total}개 중 {position}번째로 답합니다.',
+  'settings.addons.rejected': '아무것도 설치되지 않았습니다: {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': '사용자 소스',
+  'customSources.title': '사용자 소스',
+  'customSources.intro':
+    '이름과 {isbn}, {query}, {title}, {author}, {language}가 포함된 검색 URL을 지정해 나만의 상점이나 카탈로그를 추가하세요. 링크는 이 기기에서 만들어지며, 이 사이트는 절대 가져오지 않습니다.',
+  'customSources.nameLabel': '이름',
+  'customSources.templateLabel': 'URL 템플릿',
+  'customSources.templateHint':
+    '절대 https:// 주소입니다. {isbn}, {query}, {title}, {author}, {language}는 판본 정보로 채워집니다. 자리표시자가 비어 있으면 해당 판본의 링크는 생략됩니다.',
+  'customSources.add': '소스 추가',
+  'customSources.listHeading': '내 소스',
+  'customSources.none': '아직 사용자 소스가 없습니다.',
+  'customSources.off': '꺼짐',
+  'customSources.enable': '켜기',
+  'customSources.disable': '끄기',
+  'customSources.remove': '제거',
+  'customSources.heading': '내 소스',
+  'customSources.caption': '직접 설정한 링크입니다. 이 인스턴스는 연결 대상을 확인하지 않습니다.',
+
+  'settings.customSources.title': '내 사용자 소스',
+  'settings.customSources.added': '“{name}”이(가) 추가되어 다른 소스와 함께 제공됩니다.',
+  'settings.customSources.removed': '“{name}”이(가) 이 브라우저에서 제거되었습니다.',
+  'settings.customSources.enabled': '“{name}”이(가) 다시 켜졌습니다.',
+  'settings.customSources.disabled':
+    '“{name}”이(가) 꺼졌습니다. 설정은 유지되지만 링크는 표시되지 않습니다.',
+  'settings.customSources.rejected': '아무것도 추가되지 않았습니다: {reason}',
+
+  // --- Books in the reader's own language, and localized descriptions -------
+  'featured.inLanguageHeading': '당신의 언어로 쓰인 책',
+  'featured.inLanguageBlurb':
+    '이 사이트를 읽고 있는 언어로 쓰인 책입니다. 가장 여러 번 출간된 순서이며, 이는 Open Library 자체의 정렬일 뿐 베스트셀러 순위가 아닙니다.',
+  'work.newSearch': '새로 검색',
+  'work.descriptionFrom': '소개:',
+  'work.descriptionNotLocalized':
+    '이 소개는 출처가 쓴 언어 그대로입니다. 이 책에 대한 당신의 언어로 된 소개는 아직 없습니다.',
 };

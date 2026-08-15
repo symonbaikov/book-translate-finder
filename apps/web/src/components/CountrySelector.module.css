@@ -1,0 +1,5 @@
+/* Wide enough for the longest country name in the list and no wider — a select that spans the
+   page implies there is more to choose than there is. */
+.field {
+  max-inline-size: 18rem;
+}

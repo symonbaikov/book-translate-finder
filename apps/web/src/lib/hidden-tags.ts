@@ -28,11 +28,14 @@ function read(): string[] {
   }
 }
 
-function write(tags: string[]): void {
+function write(tags: string[]): boolean {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify([...new Set(tags)].sort()));
+    return true;
   } catch {
-    /* private mode or blocked storage — hiding simply does not persist */
+    // Private mode or blocked storage: hiding holds for this visit only. The caller says so
+    // rather than letting the genre quietly reappear on the next reload.
+    return false;
   }
 }
 
@@ -40,15 +43,16 @@ export function readHiddenTags(): string[] {
   return read();
 }
 
-export function hideTag(tag: string): void {
+/** True when the list reached storage; false when it holds for this visit only. */
+export function hideTag(tag: string): boolean {
   const normalized = tag.trim().toLowerCase();
-  if (!normalized) return;
-  write([...read(), normalized]);
+  if (!normalized) return false;
+  return write([...read(), normalized]);
 }
 
-export function unhideTag(tag: string): void {
+export function unhideTag(tag: string): boolean {
   const normalized = tag.trim().toLowerCase();
-  write(read().filter((t) => t !== normalized));
+  return write(read().filter((t) => t !== normalized));
 }
 
 export function isHidden(tag: string, hidden: readonly string[] = read()): boolean {

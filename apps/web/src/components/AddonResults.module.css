@@ -1,0 +1,47 @@
+/* Addon results sit next to results this instance produced and vouches for, and these do not carry
+   that. The separation is a correctness requirement rather than a layout preference
+   (docs/adr/0009-blind-core-link-policy-scope.md), so every group is under the name of the addon
+   that produced it and no addon row is ever rendered without one. */
+
+.group {
+  margin-block-start: var(--space-5);
+}
+
+.attribution {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  color: var(--text-muted);
+  font-size: var(--step--1);
+  margin-block-end: var(--space-2);
+}
+
+.sources {
+  display: grid;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.source {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+}
+
+.sourceName {
+  font-weight: var(--weight-medium);
+}
+
+.sourceTitle,
+.note {
+  color: var(--text-muted);
+  font-size: var(--step--1);
+}
+
+.failure {
+  color: var(--danger-text);
+  font-size: var(--step--1);
+}

@@ -1,5 +1,5 @@
 import { asc, eq, lt } from 'drizzle-orm';
-import { LanguageCode, Work, type WorkRepository } from '@btf/domain';
+import { LanguageCode, Work, type WorkRepository } from '@golden/domain';
 import type { Db } from '../db/client.js';
 import { resolveDb } from '../db/transaction-context.js';
 import { work } from '../db/schema.js';

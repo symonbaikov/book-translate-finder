@@ -4,10 +4,10 @@
 // an independent sync, so a killed run just resumes from wherever the list is re-walked.
 //
 // `--limit=N` syncs only the first N queries — handy for a quick smoke test.
-import { loadEnv } from '@btf/infrastructure';
+import { loadEnv } from '@golden/infrastructure';
 import { buildWorkerContext } from '../composition-root.js';
 import { workerEnvSchema } from '../config/worker-env.schema.js';
-import { FEATURED_BOOKS } from '@btf/domain';
+import { FEATURED_BOOKS } from '@golden/domain';
 import { CATALOG_SEED_QUERIES } from './catalog-seed-list.js';
 
 /** No `--limit` means the whole list; the caller decides how much of it they have time for. */

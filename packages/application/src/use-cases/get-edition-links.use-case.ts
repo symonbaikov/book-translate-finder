@@ -10,7 +10,7 @@ import {
   type EditionRepository,
   type WorkRepository,
   type SourceLinkRepository,
-} from '@btf/domain';
+} from '@golden/domain';
 import type { UseCase } from '../use-case.js';
 import { CACHE_KEY_VERSION } from '../cache-key-version.js';
 
@@ -39,6 +39,13 @@ export interface SourceLinkDto {
    * disappearing into one undifferentiated list.
    */
   group?: 'country' | 'language' | 'worldwide';
+  /**
+   * Present only when this link was not found on the requested edition itself but on a sibling
+   * edition of the same work (see `findFreeCopyOnSiblingEdition`) — a different print of the same
+   * text, e.g. an old public-domain scan of a book whose modern reprint has no scan of its own.
+   * `label` identifies which edition, so the UI can be honest about what a reader would get.
+   */
+  viaEdition?: { id: string; label: string };
 }
 
 export interface GetEditionLinksOutput {
@@ -94,21 +101,70 @@ export class GetEditionLinks implements UseCase<GetEditionLinksInput, GetEdition
     if (cached) return cached;
 
     const links = await this.deps.sourceLinkRepository.findByEditionId(input.editionId);
+    const hasFreeCopy = links.some(
+      (link) => link.isLegalFree && (link.type === 'download' || link.type === 'listen'),
+    );
 
     const output: GetEditionLinksOutput = {
       editionId: input.editionId,
-      links: links.map((link) => ({
-        type: link.type,
-        provider: link.provider.value,
-        rightsStatus: link.rightsStatus,
-        url: link.url,
-        format: link.format,
-      })),
+      links: [
+        ...links.map((link) => ({
+          type: link.type,
+          provider: link.provider.value,
+          rightsStatus: link.rightsStatus,
+          url: link.url,
+          format: link.format,
+        })),
+        // This edition itself has no free copy — the same text may still be free on a sibling
+        // edition (a different print, e.g. an old public-domain scan of a book whose modern
+        // reprint has none). A reader who wants to *read* the work is not asking for this exact
+        // print, so surfacing that copy here beats a bare "no legal links" for a work that in
+        // fact has one — see docs/legal-policy.md: rightsStatus is still carried explicitly.
+        ...(hasFreeCopy ? [] : await this.findFreeCopyOnSiblingEdition(edition)),
+      ],
       bookstores: await this.buildBookstoreLinks(edition, country),
     };
 
     await this.deps.cache.set(cacheKey, output, LINKS_TTL_SECONDS);
     return output;
+  }
+
+  /**
+   * When the requested edition has no free copy of its own, look for one on another edition of
+   * the same work — preferring the oldest, since an older print is the one most likely to have
+   * fallen into the public domain and been scanned. Picks at most one sibling edition (not every
+   * one that has a copy) so the panel offers one honest way to read the text, not a wall of
+   * near-duplicate old prints.
+   */
+  private async findFreeCopyOnSiblingEdition(edition: Edition): Promise<SourceLinkDto[]> {
+    // Restricted to the same language as the requested edition: a free scan of a German
+    // translation is not "a free copy" of an English edition, whatever the work-level rights
+    // status of the original text is (docs/legal-policy.md — rights are a per-edition fact).
+    const siblings = (await this.deps.editionRepository.findByWorkId(edition.workId))
+      .filter(
+        (sibling) => sibling.id !== edition.id && sibling.language.value === edition.language.value,
+      )
+      .sort((a, b) => (a.year ?? Infinity) - (b.year ?? Infinity));
+    if (siblings.length === 0) return [];
+
+    const freeByEditionId = await this.deps.sourceLinkRepository.findFreeDownloadsByEditionIds(
+      siblings.map((sibling) => sibling.id),
+    );
+
+    const chosen = siblings.find((sibling) => (freeByEditionId.get(sibling.id) ?? []).length > 0);
+    if (!chosen) return [];
+
+    const label =
+      [chosen.year ?? null, chosen.publisher ?? null].filter(Boolean).join(', ') || chosen.title;
+
+    return (freeByEditionId.get(chosen.id) ?? []).map((link) => ({
+      type: link.type,
+      provider: link.provider.value,
+      rightsStatus: link.rightsStatus,
+      url: link.url,
+      format: link.format,
+      viaEdition: { id: chosen.id, label },
+    }));
   }
 
   /**

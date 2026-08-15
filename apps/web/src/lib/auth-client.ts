@@ -4,7 +4,7 @@ import {
   CurrentUserResponseSchema,
   type BookmarksResponse,
   type CurrentUserResponse,
-} from '@btf/contracts';
+} from '@golden/contracts';
 import { webEnv } from '../config/web-env';
 
 /**

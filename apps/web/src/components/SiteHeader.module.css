@@ -1,0 +1,131 @@
+/* The header follows the reader down the page. It holds what this is and who they are, and nothing
+   else — the search box lives on the page it serves, not in a chrome that trails after people. */
+
+.header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-header);
+  background: var(--surface-header);
+  /* Translucency is the point: covers scrolling underneath stay faintly visible, which is what
+     makes the bar read as a layer of glass rather than a lid. `saturate` compensates for the
+     wash-out that blur alone causes. */
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-block-end: 1px solid var(--hairline);
+}
+
+/* At the very top of the page there is nothing to separate the header from, and the rule reads as
+   an arbitrary line under the logo. It fades in over the first 80px of scroll — where the content
+   actually starts sliding underneath. Scroll-driven, so no scroll listener and no re-render; in
+   browsers without it the rule is simply always there, which is the current behaviour. */
+@supports (animation-timeline: scroll()) {
+  .header {
+    border-block-end-color: transparent;
+    animation: reveal-rule linear both;
+    animation-timeline: scroll();
+    animation-range: 0 80px;
+  }
+
+  @keyframes reveal-rule {
+    to {
+      border-block-end-color: var(--hairline);
+    }
+  }
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-block-size: var(--header-h);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  /* The logo is a link home, and on a phone it is the link people reach for first — so it carries
+     the same 44px box as the rest of the row. The negative start margin keeps the mark optically
+     aligned with the content below despite the added padding. */
+  min-block-size: var(--control-h-md);
+  padding-inline: var(--space-2);
+  margin-inline-start: calc(var(--space-2) * -1);
+  border-radius: var(--r-md);
+  /* The wordmark is the one place the product says its own name, so it says it in the reading
+     face — the same face the book titles are set in. */
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.brand:hover {
+  color: var(--text);
+  background: var(--surface-inset);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* Every link in here is a target for a thumb, so each one carries its own 44px box rather than
+   being 22px of text with dead space around it. The padding is what makes it pressable; the pill
+   on hover is what makes that visible. */
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--control-h-md);
+  padding-inline: var(--space-3);
+  border-radius: var(--r-pill);
+  font-size: var(--step-0);
+  font-weight: var(--weight-medium);
+  color: var(--text-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--dur-fast) var(--ease-standard),
+    color var(--dur-fast) var(--ease-standard);
+}
+
+.link:hover {
+  background: var(--surface-inset);
+  color: var(--text);
+}
+
+.who {
+  padding-inline: var(--space-2);
+  font-size: var(--step--1);
+  color: var(--text-faint);
+  max-inline-size: 12ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Under ~560px the wordmark goes and the mark stands alone: at that width the account controls and
+   the language selector matter more than repeating a name the reader just tapped. */
+@media (max-width: 560px) {
+  .wordmark {
+    display: none;
+  }
+
+  .who {
+    display: none;
+  }
+
+  .link {
+    padding-inline: var(--space-2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link {
+    transition: none;
+  }
+}

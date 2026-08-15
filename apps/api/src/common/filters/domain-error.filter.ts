@@ -1,5 +1,5 @@
 import { type ArgumentsHost, Catch, type ExceptionFilter, HttpStatus } from '@nestjs/common';
-import { DomainError } from '@btf/domain';
+import { DomainError } from '@golden/domain';
 import type { FastifyReply } from 'fastify';
 import type { Logger as PinoLogger } from 'pino';
 

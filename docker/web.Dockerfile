@@ -29,8 +29,8 @@ ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 COPY tsconfig.base.json ./
 COPY packages/contracts ./packages/contracts
 COPY apps/web ./apps/web
-RUN pnpm --filter @btf/contracts run build
-RUN pnpm --filter @btf/web run build
+RUN pnpm --filter @golden/contracts run build
+RUN pnpm --filter @golden/web run build
 
 FROM node:20-alpine AS runtime
 RUN addgroup -S btf && adduser -S btf -G btf

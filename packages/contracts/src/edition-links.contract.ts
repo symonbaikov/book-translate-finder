@@ -17,6 +17,10 @@ export const SourceLinkSchema = z.object({
   url: z.string().url(),
   /** File format for downloads (`epub`, `txt`, …) — tells the reader what they will get. */
   format: z.string().nullish(),
+  /** Present when this link was found on a sibling edition of the same work, not the requested
+   * edition itself — e.g. an old public-domain scan offered because the modern reprint has none.
+   * `label` identifies which edition, so the reader knows what they'd actually be getting. */
+  viaEdition: z.object({ id: z.string(), label: z.string() }).optional(),
 });
 
 export type SourceLinkDto = z.infer<typeof SourceLinkSchema>;

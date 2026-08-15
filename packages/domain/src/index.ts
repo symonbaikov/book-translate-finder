@@ -24,11 +24,19 @@ export {
   type EditionNaturalKeyInput,
 } from './normalization/natural-key.js';
 export { normalizeText } from './normalization/normalize-text.js';
+export { romanizeCyrillicQuery } from './normalization/romanize-query.js';
+export { hasConflictingNumbers } from './normalization/conflicting-numbers.js';
+export {
+  isPlausibleSameWork,
+  type CandidateWorkIdentity,
+  type KnownWorkIdentity,
+} from './normalization/plausible-same-work.js';
 
 export {
   assertLinkAllowed,
   ForbiddenSourceError,
   IllegalDownloadLinkError,
+  ImplausiblePublicDomainClaimError,
   type LinkCandidate,
 } from './policy/link-policy.js';
 export {
@@ -37,7 +45,12 @@ export {
   type FieldCategory,
 } from './policy/source-priority.js';
 
-export { coverUrlFromIsbn } from './policy/cover-url.js';
+export {
+  assertCoverHostsWellFormed,
+  coverSourceUrl,
+  isAllowedCoverHost,
+} from './policy/cover-hosts.js';
+
 export {
   AUTHORIZED_FREE_BOOKS,
   findAuthorizedFreeBooks,
@@ -74,9 +87,20 @@ export {
   type ExternalRefEntityType,
   type ExternalRefRepository,
 } from './ports/external-ref-repository.port.js';
+export {
+  type FreeBookHit,
+  type FreeBooksPort,
+  type FreeBooksQuery,
+  type FreeBooksResult,
+} from './ports/free-books.port.js';
 export { type IdGenerator } from './ports/id-generator.port.js';
+export { type FetchedImage, type ImageFetchPort } from './ports/image-fetch.port.js';
 export { type IdempotencyRecord, type IdempotencyStore } from './ports/idempotency-store.port.js';
-export { type JobQueuePort } from './ports/job-queue.port.js';
+export {
+  type EnqueueOptions,
+  type JobPriority,
+  type JobQueuePort,
+} from './ports/job-queue.port.js';
 export { type SourceLinkRepository } from './ports/source-link-repository.port.js';
 export { type SyncLogEntry, type SyncLogRepository } from './ports/sync-log-repository.port.js';
 export { type UnitOfWork } from './ports/unit-of-work.port.js';
@@ -92,6 +116,7 @@ export {
 
 export { ExternalRef } from './value-objects/external-ref.js';
 export { Isbn } from './value-objects/isbn.js';
+export { inferLanguageFromIsbn } from './value-objects/isbn-language.js';
 export { LanguageCode } from './value-objects/language-code.js';
 export { LANGUAGE_NAMES, type LanguageNames } from './value-objects/language-names.js';
 export { isLinkType, LINK_TYPES, type LinkType } from './value-objects/link-type.js';
@@ -123,3 +148,30 @@ export {
   type FeaturedList,
 } from './policy/featured-books-catalog.js';
 export type { SubjectSourcePort, SubjectWork } from './ports/subject-source.port.js';
+export {
+  LITERATURE_SUBJECT_BY_LANGUAGE,
+  literatureSubjectFor,
+} from './policy/language-literature-subjects.js';
+export type {
+  LocalizedDescription,
+  LocalizedDescriptionPort,
+  LocalizedDescriptionQuery,
+} from './ports/localized-description.port.js';
+
+// Modules B and C — physical shops near the reader, and price aggregation across shop plugins.
+export { Money, currencyExponent, normalizeCurrencyCode } from './value-objects/money.js';
+export {
+  BOOK_FORMATS,
+  compareBookFormats,
+  isBookFormat,
+  normalizeBookFormat,
+  type BookFormat,
+} from './value-objects/book-format.js';
+export type {
+  GeoStoreAdapter,
+  GeoStoreQuery,
+  PhysicalStoreResult,
+  StoreAvailability,
+  StorePrice,
+} from './ports/geo-store.port.js';
+export type { PriceOffer, PriceProvider, PriceQuery } from './ports/price-provider.port.js';

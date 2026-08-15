@@ -1,4 +1,4 @@
-import { LANGUAGE_NAMES } from '@btf/domain';
+import { LANGUAGE_NAMES } from '@golden/domain';
 import { sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { loadEnv } from '../config/base-env.schema.js';

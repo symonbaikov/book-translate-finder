@@ -1,4 +1,4 @@
-import type { CachePort, SubjectSourcePort, SubjectWork } from '@btf/domain';
+import type { CachePort, SubjectSourcePort, SubjectWork } from '@golden/domain';
 import type { ResilientFetcher } from '../http/resilient-fetch.js';
 
 const CACHE_TTL_SECONDS = 24 * 60 * 60;

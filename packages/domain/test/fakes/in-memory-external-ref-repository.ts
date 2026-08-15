@@ -6,6 +6,7 @@ import type { ExternalRef } from '../../src/value-objects/external-ref.js';
 
 interface StoredRef {
   sourceName: string;
+  externalId: string;
   entityType: ExternalRefEntityType;
   entityId: string;
 }
@@ -27,7 +28,12 @@ export class InMemoryExternalRefRepository implements ExternalRefRepository {
   async save(ref: ExternalRef, entityType: ExternalRefEntityType, entityId: string): Promise<void> {
     // Upsert on (source_name, external_id) (docs/architecture.md §3.2) — re-saving the same ref
     // just overwrites what it points to, never adds a second row.
-    this.byKey.set(this.key(ref), { sourceName: ref.sourceName, entityType, entityId });
+    this.byKey.set(this.key(ref), {
+      sourceName: ref.sourceName,
+      externalId: ref.externalId,
+      entityType,
+      entityId,
+    });
   }
 
   async findSourcesForEntity(entityId: string): Promise<string[]> {
@@ -36,5 +42,11 @@ export class InMemoryExternalRefRepository implements ExternalRefRepository {
         [...this.byKey.values()].filter((r) => r.entityId === entityId).map((r) => r.sourceName),
       ),
     ];
+  }
+
+  async findExternalIdsForEntity(entityId: string, sourceName: string): Promise<string[]> {
+    return [...this.byKey.values()]
+      .filter((r) => r.entityId === entityId && r.sourceName === sourceName)
+      .map((r) => r.externalId);
   }
 }

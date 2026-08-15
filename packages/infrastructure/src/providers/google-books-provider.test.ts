@@ -1,4 +1,4 @@
-import type { CachePort } from '@btf/domain';
+import type { CachePort } from '@golden/domain';
 import { describe, expect, it, vi } from 'vitest';
 import type { ResilientFetcher } from '../http/resilient-fetch.js';
 import { GoogleBooksProvider } from './google-books-provider.js';

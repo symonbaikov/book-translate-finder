@@ -1,4 +1,4 @@
-import type { CachePort, RecommendationHit, SubjectBrowsePort } from '@btf/domain';
+import type { CachePort, RecommendationHit, SubjectBrowsePort } from '@golden/domain';
 import type { UseCase } from '../use-case.js';
 import { CACHE_KEY_VERSION } from '../cache-key-version.js';
 

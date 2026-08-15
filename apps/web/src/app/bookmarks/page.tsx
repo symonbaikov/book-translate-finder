@@ -2,11 +2,14 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
-import type { BookmarksResponse } from '@btf/contracts';
+import type { BookmarksResponse } from '@golden/contracts';
 import { listBookmarks, setBookmark } from '../../lib/auth-client';
-import { CoverImage } from '../../components/CoverImage';
+import { BookCard, BookCardSkeleton } from '../../components/BookCard';
 import { useSession } from '../../components/SessionProvider';
 import { useT } from '../../i18n/I18nProvider';
+import { useSettingChangeToast } from '../../lib/settings-toast';
+import { Button, Page, PosterGrid } from '../../ui';
+import styles from './bookmarks.module.css';
 
 type Item = BookmarksResponse['bookmarks'][number];
 
@@ -15,6 +18,7 @@ export default function BookmarksPage() {
   const t = useT();
   const [items, setItems] = useState<Item[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const announce = useSettingChangeToast();
 
   const load = useCallback(async () => {
     try {
@@ -28,14 +32,28 @@ export default function BookmarksPage() {
     if (user) void load();
   }, [user, load]);
 
-  async function remove(workId: string): Promise<void> {
+  async function remove(workId: string, title: string): Promise<void> {
     // Removed from the list immediately: the row the reader just dismissed staying put reads as
     // a failure, and the request is a single delete.
     setItems((current) => current?.filter((item) => item.workId !== workId) ?? null);
     try {
       await setBookmark(workId, false);
+      announce({
+        setting: 'bookmarks',
+        outcome: 'cleared',
+        title: t('settings.bookmarks.title'),
+        detail: t('settings.bookmarks.removed', { title }),
+      });
     } catch {
+      // The row comes back on reload, which needs saying — otherwise a book that reappears looks
+      // like the list forgot the removal on its own.
       await load();
+      announce({
+        setting: 'bookmarks',
+        outcome: 'failed',
+        title: t('settings.bookmarks.title'),
+        detail: t('settings.bookmarks.failed'),
+      });
     }
   }
 
@@ -43,46 +61,57 @@ export default function BookmarksPage() {
 
   if (!user) {
     return (
-      <main className="container" id="main-content">
+      <Page>
         <h1>{t('bookmarks.title')}</h1>
-        <p>
+        <p className={styles.empty}>
           <Link href="/login">{t('nav.signIn')}</Link> {t('bookmarks.signedOut')}
         </p>
-      </main>
+      </Page>
     );
   }
 
   return (
-    <main className="container" id="main-content">
+    <Page>
       <h1>{t('bookmarks.title')}</h1>
       {error && <p className="error-box">{error}</p>}
-      {items === null && !error && <p className="muted">{t('bookmarks.loading')}</p>}
+      {items === null && !error && (
+        <PosterGrid className={styles.grid}>
+          {Array.from({ length: 6 }, (_, i) => (
+            <BookCardSkeleton key={i} />
+          ))}
+        </PosterGrid>
+      )}
       {items?.length === 0 && (
-        <p className="muted">
+        <p className={styles.empty}>
           {t('bookmarks.empty')} <Link href="/">{t('bookmarks.searchLink')}</Link>
         </p>
       )}
-      {items?.map((item) => (
-        <article key={item.workId} className="card media-row">
-          <CoverImage src={item.coverUrl} alt="" width={64} height={96} />
-          <div className="media-row__body">
-            <h2 style={{ margin: 0, fontSize: '1.05rem' }}>
-              <Link href={`/works/${item.workId}`}>{item.originalTitle}</Link>
-            </h2>
-            <p className="muted" style={{ margin: '0.2rem 0 0.6rem' }}>
-              {item.author}
-              {item.firstPublishedYear ? `, ${item.firstPublishedYear}` : ''}
-            </p>
-            <button
-              type="button"
-              className="button--secondary"
-              onClick={() => void remove(item.workId)}
-            >
-              {t('bookmarks.remove')}
-            </button>
-          </div>
-        </article>
-      ))}
-    </main>
+      {items && items.length > 0 && (
+        <PosterGrid className={styles.grid}>
+          {items.map((item, index) => (
+            <BookCard
+              key={item.workId}
+              href={`/works/${item.workId}`}
+              title={item.originalTitle}
+              author={item.author}
+              coverUrl={item.coverUrl}
+              priority={index < 6}
+              meta={
+                item.firstPublishedYear ? `${item.author}, ${item.firstPublishedYear}` : item.author
+              }
+              action={
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => void remove(item.workId, item.originalTitle)}
+                >
+                  {t('bookmarks.remove')}
+                </Button>
+              }
+            />
+          ))}
+        </PosterGrid>
+      )}
+    </Page>
   );
 }

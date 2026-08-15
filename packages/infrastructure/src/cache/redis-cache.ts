@@ -1,4 +1,4 @@
-import type { CachePort } from '@btf/domain';
+import type { CachePort } from '@golden/domain';
 import type { Redis } from 'ioredis';
 
 /**

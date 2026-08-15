@@ -18,7 +18,7 @@ concurrency:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/book-translate-finder
+  IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/golden-library
 
 jobs:
   publish:

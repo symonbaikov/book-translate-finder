@@ -17,10 +17,16 @@ export default defineWorkspace([
       include: [
         'packages/*/src/**/*.test.ts',
         'apps/*/src/**/*.test.ts',
-        'packages/*/test/fakes/**/*.test.ts',
-        'packages/*/test/use-cases/**/*.test.ts',
+        // Everything under a package's `test/` except the port contract suites, which the
+        // `contract` project below owns — running them in both would double every assertion.
+        'packages/*/test/**/*.test.ts',
       ],
-      exclude: ['**/node_modules/**', '**/dist/**', '**/*.integration.test.ts'],
+      exclude: [
+        '**/node_modules/**',
+        '**/dist/**',
+        '**/*.integration.test.ts',
+        'packages/*/test/contract/**',
+      ],
       environment: 'node',
     },
   },

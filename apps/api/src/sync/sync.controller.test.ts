@@ -1,5 +1,5 @@
-import { InvalidInputError } from '@btf/domain';
-import type { EnqueueSourceSync, EnqueueSourceSyncOutput } from '@btf/application';
+import { InvalidInputError } from '@golden/domain';
+import type { EnqueueSourceSync, EnqueueSourceSyncOutput } from '@golden/application';
 import { describe, expect, it, vi } from 'vitest';
 import { SyncController } from './sync.controller.js';
 

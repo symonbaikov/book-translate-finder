@@ -10,7 +10,7 @@ const STORAGE_KEY = 'btf.country';
 
 /**
  * Countries with at least one local bookstore — mirrors `supportedBookstoreCountries()` in the
- * domain. Duplicated deliberately: apps/web may only import `@btf/contracts`
+ * domain. Duplicated deliberately: apps/web may only import `@golden/contracts`
  * (docs/architecture.md §2 boundaries), and shipping a static selector's contents through an API
  * call would be worse. Codes only — the names come from the platform's own `Intl.DisplayNames`,
  * so there is no hand-maintained country-name table to drift.
@@ -92,20 +92,26 @@ export function readCountry(): string | null {
   }
 }
 
-export function writeCountry(country: string | null): void {
-  if (typeof window === 'undefined') return;
+/** True when the value reached storage; false when the browser refused to keep it. */
+export function writeCountry(country: string | null): boolean {
+  if (typeof window === 'undefined') return false;
   try {
     if (country) window.localStorage.setItem(STORAGE_KEY, country);
     else window.localStorage.removeItem(STORAGE_KEY);
+    return true;
   } catch {
-    /* ignore — see readCountry */
+    // See readCountry. The failure is not swallowed any more: the caller reports it to the
+    // reader, because a country that silently forgets itself on reload looks like a bug.
+    return false;
   }
 }
 
 /** Fires when the country changes so every mounted links panel refetches without a page reload. */
 export const COUNTRY_CHANGE_EVENT = 'btf:country-change';
 
-export function broadcastCountryChange(country: string | null): void {
-  writeCountry(country);
+/** Applies the choice everywhere on the page; returns whether it will survive a reload. */
+export function broadcastCountryChange(country: string | null): boolean {
+  const persisted = writeCountry(country);
   window.dispatchEvent(new CustomEvent(COUNTRY_CHANGE_EVENT, { detail: country }));
+  return persisted;
 }

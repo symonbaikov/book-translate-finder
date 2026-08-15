@@ -12,7 +12,7 @@ export const ru: Dictionary = {
   'footer.openSource': 'Открытый код',
   'footer.openSourceRest': '— лицензия MIT, можно развернуть у себя. Исходники на GitHub.',
 
-  'home.title': 'BookTranslate Finder',
+  'home.title': 'Golden Library',
   'home.subtitle': 'Открытый агрегатор переводов книг: языки, издания и законные источники.',
   'home.searchLabel': 'Название и автор',
   'home.searchPlaceholder': 'Война и мир Толстой',
@@ -34,11 +34,40 @@ export const ru: Dictionary = {
   'featured.filling': 'Часть книг ещё подгружается в фоне. Обновите страницу через минуту.',
   'featured.freeCopy': 'Есть бесплатно',
 
+  // --- Free books ---------------------------------------------------------
+  'free.homeHeading': 'Можно читать бесплатно',
+  'free.homeBlurb':
+    'Книги в общественном достоянии и под открытыми лицензиями — эта копия сайта отдаёт их напрямую.',
+  'free.seeAll': 'Смотреть ещё',
+  'free.downloadable': 'Скачать',
+  'free.pageTitle': 'Бесплатные книги',
+  'free.pageBlurb':
+    'У каждой книги здесь есть хотя бы одна легальная бесплатная копия: общественное достояние или разрешение правообладателя. Без покупки и без читательского билета.',
+  'free.empty':
+    'Пока ничего бесплатного. Бесплатные копии появляются по мере того, как эта копия сайта загружает книги, — поищите книгу и загляните сюда снова.',
+  'free.emptyForLanguage':
+    'Бесплатных копий на этом языке ({language}) пока нет. Снимите фильтр выше, чтобы увидеть всю полку.',
+  'free.showMore': 'Показать ещё',
+  'free.shown': 'Показано {shown} из {total}.',
+  'free.allLanguages': 'Бесплатные копии на всех языках.',
+  'free.filteredByLanguage': 'Только бесплатные копии на языке: {language}.',
+  'free.filterByLanguage': 'Показать только бесплатные копии на языке: {language}.',
+  'free.dropLanguageFilter': 'показать все языки',
+  'free.loadFailed': 'Сейчас не удалось загрузить бесплатные книги.',
+
   'work.original': 'оригинал',
   'work.dataSources': 'Источники данных',
   'work.about': 'Об этой книге',
   'work.translatedInto': 'Переведена на',
+  'work.availableIn': 'Доступные языки',
+  'work.languagesNote':
+    'Только то, что перечисляют наши источники. Отсутствие языка здесь не значит, что перевода нет.',
   'work.noTranslations': 'Переводы пока не найдены.',
+  'work.yourLanguage.title': 'На вашем языке',
+  'work.yourLanguage.yes': 'Перевод на {language} есть.',
+  'work.yourLanguage.original': 'Это язык оригинала: {language}.',
+  'work.yourLanguage.no': 'Перевода на {language} среди известных изданий нет.',
+  'work.yourLanguage.show': 'Показать издания: {language}',
   'work.editions': 'Издания ({shown} из {total})',
   'work.filterLanguage': 'Язык',
   'work.filterAllLanguages': 'Все языки',
@@ -46,6 +75,10 @@ export const ru: Dictionary = {
   'work.filterApply': 'Отфильтровать',
   'work.filterReset': 'Сбросить',
   'work.noEditionsMatch': 'Под эти фильтры не подходит ни одно издание.',
+  'work.showMoreEditions': 'Показать ещё издания (осталось {remaining})',
+  'work.badgeFreeDownload': 'скачать бесплатно',
+  'work.freeDownloadFormat': 'Скачать {format}',
+  'work.freeDownloadNote': '{rights}. Бесплатно, источник — {provider}: без аккаунта и без оплаты.',
   'work.badgeReadBorrow': 'читать или взять',
   'work.badgeInBookstores': 'в магазинах',
   'work.translatedBy': 'перевод: {name}',
@@ -60,6 +93,7 @@ export const ru: Dictionary = {
   'links.hide': 'Скрыть ссылки',
   'links.loading': 'Загружаем ссылки',
   'links.none': 'Для этого издания законных ссылок пока нет.',
+  'links.viaOtherEdition': 'бесплатная копия из издания {label}',
   'links.failed': 'Не удалось загрузить ссылки.',
   'links.storesHeading': 'Найти в магазине',
   'links.storesInCountry': 'В стране: {country}',
@@ -82,6 +116,8 @@ export const ru: Dictionary = {
   'compare.heading': 'Сравнить издания',
   'compare.blurb': 'Выберите два или три издания, чтобы увидеть, чем они действительно отличаются.',
   'compare.selected': 'Выбрано {count}, нужно минимум 2.',
+  'compare.editSelection': 'Изменить издания',
+  'compare.showAllEditions': 'Показать все издания ({count})',
   'compare.columnDifference': 'Отличие',
   'compare.identical': 'По всем данным источников эти издания идентичны.',
   'compare.rowLanguage': 'Язык',
@@ -136,6 +172,9 @@ export const ru: Dictionary = {
   'search.notFoundHint': 'Ничего не нашлось. Попробуйте уточнить название или автора.',
   'search.timedOut':
     'Источники отвечают медленно, данных пока нет. Фоновая синхронизация могла уже завершиться — попробуйте ещё раз.',
+  'search.freeOnlyToggle': 'Можно скачать бесплатно',
+  'search.noFreeResults':
+    'Среди этих результатов пока нет бесплатных — попробуйте отключить фильтр.',
   'home.tagline': 'Найдите свой следующий magnum opus',
   'subject.allLanguages': 'Все языки.',
   'subject.filteredByLanguage': 'Только книги с изданием на языке: {language}.',
@@ -205,4 +244,145 @@ export const ru: Dictionary = {
   'prices.format.unknown': 'Формат не указан',
   'recommend.hideGenre': 'скрыть «{genre}»',
   'recommend.hiddenList': 'Скрытые жанры (нажмите, чтобы вернуть):',
+
+  // --- Всплывающие окна настроек ---
+  'settings.status.saved': 'Сохранено',
+  'settings.status.cleared': 'Сброшено',
+  'settings.status.unstored': 'Не сохранено',
+  'settings.status.failed': 'Без изменений',
+  'settings.notStored':
+    'Браузер отказался сохранить изменение, поэтому ничего не произошло — действует прежнее значение.',
+  'settings.language.title': 'Язык интерфейса',
+  'settings.language.changed':
+    'Изменён с {from} на {to}. Интерфейс перезагружается на языке {to}; названия книг и имена авторов остаются на своих языках.',
+  'settings.country.title': 'Страна покупок',
+  'settings.country.changed':
+    'Выбрана {country}. В ссылках на магазины теперь есть те, что доставляют туда, вместе с международными.',
+  'settings.country.cleared':
+    'Страна не выбрана. Будут предлагаться только магазины с доставкой по всему миру.',
+  'settings.bookLanguage.title': 'Язык книг',
+  'settings.bookLanguage.changed':
+    'Выбран {language}. На страницах жанров сначала будут книги с изданием на языке {language} — пока вы не сбросите фильтр.',
+  'settings.bookLanguage.cleared':
+    'Сброшен. На страницах жанров снова показываются книги на всех языках.',
+  'settings.hiddenGenres.title': 'Скрытые жанры',
+  'settings.hiddenGenres.hidden':
+    'Жанр «{genre}» скрыт. Он больше не отправляется на сервер при запросе рекомендаций; всего скрыто жанров: {count}.',
+  'settings.hiddenGenres.restored':
+    'Жанр «{genre}» снова в рекомендациях. Ещё скрыто жанров: {count}.',
+  'settings.history.title': 'История чтения',
+  'settings.history.cleared':
+    'Открытые вами книги удалены из этого браузера. Рекомендации не появятся, пока вы не откроете следующую книгу.',
+  'settings.bookmarks.title': 'Сохранённые книги',
+  'settings.bookmarks.added': '«{title}» добавлена в сохранённые книги.',
+  'settings.bookmarks.removed': '«{title}» удалена из сохранённых книг.',
+  'settings.bookmarks.failed':
+    'Сервер не принял изменение, поэтому список сохранённых книг остался прежним.',
+  'settings.catalogs.title': 'Ваши каталоги',
+  'settings.catalogs.added':
+    'Каталог «{name}» добавлен по адресу {url}. Его адрес остаётся в этом браузере и никогда не отправляется на этот сайт.',
+  'settings.catalogs.addedWithCredentials':
+    'Каталог «{name}» добавлен по адресу {url} вместе с введёнными логином и паролем. Всё это остаётся в этом браузере и не отправляется на этот сайт.',
+  'settings.catalogs.removed':
+    'Каталог «{name}» удалён из этого браузера вместе с сохранёнными для него учётными данными.',
+  'settings.catalogs.rejected': 'Ничего не добавлено: {reason}',
+  // --- Addons ---------------------------------------------------------------
+  'nav.addons': 'Дополнения',
+  'addons.title': 'Дополнения',
+  'addons.intro':
+    'Дополнение добавляет свои источники. Вы устанавливаете его, вставив адрес; оно работает либо на вашем устройстве в песочнице, либо на сервере своего автора. Golden Library не поставляет дополнений, не ведёт их списка и не проверяет, что они возвращают.',
+  'addons.addressLabel': 'Адрес дополнения',
+  'addons.addressHint': 'Ссылка на манифест, которую дал автор дополнения.',
+  'addons.continue': 'Далее',
+  'addons.fromServer': 'С сервера',
+  'addons.fromFile': 'Из файла, на вашем устройстве',
+  'addons.bundleLabel': 'Адрес кода дополнения',
+  'addons.bundleHint':
+    'Ссылка на код дополнения. Он будет выполняться на этом устройстве, а не на сервере.',
+  'addons.integrityLabel': 'Хеш целостности',
+  'addons.integrityHint':
+    'Его даёт автор дополнения, в виде sha256-… . Обязателен: без него однажды одобренный код мог бы потом измениться, а вы бы об этом не узнали.',
+  'addons.checking': 'Читаем дополнение…',
+  'addons.installedHeading': 'Установленные',
+  'addons.none': 'Дополнений пока нет. Всё, что вы видите на сайте, приходит от самого инстанса.',
+  'addons.priorityHint': 'Порядок — это приоритет: первое дополнение отвечает первым.',
+  'addons.enable': 'Включить',
+  'addons.disable': 'Выключить',
+  'addons.off': 'Выключено',
+  'addons.remove': 'Удалить',
+  'addons.moveUp': 'Выше',
+  'addons.moveDown': 'Ниже',
+  'addons.configure': 'Настроить',
+  'addons.failedToStart': 'Дополнение «{name}» не запустилось: {reason}',
+  'addons.consentTitle': 'Установить «{name}»?',
+  'addons.consentHosts': 'Оно будет обращаться к: {hosts}',
+  'addons.consentNoHosts': 'Оно не запросило доступа ни к одному адресу.',
+  'addons.consentSeesYou':
+    'Это дополнение работает на сервере своего автора. Он увидит ваш адрес и всё, что вы через него ищете.',
+  'addons.consentSandboxed':
+    'Это дополнение работает на вашем устройстве в песочнице. Оно не может прочитать ваши куки, данные этого сайта и что-либо ещё, что у вас открыто.',
+  'addons.consentNotVetted':
+    'Golden Library не проверяет, что возвращает дополнение, и не рекомендовала это. Что устанавливать — ваш выбор.',
+  'addons.install': 'Установить',
+  'addons.cancel': 'Отмена',
+  'addons.via': 'через {name}',
+  'addons.sourcesTitle': 'От ваших дополнений',
+  'addons.searchTitle': 'Найдено вашими дополнениями',
+  'addons.showLinks': 'Показать ссылки на скачивание',
+  'addons.unreadable': 'Записей от этого дополнения не удалось прочитать: {count}.',
+  'addons.browse': 'Открыть каталог',
+  'addons.browseTitle': 'Каталог «{name}»',
+  'addons.browseNoCatalog': 'У этого дополнения нет каталога для просмотра.',
+  'addons.browseEmpty': 'Каталог этого дополнения пока пуст.',
+  'addons.browseFailed': 'Не удалось загрузить каталог «{name}»: {reason}',
+  'addons.loadMore': 'Показать ещё',
+  'addons.notInstalled': 'Это дополнение не установлено.',
+
+  'settings.addons.title': 'Ваши дополнения',
+  'settings.addons.installed':
+    'Дополнение «{name}» установлено. Его будут спрашивать наравне с остальными, и оно может обращаться к {hosts}.',
+  'settings.addons.removed':
+    'Дополнение «{name}» удалено. Его результаты исчезли из этого браузера вместе со всем, что оно здесь хранило.',
+  'settings.addons.enabled': 'Дополнение «{name}» снова включено и будет спрашиваться со всеми.',
+  'settings.addons.disabled':
+    'Дополнение «{name}» выключено. Оно остаётся установленным вместе со своими настройками, но ничего из того, что оно возвращает, показано не будет.',
+  'settings.addons.reordered': 'Дополнение «{name}» теперь отвечает {position}-м из {total}.',
+  'settings.addons.rejected': 'Ничего не установлено: {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': 'Свои источники',
+  'customSources.title': 'Свои источники',
+  'customSources.intro':
+    'Добавьте свой магазин или каталог, задав ему название и URL поиска с {isbn}, {query}, {title}, {author} или {language}. Ссылка строится на этом устройстве, и этот сайт никогда её не запрашивает.',
+  'customSources.nameLabel': 'Название',
+  'customSources.templateLabel': 'Шаблон URL',
+  'customSources.templateHint':
+    'Абсолютный адрес https://. {isbn}, {query}, {title}, {author} и {language} подставляются из издания; если какая-то подстановка окажется пустой, ссылка для этого издания пропускается.',
+  'customSources.add': 'Добавить источник',
+  'customSources.listHeading': 'Ваши источники',
+  'customSources.none': 'Пока нет своих источников.',
+  'customSources.off': 'Выключен',
+  'customSources.enable': 'Включить',
+  'customSources.disable': 'Выключить',
+  'customSources.remove': 'Удалить',
+  'customSources.heading': 'Ваши источники',
+  'customSources.caption':
+    'Ссылки, которые вы настроили сами. Этот экземпляр не проверяет, куда они ведут.',
+
+  'settings.customSources.title': 'Ваши источники',
+  'settings.customSources.added': '«{name}» добавлен и будет предложен наравне с остальными.',
+  'settings.customSources.removed': '«{name}» удалён из этого браузера.',
+  'settings.customSources.enabled': '«{name}» снова включён.',
+  'settings.customSources.disabled':
+    '«{name}» выключен. Настройки сохранены, но ссылка не будет показана.',
+  'settings.customSources.rejected': 'Ничего не добавлено: {reason}',
+
+  // --- Books in the reader's own language, and localized descriptions -------
+  'featured.inLanguageHeading': 'Книги на вашем языке',
+  'featured.inLanguageBlurb':
+    'Книги, написанные на языке, на котором вы читаете этот сайт; сначала самые переиздаваемые — это порядок самой Open Library, а не рейтинг продаж.',
+  'work.newSearch': 'Новый поиск',
+  'work.descriptionFrom': 'Описание:',
+  'work.descriptionNotLocalized':
+    'Описание приводится так, как его написал источник, — на вашем языке для этой книги его пока нет.',
 };

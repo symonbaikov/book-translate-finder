@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import type { EmailSender, WelcomeEmail } from '@btf/domain';
+import type { EmailSender, WelcomeEmail } from '@golden/domain';
 import type { Logger } from 'pino';
 
 /**
@@ -39,7 +39,7 @@ export class SmtpEmailSender implements EmailSender {
     const text = [
       `Hi ${email.displayName},`,
       '',
-      'Your BookTranslate Finder account is ready.',
+      'Your Golden Library account is ready.',
       '',
       'You can now save books you find and come back to them later — with the languages they',
       'were translated into, the editions that exist, and where to get each one legally.',
@@ -53,7 +53,7 @@ export class SmtpEmailSender implements EmailSender {
     await this.transport.sendMail({
       from: this.options.from,
       to: email.to.value,
-      subject: 'Welcome to BookTranslate Finder',
+      subject: 'Welcome to Golden Library',
       text,
     });
   }

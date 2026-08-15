@@ -16,4 +16,11 @@ export interface ExternalRefRepository {
    * metadata fields.
    */
   findSourcesForEntity(entityId: string): Promise<string[]>;
+  /**
+   * The ids one source knows this entity by. Normally a single id, but the table's uniqueness is
+   * on `(source_name, external_id)`, not on the entity, so two source records merged into one work
+   * legitimately leave two — hence a list rather than a `string | null` that would silently pick
+   * one. Used to reach sources keyed by an external id (`LocalizedDescriptionPort`).
+   */
+  findExternalIdsForEntity(entityId: string, sourceName: string): Promise<string[]>;
 }

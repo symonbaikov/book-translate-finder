@@ -1,0 +1,77 @@
+/* The one page on this site where the reader types something they must get exactly right. It gets
+   a single narrow column, centred, with nothing else on screen to look at. */
+
+.page {
+  display: flex;
+  justify-content: center;
+  padding-block: var(--space-9) var(--space-10);
+}
+
+.card {
+  inline-size: 100%;
+  max-inline-size: 26rem;
+}
+
+.title {
+  font-size: var(--step-4);
+  margin-block-end: var(--space-3);
+}
+
+.blurb {
+  color: var(--text-muted);
+  font-size: var(--step--1);
+  margin-block: 0 var(--space-6);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block: var(--space-5);
+  color: var(--text-faint);
+  font-size: var(--step--2);
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  block-size: 1px;
+  background: var(--hairline);
+}
+
+.footer {
+  margin-block-start: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  font-size: var(--step--1);
+}
+
+/* Semantically a button — it switches this page between signing in and registering rather than
+   navigating — but it should read as a link, because that is what it does for the reader. */
+.switch {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--accent);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.switch:hover {
+  color: var(--accent-hover);
+}
+
+.back {
+  color: var(--text-muted);
+}

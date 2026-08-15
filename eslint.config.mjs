@@ -5,7 +5,7 @@ import prettier from 'eslint-config-prettier';
 import globals from 'globals';
 
 // Layer-boundary enforcement (docs/architecture.md §2) lives in .dependency-cruiser.mjs, not
-// here: it resolves workspace-package imports (e.g. `@btf/infrastructure`) against real files,
+// here: it resolves workspace-package imports (e.g. `@golden/infrastructure`) against real files,
 // which eslint-plugin-boundaries could not do reliably in this pnpm + ESM + project-references
 // setup (verified: it silently passed a deliberately introduced application -> infrastructure
 // import that dependency-cruiser correctly failed on). Run `pnpm boundaries` for that check.

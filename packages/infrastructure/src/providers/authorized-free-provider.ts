@@ -5,8 +5,8 @@ import type {
   ProviderWork,
   ProviderWorkDetails,
   SearchQuery,
-} from '@btf/domain';
-import { AUTHORIZED_FREE_BOOKS, findAuthorizedFreeBooks, ProviderId } from '@btf/domain';
+} from '@golden/domain';
+import { AUTHORIZED_FREE_BOOKS, findAuthorizedFreeBooks, ProviderId } from '@golden/domain';
 
 function mapToWork(book: AuthorizedFreeBook): ProviderWork {
   return {

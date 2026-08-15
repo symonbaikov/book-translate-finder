@@ -10,7 +10,7 @@ export const nl: Dictionary = {
     'Alleen legale bronnen: directe downloads uitsluitend voor publiek domein en open gelicentieerde werken; auteursrechtelijk beschermde boeken — kopen of lenen bij een bibliotheek. Bij elke link staat de rechtenstatus expliciet vermeld.',
   'footer.openSource': 'Open source',
   'footer.openSourceRest': '— MIT-licentie, zelf te hosten. Code op GitHub.',
-  'home.title': 'BookTranslate Finder',
+  'home.title': 'Golden Library',
   'home.subtitle': 'Een open verzamelaar van boekvertalingen: talen, edities en legale bronnen.',
   'home.searchLabel': 'Titel en auteur',
   'home.searchPlaceholder': 'Oorlog en vrede Tolstoj',
@@ -30,11 +30,40 @@ export const nl: Dictionary = {
   'featured.filling':
     'Een paar hiervan worden nog op de achtergrond opgehaald. Herlaad de pagina over een minuut.',
   'featured.freeCopy': 'Gratis exemplaar',
+
+  // --- Free books ---------------------------------------------------------
+  'free.homeHeading': 'Nu gratis te lezen',
+  'free.homeBlurb':
+    'Boeken in het publieke domein en met een open licentie die deze instantie direct aanbiedt.',
+  'free.seeAll': 'Meer bekijken',
+  'free.downloadable': 'Downloaden',
+  'free.pageTitle': 'Gratis boeken',
+  'free.pageBlurb':
+    'Elk boek hier heeft minstens één legale gratis versie: publiek domein, of vrijgegeven door de rechthebbende. Geen aankoop, geen bibliotheekpas.',
+  'free.empty':
+    'Hier is nog niets gratis. Gratis versies verschijnen zodra deze instantie boeken ophaalt — zoek er een op en kom later terug.',
+  'free.emptyForLanguage':
+    'Nog geen gratis versies in {language}. Verwijder het filter hierboven om de hele plank te zien.',
+  'free.showMore': 'Meer tonen',
+  'free.shown': '{shown} van {total} getoond.',
+  'free.allLanguages': 'Gratis versies in alle talen.',
+  'free.filteredByLanguage': 'Alleen gratis versies in {language}.',
+  'free.filterByLanguage': 'Alleen de gratis versies in {language} tonen.',
+  'free.dropLanguageFilter': 'alle talen tonen',
+  'free.loadFailed': 'De gratis boeken konden nu niet worden geladen.',
   'work.original': 'origineel',
   'work.dataSources': 'Databronnen',
   'work.about': 'Over dit boek',
   'work.translatedInto': 'Vertaald in',
+  'work.availableIn': 'Beschikbaar in',
+  'work.languagesNote':
+    'Alleen wat onze bronnen vermelden — een vertaling die hier ontbreekt, kan toch bestaan.',
   'work.noTranslations': 'Nog geen vertalingen gevonden.',
+  'work.yourLanguage.title': 'In jouw taal',
+  'work.yourLanguage.yes': 'Er bestaat een vertaling in het {language}.',
+  'work.yourLanguage.original': 'Dit boek is geschreven in het {language}.',
+  'work.yourLanguage.no': 'Geen vertaling in het {language} onder de bekende edities.',
+  'work.yourLanguage.show': 'Toon edities in het {language}',
   'work.editions': 'Edities ({shown} van {total})',
   'work.filterLanguage': 'Taal',
   'work.filterAllLanguages': 'Alle talen',
@@ -42,6 +71,10 @@ export const nl: Dictionary = {
   'work.filterApply': 'Filteren',
   'work.filterReset': 'Wissen',
   'work.noEditionsMatch': 'Geen enkele editie voldoet aan deze filters.',
+  'work.showMoreEditions': 'Meer edities tonen (nog {remaining})',
+  'work.badgeFreeDownload': 'gratis download',
+  'work.freeDownloadFormat': '{format} downloaden',
+  'work.freeDownloadNote': '{rights}. Gratis via {provider} — geen account, geen betaling.',
   'work.badgeReadBorrow': 'lezen of lenen',
   'work.badgeInBookstores': 'in boekhandels',
   'work.translatedBy': 'vertaald door {name}',
@@ -54,6 +87,7 @@ export const nl: Dictionary = {
   'links.hide': 'Links verbergen',
   'links.loading': 'Links laden',
   'links.none': 'Voor deze editie zijn er nog geen legale links.',
+  'links.viaOtherEdition': 'gratis exemplaar uit de editie {label}',
   'links.failed': 'Links konden niet worden geladen.',
   'links.storesHeading': 'Vinden in een boekhandel',
   'links.storesInCountry': 'In {country}',
@@ -74,6 +108,8 @@ export const nl: Dictionary = {
   'compare.heading': 'Edities vergelijken',
   'compare.blurb': 'Kies twee of drie edities om te zien waarin ze werkelijk verschillen.',
   'compare.selected': '{count} geselecteerd, er zijn er minstens 2 nodig.',
+  'compare.editSelection': 'Edities wijzigen',
+  'compare.showAllEditions': 'Alle {count} edities tonen',
   'compare.columnDifference': 'Verschil',
   'compare.identical': 'In alles wat de bronnen vastleggen zijn deze edities identiek.',
   'compare.rowLanguage': 'Taal',
@@ -125,6 +161,9 @@ export const nl: Dictionary = {
   'search.notFoundHint': 'Niets gevonden. Probeer de titel of auteur te preciseren.',
   'search.timedOut':
     'De bronnen reageren traag en we hebben nog geen gegevens. De synchronisatie op de achtergrond is misschien al klaar — probeer het opnieuw.',
+  'search.freeOnlyToggle': 'Gratis beschikbaar',
+  'search.noFreeResults':
+    'Geen van deze heeft nog een gratis download — probeer het filter uit te zetten.',
   'home.tagline': 'Vind uw volgende magnum opus',
   'subject.allLanguages': 'Alle talen.',
   'subject.filteredByLanguage': 'Alleen boeken met een editie in het {language}.',
@@ -195,4 +234,143 @@ export const nl: Dictionary = {
   'prices.format.unknown': 'Formaat niet vermeld',
   'recommend.hideGenre': '‘{genre}’ verbergen',
   'recommend.hiddenList': 'Verborgen genres (klik om er een terug te halen):',
+
+  // --- Pop-ups voor instellingen ---
+  'settings.status.saved': 'Opgeslagen',
+  'settings.status.cleared': 'Gewist',
+  'settings.status.unstored': 'Niet opgeslagen',
+  'settings.status.failed': 'Ongewijzigd',
+  'settings.notStored':
+    'Deze browser weigerde de wijziging op te slaan, dus er is niets gebeurd — de vorige waarde geldt nog.',
+  'settings.language.title': 'Taal van de interface',
+  'settings.language.changed':
+    'Gewijzigd van {from} naar {to}. De interface laadt opnieuw in het {to}; boektitels en auteursnamen blijven in hun eigen taal.',
+  'settings.country.title': 'Land waar je koopt',
+  'settings.country.changed':
+    'Ingesteld op {country}. Links naar boekhandels tonen nu ook winkels die daarheen leveren, naast de wereldwijde.',
+  'settings.country.cleared':
+    'Geen land gekozen. Alleen boekhandels die wereldwijd verzenden worden aangeboden.',
+  'settings.bookLanguage.title': 'Taal van de boeken',
+  'settings.bookLanguage.changed':
+    'Ingesteld op {language}. Genrepagina’s tonen eerst boeken met een editie in het {language}, tot je het filter wist.',
+  'settings.bookLanguage.cleared': 'Gewist. Genrepagina’s tonen weer boeken in alle talen.',
+  'settings.hiddenGenres.title': 'Verborgen genres',
+  'settings.hiddenGenres.hidden':
+    '“{genre}” is verborgen. Het wordt niet meer naar de server gestuurd bij suggesties, en er zijn in totaal {count} genres verborgen.',
+  'settings.hiddenGenres.restored':
+    '“{genre}” staat weer in je suggesties. Er blijven {count} genres verborgen.',
+  'settings.history.title': 'Leesgeschiedenis',
+  'settings.history.cleared':
+    'De boeken die je had geopend zijn uit deze browser gewist. Suggesties blijven weg tot je een volgend boek opent.',
+  'settings.bookmarks.title': 'Bewaarde boeken',
+  'settings.bookmarks.added': '“{title}” is aan je bewaarde boeken toegevoegd.',
+  'settings.bookmarks.removed': '“{title}” is uit je bewaarde boeken verwijderd.',
+  'settings.bookmarks.failed':
+    'De server accepteerde de wijziging niet, dus je bewaarde boeken zijn ongewijzigd.',
+  'settings.catalogs.title': 'Jouw catalogi',
+  'settings.catalogs.added':
+    '“{name}” is toegevoegd op {url}. Het adres blijft in deze browser en wordt nooit naar deze site gestuurd.',
+  'settings.catalogs.addedWithCredentials':
+    '“{name}” is toegevoegd op {url}, met de gebruikersnaam en het wachtwoord die je typte. Dat alles blijft in deze browser en niets ervan wordt naar deze site gestuurd.',
+  'settings.catalogs.removed':
+    '“{name}” is uit deze browser verwijderd, samen met de inloggegevens die ervoor bewaard waren.',
+  'settings.catalogs.rejected': 'Er is niets toegevoegd: {reason}',
+  // --- Addons ---------------------------------------------------------------
+  'nav.addons': 'Add-ons',
+  'addons.title': 'Add-ons',
+  'addons.intro':
+    'Een add-on brengt eigen bronnen mee. Je installeert er een door het adres te plakken; hij draait op je eigen apparaat, in een sandbox, of op de server van de maker. Golden Library levert er geen mee, houdt geen lijst bij en controleert niet wat ze teruggeven.',
+  'addons.addressLabel': 'Adres van de add-on',
+  'addons.addressHint': 'De manifest-URL die de maker je heeft gegeven.',
+  'addons.continue': 'Doorgaan',
+  'addons.fromServer': 'Van een server',
+  'addons.fromFile': 'Uit een bestand, op je eigen apparaat',
+  'addons.bundleLabel': 'Adres van de add-oncode',
+  'addons.bundleHint': 'De URL van de code. Die draait op dit apparaat, niet op een server.',
+  'addons.integrityLabel': 'Integriteitshash',
+  'addons.integrityHint':
+    'Krijg je van de maker, als sha256-… . Verplicht: zonder kan code die je één keer goedkeurde daarna veranderen zonder dat je het merkt.',
+  'addons.checking': 'Add-on wordt gelezen…',
+  'addons.installedHeading': 'Geïnstalleerd',
+  'addons.none': 'Nog geen add-ons. Alles wat je hier ziet komt van de instantie zelf.',
+  'addons.priorityHint': 'De volgorde is de prioriteit: de eerste add-on antwoordt het eerst.',
+  'addons.enable': 'Aanzetten',
+  'addons.disable': 'Uitzetten',
+  'addons.off': 'Uit',
+  'addons.remove': 'Verwijderen',
+  'addons.moveUp': 'Omhoog',
+  'addons.moveDown': 'Omlaag',
+  'addons.configure': 'Instellen',
+  'addons.failedToStart': '“{name}” is niet gestart: {reason}',
+  'addons.consentTitle': '“{name}” installeren?',
+  'addons.consentHosts': 'Hij zal contact opnemen met: {hosts}',
+  'addons.consentNoHosts': 'Hij heeft om geen enkel contact gevraagd.',
+  'addons.consentSeesYou':
+    'Deze add-on draait op de server van de maker. Die ziet je adres en alles waar je via hem naar zoekt.',
+  'addons.consentSandboxed':
+    'Deze add-on draait op je eigen apparaat, in een sandbox. Hij kan je cookies, de gegevens van deze site en al het andere dat je open hebt staan niet lezen.',
+  'addons.consentNotVetted':
+    'Golden Library controleert niet wat een add-on teruggeeft en heeft deze niet aanbevolen. Wat je installeert is jouw keuze.',
+  'addons.install': 'Installeren',
+  'addons.cancel': 'Annuleren',
+  'addons.via': 'via {name}',
+  'addons.sourcesTitle': 'Van je add-ons',
+  'addons.searchTitle': 'Gevonden door je add-ons',
+  'addons.showLinks': 'Downloadlinks tonen',
+  'addons.unreadable': '{count} items van deze add-on waren onleesbaar.',
+  'addons.browse': 'Catalogus bekijken',
+  'addons.browseTitle': 'Catalogus van „{name}”',
+  'addons.browseNoCatalog': 'Deze add-on biedt geen catalogus om te doorbladeren.',
+  'addons.browseEmpty': 'De catalogus van deze add-on is op dit moment leeg.',
+  'addons.browseFailed': 'Catalogus van „{name}” kon niet worden geladen: {reason}',
+  'addons.loadMore': 'Meer laden',
+  'addons.notInstalled': 'Deze add-on is niet geïnstalleerd.',
+
+  'settings.addons.title': 'Je add-ons',
+  'settings.addons.installed':
+    '“{name}” is geïnstalleerd. Hij wordt samen met de andere bevraagd en mag contact opnemen met {hosts}.',
+  'settings.addons.removed':
+    '“{name}” is verwijderd. Zijn resultaten zijn uit deze browser weg, en alles wat hij hier bewaarde ook.',
+  'settings.addons.enabled': '“{name}” staat weer aan en wordt met de andere bevraagd.',
+  'settings.addons.disabled':
+    '“{name}” staat uit. Hij blijft geïnstalleerd met zijn instellingen, maar er wordt niets van getoond.',
+  'settings.addons.reordered': '“{name}” antwoordt nu als {position} van {total}.',
+  'settings.addons.rejected': 'Er is niets geïnstalleerd: {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': 'Eigen bronnen',
+  'customSources.title': 'Eigen bronnen',
+  'customSources.intro':
+    'Voeg uw eigen winkel of catalogus toe door er een naam en een zoek-URL met {isbn}, {query}, {title}, {author} of {language} aan te geven. De link wordt op dit apparaat gebouwd en deze site haalt hem nooit op.',
+  'customSources.nameLabel': 'Naam',
+  'customSources.templateLabel': 'URL-sjabloon',
+  'customSources.templateHint':
+    'Een absoluut https://-adres. {isbn}, {query}, {title}, {author} en {language} worden ingevuld vanuit de editie; blijft een plaatshouder leeg, dan wordt de link voor die editie overgeslagen.',
+  'customSources.add': 'Bron toevoegen',
+  'customSources.listHeading': 'Uw bronnen',
+  'customSources.none': 'Nog geen eigen bronnen.',
+  'customSources.off': 'Uit',
+  'customSources.enable': 'Aanzetten',
+  'customSources.disable': 'Uitzetten',
+  'customSources.remove': 'Verwijderen',
+  'customSources.heading': 'Uw bronnen',
+  'customSources.caption':
+    'Links die u zelf hebt ingesteld. Deze instantie controleert niet waar ze naartoe leiden.',
+
+  'settings.customSources.title': 'Uw eigen bronnen',
+  'settings.customSources.added': '“{name}” is toegevoegd en wordt samen met de andere aangeboden.',
+  'settings.customSources.removed': '“{name}” is uit deze browser verwijderd.',
+  'settings.customSources.enabled': '“{name}” staat weer aan.',
+  'settings.customSources.disabled':
+    '“{name}” staat uit. Blijft geconfigureerd, maar de link wordt niet getoond.',
+  'settings.customSources.rejected': 'Er is niets toegevoegd: {reason}',
+
+  // --- Books in the reader's own language, and localized descriptions -------
+  'featured.inLanguageHeading': 'Boeken in uw taal',
+  'featured.inLanguageBlurb':
+    'Boeken geschreven in de taal waarin u deze site leest, de vaakst herdrukte eerst — de volgorde van Open Library zelf, geen bestsellerlijst.',
+  'work.newSearch': 'Nieuwe zoekopdracht',
+  'work.descriptionFrom': 'Beschrijving:',
+  'work.descriptionNotLocalized':
+    'Deze beschrijving staat in de taal waarin de bron haar schreef — in uw taal is er voor dit boek nog geen.',
 };

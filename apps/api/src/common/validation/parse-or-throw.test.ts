@@ -1,4 +1,4 @@
-import { InvalidInputError } from '@btf/domain';
+import { InvalidInputError } from '@golden/domain';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 import { parseOrThrow } from './parse-or-throw.js';

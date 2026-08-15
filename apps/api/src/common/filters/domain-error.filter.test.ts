@@ -1,4 +1,4 @@
-import { ConflictError, InvalidInputError, NotFoundError, UnauthorizedError } from '@btf/domain';
+import { ConflictError, InvalidInputError, NotFoundError, UnauthorizedError } from '@golden/domain';
 import type { ArgumentsHost } from '@nestjs/common';
 import type { FastifyReply } from 'fastify';
 import type { Logger as PinoLogger } from 'pino';

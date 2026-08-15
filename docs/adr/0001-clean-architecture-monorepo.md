@@ -24,7 +24,7 @@ declared in `domain` and adapters in `infrastructure`. Dependency composition ha
 Import boundaries are checked in CI by the `pnpm boundaries` command (dependency-cruiser); a
 violation fails the build. `eslint-plugin-boundaries` was considered as an alternative, but in
 the pnpm + ESM + TS project references combination it failed to resolve imports between packages
-(`@btf/*`) and silently let violations through — discovered and confirmed by experiment during
+(`@golden/*`) and silently let violations through — discovered and confirmed by experiment during
 Phase 1.0, so the plugin was dropped.
 
 ## Considered alternatives

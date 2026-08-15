@@ -1,0 +1,42 @@
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-lg);
+  box-shadow: var(--elev-1);
+  padding: var(--space-5);
+}
+
+/* Only a card that actually leads somewhere lifts. A hover state on a card that does nothing when
+   clicked is a promise the interface does not keep. */
+.interactive {
+  transition:
+    transform var(--dur-base) var(--ease-standard),
+    box-shadow var(--dur-base) var(--ease-standard),
+    border-color var(--dur-base) var(--ease-standard);
+}
+
+.interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--elev-2);
+  border-color: var(--hairline-strong);
+}
+
+.quiet {
+  background: transparent;
+  box-shadow: none;
+}
+
+.flush {
+  padding: 0;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interactive {
+    transition: none;
+  }
+
+  .interactive:hover {
+    transform: none;
+  }
+}

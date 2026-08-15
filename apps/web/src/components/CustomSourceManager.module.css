@@ -1,0 +1,72 @@
+.intro {
+  color: var(--text-muted);
+  max-inline-size: var(--container-prose);
+  margin-block-end: var(--space-6);
+}
+
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+  margin-block-end: var(--space-6);
+}
+
+.nameField {
+  flex: 1 1 14rem;
+}
+
+.templateField {
+  flex: 2 1 22rem;
+}
+
+.list {
+  display: grid;
+  gap: var(--space-3);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.identity {
+  flex: 1 1 16rem;
+  min-inline-size: 0;
+}
+
+.name {
+  font-weight: var(--weight-semibold);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.template {
+  color: var(--text-muted);
+  font-size: var(--step--1);
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.disabled {
+  opacity: 0.6;
+}
+
+.failure {
+  color: var(--danger-text);
+}
+
+.empty {
+  color: var(--text-muted);
+}

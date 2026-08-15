@@ -5,8 +5,8 @@ import {
   SubjectsResponseSchema,
   type SubjectBrowseResponse,
   type SubjectsResponse,
-} from '@btf/contracts';
-import type { BrowseBySubject, ListSubjects } from '@btf/application';
+} from '@golden/contracts';
+import type { BrowseBySubject, ListSubjects } from '@golden/application';
 import { parseOrThrow } from '../common/validation/parse-or-throw.js';
 import { TOKENS } from '../common/tokens.js';
 

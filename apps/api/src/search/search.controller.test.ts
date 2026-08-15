@@ -1,5 +1,5 @@
-import { InvalidInputError } from '@btf/domain';
-import type { SearchWorks, SearchWorksOutput } from '@btf/application';
+import { InvalidInputError } from '@golden/domain';
+import type { SearchWorks, SearchWorksOutput } from '@golden/application';
 import type { FastifyReply } from 'fastify';
 import { describe, expect, it, vi } from 'vitest';
 import { SearchController } from './search.controller.js';
@@ -24,6 +24,7 @@ describe('SearchController', () => {
           author: 'Tolstoy',
           firstPublishedYear: 1869,
           coverUrl: null,
+          hasFreeCopy: false,
         },
       ],
     });

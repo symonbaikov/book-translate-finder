@@ -7,6 +7,8 @@ import { useSession } from './SessionProvider';
 import { useT } from '../i18n/I18nProvider';
 import { LanguageSelector } from './LanguageSelector';
 import { Logo } from './Logo';
+import { Button, Container } from '../ui';
+import styles from './SiteHeader.module.css';
 
 /** The one place the reader's account state is visible: saved books, and a way in or out. */
 export function SiteHeader() {
@@ -22,36 +24,45 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="site-header">
-      <div className="container site-header__inner">
-        <Link href="/" className="site-header__brand">
+    <header className={styles.header}>
+      <Container className={styles.inner}>
+        <Link href="/" className={styles.brand}>
           <Logo />
-          <span>BookTranslate Finder</span>
+          <span className={styles.wordmark}>Golden Library</span>
         </Link>
-        <nav className="site-header__nav">
+        <nav className={styles.nav}>
           {/* The language selector is not gated on the session check — it must be usable while
               the account state is still unknown, which is most of the first paint. */}
+          <Link href="/shelf" className={styles.link}>
+            {t('nav.shelf')}
+          </Link>
+          <Link href="/addons" className={styles.link}>
+            {t('nav.addons')}
+          </Link>
+          <Link href="/custom-sources" className={styles.link}>
+            {t('nav.customSources')}
+          </Link>
           <LanguageSelector />
           {/* The account links wait for the session — flashing "Sign in" at someone already
               signed in reads as being logged out. */}
           {!loading &&
             (user ? (
               <>
-                <Link href="/bookmarks">{t('nav.savedBooks')}</Link>
-                <span className="muted">{user.displayName}</span>
-                <button
-                  type="button"
-                  className="button--secondary"
-                  onClick={() => void handleLogout()}
-                >
+                <Link href="/bookmarks" className={styles.link}>
+                  {t('nav.savedBooks')}
+                </Link>
+                <span className={styles.who}>{user.displayName}</span>
+                <Button variant="ghost" onClick={() => void handleLogout()}>
                   {t('nav.signOut')}
-                </button>
+                </Button>
               </>
             ) : (
-              <Link href="/login">{t('nav.signIn')}</Link>
+              <Link href="/login" className={styles.link}>
+                {t('nav.signIn')}
+              </Link>
             ))}
         </nav>
-      </div>
+      </Container>
     </header>
   );
 }

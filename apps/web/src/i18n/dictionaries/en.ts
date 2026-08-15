@@ -20,7 +20,7 @@ export const en = {
   'footer.openSourceRest': '— MIT licensed, self-hostable. View the code on GitHub.',
 
   // --- Home ---------------------------------------------------------------
-  'home.title': 'BookTranslate Finder',
+  'home.title': 'Golden Library',
   'home.subtitle': 'An open book translation aggregator: languages, editions, and legal sources.',
   'home.searchLabel': 'Title and author',
   'home.searchPlaceholder': 'War and Peace Tolstoy',
@@ -43,12 +43,41 @@ export const en = {
     'Still fetching a few of these in the background. Reload in a minute to see the rest.',
   'featured.freeCopy': 'Free copy',
 
+  // --- Free books ---------------------------------------------------------
+  'free.homeHeading': 'Free to read right now',
+  'free.homeBlurb':
+    'Public domain and openly licensed books this copy of the site can hand you directly.',
+  'free.seeAll': 'See more',
+  'free.downloadable': 'Download',
+  'free.pageTitle': 'Free books',
+  'free.pageBlurb':
+    'Every book here has at least one legal free copy — public domain, or given away by the rights holder. No purchase, no library card.',
+  'free.empty':
+    'Nothing free here yet. Free copies show up as this instance fetches books, so search for one and come back.',
+  'free.emptyForLanguage':
+    'No free copies in {language} yet. Drop the filter above to see the whole shelf.',
+  'free.showMore': 'Show more',
+  'free.shown': 'Showing {shown} of {total}.',
+  'free.allLanguages': 'Free copies in every language.',
+  'free.filteredByLanguage': 'Only free copies in {language}.',
+  'free.filterByLanguage': 'Show only the free copies in {language}.',
+  'free.dropLanguageFilter': 'show every language',
+  'free.loadFailed': 'The free books could not be loaded just now.',
+
   // --- Work card ----------------------------------------------------------
   'work.original': 'original',
   'work.dataSources': 'Data sources',
   'work.about': 'About this book',
   'work.translatedInto': 'Translated into',
+  'work.availableIn': 'Available in',
+  'work.languagesNote':
+    'Only what the sources we read list — a translation missing here may still exist.',
   'work.noTranslations': 'No translations found yet.',
+  'work.yourLanguage.title': 'In your language',
+  'work.yourLanguage.yes': 'There is a translation into {language}.',
+  'work.yourLanguage.original': 'This book was written in {language}.',
+  'work.yourLanguage.no': 'No translation into {language} among the editions known here.',
+  'work.yourLanguage.show': 'Show editions in {language}',
   'work.editions': 'Editions ({shown} of {total})',
   'work.filterLanguage': 'Language',
   'work.filterAllLanguages': 'All languages',
@@ -56,6 +85,10 @@ export const en = {
   'work.filterApply': 'Filter',
   'work.filterReset': 'Reset',
   'work.noEditionsMatch': 'No editions match these filters.',
+  'work.showMoreEditions': 'Show more editions ({remaining} left)',
+  'work.badgeFreeDownload': 'free download',
+  'work.freeDownloadFormat': 'Download {format}',
+  'work.freeDownloadNote': '{rights}. Free from {provider} — no account, no payment.',
   'work.badgeReadBorrow': 'read or borrow',
   'work.badgeInBookstores': 'in bookstores',
   'work.translatedBy': 'translated by {name}',
@@ -71,6 +104,7 @@ export const en = {
   'links.hide': 'Hide links',
   'links.loading': 'Loading links',
   'links.none': 'No legal links for this edition yet.',
+  'links.viaOtherEdition': 'free copy from the {label} edition',
   'links.failed': 'Failed to load links.',
   'links.storesHeading': 'Find in a bookstore',
   'links.storesInCountry': 'In {country}',
@@ -94,6 +128,8 @@ export const en = {
   'compare.heading': 'Compare editions',
   'compare.blurb': 'Pick two or three editions to see what actually differs between them.',
   'compare.selected': 'Selected {count} of at least 2.',
+  'compare.editSelection': 'Change editions',
+  'compare.showAllEditions': 'Show all {count} editions',
   'compare.columnDifference': 'Difference',
   'compare.identical': 'These editions are identical in everything the sources record.',
   'compare.rowLanguage': 'Language',
@@ -150,6 +186,8 @@ export const en = {
   'search.notFoundHint': 'Nothing found. Try refining the title or author.',
   'search.timedOut':
     'The sources are responding slowly and we have no data yet. The background sync may have already finished — try again.',
+  'search.freeOnlyToggle': 'Free to download',
+  'search.noFreeResults': 'None of these have a free download yet — try turning the filter off.',
   'home.tagline': 'Find your next magnum opus',
   'subject.allLanguages': 'All languages.',
   'subject.filteredByLanguage': 'Only books with a {language} edition.',
@@ -218,4 +256,152 @@ export const en = {
   'prices.format.unknown': 'Format not stated',
   'recommend.hideGenre': 'hide “{genre}”',
   'recommend.hiddenList': 'Hidden genres (click to bring one back):',
+
+  // --- Settings popups ------------------------------------------------------
+  // One popup per changed preference. The status word says how it went, the sentence says what
+  // changed and what it now affects — see `lib/setting-change.ts`.
+  'settings.status.saved': 'Saved',
+  'settings.status.cleared': 'Cleared',
+  'settings.status.unstored': 'Not stored',
+  'settings.status.failed': 'Unchanged',
+  'settings.notStored':
+    'This browser refused to store the change, so nothing happened — the value you had before still applies.',
+
+  'settings.language.title': 'Interface language',
+  'settings.language.changed':
+    'Changed from {from} to {to}. The interface reloads in {to}; book titles and author names stay in their own languages.',
+
+  'settings.country.title': 'Shopping country',
+  'settings.country.changed':
+    'Set to {country}. Bookstore links now offer shops that deliver there, alongside the worldwide ones.',
+  'settings.country.cleared':
+    'No country chosen. Only bookstores that ship worldwide will be offered.',
+
+  'settings.bookLanguage.title': 'Book language',
+  'settings.bookLanguage.changed':
+    'Set to {language}. Genre pages will lead with books that have a {language} edition until you reset the filter.',
+  'settings.bookLanguage.cleared': 'Cleared. Genre pages show books in every language again.',
+
+  'settings.hiddenGenres.title': 'Hidden genres',
+  'settings.hiddenGenres.hidden':
+    '“{genre}” is hidden. It is no longer sent to the server when suggestions are fetched, and {count} genres are hidden in total.',
+  'settings.hiddenGenres.restored':
+    '“{genre}” is back in your suggestions. {count} genres are still hidden.',
+
+  'settings.history.title': 'Reading history',
+  'settings.history.cleared':
+    'The books you had opened are deleted from this browser. Suggestions stay away until you open another book.',
+
+  'settings.bookmarks.title': 'Saved books',
+  'settings.bookmarks.added': '“{title}” was added to your saved books.',
+  'settings.bookmarks.removed': '“{title}” was removed from your saved books.',
+  'settings.bookmarks.failed':
+    'The server did not accept the change, so your saved books are as they were.',
+
+  'settings.catalogs.title': 'Your catalogs',
+  'settings.catalogs.added':
+    '“{name}” was added at {url}. Its address stays in this browser and is never sent to this site.',
+  'settings.catalogs.addedWithCredentials':
+    '“{name}” was added at {url}, with the username and password you typed. All of it stays in this browser and none of it is sent to this site.',
+  'settings.catalogs.removed':
+    '“{name}” was removed from this browser, along with any credentials stored for it.',
+  'settings.catalogs.rejected': 'Nothing was added: {reason}',
+  // --- Addons ---------------------------------------------------------------
+  'nav.addons': 'Addons',
+  'addons.title': 'Addons',
+  'addons.intro':
+    'An addon adds sources of its own. You install one by pasting its address; it runs either on your device, in a sandbox, or on its author’s server. Golden Library ships none, lists none, and does not check what they return.',
+  'addons.addressLabel': 'Addon address',
+  'addons.addressHint': 'The manifest URL the addon’s author gave you.',
+  'addons.continue': 'Continue',
+  'addons.fromServer': 'From a server',
+  'addons.fromFile': 'From a file on your device',
+  'addons.bundleLabel': 'Addon code address',
+  'addons.bundleHint': 'The URL of the addon’s code. It will run on this device, not on a server.',
+  'addons.integrityLabel': 'Integrity hash',
+  'addons.integrityHint':
+    'Given by the addon’s author, as sha256-… . Required: without it, code you approved once could change afterwards and you would never know.',
+  'addons.checking': 'Reading the addon…',
+  'addons.installedHeading': 'Installed',
+  'addons.none': 'No addons yet. Everything on this site so far comes from the instance itself.',
+  'addons.priorityHint': 'Order is priority: the first addon answers first.',
+  'addons.enable': 'Turn on',
+  'addons.disable': 'Turn off',
+  'addons.off': 'Off',
+  'addons.remove': 'Remove',
+  'addons.moveUp': 'Move up',
+  'addons.moveDown': 'Move down',
+  'addons.configure': 'Configure',
+  'addons.failedToStart': '“{name}” did not start: {reason}',
+  'addons.consentTitle': 'Install “{name}”?',
+  'addons.consentHosts': 'It will contact: {hosts}',
+  'addons.consentNoHosts': 'It has not asked to contact anything.',
+  'addons.consentSeesYou':
+    'This addon runs on its author’s server. They will see your address and everything you look for through it.',
+  'addons.consentSandboxed':
+    'This addon runs on your device in a sandbox. It cannot read your cookies, this site’s data, or anything else you have open.',
+  'addons.consentNotVetted':
+    'Golden Library does not check what an addon returns, and did not recommend this one. What you install is your choice.',
+  'addons.install': 'Install',
+  'addons.cancel': 'Cancel',
+  'addons.via': 'via {name}',
+  'addons.sourcesTitle': 'From your addons',
+  'addons.searchTitle': 'Found by your addons',
+  'addons.showLinks': 'Show download links',
+  'addons.unreadable': '{count} entries from this addon could not be read.',
+  'addons.browse': 'Browse catalog',
+  'addons.browseTitle': '{name}’s catalog',
+  'addons.browseNoCatalog': 'This addon doesn’t offer a catalog to browse.',
+  'addons.browseEmpty': 'This addon’s catalog is empty right now.',
+  'addons.browseFailed': '“{name}”’s catalog could not be loaded: {reason}',
+  'addons.loadMore': 'Load more',
+  'addons.notInstalled': 'This addon isn’t installed.',
+
+  'settings.addons.title': 'Your addons',
+  'settings.addons.installed':
+    '“{name}” is installed. It will be asked alongside the others, and may contact {hosts}.',
+  'settings.addons.removed':
+    '“{name}” was removed. Its results are gone from this browser, and so is anything it had stored here.',
+  'settings.addons.enabled': '“{name}” is on again and will be asked with the others.',
+  'settings.addons.disabled':
+    '“{name}” is off. It stays installed with its settings, but nothing it returns will be shown.',
+  'settings.addons.reordered': '“{name}” now answers {position} of {total}.',
+  'settings.addons.rejected': 'Nothing was installed: {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': 'Custom sources',
+  'customSources.title': 'Custom sources',
+  'customSources.intro':
+    'Add a shop or catalog of your own by giving it a name and a search URL with {isbn}, {query}, {title}, {author} or {language} in it. The link is built on this device and this site never fetches it.',
+  'customSources.nameLabel': 'Name',
+  'customSources.templateLabel': 'URL template',
+  'customSources.templateHint':
+    'An absolute https:// address. {isbn}, {query}, {title}, {author} and {language} are filled in from the edition; a placeholder left empty means the link is skipped for that edition.',
+  'customSources.add': 'Add source',
+  'customSources.listHeading': 'Your sources',
+  'customSources.none': 'No custom sources yet.',
+  'customSources.off': 'Off',
+  'customSources.enable': 'Turn on',
+  'customSources.disable': 'Turn off',
+  'customSources.remove': 'Remove',
+  'customSources.heading': 'Your sources',
+  'customSources.caption':
+    'Links you configured yourself. This instance does not check where they lead.',
+
+  'settings.customSources.title': 'Your custom sources',
+  'settings.customSources.added': '“{name}” was added and will be offered alongside the others.',
+  'settings.customSources.removed': '“{name}” was removed from this browser.',
+  'settings.customSources.enabled': '“{name}” is on again.',
+  'settings.customSources.disabled':
+    '“{name}” is off. It stays configured, but its link will not be shown.',
+  'settings.customSources.rejected': 'Nothing was added: {reason}',
+
+  // --- Books in the reader's own language, and localized descriptions -------
+  'featured.inLanguageHeading': 'Books in your language',
+  'featured.inLanguageBlurb':
+    'Books written in the language you are reading this site in, the most-published first — Open Library’s own ordering, not a bestseller chart.',
+  'work.newSearch': 'New search',
+  'work.descriptionFrom': 'Description:',
+  'work.descriptionNotLocalized':
+    'This description is in the language the source wrote it in — there is none in your language for this book yet.',
 } as const;

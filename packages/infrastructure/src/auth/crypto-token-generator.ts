@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from 'node:crypto';
-import type { TokenGenerator } from '@btf/domain';
+import type { TokenGenerator } from '@golden/domain';
 
 /** 256 bits of randomness — a session token must be unguessable, not merely unique. */
 const TOKEN_BYTES = 32;

@@ -1,5 +1,5 @@
 import { fileURLToPath } from 'node:url';
-import { LANGUAGE_NAMES } from '@btf/domain';
+import { LANGUAGE_NAMES } from '@golden/domain';
 import { PostgreSqlContainer, type StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import { createDb, type DbHandle } from '../../src/db/client.js';

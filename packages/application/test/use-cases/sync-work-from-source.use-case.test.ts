@@ -17,8 +17,8 @@ import type {
   UnitOfWork,
   Work,
   WorkRepository,
-} from '@btf/domain';
-import { InvalidInputError, ProviderId } from '@btf/domain';
+} from '@golden/domain';
+import { InvalidInputError, ProviderId } from '@golden/domain';
 import { describe, expect, it } from 'vitest';
 import { CACHE_KEY_VERSION } from '../../src/cache-key-version.js';
 import {
@@ -384,6 +384,47 @@ describe('SyncWorkFromSource', () => {
     expect(editions[0]?.language.value).toBe('en');
   });
 
+  it('falls back to the ISBN registration group when the source gives no language at all', async () => {
+    // Live case: every one of "Metro 2035"'s seven Spanish editions carries an ISBN but no
+    // `languages` field on Open Library, so all seven were dropped and the work showed zero
+    // editions despite the source genuinely listing them.
+    const spanishEdition: ProviderEdition = {
+      ...RUSSIAN_EDITION,
+      externalId: '/books/OLEs',
+      language: 'und',
+      isbn13: '9788445015407', // real ISBN of a "Metro 2035" Spanish edition (group 84)
+    };
+    const provider = new FakeBookMetadataProvider([PROVIDER_WORK], {
+      '/works/OL1W': [spanishEdition],
+    });
+    const { deps, editionRepository } = makeDeps(provider);
+    const useCase = new SyncWorkFromSource(deps);
+
+    const result = await useCase.execute({ source: 'open-library', query: 'War and Peace' });
+
+    expect(result.status).toBe('synced');
+    expect(result.editionsSynced).toBe(1);
+    const editions = await editionRepository.findByWorkId(result.workId!);
+    expect(editions[0]?.language.value).toBe('es');
+  });
+
+  it('never lets the ISBN fallback override a language the source actually reported', async () => {
+    const editionWithSourceLanguage: ProviderEdition = {
+      ...RUSSIAN_EDITION,
+      isbn13: '9788445015407', // group 84 (Spanish) — must not win over the source's own 'rus'
+    };
+    const provider = new FakeBookMetadataProvider([PROVIDER_WORK], {
+      '/works/OL1W': [editionWithSourceLanguage],
+    });
+    const { deps, editionRepository } = makeDeps(provider);
+    const useCase = new SyncWorkFromSource(deps);
+
+    const result = await useCase.execute({ source: 'open-library', query: 'War and Peace' });
+
+    const editions = await editionRepository.findByWorkId(result.workId!);
+    expect(editions[0]?.language.value).toBe('ru');
+  });
+
   it('skips a link LinkPolicy rejects without failing the edition it belongs to', async () => {
     const editionWithBadLink: ProviderEdition = {
       ...ENGLISH_EDITION,
@@ -470,6 +511,218 @@ describe('SyncWorkFromSource', () => {
       expect(editions).toHaveLength(1); // same natural key — one edition, not two
       expect(editions[0]?.translator).toBe('Aylmer Maude'); // open-library's value, not overwritten
     });
+  });
+});
+
+/** Answers only the exact query strings it was given — everything else is a miss. */
+class ScriptSensitiveProvider implements BookMetadataProvider {
+  readonly id = ProviderId.create('fake-source');
+  readonly asked: string[] = [];
+
+  constructor(private readonly answers: Record<string, ProviderWork[]>) {}
+
+  async searchWorks(query: SearchQuery): Promise<ProviderWork[]> {
+    this.asked.push(query.text);
+    return this.answers[query.text] ?? [];
+  }
+
+  async fetchEditions(): Promise<ProviderEdition[]> {
+    return [];
+  }
+
+  async fetchWorkDetails(): Promise<{ description: string | null; coverUrl: string | null }> {
+    return { description: null, coverUrl: null };
+  }
+}
+
+describe('SyncWorkFromSource attaching to a known work', () => {
+  /**
+   * A catalogue record for the same book under its translated title — the enrichment case.
+   *
+   * The author is the same person as `PROVIDER_WORK`'s, spelled the way a French catalogue spells
+   * him. That is not decoration: the sync refuses to attach a source's answer to a known work
+   * unless the answer is plausibly about that work, so a fixture naming a different author would
+   * be describing a mismatch rather than a translation.
+   */
+  const FRENCH_TRANSLATION: ProviderWork = {
+    externalId: 'query:Tolstoi La Guerre et la Paix',
+    title: 'La Guerre et la Paix',
+    authorNames: ['Tolstoï, Léon'],
+    languages: ['fre'],
+    firstPublishedYear: 1869,
+    editionCount: 1,
+    coverUrl: null,
+  };
+  const FRENCH_EDITION: ProviderEdition = {
+    externalId: 'ark:/12148/cb45374973s',
+    title: 'La Guerre et la Paix',
+    language: 'fre',
+    coverUrl: null,
+    translator: 'Boris de Schlœzer',
+    translatedFrom: null,
+    publisher: 'Gallimard (Paris)',
+    year: 2017,
+    isbn13: '9782330081881',
+    isbn10: null,
+    pages: 820,
+    binding: null,
+    rightsSignal: 'unknown',
+  };
+
+  it('adds the editions to the given work instead of creating a second book', async () => {
+    const openLibrary = new FakeBookMetadataProvider([PROVIDER_WORK], {
+      '/works/OL1W': [RUSSIAN_EDITION],
+    });
+    const bnf = new FakeBookMetadataProvider([FRENCH_TRANSLATION], {
+      'query:Tolstoi La Guerre et la Paix': [FRENCH_EDITION],
+    });
+    const { deps, workRepository, editionRepository } = makeMultiSourceDeps({
+      'open-library': openLibrary,
+      bnf,
+    });
+
+    const discovered = await new SyncWorkFromSource(deps).execute({
+      source: 'open-library',
+      query: 'Obitel Prilepin',
+    });
+    await new SyncWorkFromSource(deps).execute({
+      source: 'bnf',
+      query: 'Tolstoi La Guerre et la Paix',
+      attachToWorkId: discovered.workId!,
+    });
+
+    const editions = await editionRepository.findByWorkId(discovered.workId!);
+    expect(editions.map((edition) => edition.language.value).sort()).toEqual(['fr', 'ru']);
+    // And the work is still the one the reader searched for — the French title did not take over.
+    const work = await workRepository.findById(discovered.workId!);
+    expect(work?.originalTitle).toBe('War and Peace');
+  });
+
+  it('leaves the work’s own title, author and language untouched', async () => {
+    const openLibrary = new FakeBookMetadataProvider([PROVIDER_WORK], {
+      '/works/OL1W': [RUSSIAN_EDITION],
+    });
+    const bnf = new FakeBookMetadataProvider([FRENCH_TRANSLATION], {
+      'query:Tolstoi La Guerre et la Paix': [FRENCH_EDITION],
+    });
+    const { deps, workRepository } = makeMultiSourceDeps({ 'open-library': openLibrary, bnf });
+
+    const discovered = await new SyncWorkFromSource(deps).execute({
+      source: 'open-library',
+      query: 'Obitel Prilepin',
+    });
+    const before = await workRepository.findById(discovered.workId!);
+    await new SyncWorkFromSource(deps).execute({
+      source: 'bnf',
+      query: 'Tolstoi La Guerre et la Paix',
+      attachToWorkId: discovered.workId!,
+    });
+    const after = await workRepository.findById(discovered.workId!);
+
+    expect(after?.originalTitle).toBe(before?.originalTitle);
+    expect(after?.author).toBe(before?.author);
+    expect(after?.originalLanguage.value).toBe(before?.originalLanguage.value);
+  });
+});
+
+describe('SyncWorkFromSource original language', () => {
+  it('takes the source’s declared language when it has no editions to infer one from', async () => {
+    // Wikidata records "language of the work" as a fact and often lists no editions at all.
+    // Defaulting to English there would print a plain falsehood on the card of a Russian novel.
+    const wikidata = new FakeBookMetadataProvider(
+      [
+        {
+          externalId: 'Q18117395',
+          title: 'The Monastery (Prilepin novel)',
+          authorNames: ['Zakhar Prilepin'],
+          languages: ['ru'],
+          firstPublishedYear: 2014,
+          editionCount: 0,
+          coverUrl: null,
+        },
+      ],
+      {},
+    );
+    const { deps, workRepository } = makeMultiSourceDeps({ wikidata });
+
+    const result = await new SyncWorkFromSource(deps).execute({
+      source: 'wikidata',
+      query: 'Обитель Прилепин',
+    });
+
+    const work = await workRepository.findById(result.workId!);
+    expect(work?.originalLanguage.value).toBe('ru');
+  });
+});
+
+describe('SyncWorkFromSource cross-script search', () => {
+  const ROMANIZED: ProviderWork = {
+    externalId: '/works/OL1',
+    title: 'Prestuplenie i nakazanie',
+    authorNames: ['Fyodor Dostoevsky'],
+    languages: ['rus'],
+    firstPublishedYear: 1866,
+    editionCount: 136,
+    coverUrl: null,
+  };
+
+  it('asks the source again in Latin when a Cyrillic query finds nothing', async () => {
+    // Open Library's own search is not script-neutral: measured live, «Преступление и наказание»
+    // returns 6 results topped by a German edition, "Prestuplenie i nakazanie" returns 136 topped
+    // by the Russian one. Without the second pass the book is reported as not_found and never
+    // synced — which is how a book the source clearly has became unfindable here.
+    const provider = new ScriptSensitiveProvider({ 'Prestuplenie i nakazanie': [ROMANIZED] });
+    const { deps } = makeDeps(provider);
+
+    const result = await new SyncWorkFromSource(deps).execute({
+      source: 'open-library',
+      query: 'Преступление и наказание',
+    });
+
+    expect(result.status).toBe('synced');
+    expect(provider.asked).toEqual(['Преступление и наказание', 'Prestuplenie i nakazanie']);
+  });
+
+  it('does not ask twice when the first question was answered', async () => {
+    const provider = new ScriptSensitiveProvider({ 'Мастер и Маргарита': [ROMANIZED] });
+    const { deps } = makeDeps(provider);
+
+    await new SyncWorkFromSource(deps).execute({
+      source: 'open-library',
+      query: 'Мастер и Маргарита',
+    });
+
+    expect(provider.asked).toEqual(['Мастер и Маргарита']);
+  });
+
+  it('does not invent a second pass for a query with no Cyrillic in it', async () => {
+    const provider = new ScriptSensitiveProvider({});
+    const { deps } = makeDeps(provider);
+
+    const result = await new SyncWorkFromSource(deps).execute({
+      source: 'open-library',
+      query: 'A Book That Does Not Exist',
+    });
+
+    expect(result.status).toBe('not_found');
+    expect(provider.asked).toEqual(['A Book That Does Not Exist']);
+  });
+
+  it('carries the synced work out, so the search can answer without re-finding it by text', async () => {
+    const provider = new ScriptSensitiveProvider({ 'Prestuplenie i nakazanie': [ROMANIZED] });
+    const { deps } = makeDeps(provider);
+
+    const result = await new SyncWorkFromSource(deps).execute({
+      source: 'open-library',
+      query: 'Преступление и наказание',
+    });
+
+    expect(result.work).toMatchObject({
+      originalTitle: 'Prestuplenie i nakazanie',
+      author: 'Fyodor Dostoevsky',
+      firstPublishedYear: 1866,
+    });
+    expect(result.work?.id).toBe(result.workId);
   });
 });
 

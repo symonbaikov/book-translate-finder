@@ -4,7 +4,7 @@ import type { IncomingMessage } from 'node:http';
 import fastifyRateLimit from '@fastify/rate-limit';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
-import { createLogger, loadEnv } from '@btf/infrastructure';
+import { createLogger, loadEnv } from '@golden/infrastructure';
 import { AppModule } from './app.module.js';
 import { buildApiContext } from './composition-root.js';
 import { DomainErrorFilter } from './common/filters/domain-error.filter.js';
@@ -15,7 +15,7 @@ import { NestPinoLogger } from './logging/nest-logger.adapter.js';
 async function bootstrap(): Promise<void> {
   const env = loadEnv(apiEnvSchema);
   const logger = createLogger({
-    service: '@btf/api',
+    service: '@golden/api',
     level: env.LOG_LEVEL,
     pretty: env.NODE_ENV === 'development',
   });
@@ -74,10 +74,12 @@ async function bootstrap(): Promise<void> {
   app.setGlobalPrefix('api', { exclude: ['health/live', 'health/ready'] });
 
   // Basic per-IP rate limiting (docs/plan.md §1.4), Redis-backed so it's consistent across
-  // multiple apps/api replicas rather than per-process in-memory counters.
+  // multiple apps/api replicas rather than per-process in-memory counters. Limit and window are
+  // configurable (RATE_LIMIT_MAX / RATE_LIMIT_WINDOW_MS) since this counts every /api route, not
+  // just one endpoint — a self-hoster with heavier traffic can raise it without a code change.
   await app.register(fastifyRateLimit, {
-    max: 60,
-    timeWindow: '1 minute',
+    max: env.RATE_LIMIT_MAX,
+    timeWindow: env.RATE_LIMIT_WINDOW_MS,
     redis: ctx.cacheRedis,
   });
 

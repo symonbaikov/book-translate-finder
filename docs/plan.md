@@ -1,4 +1,4 @@
-# BookTranslate Finder Implementation Plan
+# Golden Library Implementation Plan
 
 The plan is broken into phases from the original brief, with the addition of the technical
 scaffolding without which Clean Architecture and idempotency cannot be retrofitted "later".
@@ -388,7 +388,7 @@ UnhandledErrorFilter)` — intuitively correct-looking — in practice meant tha
 ### 1.5 Web ✅ (closed 2026-08-13)
 
 - ✅ `apps/web/src/lib/api-client.ts` — the single entry point into the API: every response is
-  validated by a Zod schema from `@btf/contracts` before reaching a page (docs/architecture.md §2.5 —
+  validated by a Zod schema from `@golden/contracts` before reaching a page (docs/architecture.md §2.5 —
   apps/web knows nothing about data sources and business rules, only about its own API).
   `getWorkCard` returns `null` on `404` (a deliberate decision — the calling page decides how to
   present it), any other non-2xx throws `ApiRequestError`.
@@ -870,11 +870,12 @@ decides how much of each can honestly be built.
 
 ### Done
 
-| #   | Item                                                          | Notes                                                                                                                                              |
-| --- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 4.1 | Shops for **every** edition, chosen by the edition's language | Title+author fallback when there is no ISBN (16% of real editions); shops offered by reader's country → the edition's language markets → worldwide |
-| 4.2 | Genre tags, page counts, binding                              | From Open Library `subjects` / `number_of_pages` / `physical_format`                                                                               |
-| 4.3 | Edition comparison                                            | Two or three editions side by side, rows where they agree hidden                                                                                   |
+| #    | Item                                                          | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ---- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 4.1  | Shops for **every** edition, chosen by the edition's language | Title+author fallback when there is no ISBN (16% of real editions); shops offered by reader's country → the edition's language markets → worldwide                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| 4.2  | Genre tags, page counts, binding                              | From Open Library `subjects` / `number_of_pages` / `physical_format`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| 4.3  | Edition comparison                                            | Two or three editions side by side, rows where they agree hidden                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| 4.15 | The reader's language actually selects books and descriptions | Reported live: with the site in Russian the home page was still a wall of English novels and every blurb was English. Two fixes, both identifier-based rather than guessed — a home-page list from the literature subject for that language (Open Library `/subjects/russian_literature.json`, _Анна Каренина_ and _Преступление и наказание_, not "world classics that also have a Russian edition"), and a description via Wikidata `P648` → that language's Wikipedia, shown with its CC BY-SA attribution. Both degrade to today's behaviour when the source has nothing |
 
 ### Buildable, not yet built
 
@@ -896,7 +897,552 @@ decides how much of each can honestly be built.
 
 The rule that keeps these honest is unchanged: the app may show what a source actually states, and
 must not present a guess as a fact. A shop lookup is a lookup, not a stock check; a nearby shop is
-nearby, not known to stock the book; an absent price is absent, not zero.
+nearby, not known to stock the book; an absent price is absent, not zero; and a description in the
+reader's language is one somebody wrote in that language, never a translation this app produced.
+
+---
+
+## Phase 5 — plugin architecture and the reader's own sources (done)
+
+Requested as one brief: an "all-in-one", privacy-first layer on top of the existing catalog —
+isolated plugins, OPDS as a first-class way to get files, bookshops near the reader, and prices
+compared across shops. The design decisions are in
+[ADR-0007](adr/0007-plugin-architecture.md); what follows is what was built and what deliberately
+was not.
+
+### Done
+
+| #   | Item                                             | Notes                                                                                                                                                                                      |
+| --- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 5.1 | `packages/plugins` — a true leaf package         | Imported by `apps/web` (browser) and `packages/infrastructure` (Node) alike; depends on no workspace package. Enforced in CI (`plugins-is-a-leaf`), `"types": []` keeps Node-only APIs out |
+| 5.2 | Plugin contract: manifest, registry, `settleAll` | `accessMode` has no `html-scrape` member — the scraping invariant is expressed in the type system rather than in review comments                                                           |
+| 5.3 | Module A — OPDS 1.2 (Atom) and 2.0 (JSON)        | One normalized model behind two parsers; acquisition rels, MIME→format labels, indirect acquisition chains, DRM licences flagged, pagination, OpenSearch. 85 tests on realistic fixtures   |
+| 5.4 | Reader-added catalogs                            | Calibre-Web / COPS / Kavita / Audiobookshelf addresses live in `localStorage` and are fetched by the browser — the URL and any password never reach the instance                           |
+| 5.5 | Built-in catalog relay                           | `GET /api/opds/feeds/:id` exists only because Gutenberg and Standard Ebooks send no CORS headers. Takes a feed **id**; `href` must be same-origin, so it cannot be used as an open proxy   |
+| 5.6 | Module B — `GeoStoreAdapter` + browser lookup    | Coordinates rounded to ~110 m at the source, Overpass queried straight from the browser, manual city/postcode field offered alongside the permission prompt rather than after a refusal    |
+| 5.7 | Module C — `AggregateEditionPrices`              | Parallel poll of every registered `PriceProvider`, grouped by normalized binding, 15-minute TTL (60 s when degraded), every offer URL still passed through `LinkPolicy`                    |
+| 5.8 | `Money` and `BookFormat` value objects           | Money in minor units with per-currency exponents, never floats and never converted between currencies; bindings normalized across the dozen spellings sources use, in several languages    |
+
+### Found only by running it against the real catalogs
+
+Neither of these was caught by a unit test on a fixture — both needed the live feeds.
+
+1. **Gutenberg's browse and search results are navigation entries, not books.** Each result links
+   to that book's own _complete-entry_ document, and the acquisition links exist only there. The
+   parser rejected bare `<entry>` roots as "not a feed", so the shelf could reach no download at
+   all. Fixed by reading a complete-entry document as a one-entry feed; verified end to end —
+   root → All Books → "Pride and Prejudice" → real EPUB and MOBI links.
+2. **Standard Ebooks' OPDS feeds are behind a Patrons Circle login.** `/feeds/opds`,
+   `/feeds/opds/all`, `/feeds/opds/new-releases` and `/feeds/opds/subjects` all answer `401`
+   anonymously; the open `/feeds/atom/new-releases` is a news feed with no acquisition links.
+   It was removed from the built-in list rather than shipped as a shelf that always fails — a
+   patron can add it through the custom-catalog form with their own credentials.
+
+### Deliberately not done, and why
+
+- **Shop price scrapers.** The brief described the shop adapters as parsers of each shop's
+  HTML/DOM. That is the one thing the project's main invariant forbids outright
+  ([legal-policy.md](legal-policy.md) I-3), so the plugin contract cannot express it: the shipped
+  adapters are one real price API (Google Play via Google Books `saleInfo`, which needs a key) and
+  ~90 deterministic ISBN-lookup URLs that are built and never fetched. Most offers therefore carry
+  no price, which is stated as "price not published" rather than hidden or invented.
+- **Stock in physical shops.** No open dataset maps an ISBN to a shelf. `PhysicalStoreResult`
+  carries `availability` and `price` so a bookseller's own stock API can answer them, but the
+  shipped OpenStreetMap adapter always returns `unknown` with the reason attached.
+- **A local SQLite/IndexedDB mirror of the catalog.** The brief's "core owns a local database"
+  applies to a desktop application; this is a self-hosted web service whose catalog already lives
+  in its own Postgres, and the reader-specific state that genuinely must stay on the device
+  (feeds, country, reading history) is already in `localStorage`. Adding IndexedDB would duplicate
+  the catalog with no question it answers better.
+
+---
+
+## Phase 6 — interface redesign (in progress)
+
+One brief: premium not through gold frames but through exact typography, a calm interface and
+large, comfortable controls — Apple Books crossed with Stremio, in high contrast, with no
+advertising noise. The design decisions are in
+[ADR-0008](adr/0008-design-tokens-and-css-modules.md).
+
+Four choices were made before any code, because each one changes the shape of the work: **light and
+dark stay equals** (system-driven, no switcher, therefore no new settings popup); **plain CSS with
+a token layer and CSS Modules**, not Tailwind and not a `packages/ui` package yet; **typefaces
+vendored** into the repository rather than fetched from a CDN; and a **full redesign including page
+structure**, not a repaint of the existing 760px column.
+
+| #   | Item                                | State | Notes                                                                                                                                                         |
+| --- | ----------------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 6.0 | Token layer and vendored typefaces  | ✅    | `styles/tokens.css` (primitives → semantics, both themes), `styles/fonts.css`, Inter + Literata in four subsets, metric-matched fallbacks, `/design` specimen |
+| 6.1 | Accent colour chosen on a live page | ✅    | Warm brass. Rights badges moved from filled to outlined-with-a-glyph so a solid colour always means "press me"; borrowing became info-blue rather than amber  |
+| 6.2 | UI primitives as CSS Modules        | ✅    | `src/ui/`: Button, Card, Poster, Chip, Badge, Field, Sheet, Skeleton, layout. Logical properties throughout — the wide grid breaks RTL without them           |
+| 6.3 | Application shell                   | ✅    | Container 760 → 1240px plus a narrow `--container-prose`; sticky blurred header whose rule fades in on scroll; every target in the chrome now 44px or more    |
+| 6.4 | Home page and search results        | ✅    | Hero search at 56px, poster grids in place of lists. The "continue reading" row was **not** built — see below                                                 |
+| 6.5 | Work page                           | ✅    | 240×360 cover hero, translation languages as filter chips, editions as cards with an animated disclosure. No sticky action bar — see below                    |
+| 6.6 | Remaining pages and motion          | ✅    | Subjects, bookmarks, shelf, sign-in, loading skeletons; one motion vocabulary from the tokens, all of it off under `prefers-reduced-motion`                   |
+| 6.7 | Verification                        | 🚧    | Contrast measured in both themes (all pass), RTL checked, tap targets checked, `lint`/`typecheck`/`build` green. Playwright blocked — see below               |
+| 6.8 | Dropdowns                           | ✅    | `ui/Select` replaces every native `<select>`: the OS draws a native list and will not take this design's surfaces, type or motion. Unrolls like a scroll      |
+
+### Definition of Done
+
+- Every colour, radius, spacing step, control height, duration and type size in `apps/web` comes
+  from a semantic token. `grep -r '--n-\|--indigo-\|--brass-\|--green-' apps/web/src` returns
+  nothing outside `tokens.css` and the specimen page.
+- The legacy `--color-*` bridge at the end of `tokens.css` is deleted, and nothing references it.
+- Text clears 4.5:1 and control edges 3:1 **in both themes**, measured rather than eyeballed.
+- Nothing a finger presses is smaller than 44px.
+- The Playwright suite passes unchanged: the redesign may move any pixel but may not rename an
+  accessible name (`Book title and author`, `Search`, `Show links`) or drop `.skeleton` /
+  `.error-box`.
+- No third-party request is made by any page. Fonts are served from the instance itself.
+
+### Found while building, and decided rather than assumed
+
+- **The "continue reading" row was dropped.** `lib/reading-history.ts` stores a work id, a title
+  and its subjects — no cover and no author. A row of covers built from it would be a row of
+  text-only placeholders, and storing cover URLs would change what sits in the reader's browser for
+  a decorative gain. The "because you were reading…" section already serves the returning reader,
+  and serves them better: it recommends rather than repeats.
+- **The work page has no sticky action bar.** Download, buy and borrow are properties of an
+  _edition_, not of a work; hoisting them into a work-level bar would mean picking one edition and
+  calling it the best, which the data does not support. The bar would have carried "Save" alone.
+- **No view transition between the search grid and the work page.** Next 14's client router does
+  not wrap navigations in `startViewTransition`, so a shared-element cover transition needs a
+  third-party router shim — not worth a dependency for an effect Safari would skip anyway.
+- **Native `<select>` had to go.** Its popup is drawn by the operating system — no stylesheet
+  reaches inside it, and on Linux it arrived as a grey system menu sharing nothing with the page it
+  opened from. `ui/Select` is a `combobox`/`listbox` pair that rebuilds by hand what the native
+  element gave for free: arrow keys, Home/End, type-ahead, `aria-activedescendant`, focus returning
+  to the trigger, and a closed panel that is inert rather than merely invisible. The real cost is
+  the mobile wheel picker on iOS and Android, traded for 44px rows and a scrollable list.
+
+- **Four components still render bare elements.** `OpdsShelf`, `NearbyBookshops`, `EditionPrices`
+  and `EditionComparison` use the token-driven `button` / `input` defaults in `globals.css` rather
+  than `ui/Button` and `ui/Field`. They look right — the defaults come from the same tokens — but
+  they are the remaining work before "every control is the same control" is literally true.
+
+### Blocked
+
+- **The Playwright suite could not be run here.** Its first locator,
+  `getByLabel('Book title and author')`, does not match the string the interface actually ships,
+  which is `Title and author` (`i18n/dictionaries/en.ts`, key `home.searchLabel`). The mismatch
+  predates this phase and fails at `HEAD` too. Seeding also needs `ADMIN_TOKEN`, and this checkout
+  has no root `.env`. Every _other_ locator the spec uses was verified against the live pages: the
+  `Search` button, the `Translated into` heading, the `Show links` button, the `aria-live` panel
+  resolving, and `.skeleton` / `.error-box` both reaching zero.
+
+### Deliberately not in scope
+
+- **A theme switcher.** The system setting already carries the reader's answer; adding a stored
+  preference would mean a new settings popup, four outcomes and strings in 15 dictionaries for a
+  question nobody asked.
+- **CJK and Arabic typefaces.** Vendoring them would add tens of megabytes for four locales whose
+  systems ship a good face. Those locales are a documented fallback case, checked visually.
+
+---
+
+## Phase 7 — the blind-client addon engine (in progress)
+
+One brief: the reader installs what they want, the core does not judge what it returns, and nothing
+about any of it reaches the instance. The two decisions it rests on are
+[ADR-0009](adr/0009-blind-core-link-policy-scope.md) — the link policy governs what this instance
+produces, and stops at the addon boundary — and [ADR-0010](adr/0010-addon-engine.md), the engine
+itself: one manifest, three resources (`catalog`, `meta`, `source`), two transports behind one
+`AddonTransport` interface.
+
+Both transports, rather than one, because each alone loses something real. An HTTP addon cannot
+reach the Calibre-Web on `192.168.1.10:8083` that Phase 5 exists to serve; a local JS addon cannot
+read a response the target refuses to share with the browser, which is most public APIs.
+
+| #   | Item                                              | State | Notes                                                                                                                                            |
+| --- | ------------------------------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 7.0 | ADR-0009/0010 and the invariant boundary          | ✅    | `packages/domain`'s policy untouched; its browser-side copy, and the parity test that guarded the duplication, removed                           |
+| 7.1 | `packages/addons` — manifest, resources, registry | ✅    | Stremio's shape with `stream` → `source`; zod throughout; HTTP transport; ordered registry; 67 tests                                             |
+| 7.2 | HTTP transport wired into an install flow         | ✅    | Two steps: reading the manifest shows who the addon will contact, and nothing is stored until the reader agrees to that                          |
+| 7.3 | Sandbox for local JS addons                       | ✅\*  | Four layers built and driven by a 9-test escape suite (`pnpm test:sandbox`). The asterisk is Chromium — see below                                |
+| 7.4 | Aggregation across addons                         | ✅    | `settleAddons` with a 12s ceiling behind both surfaces; a failed addon shows its own reason in its own group                                     |
+| 7.5 | `/addons` page and the reader-facing surfaces     | ✅    | Both transports install through one two-step flow and one consent card; reorder, enable, remove; sources on the work page, catalogs under search |
+| 7.6 | Zero-knowledge enforcement                        | ✅\*  | Boundary rules, plus three Playwright tests that watch the wire while an addon is installed and used. Same Chromium caveat as 7.3                |
+| 7.7 | Protocol spec, example addon, validator           | ✅    | [addon-protocol.md](addon-protocol.md), `examples/addon-template`, `pnpm addon:validate`. No npm SDK — see below                                 |
+| 7.8 | Fold the custom-OPDS-feed form into the engine    | ✅\*  | One list, one removal path, credentials intact. The asterisk is navigation, which stayed in the shelf — see below                                |
+
+### Decided rather than assumed
+
+- **No `rightsStatus` on an addon result, and no field to hold one.** The instance's own links carry
+  one because it knows where they came from. An addon's does not, and a guess rendered as metadata
+  reads as a fact. Zod strips the key if an addon sends it, and a test asserts that.
+- **Scheme validation stays, and is not a revived denylist.** `javascript:`, `data:`, `blob:` and
+  `file:` are refused for every URL an addon produces, because each one executes or reads in _this_
+  origin. `https://any-host-at-all` passes, and a test says so out loud.
+- **A local addon's declared hosts are a security boundary, not a content one.** Any host may be
+  declared, including ones the domain policy refuses for the instance. The list exists so the reader
+  can decline before installing, and so an addon cannot quietly move their reading somewhere else
+  afterwards. Wildcards are refused: a permission the reader cannot evaluate is not consent.
+- **`settleAddons` duplicates `settleAll` rather than importing it.** Both packages are leaves, and
+  twenty lines of `Promise.all` is cheaper than making either one stop being one.
+- **The sandbox CSP hash is computed, not written down.** `next.config.mjs` reads
+  `public/addon-sandbox.html` and hashes its inline bootstrap at build time. A hash written down is a
+  hash that goes stale, and a stale one fails closed in a way nobody connects to the edit that caused
+  it.
+- **Enforcement is a host function, with the CSP behind it rather than in front.** A per-addon
+  `connect-src` would have to be generated by the server, and asking the server for it would tell the
+  server which addons the reader installed. So `connect-src 'none'` is static, `mediatedFetch` does
+  the allowlisting where a unit test can reach it, and the CSP is what makes it unavoidable.
+
+### What the escape suite actually proves, and where it stops
+
+Nine tests in `apps/web/e2e/addon-sandbox.spec.ts`, run against the real document and its real
+header: the sandbox document sits on an opaque origin (`window.origin === 'null'`, storage and
+IndexedDB throw, the parent's DOM is unreachable); a `fetch` from inside it is refused **to an
+address that is definitely reachable**, so the refusal is the policy and not the network; the worker
+has no `fetch`, `XMLHttpRequest`, `WebSocket`, `EventSource`, `importScripts`, `document`, `window`
+or `parent`; an undeclared host is refused with no request made at all; a declared host is reached
+without the instance's cookie; and a `while (true)` addon loses its own call while the page keeps
+answering.
+
+### There is no published SDK, and the spec is the deliverable instead
+
+An `@golden/addon-sdk` package would be a builder function and a type re-export that nobody outside
+this repository could install, since nothing here is published to npm. What an author actually needs
+is a document that is complete enough to write against without reading our source, a file they can
+copy, and a way to check their work — so 7.7 shipped those three and skipped the fourth. If the
+protocol ever reaches a second implementation, a published package becomes worth its maintenance;
+today it would be a package whose only user is the example next to it.
+
+### 7.8 folded the storage, not the browsing, and the difference is the protocol's
+
+A reader's OPDS catalog is an addon by every definition in ADR-0010 — they added it, their browser
+fetches it, this instance never sees it — so it is now stored as one: a `builtin: 'opds'` descriptor
+in `btf.addons`, migrated from the old `btf.opds-feeds` key the first time anything reads the list.
+One list, one place to remove a catalog from, and the `/addons` page finally shows everything the
+reader has added rather than half of it. If the write is refused the old key is left exactly where it
+was and the migration retries; losing somebody's shelf to a full quota would be a poor trade for a
+tidier schema.
+
+**Browsing did not move, and could not have.** An OPDS catalog is a tree — Project Gutenberg's root
+is nothing but links to other feeds, which Phase 5 found the hard way — and the addon protocol has no
+notion of navigation: a `catalog` is a flat list with an offset. Folding the shelf into it would have
+meant either losing the ability to walk into a sub-catalog, or extending the protocol with a
+tree concept for the sake of one built-in. So `OpdsShelf` keeps the browsing it was built for, and
+`OpdsAddonTransport` answers the two questions the protocol _can_ ask: what is in this feed, and do
+you have this ISBN. The second is new — a reader's own Calibre can now show up as a source on a work
+page.
+
+It lives in `apps/web` rather than `packages/addons` because the OPDS parsers are in
+`@golden/plugins`, both packages are leaves, and neither may import the other. `apps/web` is the one
+place they can meet; duplicating 85 tests' worth of parser to avoid that would have been the worse
+trade.
+
+### What "zero knowledge" is now held to
+
+`pnpm test:sandbox` carries three tests that install an addon through the page, use the site with it,
+and then read back every request the browser made. Any request that did not go to the addon's own
+origin must contain none of its id, its manifest URL or its host — in the URL, in a header, or in a
+body. One of them repeats the exercise with the addon failing, because a failure is exactly where an
+error-reporting call would quietly undo the property.
+
+What is deliberately **not** treated as a leak: the reader's search term reaching this instance's own
+`/api/search`. They typed it into this site's own search box, and calling that a disclosure would
+make the test either meaningless or unpassable. What must not travel is the addon.
+
+### The integrity hash is required, and the form does not offer to compute it
+
+A local addon's install form asks for `sha256-…` and refuses without it. It would be friendlier to
+hash whatever was downloaded and show that — and it would also be worthless, because approving the
+hash of the file you just fetched is approving whatever happens to be there. The hash comes from the
+author or the install does not happen. When it does not match, the message names the two things that
+could have caused it and stops; it does not print the hash it computed, because a printed hash is an
+invitation to paste it into the box.
+
+### Found only by driving a real addon in a real browser
+
+Neither of these was caught by 120 unit tests, and both were fatal to the feature. A throwaway
+Stremio-shaped addon on `localhost:4200` found them in about a minute.
+
+1. **`globalThis.fetch` was being called unbound.** In a browser `fetch` is a method of `Window` and
+   throws `TypeError: Illegal invocation` with any other receiver; Node's does not care. So
+   `const f = globalThis.fetch; f(url)` typechecked, passed every test, and failed on every install —
+   surfacing as the CORS message, which sent the diagnosis in exactly the wrong direction. Fixed by
+   `ambientFetch()`, and `transport.test.ts` now models the browser's rule so Node stops hiding it.
+2. **`idPrefixes` was being tested against catalog ids.** It describes the ids of _books_, so an
+   addon declaring `['isbn']` and a catalog called `all` was never asked for its catalog at all —
+   the search surface showed "does not offer catalog for book" for a perfectly good addon. The rule
+   now lives in `addonSupports`, where a catalog is exempt, with a test naming the regression.
+
+The zero-knowledge property was checked the same way rather than argued: with an addon installed, a
+search and a work page produced requests to the addon's own origin and to nothing else. The
+instance's own origin and its API never saw the addon's id, its manifest URL, or the query sent to
+it. That observation is not a test, which is why 7.6 is still amber.
+
+**It stops at Chromium.** That is the only browser binary installed here, and the three properties
+the suite turns on — CSP enforcement, opaque-origin semantics, and whether a `Worker` may be created
+from a `blob:` inside a sandboxed frame — are exactly the ones engines have historically differed
+on. Chromium creates that worker; Firefox and WebKit are unverified and the sandbox is not finished
+until they are run. A green tick above is evidence for one engine, not three.
+
+---
+
+## Phase 8 — why a search took two minutes, and why covers did not arrive
+
+Reported by the reader in the plainest possible terms: "many books simply cannot be found and take
+two hours to search, and the covers themselves take half a year to load". Measured against the live
+dev instance rather than reasoned about — a cold search for _Solaris_ was still answering `pending`
+after 118 seconds, and a nonsense query never resolved at all. Five separate causes, each of which
+alone was enough to produce the complaint.
+
+### Found by measuring, not by reading
+
+1. **LibriVox now answers "no recording" with HTTP 404**, where it used to answer 200 with
+   `{"error": …}` in the body. The provider read any non-OK status as an outage and threw. LibriVox
+   is in the backfill's _discovery_ list, so this fired on nearly every query — most books have no
+   volunteer recording. One throw made `ProcessBackfillJob` report `BackfillSourcesUnavailableError`,
+   which skipped the 24h negative cache and handed the job back to the queue's retry-with-backoff.
+   The result the reader saw: a book nobody has ever recorded stayed `pending` until the poll gave
+   up, every single time, forever. Fixed in the provider — 404 is an empty catalogue, 503 is still
+   an outage, and a test pins the distinction.
+
+2. **A reader's own search queued behind bulk work nobody was waiting for.** A genre page with a
+   thin local result queues twenty books at once, the home page queues its misses, and all of it
+   went into the same `backfill` queue at the same priority, two at a time. The measured queue at
+   the time of the report: two active jobs and six waiting, all of them genre fills — with the
+   reader's `Solaris` third in line. `JobQueuePort.enqueue` now takes a priority, and the split is
+   `interactive` (somebody is watching a spinner) versus `deferred` (the page has already rendered
+   without it). BullMQ empties its plain `wait` list before it looks at `prioritized` at all, so
+   marking the bulk work is what makes it yield; the reader's search is left unprioritized.
+
+3. **A keyless Google Books poisoned every genuine "not found".** It answers 429 to everything once
+   the anonymous quota is gone, which on a self-hosted instance is always. Under the rule "any
+   source errored ⇒ throw and retry", that single permanently-unhappy source meant no missing book
+   could ever be recorded as missing. `ProcessBackfillJob` now takes `lastAttempt` from the queue
+   consumer: while retries remain it still throws, and on the last one it records a **degraded**
+   not_found kept for fifteen minutes instead of a day. A nonsense query went from never resolving
+   to `not_found` in 58s.
+
+4. **A failed job made its query un-askable for an hour.** Failed jobs were retained for an hour as
+   a dead letter, and BullMQ's dedup counts retained jobs — so every re-enqueue of that query was
+   swallowed, `GET /api/search` answered `pending` against a job that would never run again, and the
+   "Try again" button restarted the same doomed poll. Retention cut to five minutes; the durable
+   record was always `sync_log` in Postgres, not Redis.
+
+5. **The work page rendered every edition a work has**, and 964 of _Dracula_'s 980 had no cover of
+   their own, so each one carried a cover URL derived from its ISBN. The list now opens at 24
+   editions with a "show more" link, and only what is on screen is handed to the comparison table
+   (a client component, so every edition given to it is serialized into the page a second time).
+   Measured on the same page: 980 cards → 24, and the covers requested with them 980 → 23.
+
+6. **The ISBN-derived cover was a guess that never came true.** `coverUrlFromIsbn` existed on the
+   theory that Open Library resolves a cover for any ISBN independently of the edition record —
+   originally checked against three ISBNs, two of which worked. Re-measured against the editions
+   that actually rely on it: **35 of 35 returned 404**, sampled across two works with 964 and 936
+   coverless editions. The tell is the control group — ISBNs belonging to editions that _did_ carry
+   a cover resolved 200 or 302. The endpoint finds a cover exactly when the record already has one,
+   which is exactly when the fallback is not needed. So it produced no images, cost about a second
+   of Open Library round trip per coverless edition, and spent a share of the 100-per-5-minutes
+   budget Open Library allows for ISBN-keyed cover lookups — the same budget the covers that _do_
+   work draw on, which is how one work page could leave the whole site coverless for five minutes.
+   That is the "half a year" the report describes. Removed, along with the policy function.
+   On the work card it was also actively harmful: `firstEditionCover` took the first edition with
+   an ISBN, so the 404 beat a real cover sitting on a later edition.
+
+Alongside those, two latency fixes inside one sync, both pure sequencing: `fetchEditions` and
+`fetchWorkDetails` now run together, as do the availability batches and the work's `ia` lookup,
+which no source ordering ever required. Measured A/B on three works: 3.3s → 2.3s, 42.4s → 4.0s,
+7.8s → 8.6s (noise) — the large win is on works whose availability spans several batches. The `ia`
+list is capped at 100 alongside the existing edition-key cap, which is what bounds that fan-out to
+four concurrent requests.
+
+### Then a reader searched in Russian, and it was worse than that
+
+7. **The source was being asked the question in the script it answers worst.** The project already
+   had `romanizeCyrillicQuery` — and used it only when searching its _own_ Postgres, never when
+   asking Open Library. Measured live against Open Library's search: «Анна Каренина» 2 results vs
+   "Anna Karenina" 331; «Преступление и наказание» 6, topped by a German edition, vs
+   "Prestuplenie i nakazanie" 136 topped by the Russian one; **«Санькя Прилепин» 0 vs "Sankya
+   Prilepin" 2**. That last one is the whole bug: zero results means the sync reports `not_found`,
+   nothing is ever written, and the reader polls a book the source plainly has until the page gives
+   up. The romanizer moved to `packages/domain` (it is a pure function with no dependencies) and
+   `SyncWorkFromSource` now asks a second time in Latin when the first question finds nothing.
+   «Санькя Прилепин» went from unfindable to found in 6s.
+
+8. **The answer depended on the search re-finding, by text, the row it had just written.** A poll
+   could only be satisfied by the trigram search matching the reader's words against the stored
+   work — but the sync stores whatever the source calls the book, which for a Russian query is
+   routinely a romanized or English title. `searchResultsCacheKey`'s comment claimed the backfill
+   consumer wrote the results the search reads; nothing ever did. Now `SyncWorkFromSource` carries
+   the work it resolved out of the transaction, and `ProcessBackfillJob` records it under the
+   query — consulted _after_ the database search, so a query the search can answer keeps its full
+   ranked answer and only a query it cannot gets rescued.
+
+   Honest scope: on both live queries tried, the existing romanized fallback in
+   `PgWorkSearchAdapter` turned out to match anyway, so the memo was not what rescued them — Fix 7
+   was. What it removes is the _dependency on that coincidence_, which is otherwise a matter of
+   whether some edition happens to carry a Cyrillic title.
+
+### Verified live, on the running instance
+
+| Query                            | Before                            | After              |
+| -------------------------------- | --------------------------------- | ------------------ |
+| `Neuromancer William Gibson`     | —                                 | `found` in 7s      |
+| `Moby Dick Herman Melville`      | —                                 | `found` in 15s     |
+| `Kindred Octavia Butler`         | —                                 | `found` in 16s     |
+| `Solaris Stanislaw Lem`          | `pending` @118s                   | (same code path)   |
+| «Санькя Прилепин»                | 0 results at the source, unusable | `found` in 6s      |
+| «Пикник на обочине Стругацкие»   | —                                 | `found` in 6s      |
+| «Двенадцать стульев Ильф Петров» | —                                 | `found` in 15s     |
+| «Моим легионерам»                | spun to the 90s cap, then red box | `not_found` in 24s |
+| a nonsense query                 | never resolved                    | `not_found` in 58s |
+
+«Моим легионерам» is the honest one: Open Library returns nothing for it in either script, and
+Google Books cannot be asked on this instance (no key, anonymous quota spent). No source here has
+that book, and the reader is now told so in 24 seconds instead of watching a spinner for ninety.
+
+### Not done, and why
+
+- **The per-edition write loop.** One sync of a heavily reprinted work does five or six sequential
+  Postgres round trips per edition inside a single transaction, up to a thousand editions. It did
+  not dominate any measurement taken here — the HTTP path did — so it stays a known cost rather
+  than a guessed-at fix.
+- **A cover proxy on this instance.** It would fix the ISBN rate limit properly (our server pays it
+  once and caches), but it puts image bandwidth on a self-hosted box, and bounding the page removed
+  the symptom. Worth revisiting if covers are still thin after that.
+- **The degraded `not_found` still reads as "Nothing found. Try refining the title or author."**
+  The honest sentence would say a source was unreachable, and `GET /api/search` has no state for
+  that. A fourth response state is a contract change, not a wording change.
+
+---
+
+## Phase 9 — three more sources, and the four bugs that were hiding behind "not found"
+
+Reported as "a pile of books simply cannot be found, and that is a catastrophe". Candidate sources
+were measured before any was written, against seven books this instance could not find under any
+spelling (Prilepin's «Обитель» and «Моим легионерам», Zhadan's «Інтернат», Vodolazkin's «Лавр»,
+林奕含's 房思琪的初戀樂園, Glukhovsky's «Метро 2033», 村上春樹's 帰り道):
+
+| Source           | Found | What it contributes                                 | Key |
+| ---------------- | ----- | --------------------------------------------------- | --- |
+| Open Library     | 1 / 7 | editions, languages, Internet Archive links         | no  |
+| **Wikidata**     | 7 / 7 | identity: author, original language, year, genre    | no  |
+| **BnF**          | —     | French editions **with the translator named**       | no  |
+| **DNB**          | —     | German editions, likewise                           | no  |
+| Internet Archive | 2 / 7 | and both were the wrong book — public domain scans  | no  |
+| Google Books     | —     | untestable here: the anonymous daily quota is spent | yes |
+
+All three were added. Wikidata is a discovery source of **last** resort — it knows a book exists
+and almost never knows its editions (_War and Peace_ has 15, «Мастер и Маргарита» none) — so it
+must not outrank a source that can describe what a reader could actually hold. The two national
+libraries are the opposite and are registered as **enrichment**, never discovery: their records are
+translations, so discovering «Обитель» through the BnF would file the book as "L'archipel des
+Solovki" with French as its original language.
+
+### What had to change for enrichment to work at all
+
+- **`attachToWorkId`.** An enrichment source could previously only contribute to the discovered
+  work by reproducing its natural key — spelling the title and author identically. That is true of
+  Project Gutenberg and false of any translation catalogue, which would instead have quietly
+  created a second, half-empty book. Discovery now tells the source which work it is enriching.
+- **Enrichment asks in the book's words, not the reader's.** «Лавр Водолазкин» reached a German
+  catalogue that files the novel as "Laurus" by "Vodolazkin, Evgenij Germanovič" and knows nothing
+  by either of those words. Discovery has just established what the book is called; carrying the
+  raw query forward wasted that.
+- **The original language falls back to what the source declares.** Wikidata states `P407` as a
+  fact and lists no editions, and the edition-based heuristic would have printed "English" on the
+  card of a Romanian memoir.
+- **The sources that said no are asked again, once the book has a canonical name.** Reported as
+  "books are found now, but there is no information on them — nowhere to download and nowhere to
+  buy", against _For My Legionaries_: a card with no editions, no translations and no shops. The
+  cause was not missing data anywhere. Open Library **has** that book, with editions — under its
+  English title, which is a string nobody had ever asked it about, because discovery asked
+  «Моим легионерам» and «Moim legioneram» and stopped. Wikidata then named the book, and that name
+  went only to the enrichment sources. Now any discovery source that drew a blank is re-asked with
+  the canonical title and author, but only when that name actually differs from what the reader
+  typed — re-running every source on a query that already worked doubles an ordinary search and
+  can buy nothing. The card went from 0 editions to 2, with publisher, year, page count and an
+  ISBN, which is what the bookshop deep links are built from: eight shops, verified in the browser.
+- **The catalogues no longer guess.** With no record by anyone the query names, the SRU providers
+  fell back to the most common author among the records — and attached a French monograph _about_
+  the Iron Guard to Codreanu's own memoir as an edition of it. They only ever run against a book
+  another source has identified, so "no record is by this person" is a complete answer.
+
+### Three relevance bugs the new coverage exposed
+
+1. **One shared word in an unrelated edition title was enough.** «Обитель Прилепин» returned _La
+   chartreuse de Parme_ by Stendhal, because its Russian edition is «Пармская обитель» and that
+   scored 0.360 against the query — over the general 0.3 bar — while the work itself scored 0.000.
+   Reaching a work through an edition title now carries a higher bar (0.5); the matches that arm
+   exists for score 1.000 and 0.621.
+2. **Matching both the title and the author counted for nothing.** The rank took the maximum of
+   the separate arms, so for "Shantaram Gregory David Roberts" the author's name scored 0.459 for
+   _every_ book by him — _Shantaram_ and _The Mountain Shadow_ tied, and the order between them
+   was arbitrary. On the title-and-author text together they score 0.730 and 0.396.
+3. **Any hit at all stopped this instance from looking further.** So a reader searching «Шантарам»
+   got a different novel by the same author _and Shantaram was never fetched_ — not on that search
+   nor on any later one. `WorkSearchHit` now carries the rank, and a best match under 0.55 is shown
+   **and** queued for backfill, which is ADR-0003's own "serve what we have, refresh behind it".
+
+### Verified live, end to end
+
+- «Моим легионерам» — never resolved before, now synced from Wikidata with Romanian as its
+  original language and 1936 as its year.
+- «Санькя Прилепин», «Лавр Водолазкин», «Інтернат Жадан» — found in 6–16s.
+- «Шантарам Грегори Дэвид Робертс» — first search returned the wrong novel and queued the right
+  one; the book now ranks first and carries **6 French editions (6 with a named translator) and 8
+  German (7 with one)**, from the BnF and the DNB. No previously wired source had any of them.
+
+### Found by running it, and fixed
+
+- The DNB lists _Laurus_ twice for 2016, from "Dörlemann" and "Dörlemann eBook". Keying editions by
+  title, language and year alone gave them one id and two natural keys, and the whole enrichment
+  died on `duplicate key value violates unique constraint "edition_pkey"`.
+- `wikibase:label` falls back to the entity id for an unlabelled item, so `"Q126735031"` went into
+  the database as an edition title and onto a page as the name of a book.
+
+### Covers: nothing was broken, everything was slow
+
+Reported as "most books' covers don't load". Measured before touching anything, and the data was
+fine — 240 of 344 works had a cover URL, the API returned one for 65 of 66 featured books, and in
+the browser **0 images failed**. What was wrong was the cost of each one:
+
+```
+covers.openlibrary.org/b/id/8443266-L.jpg
+  → 302 archive.org/download/l_covers_0008/…zip/…-L.jpg
+  → 302 ia902809.us.archive.org/view_archive.php?…
+  → 200  46 923 bytes        redirects=2  ttfb=2.44s  total=2.65s
+```
+
+Two redirects onto a _third_ host, so every cover costs a DNS lookup, a TLS handshake and a fresh
+round trip. Twenty covers, six at a time: **8.3 seconds**. Nothing fails; a grid simply fills in
+one cover every couple of seconds, which is what "the covers don't load" looks like.
+
+So this instance now serves them itself — `GET /api/covers?src=`, a use case over an `ImageFetchPort`
+with the bytes cached in Redis for a month, `Cache-Control: immutable` on the way out, and `Poster`
+(the one component every cover on the site passes through) pointing at it. Measured after:
+
+|                 | before                             | after                                       |
+| --------------- | ---------------------------------- | ------------------------------------------- |
+| one cover, cold | 2.65s                              | 2.92s (the same fetch, once, on the server) |
+| one cover, warm | 2.65s **every reader, every time** | **0.003s**                                  |
+| twenty covers   | 8.3s                               | **0.024s**                                  |
+
+It also takes this instance's readers out of Open Library's per-IP cover rate limit, which one
+work page used to exhaust on its own.
+
+**It is an endpoint that fetches a URL it was given, so the host allowlist is the whole safety
+story** (`packages/domain/src/policy/cover-hosts.ts`, the same shape as `LinkPolicy`'s). `https`
+only, hosts matched exactly rather than by suffix, and **every redirect hop re-checked** — an
+allowlist enforced only on the first hop is not an allowlist, and this chain deliberately leaves
+the host that was checked. Verified live: `169.254.169.254`, `localhost:3001`, `evil.example.com`
+and `covers.openlibrary.org.evil.com` all answer 404 without a request being made.
+
+### Still open
+
+- **Google Books contributes nothing on this instance** and answers 429 to everything. The
+  provider has been written since Phase 1; it needs a free API key in `.env`, which is a
+  five-minute task in the Google Cloud Console and cannot be done from here.
+- **The relay serves the source's bytes unchanged**, at whatever size the URL asks for — `-L` is
+  what gets stored, and a 150px grid cell downloads a 500px jacket. Resizing needs an image
+  library in the API image and is a separate decision; caching removed the symptom that made it
+  worth arguing about.
+- **Wikidata-only books have no editions**, so their card shows the book and nothing to hold. That
+  is honest, and the catalogues fill it in whenever they have the book.
 
 ---
 

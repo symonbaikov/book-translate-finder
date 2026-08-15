@@ -1,5 +1,5 @@
 import { and, eq } from 'drizzle-orm';
-import type { IdempotencyRecord, IdempotencyStore } from '@btf/domain';
+import type { IdempotencyRecord, IdempotencyStore } from '@golden/domain';
 import type { Db } from '../db/client.js';
 import { resolveDb } from '../db/transaction-context.js';
 import { idempotencyKey } from '../db/schema.js';

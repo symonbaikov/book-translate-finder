@@ -5,9 +5,9 @@ import {
   BookmarksResponseSchema,
   type BookmarkStateResponse,
   type BookmarksResponse,
-} from '@btf/contracts';
-import type { AuthService, BookmarkService } from '@btf/application';
-import { UnauthorizedError, type WorkRepository } from '@btf/domain';
+} from '@golden/contracts';
+import type { AuthService, BookmarkService } from '@golden/application';
+import { UnauthorizedError, type WorkRepository } from '@golden/domain';
 import { TOKENS } from '../common/tokens.js';
 import { readSessionToken } from './cookies.js';
 

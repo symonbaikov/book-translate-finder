@@ -1,21 +1,26 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import type { FeaturedBook, FeaturedResponse } from '@btf/contracts';
-import { FeaturedResponseSchema } from '@btf/contracts';
+import type { FeaturedBook, FeaturedResponse } from '@golden/contracts';
+import { FeaturedResponseSchema } from '@golden/contracts';
 import { webEnv } from '../config/web-env';
-import { CoverImage, CoverSkeleton } from './CoverImage';
+import { BookCard, BookCardSkeleton } from './BookCard';
 import { useT } from '../i18n/I18nProvider';
+import { Badge, PosterGrid, Section } from '../ui';
+import styles from './FeaturedBooks.module.css';
 
 /**
- * The home page's curated lists.
+ * The home page's book lists.
  *
  * Client-side rather than server-rendered on purpose: a fresh instance resolves these lazily in
  * the background, so the page must be able to arrive with a short list and get longer, without
  * making the whole home page uncacheable.
+ *
+ * `language` is the reader's book language (see the home page for how it is chosen). It is sent to
+ * the API, not applied here: which books count as written in a language is a question for the
+ * sources, not something a React component should decide.
  */
-export function FeaturedBooks() {
+export function FeaturedBooks({ language }: { language: string }) {
   const t = useT();
   const [data, setData] = useState<FeaturedResponse | null>(null);
   const [failed, setFailed] = useState(false);
@@ -24,7 +29,9 @@ export function FeaturedBooks() {
     let cancelled = false;
     void (async () => {
       try {
-        const res = await fetch(`${webEnv.NEXT_PUBLIC_API_URL}/api/featured`);
+        const url = new URL('/api/featured', webEnv.NEXT_PUBLIC_API_URL);
+        url.searchParams.set('language', language);
+        const res = await fetch(url);
         if (!res.ok) throw new Error(String(res.status));
         const parsed = FeaturedResponseSchema.parse(await res.json());
         if (!cancelled) setData(parsed);
@@ -36,28 +43,42 @@ export function FeaturedBooks() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [language]);
 
   if (failed) return null;
 
   if (!data) {
     return (
-      <section style={{ marginTop: '2.5rem' }} aria-label="Loading featured books">
-        <div className="featured-grid">
-          {Array.from({ length: 6 }, (_, i) => (
-            <CoverSkeleton key={i} />
+      <section className={styles.loading} aria-label="Loading featured books">
+        <PosterGrid>
+          {Array.from({ length: 12 }, (_, i) => (
+            <BookCardSkeleton key={i} />
           ))}
-        </div>
+        </PosterGrid>
       </section>
     );
   }
 
   const ofTheYear = data.books.filter((b) => b.list === 'books-of-the-year');
   const popular = data.books.filter((b) => b.list === 'popular');
-  if (ofTheYear.length === 0 && popular.length === 0) return null;
+  const inLanguage = data.books.filter((b) => b.list === 'in-language');
+  if (ofTheYear.length === 0 && popular.length === 0 && inLanguage.length === 0) return null;
 
   return (
     <>
+      {/* First on the page, deliberately: a reader who set the site to their language is telling
+          us which books they want, and the curated lists below are Anglophone by construction. */}
+      <FeaturedSection
+        // The heading names no language on purpose. "Books in {language}" needs the language name
+        // in a different grammatical case in half the interface languages ("Книги на русском", not
+        // "на русский"), and `Intl.DisplayNames` only ever returns the nominative — so the honest
+        // choice is a heading that needs no inflection at all.
+        heading={t('featured.inLanguageHeading')}
+        blurb={t('featured.inLanguageBlurb')}
+        books={inLanguage}
+        freeLabel={t('featured.freeCopy')}
+        priority
+      />
       <YearSection
         heading={t('featured.yearHeading')}
         blurb={t('featured.yearBlurb')}
@@ -66,18 +87,39 @@ export function FeaturedBooks() {
         yearLabel={(year) => t('featured.year', { year })}
       />
       <FeaturedSection
-        id="popular"
         heading={t('featured.popularHeading')}
         blurb={t('featured.popularBlurb')}
         books={popular}
         freeLabel={t('featured.freeCopy')}
       />
-      {data.filling && (
-        <p className="muted" style={{ fontSize: '0.85em' }}>
-          {t('featured.filling')}
-        </p>
-      )}
+      {data.filling && <p className={styles.filling}>{t('featured.filling')}</p>}
     </>
+  );
+}
+
+function FeaturedCard({
+  book,
+  freeLabel,
+  priority = false,
+}: {
+  book: FeaturedBook;
+  freeLabel: string;
+  priority?: boolean;
+}) {
+  return (
+    <BookCard
+      href={`/works/${book.workId}`}
+      title={book.title}
+      author={book.author}
+      coverUrl={book.coverUrl}
+      priority={priority}
+      // The language list has no year to show — it is ordered by how often a book was published,
+      // and a made-up date under a cover would be worse than none.
+      meta={book.year === null ? book.author : `${book.author} · ${book.year}`}
+      // Only claimed when a legal free copy actually exists — the badge is the reason to click, so
+      // it must never be decoration.
+      badge={book.hasFreeCopy ? <Badge tone="positive">{freeLabel}</Badge> : undefined}
+    />
   );
 }
 
@@ -103,77 +145,57 @@ function YearSection({
 }) {
   if (books.length === 0) return null;
 
-  const years = [...new Set(books.map((b) => b.year))].sort((a, b) => b - a);
+  // Curated entries always carry a year; the filter is what makes that a checked fact rather than
+  // an assumption, since the response type allows a yearless book (the language list has none).
+  const years = [...new Set(books.map((b) => b.year).filter((y) => y !== null))].sort(
+    (a, b) => b - a,
+  );
 
   return (
-    <section aria-labelledby="books-of-the-year" style={{ marginTop: '2.5rem' }}>
-      <h2 id="books-of-the-year" style={{ marginBottom: '0.2rem' }}>
-        {heading}
-      </h2>
-      <p className="muted" style={{ marginTop: 0, fontSize: '0.88em' }}>
-        {blurb}
-      </p>
+    <Section title={heading} note={blurb}>
       {years.map((year) => (
-        <div key={year} className="featured-year">
-          <h3 className="featured-year__label">{yearLabel(year)}</h3>
-          <ul className="featured-grid">
+        <div key={year} className={styles.year}>
+          <h3 className={styles.yearLabel}>{yearLabel(year)}</h3>
+          <PosterGrid>
             {books
               .filter((book) => book.year === year)
               .map((book) => (
                 <FeaturedCard key={book.workId} book={book} freeLabel={freeLabel} />
               ))}
-          </ul>
+          </PosterGrid>
         </div>
       ))}
-    </section>
-  );
-}
-
-function FeaturedCard({ book, freeLabel }: { book: FeaturedBook; freeLabel: string }) {
-  return (
-    <li>
-      <Link href={`/works/${book.workId}`} className="featured-card">
-        <CoverImage src={book.coverUrl} alt="" width={110} height={165} />
-        <span className="featured-card__title">{book.title}</span>
-        <span className="muted featured-card__meta">
-          {book.author} · {book.year}
-        </span>
-        {/* Only claimed when a legal free copy actually exists — the badge is the reason to
-            click, so it must never be decoration. */}
-        {book.hasFreeCopy && <span className="badge badge--positive">{freeLabel}</span>}
-      </Link>
-    </li>
+    </Section>
   );
 }
 
 function FeaturedSection({
-  id,
   heading,
   blurb,
   books,
   freeLabel,
+  priority = false,
 }: {
-  id: string;
   heading: string;
   blurb: string;
   books: FeaturedBook[];
   freeLabel: string;
+  priority?: boolean;
 }) {
   if (books.length === 0) return null;
 
   return (
-    <section aria-labelledby={id} style={{ marginTop: '2.5rem' }}>
-      <h2 id={id} style={{ marginBottom: '0.2rem' }}>
-        {heading}
-      </h2>
-      <p className="muted" style={{ marginTop: 0, fontSize: '0.88em' }}>
-        {blurb}
-      </p>
-      <ul className="featured-grid">
-        {books.map((book) => (
-          <FeaturedCard key={book.workId} book={book} freeLabel={freeLabel} />
+    <Section title={heading} note={blurb}>
+      <PosterGrid className={styles.grid}>
+        {books.map((book, index) => (
+          <FeaturedCard
+            key={book.workId}
+            book={book}
+            freeLabel={freeLabel}
+            priority={priority && index < 6}
+          />
         ))}
-      </ul>
-    </section>
+      </PosterGrid>
+    </Section>
   );
 }

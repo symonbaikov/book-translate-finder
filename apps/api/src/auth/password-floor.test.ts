@@ -1,5 +1,5 @@
-import { MIN_PASSWORD_LENGTH as APPLICATION_FLOOR } from '@btf/application';
-import { MIN_PASSWORD_LENGTH as CONTRACT_FLOOR } from '@btf/contracts';
+import { MIN_PASSWORD_LENGTH as APPLICATION_FLOOR } from '@golden/application';
+import { MIN_PASSWORD_LENGTH as CONTRACT_FLOOR } from '@golden/contracts';
 import { describe, expect, it } from 'vitest';
 
 describe('the shared password floor', () => {

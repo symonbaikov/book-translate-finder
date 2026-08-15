@@ -18,6 +18,16 @@ export class IllegalDownloadLinkError extends DomainError {
   readonly code = 'illegal_download_link';
 }
 
+/**
+ * Thrown when a host that is not a chartered public domain repository claims `public_domain` for a
+ * work too young for that to be true anywhere (ADR-0011). Its own class rather than a reuse of
+ * `IllegalDownloadLinkError`: this one says the *source was wrong*, not that the project was asked
+ * to do something forbidden, and the two want different answers if either is ever surfaced.
+ */
+export class ImplausiblePublicDomainClaimError extends DomainError {
+  readonly code = 'implausible_public_domain_claim';
+}
+
 export interface LinkCandidate {
   id: string;
   editionId: string;
@@ -28,6 +38,12 @@ export interface LinkCandidate {
   /** File format for downloads (`epub`, `txt`, …) — carried through so the UI can tell the
    * reader what they will actually get, not just that "a download exists". */
   format?: string | null;
+  /**
+   * The year the *work* was first published, when the source states one. Used only to disbelieve
+   * an implausible public-domain claim — never to grant one (see `PUBLIC_DOMAIN_PLAUSIBILITY_YEARS`).
+   * `null`/absent means the source did not say, which is not treated as evidence either way.
+   */
+  workFirstPublishedYear?: number | null;
   verifiedAt: Date;
 }
 
@@ -50,6 +66,40 @@ const DOWNLOAD_ALLOWLIST: ReadonlySet<string> = new Set([
 ]);
 
 /**
+ * Providers whose entire corpus is public domain by their own charter, so a `public_domain` status
+ * coming from them is a statement about the *work* (docs/legal-policy.md §3 rule 1). Project
+ * Gutenberg exists to publish public domain books; LibriVox releases its recordings into it by its
+ * volunteer charter. `authorized-free` is here for a different reason and is no weaker: each entry
+ * names the page where the rights holder granted permission, reviewed one book at a time (ADR-0004).
+ *
+ * Everyone else is a general-purpose host. Internet Archive is the case that matters: it hosts
+ * public domain scans and in-copyright books side by side, and its "full access" label describes
+ * *access*, not *rights* — see ADR-0011 and the Tibetan translation of a 1997 novel that prompted it.
+ */
+const CHARTERED_PUBLIC_DOMAIN_PROVIDERS: ReadonlySet<string> = new Set([
+  'gutenberg',
+  'wikisource',
+  'standard-ebooks',
+  'librivox',
+  'authorized-free',
+]);
+
+/**
+ * How recently a work may have been first published before this project stops believing a
+ * public-domain claim inferred from a host's access label.
+ *
+ * This is **not** a term-of-protection calculation, which docs/legal-policy.md §3 forbids without
+ * legal counsel, and the asymmetry is the whole point: the rule can only ever *withhold*
+ * `public_domain`, never grant it. A book first published inside this window may or may not be in
+ * copyright — the project does not claim to know, and "does not know" is exactly the state that
+ * §3 already says must be treated as copyrighted.
+ *
+ * 95 years is the longest term in common use anywhere (US works made for hire, measured from
+ * publication). Anything younger cannot be public domain everywhere, whatever a host's label says.
+ */
+const PUBLIC_DOMAIN_PLAUSIBILITY_YEARS = 95;
+
+/**
  * Known shadow-library domains (docs/legal-policy.md I-3). Full registrable domains, not bare
  * name fragments — matched by exact host or proper subdomain (`host === d || host.endsWith('.'+d)`).
  * A fragment-based substring match (e.g. bare `"libgen"`) would falsely flag an unrelated domain
@@ -58,7 +108,7 @@ const DOWNLOAD_ALLOWLIST: ReadonlySet<string> = new Set([
  * against a bug, since only reviewed provider adapters we write ever produce link candidates in
  * the first place. Extending it (new mirror domains) is a legal decision — requires an ADR.
  */
-const DENYLIST_DOMAINS: readonly string[] = [
+export const DENYLIST_DOMAINS: readonly string[] = [
   'libgen.rs',
   'libgen.is',
   'libgen.st',
@@ -85,6 +135,35 @@ function extractHostname(url: string): string {
 
 function isDenylisted(hostname: string): boolean {
   return DENYLIST_DOMAINS.some((domain) => hostname === domain || hostname.endsWith(`.${domain}`));
+}
+
+/**
+ * Refuses a `public_domain` claim that a general-purpose host cannot credibly make about a work
+ * young enough to still be in copyright anywhere (docs/legal-policy.md §3 rule 2, ADR-0011).
+ *
+ * Deliberately narrow. It does not fire for a provider whose corpus is public domain by charter,
+ * because there the status is the provider's own statement about the work rather than a guess read
+ * off an access label. It does not fire on `open_license` either: an open licence is granted by the
+ * rights holder and is entirely normal for a book published last year.
+ *
+ * A missing year is not evidence and does not trigger this — sources routinely omit it, and
+ * refusing every link without one would delete most of Project Gutenberg to catch nothing.
+ */
+function assertPublicDomainClaimIsPlausible(candidate: LinkCandidate): void {
+  if (candidate.rightsStatus !== 'public_domain') return;
+  if (CHARTERED_PUBLIC_DOMAIN_PROVIDERS.has(candidate.provider.value)) return;
+
+  const firstPublished = candidate.workFirstPublishedYear;
+  if (firstPublished === undefined || firstPublished === null) return;
+
+  const floor = candidate.verifiedAt.getUTCFullYear() - PUBLIC_DOMAIN_PLAUSIBILITY_YEARS;
+  if (firstPublished > floor) {
+    throw new ImplausiblePublicDomainClaimError(
+      `${candidate.provider.value} reports public_domain for a work first published in ` +
+        `${firstPublished}, which is inside the ${PUBLIC_DOMAIN_PLAUSIBILITY_YEARS}-year window ` +
+        `where no such claim can be believed from an access label (floor: ${floor})`,
+    );
+  }
 }
 
 /**
@@ -121,6 +200,7 @@ export function assertLinkAllowed(candidate: LinkCandidate): SourceLink {
         `${candidate.type} links require public_domain or open_license status, got: ${candidate.rightsStatus}`,
       );
     }
+    assertPublicDomainClaimIsPlausible(candidate);
   }
 
   return SourceLink.unsafeCreateForPolicyUse({

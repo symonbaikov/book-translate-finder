@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
-import { HealthResponseSchema, type HealthResponse } from '@btf/contracts';
+import { HealthResponseSchema, type HealthResponse } from '@golden/contracts';
 
-const SERVICE_NAME = '@btf/api';
+const SERVICE_NAME = '@golden/api';
 const VERSION = '0.0.0';
 
 @Controller('health')

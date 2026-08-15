@@ -1,4 +1,4 @@
-name: book-translate-finder
+name: golden-library
 
 # Self-host production compose (docs/architecture.md §9.1). Pulls pinned, pre-built images from
 # GHCR for api/worker/migrate — the one deliberate exception is `web`, built locally from source:
@@ -39,7 +39,7 @@ services:
   # step inside api's/worker's own entrypoint — running migrations from multiple starting
   # containers at once is a race (docs/architecture.md §9.1).
   migrate:
-    image: ghcr.io/symonbaikov/book-translate-finder-migrate:${IMAGE_TAG:-latest}
+    image: ghcr.io/symonbaikov/golden-library-migrate:${IMAGE_TAG:-latest}
     restart: 'no'
     depends_on:
       postgres:
@@ -47,8 +47,31 @@ services:
     environment:
       DATABASE_URL: postgres://btf:${POSTGRES_PASSWORD}@postgres:5432/btf
 
+  # One-shot: backfill Internet Archive download links for existing editions.
+  # Runs after migrate completes, then exits. Idempotent — can be run multiple times safely.
+  # To disable this step, set SKIP_BACKFILL=true in .env
+  backfill-ia-links:
+    image: ghcr.io/symonbaikov/golden-library-migrate:${IMAGE_TAG:-latest}
+    restart: 'no'
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: postgres://btf:${POSTGRES_PASSWORD}@postgres:5432/btf
+    # Only run if not explicitly skipped
+    entrypoint: >-
+      sh -c "
+      if [ \"$$SKIP_BACKFILL\" = 'true' ]; then
+        echo 'Skipping Internet Archive backfill (SKIP_BACKFILL=true)';
+      else
+        echo 'Starting Internet Archive backfill...' &&
+        node --loader tsx ./scripts/backfill-ia-links.ts &&
+        echo 'Backfill completed successfully';
+      fi
+      "
+
   api:
-    image: ghcr.io/symonbaikov/book-translate-finder-api:${IMAGE_TAG:-latest}
+    image: ghcr.io/symonbaikov/golden-library-api:${IMAGE_TAG:-latest}
     restart: unless-stopped
     depends_on:
       migrate:
@@ -84,7 +107,7 @@ services:
       start_period: 10s
 
   worker:
-    image: ghcr.io/symonbaikov/book-translate-finder-worker:${IMAGE_TAG:-latest}
+    image: ghcr.io/symonbaikov/golden-library-worker:${IMAGE_TAG:-latest}
     restart: unless-stopped
     depends_on:
       migrate:

@@ -1,0 +1,40 @@
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--control-h-md);
+  padding-inline: var(--space-3);
+  margin-inline-start: calc(var(--space-3) * -1);
+  border-radius: var(--r-md);
+  color: var(--text-muted);
+  font-size: var(--step--1);
+  text-decoration: none;
+}
+
+.back:hover {
+  background: var(--surface-inset);
+  color: var(--text);
+}
+
+.title {
+  margin-block: var(--space-4) var(--space-3);
+}
+
+.blurb {
+  color: var(--text-muted);
+  max-inline-size: var(--container-prose);
+  margin-block: 0 var(--space-3);
+}
+
+/* Which filter is in effect, stated rather than implied — same reason as the genre page: a
+   shorter-than-expected shelf with no explanation reads as missing data. */
+.filter {
+  color: var(--text-muted);
+  font-size: var(--step--1);
+  margin-block: 0 var(--space-7);
+}
+
+.empty {
+  margin-block-start: var(--space-7);
+  color: var(--text-muted);
+}

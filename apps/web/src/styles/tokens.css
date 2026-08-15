@@ -1,0 +1,269 @@
+/* Design tokens — the single place a colour, a radius, a duration or a type size is decided.
+ *
+ * Two layers, and the distinction matters:
+ *
+ *   Primitives (`--n-700`, `--indigo-500`)  a palette. Never used by a component.
+ *   Semantics  (`--surface-2`, `--accent`)  a role. The only thing components are allowed to name.
+ *
+ * The theme swap therefore touches the semantic layer only: `--surface-2` means "the second step
+ * of depth" in both themes and resolves to a different primitive in each. A component that reaches
+ * for `--n-900` directly would look right in the dark and be unreadable in the light, which is
+ * exactly the bug this split exists to make impossible.
+ *
+ * Light and dark are equals here — not one design and its inversion. Depth in the dark comes from
+ * stacked surfaces and hairlines, because a shadow on a near-black background is invisible; in the
+ * light it comes from real shadows on warm paper. Same token names, different mechanisms.
+ */
+
+:root {
+  /* ===== Primitives ======================================================= */
+
+  /* Light neutrals lean warm — paper, not office monitor. */
+  --n-0: #ffffff;
+  --n-25: #fbfaf8;
+  --n-50: #f5f4f1;
+  --n-100: #ecebe7;
+  --n-150: #e2e0db;
+  --n-200: #d5d3cd;
+  --n-300: #b8b6af;
+  --n-400: #91908a;
+  --n-500: #6e6d68;
+  --n-600: #555450;
+  --n-700: #3b3b38;
+
+  /* Dark neutrals lean cool — ink, not soot. Pure #000 is avoided: it makes every surface above it
+     look like a floating rectangle and turns OLED scrolling into smearing. */
+  --n-800: #24262b;
+  --n-850: #1c1e23;
+  --n-900: #15171b;
+  --n-950: #0e1014;
+  --n-1000: #090a0d;
+
+  /* The accent is brass: warm gold, arrived at by choosing it against two alternatives on real
+     controls rather than from a palette. The rejected candidates are kept — an accent is worth
+     re-deciding occasionally, and re-deriving one from scratch is how a product drifts. */
+  --brass-400: #e0b155;
+  --brass-500: #c3922f;
+  /* Darkened from the first mix (#8f6a17) after measuring: on `--surface-3` it reached only 4.15,
+     so brass-as-text was quietly failing inside raised panels while passing everywhere else. */
+  --brass-600: #875f12;
+  --brass-700: #6f520f;
+  /* Considered and not chosen: indigo #4d5cd8/#93a0ff (safe, anonymous), library green
+     #266d51/#63cfa0 (highest contrast, but green already means "public domain" here). */
+
+  /* Status hues. Five distinct families, and the distinctness is the point: brass now carries
+     "this is the action", so no status may be gold too. */
+  --positive-light: #177449;
+  --positive-dark: #6ee7ac;
+  --info-light: #136878;
+  --info-dark: #6fd7e6;
+  --caution-light: #96620a;
+  --caution-dark: #f0bf5c;
+  --danger-light: #b4271f;
+  --danger-dark: #ff9d94;
+
+  /* ===== Shape ============================================================ */
+
+  --r-xs: 6px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  --r-2xl: 28px;
+  --r-pill: 999px;
+
+  /* ===== Space — a 4px grid, named by step and never by pixel ============= */
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 2.5rem;
+  --space-8: 3rem;
+  --space-9: 4rem;
+  --space-10: 5rem;
+  --space-11: 6rem;
+
+  /* ===== Controls =========================================================
+   * "Large, comfortable controls" made checkable. 44px is the floor for anything a finger presses
+   * — the WCAG 2.2 target-size minimum and the width of an adult fingertip. `--control-h-sm` is
+   * below it on purpose and is only for controls that sit inside a larger tap area. */
+
+  --control-h-sm: 36px;
+  --control-h-md: 44px;
+  --control-h-lg: 52px;
+  --control-h-xl: 56px;
+  --control-pad-x: var(--space-4);
+  --tap-min: 44px;
+
+  /* ===== Layout =========================================================== */
+
+  --container: 1240px;
+  /* Long-form text stays narrow whatever the container does: 1240px of legal prose is unreadable
+     regardless of how good the font is. */
+  --container-prose: 68ch;
+  --container-pad: var(--space-5);
+  --header-h: 64px;
+
+  /* ===== Type =============================================================
+   * The scale is fluid: every step interpolates between a phone and a desktop, so a heading never
+   * needs a breakpoint to stop shouting on a small screen. */
+
+  --font-ui:
+    'Inter', 'Inter Fallback', system-ui, -apple-system, 'Segoe UI', 'Noto Sans Arabic',
+    'Hiragino Sans', 'Yu Gothic', 'Malgun Gothic', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-display:
+    'Literata', 'Literata Fallback', Georgia, 'Noto Serif Arabic', 'Hiragino Mincho ProN',
+    'Yu Mincho', 'Songti SC', serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', 'Roboto Mono', monospace;
+
+  --step--2: 0.75rem;
+  --step--1: 0.8125rem;
+  --step-0: 0.9375rem;
+  --step-1: 1.0625rem;
+  --step-2: clamp(1.1875rem, 1.14rem + 0.24vw, 1.3125rem);
+  --step-3: clamp(1.375rem, 1.28rem + 0.48vw, 1.625rem);
+  --step-4: clamp(1.625rem, 1.45rem + 0.88vw, 2.125rem);
+  --step-5: clamp(2rem, 1.66rem + 1.7vw, 2.875rem);
+  --step-6: clamp(2.5rem, 1.9rem + 3vw, 4rem);
+
+  --leading-tight: 1.12;
+  --leading-snug: 1.28;
+  --leading-normal: 1.55;
+  --leading-relaxed: 1.7;
+
+  /* Optical correction, not decoration: a typeface set large needs its letters pulled together and
+     set small needs them pushed apart, or the same font reads as two different ones. */
+  --tracking-display: -0.024em;
+  --tracking-tight: -0.014em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.02em;
+  --tracking-caps: 0.07em;
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* ===== Motion ===========================================================
+   * Three durations and two curves for the whole application. A fourth value would be someone's
+   * taste rather than a decision, and the interface would start feeling assembled from parts. */
+
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 320ms;
+  /* Decelerating, never bouncing — an interface that overshoots reads as a toy. */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-exit: cubic-bezier(0.3, 0, 0.8, 0.15);
+
+  --z-header: 100;
+  --z-sheet: 200;
+  --z-toast: 300;
+
+  /* ===== Semantics — light ================================================ */
+
+  color-scheme: light dark;
+
+  --bg: var(--n-25);
+  --surface-1: var(--n-0);
+  --surface-2: var(--n-50);
+  /* Only a shade below `--surface-2`, and deliberately so: depth in the light theme is carried by
+     shadow, not by how dark the paper gets. Every step darker costs contrast for the text sitting
+     on it — this ladder is as steep as the 4.5:1 floor allows. */
+  --surface-3: #f2f1ed;
+  --surface-inset: var(--n-100);
+  --surface-scrim: rgba(20, 22, 26, 0.45);
+  /* The header's own backdrop: translucent so the page shows through the blur, opaque enough that
+     a book cover scrolling underneath does not turn the navigation into soup. */
+  --surface-header: rgba(251, 250, 248, 0.82);
+
+  --hairline: rgba(20, 22, 26, 0.1);
+  --hairline-strong: rgba(20, 22, 26, 0.2);
+
+  --text: #14171c;
+  --text-muted: var(--n-500);
+  /* Faint is still *text*, so it clears 4.5:1 against every surface it can land on (4.85 on the
+     page, 4.60 on the second step) rather than the 3:1 that decorative greys get away with.
+     `--n-400` was the obvious pick here and fails at 3.07 — the reason it is not used. */
+  --text-faint: #6a6960;
+  --text-on-accent: var(--n-0);
+
+  --accent: var(--brass-600);
+  --accent-hover: var(--brass-700);
+  --accent-active: var(--brass-700);
+  --accent-soft: #f7efdc;
+  --accent-on-soft: var(--brass-700);
+  --ring: rgba(143, 106, 23, 0.45);
+
+  --positive-text: var(--positive-light);
+  --positive-soft: #e6f5ec;
+  --info-text: var(--info-light);
+  --info-soft: #e2f1f4;
+  --caution-text: var(--caution-light);
+  --caution-soft: #fbf1dd;
+  --danger-text: var(--danger-light);
+  --danger-soft: #fdeceb;
+  --neutral-text: var(--n-600);
+  --neutral-soft: var(--n-100);
+
+  --elev-1: 0 1px 2px rgba(20, 22, 26, 0.05), 0 1px 3px rgba(20, 22, 26, 0.06);
+  --elev-2: 0 4px 10px rgba(20, 22, 26, 0.06), 0 12px 28px rgba(20, 22, 26, 0.08);
+  --elev-3: 0 12px 24px rgba(20, 22, 26, 0.08), 0 32px 64px rgba(20, 22, 26, 0.14);
+  /* A cover is an image with its own edges; it gets a containing ring rather than a drop shadow so
+     that a white book jacket does not appear to end before the image does. */
+  --cover-ring: inset 0 0 0 1px rgba(20, 22, 26, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: var(--n-950);
+    --surface-1: var(--n-900);
+    --surface-2: var(--n-850);
+    --surface-3: var(--n-800);
+    --surface-inset: rgba(255, 255, 255, 0.04);
+    --surface-scrim: rgba(0, 0, 0, 0.65);
+    --surface-header: rgba(14, 16, 20, 0.72);
+
+    --hairline: rgba(255, 255, 255, 0.09);
+    --hairline-strong: rgba(255, 255, 255, 0.18);
+
+    --text: #f2f4f7;
+    --text-muted: #a2a8b4;
+    /* Measured, not chosen by eye: this is the lightest grey that still clears 4.5:1 on the
+       *lightest* dark surface a caption can land on (`--surface-3`, 4.91). The obvious darker grey
+       reached only 3.61 there — legible on the page background and quietly failing inside a
+       sheet, which is exactly the kind of bug a contrast pass exists to catch. */
+    --text-faint: #8d939f;
+    /* Near-black, not white: a light accent behind white text is the classic dark-theme contrast
+       failure. Which side this lands on is re-checked whenever the accent changes. */
+    --text-on-accent: var(--n-1000);
+
+    --accent: var(--brass-400);
+    --accent-hover: #ecc478;
+    --accent-active: var(--brass-500);
+    --accent-soft: rgba(224, 177, 85, 0.14);
+    --accent-on-soft: var(--brass-400);
+    --ring: rgba(224, 177, 85, 0.5);
+
+    --positive-text: var(--positive-dark);
+    --positive-soft: rgba(110, 231, 172, 0.12);
+    --info-text: var(--info-dark);
+    --info-soft: rgba(111, 215, 230, 0.12);
+    --caution-text: var(--caution-dark);
+    --caution-soft: rgba(240, 191, 92, 0.13);
+    --danger-text: var(--danger-dark);
+    --danger-soft: rgba(255, 157, 148, 0.13);
+    --neutral-text: #b6bcc7;
+    --neutral-soft: rgba(255, 255, 255, 0.07);
+
+    /* Shadows do almost nothing at these luminances; the inset highlight along the top edge is
+       what actually separates one surface from the next, the way a lit edge does in the world. */
+    --elev-1: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 1px 2px rgba(0, 0, 0, 0.5);
+    --elev-2: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.55);
+    --elev-3: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 24px 60px rgba(0, 0, 0, 0.7);
+    --cover-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  }
+}

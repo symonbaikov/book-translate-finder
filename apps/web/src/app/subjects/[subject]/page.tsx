@@ -1,10 +1,12 @@
 import Link from 'next/link';
-import { SubjectBrowseResponseSchema } from '@btf/contracts';
-import { CoverImage } from '../../../components/CoverImage';
+import { SubjectBrowseResponseSchema } from '@golden/contracts';
 import { webEnv } from '../../../config/web-env';
 import { getT } from '../../../i18n/server';
 import { languageName } from '../../../lib/language-names';
 import { readBookLanguageFromCookie } from '../../../lib/book-language.server';
+import { BookCard } from '../../../components/BookCard';
+import { Page, PosterGrid } from '../../../ui';
+import styles from './subject.module.css';
 
 interface SubjectPageProps {
   params: { subject: string };
@@ -34,13 +36,13 @@ export default async function SubjectPage({ params, searchParams }: SubjectPageP
   const data = SubjectBrowseResponseSchema.parse(await res.json());
 
   return (
-    <main id="main-content" className="container">
-      <p className="muted" style={{ marginBottom: '0.3rem' }}>
-        <Link href="/">{t('auth.backToSearch')}</Link>
-      </p>
-      <h1 style={{ marginTop: 0 }}>{data.subject}</h1>
+    <Page>
+      <Link href="/" className={styles.back}>
+        ← {t('auth.backToSearch')}
+      </Link>
+      <h1 className={styles.title}>{data.subject}</h1>
 
-      <p className="muted">
+      <p className={styles.filter}>
         {data.language
           ? t('subject.filteredByLanguage', { language: languageName(data.language) })
           : t('subject.allLanguages')}
@@ -55,23 +57,26 @@ export default async function SubjectPage({ params, searchParams }: SubjectPageP
       </p>
 
       {data.works.length === 0 ? (
-        <p className="muted">{t('subject.empty')}</p>
+        <p className={styles.empty}>{t('subject.empty')}</p>
       ) : (
-        <ul className="featured-grid">
-          {data.works.map((work) => (
-            <li key={work.id}>
-              <Link href={`/works/${work.id}`} className="featured-card">
-                <CoverImage src={work.coverUrl} alt="" width={110} height={165} />
-                <span className="featured-card__title">{work.originalTitle}</span>
-                <span className="muted featured-card__meta">
-                  {work.author}
-                  {work.firstPublishedYear ? ` · ${work.firstPublishedYear}` : ''}
-                </span>
-              </Link>
-            </li>
+        <PosterGrid className={styles.grid}>
+          {data.works.map((work, index) => (
+            <BookCard
+              key={work.id}
+              href={`/works/${work.id}`}
+              title={work.originalTitle}
+              author={work.author}
+              coverUrl={work.coverUrl}
+              priority={index < 6}
+              meta={
+                work.firstPublishedYear
+                  ? `${work.author} · ${work.firstPublishedYear}`
+                  : work.author
+              }
+            />
           ))}
-        </ul>
+        </PosterGrid>
       )}
-    </main>
+    </Page>
   );
 }

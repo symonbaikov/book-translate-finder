@@ -1,4 +1,4 @@
-import { InvalidInputError } from '@btf/domain';
+import { InvalidInputError } from '@golden/domain';
 import type { z } from 'zod';
 
 /**

@@ -1,11 +1,11 @@
-import { loadEnv } from '@btf/infrastructure';
+import { loadEnv } from '@golden/infrastructure';
 import { describe, expect, it } from 'vitest';
 import { workerEnvSchema } from './worker-env.schema.js';
 
 const BASE = {
   DATABASE_URL: 'postgres://user:pass@localhost:5432/btf',
   REDIS_URL: 'redis://localhost:6379',
-  CONTACT_URL: 'https://github.com/example/book-translate-finder',
+  CONTACT_URL: 'https://github.com/example/golden-library',
 };
 
 describe('workerEnvSchema', () => {

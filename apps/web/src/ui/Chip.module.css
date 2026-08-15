@@ -1,0 +1,60 @@
+/* A chip is a small, tappable label: a language, a genre, a bookshop. It is never the primary
+   action, so it is never filled brass — it borrows the accent only when it is switched on. */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--control-h-sm);
+  padding-inline: var(--space-3);
+  border-radius: var(--r-pill);
+  border: 1px solid var(--hairline-strong);
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--step--1);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--dur-fast) var(--ease-standard),
+    border-color var(--dur-fast) var(--ease-standard),
+    color var(--dur-fast) var(--ease-standard);
+}
+
+/* Interactive chips reach 44px; a static label does not need to, because there is nothing to
+   press. Mixing the two heights in one row would look like a mistake, so a row of chips should be
+   all one kind — which it always is in practice: languages are filters, tags are links. */
+.pressable {
+  min-block-size: var(--control-h-md);
+  padding-inline: var(--space-4);
+  cursor: pointer;
+}
+
+.pressable:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-on-soft);
+}
+
+.count {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+}
+
+.selected .count {
+  color: inherit;
+  opacity: 0.75;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chip {
+    transition: none;
+  }
+}

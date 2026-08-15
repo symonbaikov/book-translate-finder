@@ -14,6 +14,9 @@ export const SearchHitSchema = z.object({
   author: z.string(),
   firstPublishedYear: z.number().int().nullable(),
   coverUrl: z.string().url().nullable(),
+  /** At least one edition has a free/public-domain download link — feeds the "free to
+   * download" filter on the search results page. */
+  hasFreeCopy: z.boolean(),
 });
 
 /**

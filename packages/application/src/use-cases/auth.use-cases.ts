@@ -15,7 +15,7 @@ import {
   User,
   type UserRepository,
   type VerifiedGoogleProfile,
-} from '@btf/domain';
+} from '@golden/domain';
 
 /**
  * How long a session cookie stays valid. Thirty days is the "a reading list is not a bank

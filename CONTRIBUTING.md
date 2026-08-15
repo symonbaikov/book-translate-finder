@@ -1,4 +1,4 @@
-# How to contribute to BookTranslate Finder
+# How to contribute to Golden Library
 
 Thank you for your interest in the project! Before opening a PR, read this file in full —
 it is short, but a couple of its rules are strict.
@@ -12,6 +12,17 @@ preference but an architectural and legal invariant of the project: it is enforc
 code (`LinkPolicy`), covered by tests, and described in [docs/legal-policy.md](docs/legal-policy.md).
 A direct download link is allowed **only** for public domain / open-license works from the
 provider allowlist.
+
+This is a rule about **this codebase**, not about the reader. Addons are installed by readers from
+URLs they find themselves, run on their own devices or on their authors' servers, and are not
+inspected by the engine ([ADR-0009](docs/adr/0009-blind-core-link-policy-scope.md)). That distinction
+is what makes the following three also closed without discussion, and it is not negotiable in either
+direction:
+
+- an addon shipped in this repository, or added to any list, directory or default set inside it;
+- a content check, denylist or "trusted addons" mechanism layered over addon results;
+- an API route that fetches a URL it is given, in any form — the OPDS relay takes a feed **id**
+  and stays that way.
 
 ## Before you start
 

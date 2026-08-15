@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
-import type { CurrentUserResponse } from '@btf/contracts';
+import type { CurrentUserResponse } from '@golden/contracts';
 import { getCurrentUser } from '../lib/auth-client';
 
 type SessionUser = CurrentUserResponse['user'];

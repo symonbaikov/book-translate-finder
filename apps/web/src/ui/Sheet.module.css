@@ -1,0 +1,36 @@
+/* A panel that opens in place — the links for one edition, the details of one shop.
+ *
+ * The height animates with a `grid-template-rows: 0fr → 1fr` transition rather than `max-height`.
+ * `max-height` requires guessing a number larger than the content: guess too small and the panel
+ * clips, too large and the animation spends most of its duration on empty space, which is why
+ * accordions so often feel slow at the end. The grid trick animates to the content's real height,
+ * whatever it turns out to be. */
+
+.sheet {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--dur-base) var(--ease-emphasized);
+}
+
+.open {
+  grid-template-rows: 1fr;
+}
+
+.inner {
+  overflow: hidden;
+  min-block-size: 0;
+}
+
+.body {
+  margin-block-start: var(--space-4);
+  padding: var(--space-4);
+  background: var(--surface-2);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet {
+    transition: none;
+  }
+}

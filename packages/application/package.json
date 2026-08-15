@@ -1,5 +1,5 @@
 {
-  "name": "@btf/application",
+  "name": "@golden/application",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -14,7 +14,7 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@btf/domain": "workspace:*"
+    "@golden/domain": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.6.3"

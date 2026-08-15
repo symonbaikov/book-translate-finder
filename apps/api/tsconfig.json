@@ -11,7 +11,8 @@
     { "path": "../../packages/domain" },
     { "path": "../../packages/application" },
     { "path": "../../packages/infrastructure" },
-    { "path": "../../packages/contracts" }
+    { "path": "../../packages/contracts" },
+    { "path": "../../packages/plugins" }
   ],
   "include": ["src"]
 }

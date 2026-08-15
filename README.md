@@ -1,6 +1,6 @@
-<img src="docs/images/logo.svg" alt="" width="72" height="72" align="left" style="image-rendering: pixelated; margin-right: 16px">
+<img src="docs/images/logo.svg" alt="" width="72" height="72" align="left" style="margin-right: 16px">
 
-# BookTranslate Finder
+# Golden Library
 
 _Find your next magnum opus._
 
@@ -18,7 +18,8 @@ The project is designed for self-hosting: deploy your own copy on your own serve
 ## Legal policy
 
 This is not a footnote but an architectural invariant, enforced in the domain code and covered by
-tests (details — [docs/legal-policy.md](docs/legal-policy.md)):
+tests (details — [docs/legal-policy.md](docs/legal-policy.md)). It governs **what this instance
+does** — what it fetches, stores and serves:
 
 - **No scraping and no links to shadow libraries** (Library Genesis, Anna's
   Archive, Z-Library, and the like) — neither as a data source nor as a link source.
@@ -36,6 +37,29 @@ Purchase links point to bookstores' own ISBN lookups and carry **no affiliate ta
 ever changes, I-5 requires disclosing it in the UI.
 
 PRs violating this policy are closed without discussion — see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+### Addons
+
+Golden Library also runs addons, which the rules above deliberately do not cover. An addon is
+installed by pasting a URL you found yourself; it either runs inside a sandbox in your browser or is
+an HTTP service your browser talks to directly. Either way its results never pass through the server
+you are using, are never stored by it, and are never inspected by it — the same arrangement Stremio
+and Tachiyomi use, and for the same reason.
+
+What follows from that, stated plainly rather than in a settings screen nobody reads:
+
+- **This project ships no addons and publishes no list of them.** There is no directory, no
+  "recommended" set, and no search. What you install is your choice and your responsibility.
+- **An addon's results are labelled with the addon that produced them.** The instance is not
+  vouching for them; it does not know what they are.
+- **An HTTP addon sees your IP address and your queries**, because your browser talks to it
+  directly. A sandboxed local addon does not, but the browser's own CORS rules limit what it can
+  read.
+- **No part of this is a proxy.** There is no route that fetches a URL on your behalf.
+
+The design, including why a token content filter over this path would have been worse than none, is
+in [ADR-0009](docs/adr/0009-blind-core-link-policy-scope.md) and
+[ADR-0010](docs/adr/0010-addon-engine.md).
 
 ## Self-hosting
 

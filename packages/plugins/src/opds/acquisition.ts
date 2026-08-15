@@ -48,7 +48,9 @@ export function classifyAcquisitionRel(rel: string): AcquisitionKind | null {
 
 /** `rel` may hold several space-separated relations (Atom allows it); any acquisition one wins. */
 export function classifyAcquisitionRels(rels: readonly string[]): AcquisitionKind | null {
-  const kinds = rels.map(classifyAcquisitionRel).filter((kind): kind is AcquisitionKind => kind !== null);
+  const kinds = rels
+    .map(classifyAcquisitionRel)
+    .filter((kind): kind is AcquisitionKind => kind !== null);
   if (kinds.length === 0) return null;
   // A more specific rel beats the bare `acquisition` one when a feed sends both.
   return kinds.find((kind) => kind !== 'unspecified') ?? 'unspecified';

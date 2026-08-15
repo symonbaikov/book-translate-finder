@@ -6,6 +6,23 @@ invariants**, not as wishes in a README.
 
 Priority: if these rules conflict with any product or technical task, these rules win.
 
+## 0. What these rules cover
+
+Everything below governs **what this instance does**: what its adapters fetch, what its workers
+write to Postgres, and what `/api` serves. That is the whole of it, and the boundary is deliberate.
+
+It does not govern what a reader-installed addon returns in the reader's own browser. An addon is
+chosen by the reader, installed by pasting a URL they found themselves, and either executes on their
+device or is an HTTP service their browser talks to directly; its results never pass through this
+instance and are never written down by it. The reasoning, including why a token gate over that path
+would have been worse than none, is in
+[ADR-0009](adr/0009-blind-core-link-policy-scope.md); the engine itself is
+[ADR-0010](adr/0010-addon-engine.md).
+
+The project ships no addon that provides copyrighted material, hosts no index of addons, and links
+to none. That, plus everything in §1 continuing to hold for the instance's own pipeline, is what
+keeps the repository legal to publish.
+
 ---
 
 ## 1. Invariants
@@ -31,8 +48,10 @@ Purchase from a retailer/publisher (`buy`) or legal library lending
 (`borrow`: Libby/OverDrive, Open Library Lending). Never a direct link to a file.
 
 **I-3. No scraping and no shadow libraries.**
-Library Genesis, Anna's Archive, Z-Library and the like are not used as a data source, as a
-link source, or as a mirror. Parsing website HTML instead of using their official APIs is forbidden.
+Library Genesis, Anna's Archive, Z-Library and the like are not used by this instance as a data
+source, as a link source, or as a mirror. Parsing website HTML instead of using their official APIs
+is forbidden. Per §0 this binds the instance's own pipeline; a reader's addon is outside it, and the
+engine does not inspect what an addon returns.
 
 **I-4. The legal status of every link is explicitly visible to the user.**
 In the UI and in the API response, every link is labeled as "public domain" / "purchase" /
@@ -90,12 +109,13 @@ Key properties of the implementation (implemented and covered by tests in Phase 
 
 ### 2.2 Checks in the pipeline
 
-| Place          | Check                                                                      |
-| -------------- | -------------------------------------------------------------------------- |
-| Source adapter | Link candidates pass `assertLinkAllowed` before being written to the DB    |
-| DB             | `CHECK` constraint: `type='download' AND is_legal_free=false` is forbidden |
-| API response   | The `contracts` schema requires `rightsStatus` on every link               |
-| CI             | Policy tests + ban on adding hosts to the allowlist without an ADR         |
+| Place                  | Check                                                                      |
+| ---------------------- | -------------------------------------------------------------------------- |
+| Source adapter         | Link candidates pass `assertLinkAllowed` before being written to the DB    |
+| DB                     | `CHECK` constraint: `type='download' AND is_legal_free=false` is forbidden |
+| API response           | The `contracts` schema requires `rightsStatus` on every link               |
+| CI                     | Policy tests + ban on adding hosts to the allowlist without an ADR         |
+| Reader-installed addon | **none, deliberately** — see §0 and §2.4                                   |
 
 ### 2.3 Mandatory tests
 
@@ -107,6 +127,32 @@ Key properties of the implementation (implemented and covered by tests in Phase 
 - Snapshot test on the contents of `DOWNLOAD_ALLOWLIST` and `DENYLIST_HOSTS`: changing the list
   breaks the test and requires a deliberate update together with an ADR.
 
+On the addon side the tests assert the opposite, and just as deliberately: a source pointing at any
+host at all is accepted, one using a `javascript:` / `data:` / `blob:` / `file:` scheme is not, and a
+`rightsStatus` an addon tries to send is dropped rather than believed
+(`packages/addons/src/resources.test.ts`).
+
+### 2.4 The addon path, and why it has no check
+
+An `AddonSource` (`packages/addons`) is not a `SourceLink` and cannot become one: `SourceLink`'s
+constructor is private and reachable only through the policy, and no conversion exists in either
+direction. The two types meet for the first time in the React tree, in separately labelled sections.
+
+That separation is the enforcement. It is held by the `dependency-cruiser` rules `addons-is-a-leaf`
+and `addons-never-on-the-server` rather than by review, so an addon result cannot reach the database,
+the API contract, or the policy that guards them.
+
+`AddonSource` carries no `rightsStatus` field. Adding one would be an invention: the addon knows
+what it is offering and this project does not, and §3's "absence of data is not permission" is a rule
+about what _we_ may publish, not a licence to publish a guess on someone else's behalf. What the
+interface owes the reader instead is attribution — every addon result names the addon that produced
+it, and an unlabelled one is a bug.
+
+The one check that stayed is about the browser, not the host: an addon's URLs must be `http` or
+`https`, because `javascript:`, `data:` and `blob:` execute in this origin and `file:` reads the
+reader's disk. That is an injection defence and it is not a content rule — `https://any-host-at-all`
+passes (`packages/addons/src/url.ts`).
+
 ---
 
 ## 3. Determining rights status
@@ -116,7 +162,13 @@ Key properties of the implementation (implemented and covered by tests in Phase 
 Assignment rules:
 
 1. The edition is found in Project Gutenberg / Standard Ebooks / Wikisource → `public_domain`.
-2. Internet Archive reports an open-access label (not lending) → `public_domain`.
+2. Internet Archive reports an open-access label (not lending) → `public_domain`, **unless the work
+   was first published within the last 95 years**, in which case the claim is refused and no
+   download link is created ([ADR-0011](adr/0011-access-label-is-not-a-rights-statement.md)).
+   Rule 1's sources state this about the _work_ — their entire corpus is public domain by charter.
+   Internet Archive is a general-purpose host, and "full access" describes _access_, not _rights_:
+   it once labelled a 2007 translation of a 1997 novel that way, and the card offered it as a free
+   public domain download.
 3. The source reports an open license (CC BY, CC0, etc.) → `open_license`.
 4. No explicit signals → `unknown`.
 
@@ -129,13 +181,39 @@ domain status on its own from the author's year of death — it relies on the st
 an allowlisted source. Rolling our own term-of-protection calculation without legal counsel is
 forbidden.
 
+Rule 2's 95-year window is not such a calculation and does not become one: it can only ever
+_withhold_ `public_domain`, never grant it, and 95 years is a floor on how credible a general-
+purpose host's label is, not a claim about any particular book. Nothing previously refused becomes
+allowed by it.
+
+An instance that stored links before this rule existed keeps them: the check runs when a link is
+created, so a stale row survives until the edition is re-synced. Operators upgrading across
+[ADR-0011](adr/0011-access-label-is-not-a-rights-statement.md) should clear the affected rows:
+
+```sql
+delete from source_link l using edition e, work w
+where e.id = l.edition_id and w.id = e.work_id
+  and l.provider = 'internet-archive' and l.rights_status = 'public_domain'
+  and w.first_published_year > extract(year from now()) - 95;
+```
+
+**Then flush the cache**, or the deleted link keeps being served until its TTL runs out — the
+edition list is cached by work, and Postgres is not its only copy:
+
+```sh
+docker compose exec -T redis sh -c "redis-cli --scan --pattern 'v4:work:*' | xargs -r redis-cli del"
+```
+
+A rights fix that stops at the database is not a fix. Anything that removes a link for legal
+reasons has to invalidate every layer that remembered it.
+
 ---
 
 ## 4. Rules for using sources
 
 - Work only with official APIs and official dumps, within their ToS.
 - Respect declared rate limits; on `429` — exponential backoff, not limit evasion.
-- Identify ourselves: `User-Agent: BookTranslateFinder/<version> (<contact-url>)`.
+- Identify ourselves: `User-Agent: GoldenLibrary/<version> (<contact-url>)`.
 - Store and display source attribution wherever the source's license requires it.
 - Do not republish full book texts — the project stores **metadata and links**, not content.
 - Covers: display via the source's URL according to its rules; do not proxy or store copies
@@ -147,7 +225,15 @@ forbidden.
 
 - Extending `DOWNLOAD_ALLOWLIST`, changing `DENYLIST_HOSTS` or the rules of §3 — only via an ADR
   with justification, and only in a separate PR, not mixed with feature work.
-- A PR adding an integration with a shadow library is closed without discussion; the rule is
-  duplicated in `CONTRIBUTING.md` (Phase 3).
+- A PR adding an integration with a shadow library **to this instance's own pipeline** is closed
+  without discussion; the rule is duplicated in `CONTRIBUTING.md` (Phase 3).
+- Two changes to the addon engine also require an ADR, in opposite directions and for the same
+  reason — the boundary in §0 only means something if it stays where it is. Adding a content gate
+  over addon results reintroduces the editorial role this project declined; shipping an addon
+  index, directory or "recommended addons" list creates one. Neither is a feature decision.
+- Any API route that accepts a URL to fetch is refused outright. The OPDS relay takes a feed **id**
+  and will not be generalised ([ADR-0007](adr/0007-plugin-architecture.md) §3): a route that fetches
+  what it is told is an open proxy, and it would also hand this instance the traffic §0 exists to
+  keep away from it.
 - A link found in production that violates I-1/I-2/I-3 is an incident: the link is disabled
   immediately, then a test is added that makes recurrence impossible.

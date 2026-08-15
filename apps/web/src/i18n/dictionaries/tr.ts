@@ -10,7 +10,7 @@ export const tr: Dictionary = {
     'Yalnızca yasal kaynaklar: doğrudan indirme sadece kamu malı ve açık lisanslı eserler için; telif hakkıyla korunan kitaplar — satın alma veya kütüphaneden ödünç alma. Her bağlantı hukuki durumunu açıkça belirtir.',
   'footer.openSource': 'Açık kaynak',
   'footer.openSourceRest': '— MIT lisansı, kendi sunucunuzda çalıştırabilirsiniz. Kod GitHub’da.',
-  'home.title': 'BookTranslate Finder',
+  'home.title': 'Golden Library',
   'home.subtitle': 'Açık bir kitap çevirisi toplayıcısı: diller, baskılar ve yasal kaynaklar.',
   'home.searchLabel': 'Başlık ve yazar',
   'home.searchPlaceholder': 'Savaş ve Barış Tolstoy',
@@ -30,11 +30,39 @@ export const tr: Dictionary = {
   'featured.filling':
     'Bunlardan birkaçı hâlâ arka planda getiriliyor. Bir dakika sonra sayfayı yenileyin.',
   'featured.freeCopy': 'Ücretsiz nüsha',
+
+  // --- Free books ---------------------------------------------------------
+  'free.homeHeading': 'Şimdi ücretsiz okuyun',
+  'free.homeBlurb': 'Bu kopyanın doğrudan verebildiği kamu malı ve açık lisanslı kitaplar.',
+  'free.seeAll': 'Daha fazlasını gör',
+  'free.downloadable': 'İndir',
+  'free.pageTitle': 'Ücretsiz kitaplar',
+  'free.pageBlurb':
+    'Buradaki her kitabın en az bir yasal ücretsiz nüshası var: kamu malı ya da hak sahibinin izniyle. Satın alma yok, kütüphane kartı yok.',
+  'free.empty':
+    'Burada henüz ücretsiz bir şey yok. Ücretsiz nüshalar bu kopya kitapları getirdikçe belirir — bir kitap arayın ve sonra tekrar bakın.',
+  'free.emptyForLanguage':
+    'Henüz {language} dilinde ücretsiz nüsha yok. Tüm rafı görmek için yukarıdaki filtreyi kaldırın.',
+  'free.showMore': 'Daha fazla göster',
+  'free.shown': '{total} kitaptan {shown} tanesi gösteriliyor.',
+  'free.allLanguages': 'Tüm dillerdeki ücretsiz nüshalar.',
+  'free.filteredByLanguage': 'Yalnızca {language} dilindeki ücretsiz nüshalar.',
+  'free.filterByLanguage': 'Yalnızca {language} dilindeki ücretsiz nüshaları göster.',
+  'free.dropLanguageFilter': 'tüm dilleri göster',
+  'free.loadFailed': 'Ücretsiz kitaplar şu anda yüklenemedi.',
   'work.original': 'özgün dil',
   'work.dataSources': 'Veri kaynakları',
   'work.about': 'Bu kitap hakkında',
   'work.translatedInto': 'Çevrildiği diller',
+  'work.availableIn': 'Mevcut diller',
+  'work.languagesNote':
+    'Yalnızca kaynaklarımızın listelediği diller — burada olmayan bir çeviri yine de var olabilir.',
   'work.noTranslations': 'Henüz çeviri bulunamadı.',
+  'work.yourLanguage.title': 'Sizin dilinizde',
+  'work.yourLanguage.yes': '{language} çevirisi var.',
+  'work.yourLanguage.original': 'Bu kitap {language} yazılmış.',
+  'work.yourLanguage.no': 'Bilinen baskılar arasında {language} çeviri yok.',
+  'work.yourLanguage.show': '{language} baskıları göster',
   'work.editions': 'Baskılar ({total} içinden {shown})',
   'work.filterLanguage': 'Dil',
   'work.filterAllLanguages': 'Tüm diller',
@@ -42,6 +70,10 @@ export const tr: Dictionary = {
   'work.filterApply': 'Filtrele',
   'work.filterReset': 'Sıfırla',
   'work.noEditionsMatch': 'Bu filtrelere uyan baskı yok.',
+  'work.showMoreEditions': 'Daha fazla baskı göster ({remaining} kaldı)',
+  'work.badgeFreeDownload': 'ücretsiz indirme',
+  'work.freeDownloadFormat': '{format} indir',
+  'work.freeDownloadNote': '{rights}. {provider} üzerinden ücretsiz — hesap yok, ödeme yok.',
   'work.badgeReadBorrow': 'oku veya ödünç al',
   'work.badgeInBookstores': 'kitapçılarda',
   'work.translatedBy': 'çeviren: {name}',
@@ -54,6 +86,7 @@ export const tr: Dictionary = {
   'links.hide': 'Bağlantıları gizle',
   'links.loading': 'Bağlantılar yükleniyor',
   'links.none': 'Bu baskı için henüz yasal bağlantı yok.',
+  'links.viaOtherEdition': '{label} baskısından ücretsiz kopya',
   'links.failed': 'Bağlantılar yüklenemedi.',
   'links.storesHeading': 'Kitapçıda bul',
   'links.storesInCountry': '{country} içinde',
@@ -74,6 +107,8 @@ export const tr: Dictionary = {
   'compare.heading': 'Baskıları karşılaştır',
   'compare.blurb': 'Gerçekten neyin farklı olduğunu görmek için iki ya da üç baskı seçin.',
   'compare.selected': '{count} seçildi, en az 2 gerekiyor.',
+  'compare.editSelection': 'Baskıları değiştir',
+  'compare.showAllEditions': 'Tüm {count} baskıyı göster',
   'compare.columnDifference': 'Fark',
   'compare.identical': 'Kaynakların kaydettiği her şeyde bu baskılar aynı.',
   'compare.rowLanguage': 'Dil',
@@ -126,6 +161,9 @@ export const tr: Dictionary = {
   'search.notFoundHint': 'Bir şey bulunamadı. Başlığı veya yazarı netleştirmeyi deneyin.',
   'search.timedOut':
     'Kaynaklar yavaş yanıt veriyor ve henüz veri yok. Arka plandaki eşitleme bitmiş olabilir — tekrar deneyin.',
+  'search.freeOnlyToggle': 'Ücretsiz indirilebilir',
+  'search.noFreeResults':
+    'Bunların hiçbirinde henüz ücretsiz indirme yok — filtreyi kapatmayı deneyin.',
   'home.tagline': 'Sıradaki başyapıtınızı bulun',
   'subject.allLanguages': 'Tüm diller.',
   'subject.filteredByLanguage': 'Yalnızca {language} baskısı olan kitaplar.',
@@ -195,4 +233,143 @@ export const tr: Dictionary = {
   'prices.format.unknown': 'Biçim belirtilmemiş',
   'recommend.hideGenre': '“{genre}” türünü gizle',
   'recommend.hiddenList': 'Gizlenen türler (geri getirmek için tıklayın):',
+
+  // --- Ayar bildirimleri ---
+  'settings.status.saved': 'Kaydedildi',
+  'settings.status.cleared': 'Temizlendi',
+  'settings.status.unstored': 'Kaydedilmedi',
+  'settings.status.failed': 'Değişmedi',
+  'settings.notStored':
+    'Bu tarayıcı değişikliği kaydetmeyi reddetti; bu yüzden hiçbir şey olmadı, önceki değer geçerli.',
+  'settings.language.title': 'Arayüz dili',
+  'settings.language.changed':
+    '{from} dilinden {to} diline değiştirildi. Arayüz {to} dilinde yeniden yükleniyor; kitap adları ve yazar adları kendi dillerinde kalır.',
+  'settings.country.title': 'Alışveriş ülkesi',
+  'settings.country.changed':
+    '{country} olarak ayarlandı. Kitapçı bağlantıları artık dünya geneline ek olarak oraya teslimat yapan mağazaları da gösteriyor.',
+  'settings.country.cleared':
+    'Ülke seçilmedi. Yalnızca dünya geneline gönderim yapan kitapçılar önerilecek.',
+  'settings.bookLanguage.title': 'Kitap dili',
+  'settings.bookLanguage.changed':
+    '{language} olarak ayarlandı. Tür sayfaları, filtreyi temizleyene kadar önce {language} baskısı olan kitapları gösterecek.',
+  'settings.bookLanguage.cleared':
+    'Temizlendi. Tür sayfaları yine her dildeki kitapları gösteriyor.',
+  'settings.hiddenGenres.title': 'Gizlenen türler',
+  'settings.hiddenGenres.hidden':
+    '“{genre}” gizlendi. Öneriler alınırken artık sunucuya gönderilmiyor; toplam {count} tür gizli.',
+  'settings.hiddenGenres.restored': '“{genre}” önerilerinize geri döndü. {count} tür hâlâ gizli.',
+  'settings.history.title': 'Okuma geçmişi',
+  'settings.history.cleared':
+    'Açtığınız kitaplar bu tarayıcıdan silindi. Yeni bir kitap açana kadar öneri görünmeyecek.',
+  'settings.bookmarks.title': 'Kaydedilen kitaplar',
+  'settings.bookmarks.added': '“{title}” kaydedilen kitaplarınıza eklendi.',
+  'settings.bookmarks.removed': '“{title}” kaydedilen kitaplarınızdan çıkarıldı.',
+  'settings.bookmarks.failed':
+    'Sunucu değişikliği kabul etmedi; kaydedilen kitaplarınız olduğu gibi kaldı.',
+  'settings.catalogs.title': 'Kataloglarınız',
+  'settings.catalogs.added':
+    '“{name}”, {url} adresiyle eklendi. Adresi bu tarayıcıda kalır ve hiçbir zaman bu siteye gönderilmez.',
+  'settings.catalogs.addedWithCredentials':
+    '“{name}”, girdiğiniz kullanıcı adı ve parolayla birlikte {url} adresiyle eklendi. Hepsi bu tarayıcıda kalır ve hiçbiri bu siteye gönderilmez.',
+  'settings.catalogs.removed':
+    '“{name}” bu tarayıcıdan, onun için saklanan kimlik bilgileriyle birlikte kaldırıldı.',
+  'settings.catalogs.rejected': 'Hiçbir şey eklenmedi: {reason}',
+  // --- Addons ---------------------------------------------------------------
+  'nav.addons': 'Eklentiler',
+  'addons.title': 'Eklentiler',
+  'addons.intro':
+    'Bir eklenti kendi kaynaklarını getirir. Adresini yapıştırarak kurarsınız; ya kendi cihazınızda, bir kum havuzunda, ya da yazarının sunucusunda çalışır. Golden Library hiçbirini dağıtmaz, listesini tutmaz ve ne döndürdüklerini denetlemez.',
+  'addons.addressLabel': 'Eklenti adresi',
+  'addons.addressHint': 'Eklentinin yazarının verdiği manifest adresi.',
+  'addons.continue': 'Devam',
+  'addons.fromServer': 'Bir sunucudan',
+  'addons.fromFile': 'Bir dosyadan, kendi cihazınızda',
+  'addons.bundleLabel': 'Eklenti kodunun adresi',
+  'addons.bundleHint': 'Eklenti kodunun adresi. Sunucuda değil, bu cihazda çalışacak.',
+  'addons.integrityLabel': 'Bütünlük özeti',
+  'addons.integrityHint':
+    'Eklentinin yazarı verir, sha256-… biçiminde. Zorunlu: onsuz, bir kez onayladığınız kod sonradan değişebilir ve bunu hiç fark etmezsiniz.',
+  'addons.checking': 'Eklenti okunuyor…',
+  'addons.installedHeading': 'Kurulu',
+  'addons.none': 'Henüz eklenti yok. Burada gördüğünüz her şey örneğin kendisinden geliyor.',
+  'addons.priorityHint': 'Sıra önceliktir: ilk eklenti ilk yanıt verir.',
+  'addons.enable': 'Aç',
+  'addons.disable': 'Kapat',
+  'addons.off': 'Kapalı',
+  'addons.remove': 'Kaldır',
+  'addons.moveUp': 'Yukarı',
+  'addons.moveDown': 'Aşağı',
+  'addons.configure': 'Ayarla',
+  'addons.failedToStart': '“{name}” başlamadı: {reason}',
+  'addons.consentTitle': '“{name}” kurulsun mu?',
+  'addons.consentHosts': 'Şunlara bağlanacak: {hosts}',
+  'addons.consentNoHosts': 'Hiçbir yere bağlanma izni istemedi.',
+  'addons.consentSeesYou':
+    'Bu eklenti yazarının sunucusunda çalışıyor. Yazar adresinizi ve onun üzerinden aradığınız her şeyi görecek.',
+  'addons.consentSandboxed':
+    'Bu eklenti cihazınızda, bir kum havuzunda çalışıyor. Çerezlerinizi, bu sitenin verilerini ya da açık olan başka hiçbir şeyi okuyamaz.',
+  'addons.consentNotVetted':
+    'Golden Library bir eklentinin ne döndürdüğünü denetlemez ve bunu önermedi. Ne kuracağınız sizin kararınız.',
+  'addons.install': 'Kur',
+  'addons.cancel': 'Vazgeç',
+  'addons.via': '{name} aracılığıyla',
+  'addons.sourcesTitle': 'Eklentilerinizden',
+  'addons.searchTitle': 'Eklentilerinizin bulduğu',
+  'addons.showLinks': 'İndirme bağlantılarını göster',
+  'addons.unreadable': 'Bu eklentiden {count} kayıt okunamadı.',
+  'addons.browse': 'Kataloğa göz at',
+  'addons.browseTitle': '“{name}” kataloğu',
+  'addons.browseNoCatalog': 'Bu eklenti göz atılabilecek bir katalog sunmuyor.',
+  'addons.browseEmpty': 'Bu eklentinin kataloğu şu anda boş.',
+  'addons.browseFailed': '“{name}” kataloğu yüklenemedi: {reason}',
+  'addons.loadMore': 'Daha fazla yükle',
+  'addons.notInstalled': 'Bu eklenti kurulu değil.',
+
+  'settings.addons.title': 'Eklentileriniz',
+  'settings.addons.installed':
+    '“{name}” kuruldu. Diğerleriyle birlikte sorgulanacak ve {hosts} adresine bağlanabilir.',
+  'settings.addons.removed':
+    '“{name}” kaldırıldı. Sonuçları bu tarayıcıdan silindi, burada sakladığı her şey de.',
+  'settings.addons.enabled': '“{name}” yeniden açık ve diğerleriyle birlikte sorgulanacak.',
+  'settings.addons.disabled':
+    '“{name}” kapalı. Ayarlarıyla birlikte kurulu kalır ama döndürdüğü hiçbir şey gösterilmez.',
+  'settings.addons.reordered': '“{name}” artık {total} içinde {position}. sırada yanıt veriyor.',
+  'settings.addons.rejected': 'Hiçbir şey kurulmadı: {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': 'Özel kaynaklar',
+  'customSources.title': 'Özel kaynaklar',
+  'customSources.intro':
+    'Kendi mağazanızı veya kataloğunuzu, ona bir ad ve {isbn}, {query}, {title}, {author} veya {language} içeren bir arama URL’si vererek ekleyin. Bağlantı bu cihazda oluşturulur ve bu site onu asla getirmez.',
+  'customSources.nameLabel': 'Ad',
+  'customSources.templateLabel': 'URL şablonu',
+  'customSources.templateHint':
+    'Mutlak bir https:// adresi. {isbn}, {query}, {title}, {author} ve {language} baskı bilgilerinden doldurulur; bir yer tutucu boş kalırsa o baskı için bağlantı atlanır.',
+  'customSources.add': 'Kaynak ekle',
+  'customSources.listHeading': 'Kaynaklarınız',
+  'customSources.none': 'Henüz özel kaynak yok.',
+  'customSources.off': 'Kapalı',
+  'customSources.enable': 'Aç',
+  'customSources.disable': 'Kapat',
+  'customSources.remove': 'Kaldır',
+  'customSources.heading': 'Kaynaklarınız',
+  'customSources.caption':
+    'Kendinizin yapılandırdığı bağlantılar. Bu örnek nereye gittiklerini denetlemez.',
+
+  'settings.customSources.title': 'Özel kaynaklarınız',
+  'settings.customSources.added': '“{name}” eklendi ve diğerleriyle birlikte sunulacak.',
+  'settings.customSources.removed': '“{name}” bu tarayıcıdan kaldırıldı.',
+  'settings.customSources.enabled': '“{name}” tekrar açık.',
+  'settings.customSources.disabled':
+    '“{name}” kapalı. Yapılandırması kalır, ancak bağlantısı gösterilmeyecek.',
+  'settings.customSources.rejected': 'Hiçbir şey eklenmedi: {reason}',
+
+  // --- Books in the reader's own language, and localized descriptions -------
+  'featured.inLanguageHeading': 'Kendi dilinizdeki kitaplar',
+  'featured.inLanguageBlurb':
+    'Bu siteyi okuduğunuz dilde yazılmış kitaplar; önce en çok basılanlar — bu, Open Library’nin kendi sıralaması, bir çok satanlar listesi değil.',
+  'work.newSearch': 'Yeni arama',
+  'work.descriptionFrom': 'Açıklama:',
+  'work.descriptionNotLocalized':
+    'Bu açıklama, kaynağın yazdığı dilde — bu kitap için kendi dilinizde henüz bir açıklama yok.',
 };

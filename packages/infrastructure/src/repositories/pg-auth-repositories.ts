@@ -7,7 +7,7 @@ import {
   type BookmarkRepository,
   type SessionRepository,
   type UserRepository,
-} from '@btf/domain';
+} from '@golden/domain';
 import type { Db } from '../db/client.js';
 import { appUser, bookmark, session } from '../db/schema.js';
 import { resolveDb } from '../db/transaction-context.js';

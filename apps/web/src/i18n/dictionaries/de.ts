@@ -12,7 +12,7 @@ export const de: Dictionary = {
   'footer.openSource': 'Open Source',
   'footer.openSourceRest': '— MIT-Lizenz, selbst hostbar. Quellcode auf GitHub.',
 
-  'home.title': 'BookTranslate Finder',
+  'home.title': 'Golden Library',
   'home.subtitle':
     'Ein offener Aggregator für Buchübersetzungen: Sprachen, Ausgaben und legale Quellen.',
   'home.searchLabel': 'Titel und Autor',
@@ -37,11 +37,39 @@ export const de: Dictionary = {
     'Einige davon werden noch im Hintergrund geholt. Laden Sie die Seite in einer Minute neu.',
   'featured.freeCopy': 'Kostenlos verfügbar',
 
+  // --- Free books ---------------------------------------------------------
+  'free.homeHeading': 'Jetzt kostenlos lesen',
+  'free.homeBlurb': 'Gemeinfreie und frei lizenzierte Bücher, die diese Instanz direkt herausgibt.',
+  'free.seeAll': 'Mehr ansehen',
+  'free.downloadable': 'Herunterladen',
+  'free.pageTitle': 'Kostenlose Bücher',
+  'free.pageBlurb':
+    'Jedes Buch hier hat mindestens eine legale kostenlose Ausgabe – gemeinfrei oder vom Rechteinhaber freigegeben. Kein Kauf, kein Bibliotheksausweis.',
+  'free.empty':
+    'Hier ist noch nichts kostenlos verfügbar. Kostenlose Ausgaben erscheinen, sobald diese Instanz Bücher holt – suchen Sie ein Buch und schauen Sie wieder vorbei.',
+  'free.emptyForLanguage':
+    'Noch keine kostenlosen Ausgaben auf {language}. Entfernen Sie den Filter oben, um das ganze Regal zu sehen.',
+  'free.showMore': 'Mehr anzeigen',
+  'free.shown': '{shown} von {total} werden angezeigt.',
+  'free.allLanguages': 'Kostenlose Ausgaben in allen Sprachen.',
+  'free.filteredByLanguage': 'Nur kostenlose Ausgaben auf {language}.',
+  'free.filterByLanguage': 'Nur kostenlose Ausgaben auf {language} zeigen.',
+  'free.dropLanguageFilter': 'alle Sprachen anzeigen',
+  'free.loadFailed': 'Die kostenlosen Bücher konnten gerade nicht geladen werden.',
+
   'work.original': 'Original',
   'work.dataSources': 'Datenquellen',
   'work.about': 'Über dieses Buch',
   'work.translatedInto': 'Übersetzt in',
+  'work.availableIn': 'Verfügbar auf',
+  'work.languagesNote':
+    'Nur was unsere Quellen führen — eine hier fehlende Übersetzung kann trotzdem existieren.',
   'work.noTranslations': 'Noch keine Übersetzungen gefunden.',
+  'work.yourLanguage.title': 'In Ihrer Sprache',
+  'work.yourLanguage.yes': 'Eine Übersetzung ist vorhanden: {language}.',
+  'work.yourLanguage.original': 'Originalsprache: {language}.',
+  'work.yourLanguage.no': 'Unter den bekannten Ausgaben gibt es keine Übersetzung: {language}.',
+  'work.yourLanguage.show': 'Ausgaben anzeigen: {language}',
   'work.editions': 'Ausgaben ({shown} von {total})',
   'work.filterLanguage': 'Sprache',
   'work.filterAllLanguages': 'Alle Sprachen',
@@ -49,6 +77,10 @@ export const de: Dictionary = {
   'work.filterApply': 'Filtern',
   'work.filterReset': 'Zurücksetzen',
   'work.noEditionsMatch': 'Keine Ausgabe passt zu diesen Filtern.',
+  'work.showMoreEditions': 'Weitere Ausgaben anzeigen (noch {remaining})',
+  'work.badgeFreeDownload': 'kostenloser Download',
+  'work.freeDownloadFormat': '{format} herunterladen',
+  'work.freeDownloadNote': '{rights}. Kostenlos von {provider} — ohne Konto, ohne Bezahlung.',
   'work.badgeReadBorrow': 'lesen oder ausleihen',
   'work.badgeInBookstores': 'im Buchhandel',
   'work.translatedBy': 'übersetzt von {name}',
@@ -63,6 +95,7 @@ export const de: Dictionary = {
   'links.hide': 'Links ausblenden',
   'links.loading': 'Links werden geladen',
   'links.none': 'Für diese Ausgabe gibt es noch keine legalen Links.',
+  'links.viaOtherEdition': 'kostenloses Exemplar aus der Ausgabe {label}',
   'links.failed': 'Links konnten nicht geladen werden.',
   'links.storesHeading': 'Im Buchhandel finden',
   'links.storesInCountry': 'In {country}',
@@ -86,6 +119,8 @@ export const de: Dictionary = {
   'compare.blurb':
     'Wählen Sie zwei oder drei Ausgaben, um zu sehen, worin sie sich tatsächlich unterscheiden.',
   'compare.selected': '{count} ausgewählt, mindestens 2 nötig.',
+  'compare.editSelection': 'Ausgaben ändern',
+  'compare.showAllEditions': 'Alle {count} Ausgaben anzeigen',
   'compare.columnDifference': 'Unterschied',
   'compare.identical': 'In allem, was die Quellen erfassen, sind diese Ausgaben identisch.',
   'compare.rowLanguage': 'Sprache',
@@ -141,6 +176,9 @@ export const de: Dictionary = {
   'search.notFoundHint': 'Nichts gefunden. Versuchen Sie es mit einem genaueren Titel oder Autor.',
   'search.timedOut':
     'Die Quellen antworten langsam und wir haben noch keine Daten. Die Hintergrundsynchronisierung ist womöglich schon fertig — versuchen Sie es erneut.',
+  'search.freeOnlyToggle': 'Kostenlos verfügbar',
+  'search.noFreeResults':
+    'Keiner dieser Titel ist bisher kostenlos verfügbar — versuchen Sie, den Filter zu deaktivieren.',
   'home.tagline': 'Finden Sie Ihr nächstes Opus magnum',
   'subject.allLanguages': 'Alle Sprachen.',
   'subject.filteredByLanguage': 'Nur Bücher mit einer Ausgabe auf {language}.',
@@ -213,4 +251,146 @@ export const de: Dictionary = {
   'prices.format.unknown': 'Format nicht angegeben',
   'recommend.hideGenre': '„{genre}“ ausblenden',
   'recommend.hiddenList': 'Ausgeblendete Genres (zum Zurückholen anklicken):',
+
+  // --- Einstellungs-Popups ---
+  'settings.status.saved': 'Gespeichert',
+  'settings.status.cleared': 'Zurückgesetzt',
+  'settings.status.unstored': 'Nicht gespeichert',
+  'settings.status.failed': 'Unverändert',
+  'settings.notStored':
+    'Dieser Browser hat das Speichern verweigert, also ist nichts passiert — der vorherige Wert gilt weiter.',
+  'settings.language.title': 'Sprache der Oberfläche',
+  'settings.language.changed':
+    'Von {from} auf {to} geändert. Die Oberfläche lädt auf {to} neu; Buchtitel und Autorennamen bleiben in ihrer eigenen Sprache.',
+  'settings.country.title': 'Einkaufsland',
+  'settings.country.changed':
+    'Auf {country} gesetzt. Die Buchhandlungs-Links zeigen jetzt auch Läden, die dorthin liefern, neben den weltweiten.',
+  'settings.country.cleared':
+    'Kein Land gewählt. Es werden nur Buchhandlungen mit weltweitem Versand angeboten.',
+  'settings.bookLanguage.title': 'Buchsprache',
+  'settings.bookLanguage.changed':
+    'Auf {language} gesetzt. Genre-Seiten zeigen zuerst Bücher mit einer Ausgabe auf {language}, bis Sie den Filter zurücksetzen.',
+  'settings.bookLanguage.cleared':
+    'Zurückgesetzt. Genre-Seiten zeigen wieder Bücher in allen Sprachen.',
+  'settings.hiddenGenres.title': 'Ausgeblendete Genres',
+  'settings.hiddenGenres.hidden':
+    '„{genre}“ ist ausgeblendet. Es wird bei Empfehlungen nicht mehr an den Server geschickt; insgesamt sind {count} Genres ausgeblendet.',
+  'settings.hiddenGenres.restored':
+    '„{genre}“ erscheint wieder in Ihren Empfehlungen. {count} Genres bleiben ausgeblendet.',
+  'settings.history.title': 'Leseverlauf',
+  'settings.history.cleared':
+    'Die von Ihnen geöffneten Bücher wurden aus diesem Browser gelöscht. Empfehlungen bleiben aus, bis Sie das nächste Buch öffnen.',
+  'settings.bookmarks.title': 'Gespeicherte Bücher',
+  'settings.bookmarks.added': '„{title}“ wurde zu Ihren gespeicherten Büchern hinzugefügt.',
+  'settings.bookmarks.removed': '„{title}“ wurde aus Ihren gespeicherten Büchern entfernt.',
+  'settings.bookmarks.failed':
+    'Der Server hat die Änderung nicht angenommen, Ihre gespeicherten Bücher sind unverändert.',
+  'settings.catalogs.title': 'Ihre Kataloge',
+  'settings.catalogs.added':
+    '„{name}“ wurde unter {url} hinzugefügt. Die Adresse bleibt in diesem Browser und wird nie an diese Seite gesendet.',
+  'settings.catalogs.addedWithCredentials':
+    '„{name}“ wurde unter {url} hinzugefügt, samt eingegebenem Benutzernamen und Passwort. All das bleibt in diesem Browser und nichts davon wird an diese Seite gesendet.',
+  'settings.catalogs.removed':
+    '„{name}“ wurde aus diesem Browser entfernt, zusammen mit den dafür gespeicherten Zugangsdaten.',
+  'settings.catalogs.rejected': 'Nichts hinzugefügt: {reason}',
+  // --- Addons ---------------------------------------------------------------
+  'nav.addons': 'Add-ons',
+  'addons.title': 'Add-ons',
+  'addons.intro':
+    'Ein Add-on bringt eigene Quellen mit. Sie installieren es, indem Sie seine Adresse einfügen; es läuft entweder in einer Sandbox auf Ihrem Gerät oder auf dem Server seines Autors. Golden Library liefert keine mit, führt keine Liste und prüft nicht, was sie zurückgeben.',
+  'addons.addressLabel': 'Adresse des Add-ons',
+  'addons.addressHint': 'Die Manifest-URL, die Ihnen der Autor des Add-ons genannt hat.',
+  'addons.continue': 'Weiter',
+  'addons.fromServer': 'Von einem Server',
+  'addons.fromFile': 'Aus einer Datei, auf Ihrem Gerät',
+  'addons.bundleLabel': 'Adresse des Add-on-Codes',
+  'addons.bundleHint':
+    'Die URL des Add-on-Codes. Er läuft auf diesem Gerät, nicht auf einem Server.',
+  'addons.integrityLabel': 'Integritäts-Hash',
+  'addons.integrityHint':
+    'Vom Autor des Add-ons angegeben, als sha256-… . Erforderlich: ohne ihn könnte einmal genehmigter Code sich später ändern, ohne dass Sie es merken.',
+  'addons.checking': 'Add-on wird gelesen…',
+  'addons.installedHeading': 'Installiert',
+  'addons.none': 'Noch keine Add-ons. Alles auf dieser Seite stammt bisher von der Instanz selbst.',
+  'addons.priorityHint': 'Die Reihenfolge ist die Priorität: Das erste Add-on antwortet zuerst.',
+  'addons.enable': 'Einschalten',
+  'addons.disable': 'Ausschalten',
+  'addons.off': 'Aus',
+  'addons.remove': 'Entfernen',
+  'addons.moveUp': 'Nach oben',
+  'addons.moveDown': 'Nach unten',
+  'addons.configure': 'Einrichten',
+  'addons.failedToStart': '„{name}“ ist nicht gestartet: {reason}',
+  'addons.consentTitle': '„{name}“ installieren?',
+  'addons.consentHosts': 'Es wird Kontakt aufnehmen zu: {hosts}',
+  'addons.consentNoHosts': 'Es hat um keinen Kontakt gebeten.',
+  'addons.consentSeesYou':
+    'Dieses Add-on läuft auf dem Server seines Autors. Er sieht Ihre Adresse und alles, wonach Sie darüber suchen.',
+  'addons.consentSandboxed':
+    'Dieses Add-on läuft in einer Sandbox auf Ihrem Gerät. Es kann weder Ihre Cookies noch die Daten dieser Seite noch sonst etwas Geöffnetes lesen.',
+  'addons.consentNotVetted':
+    'Golden Library prüft nicht, was ein Add-on zurückgibt, und hat dieses nicht empfohlen. Was Sie installieren, ist Ihre Entscheidung.',
+  'addons.install': 'Installieren',
+  'addons.cancel': 'Abbrechen',
+  'addons.via': 'über {name}',
+  'addons.sourcesTitle': 'Aus Ihren Add-ons',
+  'addons.searchTitle': 'Von Ihren Add-ons gefunden',
+  'addons.showLinks': 'Download-Links anzeigen',
+  'addons.unreadable': '{count} Einträge dieses Add-ons waren nicht lesbar.',
+  'addons.browse': 'Katalog durchsuchen',
+  'addons.browseTitle': 'Katalog von „{name}“',
+  'addons.browseNoCatalog': 'Dieses Add-on bietet keinen durchsuchbaren Katalog.',
+  'addons.browseEmpty': 'Der Katalog dieses Add-ons ist derzeit leer.',
+  'addons.browseFailed': 'Katalog von „{name}“ konnte nicht geladen werden: {reason}',
+  'addons.loadMore': 'Mehr laden',
+  'addons.notInstalled': 'Dieses Add-on ist nicht installiert.',
+
+  'settings.addons.title': 'Ihre Add-ons',
+  'settings.addons.installed':
+    '„{name}“ ist installiert. Es wird neben den anderen gefragt und darf {hosts} kontaktieren.',
+  'settings.addons.removed':
+    '„{name}“ wurde entfernt. Seine Ergebnisse sind aus diesem Browser verschwunden, und alles, was es hier gespeichert hatte, ebenfalls.',
+  'settings.addons.enabled': '„{name}“ ist wieder an und wird mit den anderen gefragt.',
+  'settings.addons.disabled':
+    '„{name}“ ist aus. Es bleibt mitsamt seinen Einstellungen installiert, aber nichts davon wird angezeigt.',
+  'settings.addons.reordered': '„{name}“ antwortet jetzt als {position}. von {total}.',
+  'settings.addons.rejected': 'Es wurde nichts installiert: {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': 'Eigene Quellen',
+  'customSources.title': 'Eigene Quellen',
+  'customSources.intro':
+    'Fügen Sie einen eigenen Shop oder Katalog hinzu, indem Sie ihm einen Namen und eine Such-URL mit {isbn}, {query}, {title}, {author} oder {language} geben. Der Link wird auf diesem Gerät erstellt, diese Seite ruft ihn nie ab.',
+  'customSources.nameLabel': 'Name',
+  'customSources.templateLabel': 'URL-Vorlage',
+  'customSources.templateHint':
+    'Eine absolute https://-Adresse. {isbn}, {query}, {title}, {author} und {language} werden aus der Ausgabe gefüllt; bleibt ein Platzhalter leer, wird der Link für diese Ausgabe übersprungen.',
+  'customSources.add': 'Quelle hinzufügen',
+  'customSources.listHeading': 'Ihre Quellen',
+  'customSources.none': 'Noch keine eigenen Quellen.',
+  'customSources.off': 'Aus',
+  'customSources.enable': 'Einschalten',
+  'customSources.disable': 'Ausschalten',
+  'customSources.remove': 'Entfernen',
+  'customSources.heading': 'Ihre Quellen',
+  'customSources.caption':
+    'Links, die Sie selbst eingerichtet haben. Diese Instanz prüft nicht, wohin sie führen.',
+
+  'settings.customSources.title': 'Ihre eigenen Quellen',
+  'settings.customSources.added':
+    '„{name}“ wurde hinzugefügt und wird neben den anderen angeboten.',
+  'settings.customSources.removed': '„{name}“ wurde aus diesem Browser entfernt.',
+  'settings.customSources.enabled': '„{name}“ ist wieder an.',
+  'settings.customSources.disabled':
+    '„{name}“ ist aus. Es bleibt konfiguriert, aber sein Link wird nicht angezeigt.',
+  'settings.customSources.rejected': 'Es wurde nichts hinzugefügt: {reason}',
+
+  // --- Books in the reader's own language, and localized descriptions -------
+  'featured.inLanguageHeading': 'Bücher in Ihrer Sprache',
+  'featured.inLanguageBlurb':
+    'Bücher, die in der Sprache geschrieben sind, in der Sie diese Seite lesen — die am häufigsten aufgelegten zuerst, so wie Open Library selbst sortiert, keine Bestsellerliste.',
+  'work.newSearch': 'Neue Suche',
+  'work.descriptionFrom': 'Beschreibung:',
+  'work.descriptionNotLocalized':
+    'Diese Beschreibung steht in der Sprache, in der die Quelle sie verfasst hat — in Ihrer Sprache gibt es für dieses Buch noch keine.',
 };

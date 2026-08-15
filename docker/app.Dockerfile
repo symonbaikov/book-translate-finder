@@ -31,8 +31,8 @@ COPY tsconfig.base.json ./
 COPY packages ./packages
 COPY apps/api ./apps/api
 COPY apps/worker ./apps/worker
-RUN pnpm --filter "@btf/${APP_NAME}..." run build
-RUN pnpm --filter "@btf/${APP_NAME}" deploy --prod "/repo/deploy/${APP_NAME}"
+RUN pnpm --filter "@golden/${APP_NAME}..." run build
+RUN pnpm --filter "@golden/${APP_NAME}" deploy --prod "/repo/deploy/${APP_NAME}"
 
 FROM node:20-alpine AS runtime
 ARG APP_NAME

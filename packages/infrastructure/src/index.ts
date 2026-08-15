@@ -21,12 +21,20 @@ export {
   type ResilientFetcher,
   type ResilientFetchOptions,
 } from './http/resilient-fetch.js';
+export { HttpImageFetcher } from './http/http-image-fetcher.js';
 
 export { GoogleBooksProvider } from './providers/google-books-provider.js';
 export { GutenbergProvider } from './providers/gutenberg-provider.js';
 export { AuthorizedFreeProvider } from './providers/authorized-free-provider.js';
 export { LibriVoxProvider } from './providers/librivox-provider.js';
 export { OpenLibraryProvider } from './providers/open-library-provider.js';
+export { WikidataProvider } from './providers/wikidata-provider.js';
+export {
+  createBnfProvider,
+  createDnbProvider,
+  SruCatalogProvider,
+  type SruCatalogConfig,
+} from './providers/sru-catalog-provider.js';
 
 export { Uuid7Generator } from './id/uuid7-generator.js';
 export { SystemClock } from './time/system-clock.js';
@@ -39,6 +47,7 @@ export {
 
 export { PgEditionRepository } from './repositories/pg-edition-repository.js';
 export { PgExternalRefRepository } from './repositories/pg-external-ref-repository.js';
+export { PgFreeBooksAdapter } from './repositories/pg-free-books-adapter.js';
 export { PgIdempotencyStore } from './repositories/pg-idempotency-store.js';
 export { PgSourceLinkRepository } from './repositories/pg-source-link-repository.js';
 export { PgSyncLogRepository } from './repositories/pg-sync-log-repository.js';
@@ -64,3 +73,10 @@ export {
 } from './repositories/pg-auth-repositories.js';
 export { PgSubjectBrowseAdapter } from './repositories/pg-subject-browse-adapter.js';
 export { OpenLibrarySubjectSource } from './providers/open-library-subject-source.js';
+export { WikipediaDescriptionProvider } from './providers/wikipedia-description-provider.js';
+
+// Modules B and C — the geo-store adapter, the shop price providers, and the public OPDS relay.
+export { OverpassGeoStoreAdapter } from './geo/overpass-geo-store.adapter.js';
+export { GoogleBooksPriceProvider } from './pricing/google-books-price.provider.js';
+export { BookstoreCatalogPriceProvider } from './pricing/bookstore-catalog-price.provider.js';
+export { PublicOpdsCatalog } from './opds/public-opds-catalog.service.js';

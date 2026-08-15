@@ -1,0 +1,86 @@
+/* A book cover, at the one aspect ratio the grid is built on.
+ *
+ * `aspect-ratio` rather than fixed pixels: the grid decides the width, the ratio decides the
+ * height, and the space is reserved before the image arrives — which is what keeps a wall of
+ * covers from reflowing as they load. Real covers are not all 2:3, so the image is cropped to fill
+ * rather than letterboxed; a hairline ring keeps a white jacket from bleeding into a light page. */
+
+.frame {
+  position: relative;
+  display: block;
+  inline-size: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--surface-2);
+  box-shadow: var(--cover-ring);
+  transition:
+    transform var(--dur-base) var(--ease-standard),
+    box-shadow var(--dur-base) var(--ease-standard);
+}
+
+.image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* --- The missing cover ----------------------------------------------------
+ * Open Library has no cover for a large share of works, and for ISBN-derived URLs the image may
+ * simply not exist. That case is not an error state and should not look like one: the title, set
+ * in the reading face on a quiet gradient, is a perfectly good cover — it is what a plain
+ * clothbound book looks like. The alternative, a grey box with an emoji, announces a hole in our
+ * data on a page whose subject is books. */
+
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background:
+    linear-gradient(var(--placeholder-angle, 155deg), var(--surface-3), var(--surface-2) 62%),
+    var(--surface-2);
+  block-size: 100%;
+}
+
+.placeholderTitle {
+  font-family: var(--font-display);
+  font-size: var(--step-0);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-snug);
+  color: var(--text);
+  /* Four lines, then an ellipsis: a long title must not push the author out of the frame. */
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.placeholderAuthor {
+  font-size: var(--step--2);
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A rule above the title, the width of the frame's padding — the one ornamental mark in the
+   system, and it earns its place by making a text-only cover read as designed rather than empty. */
+.placeholder::before {
+  content: '';
+  display: block;
+  inline-size: var(--space-6);
+  block-size: 2px;
+  background: var(--accent);
+  opacity: 0.7;
+  margin-block-end: var(--space-1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frame {
+    transition: none;
+  }
+}

@@ -4,6 +4,17 @@ export interface WorkSearchHit {
   author: string;
   firstPublishedYear: number | null;
   coverUrl: string | null;
+  /**
+   * How well this hit actually answers the query, 0–1, when the adapter ranks at all — absent for
+   * the browse and recommendation paths, which filter by tag rather than rank by text.
+   *
+   * Exposed because "we found something" and "we found what they asked for" are different facts,
+   * and only the second one should stop this instance from going out to the sources. Without it a
+   * reader searching «Шантарам» got *The Mountain Shadow* — a different novel by the same author,
+   * scored 0.459 on the author's name alone — and because that counted as a hit, Shantaram itself
+   * was never fetched, on that search or any later one.
+   */
+  rank?: number;
 }
 
 /**

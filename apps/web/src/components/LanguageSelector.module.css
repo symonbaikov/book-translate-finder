@@ -1,0 +1,6 @@
+/* Compact by design: this is set once and then ignored for a year. It sits in a row of 44px
+   targets, so its trigger keeps that height — a control shorter than its neighbours reads as
+   disabled — but it takes only the width its longest language name needs. */
+.selector {
+  max-inline-size: 11rem;
+}

@@ -1,6 +1,6 @@
 import { Controller, Get, HttpCode, HttpStatus, Inject, Query, Res } from '@nestjs/common';
-import { SearchQuerySchema, SearchResponseSchema, type SearchResponse } from '@btf/contracts';
-import type { SearchWorks } from '@btf/application';
+import { SearchQuerySchema, SearchResponseSchema, type SearchResponse } from '@golden/contracts';
+import type { SearchWorks } from '@golden/application';
 import type { FastifyReply } from 'fastify';
 import { parseOrThrow } from '../common/validation/parse-or-throw.js';
 import { TOKENS } from '../common/tokens.js';

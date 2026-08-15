@@ -1,4 +1,4 @@
-# BookTranslate Finder Architecture
+# Golden Library Architecture
 
 This document describes the target architecture of the system. It is normative: code must
 conform to the layer separation and contracts described here. Deviations are recorded as ADRs
@@ -59,11 +59,18 @@ Dependencies point **inward only**. An inner layer knows nothing about an outer 
 `packages/contracts` is a cross-cutting package with Zod schemas of the external API; it is
 imported by `apps/web` and `apps/api`, but **not** by `domain` or `application`.
 
+`packages/plugins` is the other cross-cutting package, and it is a **leaf**: it depends on no other
+workspace package at all. That is what makes it importable by `apps/web` (bundled into the browser)
+and `packages/infrastructure` (Node) at the same time — a necessity, not a convenience, because the
+OPDS client must reach servers on the reader's private network and the bookshop lookup must keep
+their coordinates off this instance entirely ([ADR-0007](adr/0007-plugin-architecture.md)). Both
+constraints are enforced in CI by `pnpm boundaries` (`plugins-is-a-leaf`).
+
 The rule is enforced automatically in CI by `pnpm boundaries` (dependency-cruiser,
 `.dependency-cruiser.mjs`), not by reviewer willpower — it resolves package imports
-(`@btf/infrastructure` etc.) to real files and fails on any violation of the dependency
+(`@golden/infrastructure` etc.) to real files and fails on any violation of the dependency
 direction. `eslint-plugin-boundaries` was tried for this role in stage 1.0, but in the
-pnpm + ESM + TS project references setup it failed to resolve `@btf/*` imports between packages
+pnpm + ESM + TS project references setup it failed to resolve `@golden/*` imports between packages
 and silently let violations through — it was dropped (docs/adr/0001-clean-architecture-monorepo.md).
 
 ### 2.2 domain (`packages/domain`)
@@ -145,8 +152,9 @@ what gets returned outward.
   error handling, OpenAPI.
 - **`apps/worker`** — composition root of the workers: BullMQ queue subscriptions, cron
   schedules, graceful shutdown.
-- **`apps/web`** — Next.js. Talks only to our own API. Knows nothing about data sources and
-  contains no business rules beyond presentation.
+- **`apps/web`** — Next.js. Talks to our own API, plus `packages/plugins` for the two modules that
+  must execute on the reader's device (their own OPDS catalogs, the bookshop lookup). Knows nothing
+  about data sources and contains no business rules beyond presentation.
 
 ---
 
@@ -208,7 +216,24 @@ exported to OpenAPI.
 | `GET /api/works/:id`                          | Card: translation languages, edition summary  | Redis, TTL 1 h    |
 | `GET /api/works/:id/editions?language=&year=` | Editions with filters                         | Redis, TTL 1 h    |
 | `GET /api/editions/:id/links`                 | Links: download / buy / borrow from a library | Redis, TTL 6 h    |
+| `GET /api/editions/:id/prices?country=`       | Prices and shops, grouped by format           | Redis, TTL 15 min |
+| `GET /api/opds/feeds`                         | The OPDS catalogs shipped with the app        | —                 |
+| `GET /api/opds/feeds/:id?href=`               | One page of a shipped catalog (relay)         | Redis, TTL 1 h    |
+| `GET /api/stores/nearby?lat=&lng=&radiusKm=`  | Bookshops near a point — **opt-in**, 404 off  | —                 |
 | `POST /api/sync/:source`                      | Service-side trigger of a source sync         | —                 |
+
+Three of these need a word about _why they look the way they do_
+([ADR-0007](adr/0007-plugin-architecture.md)):
+
+- **Prices** carry a much shorter TTL than links because a stale price is worse than no price, and
+  the response includes a `degraded` list naming any shop that did not answer — a shorter list that
+  looks complete is exactly the misinformation the field exists to prevent.
+- **`/api/opds/feeds/:id`** takes a feed **id**, never a URL. The optional `href` must resolve onto
+  that feed's own origin. It exists only because Project Gutenberg sends no CORS headers; a reader's
+  own catalog is fetched by their browser and never passes through here.
+- **`/api/stores/nearby`** is disabled unless `ENABLE_SERVER_GEO_LOOKUP=true`, and answers 404 when
+  off. `apps/web` does not use it: it runs the same lookup in the browser so coordinates never
+  reach this instance.
 
 `POST /api/sync/:source` requires an `Idempotency-Key` header and service authorization
 (`X-Admin-Token` in Phase 1, full authorization in Phase 2). A retry with the same key and the
@@ -261,6 +286,13 @@ Flow properties:
 - **Source priority**: on a field-value conflict, the source with the higher priority wins
   (`open-library > google-books` for languages/editions, the reverse order for covers);
   the rule lives in domain, not in an adapter.
+- **Read-time sources**: not everything is synced. `LocalizedDescriptionPort` is asked at request
+  time, on the work card, for a description in the reader's language — nothing is stored, because
+  the answer depends on who is reading, and the alternative is a `description` column per
+  interface language. Its only implementation, `WikipediaDescriptionProvider`, joins by
+  identifier: the work's Open Library id → Wikidata `P648` → that language's Wikipedia article
+  (Redis-cached, misses included). No article, no description — never a fuzzy title match, and
+  never a machine translation of the English one.
 
 ---
 
@@ -274,6 +306,10 @@ Two levels:
 
 Invalidation is explicit: a successful sync of a work deletes the keys for its `work_id`. The
 `v1` version in the prefix allows invalidating everything at once when the response format changes.
+
+Responses that depend on the reader's language carry it in the key — `v1:work:{id}:card:ru`,
+`v1:featured:ru` — while the language-free key keeps its old shape, so an instance upgrading into
+the feature does not have to warm a whole new key space for requests it already serves.
 
 Target numbers (from the success criteria): cold cache ≤ 2 s, warm ≤ 300 ms.
 

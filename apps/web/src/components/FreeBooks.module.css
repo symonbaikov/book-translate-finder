@@ -1,0 +1,15 @@
+.loading {
+  margin-block-start: var(--space-8);
+}
+
+/* Sits on the heading's baseline, at the end of the row — see `Section`'s `action`. */
+.seeAll {
+  font-size: var(--step--1);
+  font-weight: var(--weight-semibold);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.seeAll:hover {
+  color: var(--text);
+}

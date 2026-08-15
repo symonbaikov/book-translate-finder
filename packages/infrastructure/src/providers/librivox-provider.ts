@@ -4,9 +4,9 @@ import type {
   ProviderWork,
   ProviderWorkDetails,
   SearchQuery,
-} from '@btf/domain';
-import { ProviderId } from '@btf/domain';
-import type { CachePort } from '@btf/domain';
+} from '@golden/domain';
+import { ProviderId } from '@golden/domain';
+import type { CachePort } from '@golden/domain';
 import type { ResilientFetcher } from '../http/resilient-fetch.js';
 
 const CACHE_TTL_SECONDS = 6 * 60 * 60;
@@ -181,9 +181,20 @@ export class LibriVoxProvider implements BookMetadataProvider {
       limit: String(limit),
     })}`;
     const res = await this.fetcher.fetch(url, { headers: { 'User-Agent': this.userAgent } });
+    // A no-match is a 404 carrying `{"error": "Audiobooks could not be found"}` — verified live
+    // against the API today. It used to be a 200 with the same body, and treating the status as
+    // an outage was the most expensive bug in the search path: LibriVox sits in the backfill's
+    // discovery list, so every query it had no recording for (which is most of them) made the
+    // whole job throw `BackfillSourcesUnavailableError`. That skipped the 24h negative cache and
+    // handed the job back to the queue's retry-with-backoff, so a book nobody has ever recorded
+    // was re-fetched from every source three times over and *still* answered the reader with
+    // `pending` until the poll gave up. An empty catalogue is an answer, not a failure.
+    if (res.status === 404) {
+      await this.cache.set(cacheKey, [], CACHE_TTL_SECONDS);
+      return [];
+    }
     if (!res.ok) throw new Error(`LibriVox search failed with status ${res.status}`);
 
-    // LibriVox answers a no-match with `{"error": "..."}` and HTTP 200, not an empty list.
     const data = (await res.json()) as LibriVoxResponse & { error?: string };
     const books = data.error ? [] : (data.books ?? []);
 

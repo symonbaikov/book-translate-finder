@@ -1,4 +1,4 @@
-import { InvalidInputError, type JobQueuePort } from '@btf/domain';
+import { InvalidInputError, type EnqueueOptions, type JobQueuePort } from '@golden/domain';
 import { Queue, type ConnectionOptions } from 'bullmq';
 import { Redis } from 'ioredis';
 
@@ -21,6 +21,24 @@ const DEFAULTS: Required<BullMqQueueOptions> = {
   attempts: 3,
   backoffDelayMs: 5_000,
 };
+
+/**
+ * BullMQ's priority number for a `deferred` job. Any positive value would do — what matters is
+ * that it is not zero.
+ *
+ * BullMQ does not sort one queue by priority; it keeps two, and `moveToActive` empties the plain
+ * `wait` list before it ever looks at the `prioritized` sorted set (read from the Lua source of
+ * bullmq 5.81.3, `moveToActive-11.lua`: `RPOPLPUSH wait active` first, then
+ * `moveJobFromPrioritizedToActive`). A job added *without* a priority lands in `wait`, so the
+ * absence of this option is itself the strongest priority there is. That is why `interactive`
+ * passes no `priority` at all rather than a low number — and why a `deferred` job needs only to
+ * be prioritized to yield.
+ *
+ * The trade-off is deliberate and worth stating: a continuous stream of reader searches can
+ * starve the deferred backlog indefinitely. That is the correct outcome. Deferred work exists to
+ * make a later visit better, and there is no later visit if the reader in front of us leaves.
+ */
+const DEFERRED_PRIORITY = 10;
 
 /**
  * `JobQueuePort` backed by BullMQ (docs/architecture.md §5). `enqueue`'s `jobId` is the
@@ -48,7 +66,7 @@ export class BullMqQueue implements JobQueuePort {
     this.options = { ...DEFAULTS, ...options };
   }
 
-  async enqueue(jobId: string, payload: unknown): Promise<void> {
+  async enqueue(jobId: string, payload: unknown, options?: EnqueueOptions): Promise<void> {
     if (jobId.includes(':')) {
       // Fails fast with a message that names the actual constraint, instead of surfacing
       // BullMQ's less obvious internal error at the call site.
@@ -69,10 +87,17 @@ export class BullMqQueue implements JobQueuePort {
       // the dedup stopped absorbing the loop — observed live as 11 back-to-back syncs of the
       // same work in 40 seconds. 60s keeps a completed job just long enough to absorb a polling
       // session, short enough that a deliberate user retry a minute later still works. Durable
-      // history lives in Postgres `sync_log`, not in Redis. Failed jobs stay inspectable for an
-      // hour (short-term dead letter), then age out so a later identical request self-heals.
+      // history lives in Postgres `sync_log`, not in Redis.
+      //
+      // A *failed* job is retained the same way and for the same reason, and the window used to be
+      // an hour — which meant a query whose backfill had failed could not be re-asked for an hour:
+      // the dedup swallowed every re-enqueue, `GET /api/search` kept answering `pending` against a
+      // job that would never run again, and the reader's retry button did nothing but restart the
+      // same doomed poll. Five minutes still catches an incident anyone is actually looking at,
+      // while the record that outlives it is the one in Postgres `sync_log`.
       removeOnComplete: { age: 60 },
-      removeOnFail: { age: 60 * 60 },
+      removeOnFail: { age: 5 * 60 },
+      ...(options?.priority === 'deferred' ? { priority: DEFERRED_PRIORITY } : {}),
     });
   }
 

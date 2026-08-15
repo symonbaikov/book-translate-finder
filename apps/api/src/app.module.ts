@@ -3,9 +3,13 @@ import type { ApiContext } from './composition-root.js';
 import type { ApiEnv } from './config/api-env.schema.js';
 import { AuthModule } from './auth/auth.module.js';
 import { FeaturedModule } from './featured/featured.module.js';
+import { FreeBooksModule } from './free-books/free-books.module.js';
 import { SubjectsModule } from './subjects/subjects.module.js';
 import { RecommendationsModule } from './recommendations/recommendations.module.js';
 import { EditionsModule } from './editions/editions.module.js';
+import { CoversModule } from './covers/covers.module.js';
+import { OpdsModule } from './opds/opds.module.js';
+import { StoresModule } from './stores/stores.module.js';
 import { HealthModule } from './health/health.module.js';
 import { InfrastructureModule } from './infrastructure.module.js';
 import { SearchModule } from './search/search.module.js';
@@ -23,9 +27,13 @@ export class AppModule {
         SearchModule,
         WorksModule,
         EditionsModule,
+        CoversModule,
+        OpdsModule,
+        StoresModule,
         SyncModule,
         AuthModule,
         FeaturedModule,
+        FreeBooksModule,
         SubjectsModule,
         RecommendationsModule,
       ],

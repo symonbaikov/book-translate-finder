@@ -1,0 +1,25 @@
+/* The first screen: a question and a field to answer it in. Nothing else — every element added
+   here is one the reader has to look past to do the only thing this page is for. */
+
+.hero {
+  padding-block: var(--space-8) var(--space-7);
+  max-inline-size: 46rem;
+}
+
+.title {
+  font-size: var(--step-6);
+  margin-block-end: var(--space-3);
+}
+
+.subtitle {
+  font-size: var(--step-1);
+  color: var(--text-muted);
+  margin-block: 0 var(--space-6);
+  max-inline-size: 42ch;
+}
+
+@media (max-width: 560px) {
+  .hero {
+    padding-block-start: var(--space-6);
+  }
+}

@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import type { CachePort } from '@btf/domain';
+import type { CachePort } from '@golden/domain';
 import { describe, expect, it, vi } from 'vitest';
 import type { ResilientFetcher } from '../http/resilient-fetch.js';
 import { OpenLibraryProvider } from './open-library-provider.js';
@@ -88,14 +88,14 @@ describe('OpenLibraryProvider.searchWorks', () => {
     const provider = new OpenLibraryProvider(
       fetcher,
       makeInMemoryCache(),
-      'BookTranslateFinder/0.1 (+contact)',
+      'GoldenLibrary/0.1 (+contact)',
     );
 
     await provider.searchWorks({ text: 'test' });
 
     const [, init] = vi.mocked(fetcher.fetch).mock.calls[0] as [string, RequestInit];
     expect((init.headers as Record<string, string>)['User-Agent']).toBe(
-      'BookTranslateFinder/0.1 (+contact)',
+      'GoldenLibrary/0.1 (+contact)',
     );
   });
 

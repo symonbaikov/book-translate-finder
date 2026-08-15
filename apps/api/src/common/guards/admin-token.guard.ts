@@ -1,5 +1,5 @@
 import { Inject, Injectable, type CanActivate, type ExecutionContext } from '@nestjs/common';
-import { UnauthorizedError } from '@btf/domain';
+import { UnauthorizedError } from '@golden/domain';
 import type { FastifyRequest } from 'fastify';
 import { TOKENS } from '../tokens.js';
 import type { ApiEnv } from '../../config/api-env.schema.js';

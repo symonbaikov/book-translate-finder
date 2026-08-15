@@ -5,7 +5,7 @@ import type {
   SubjectBrowsePort,
   SubjectBrowseQuery,
   WorkSearchHit,
-} from '@btf/domain';
+} from '@golden/domain';
 import type { Db } from '../db/client.js';
 
 interface RecommendRow extends SubjectRow {

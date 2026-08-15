@@ -53,11 +53,13 @@ export function readHistory(): HistoryEntry[] {
   return read();
 }
 
-export function clearHistory(): void {
+/** True when the history is really gone from this browser — the only answer worth reporting. */
+export function clearHistory(): boolean {
   try {
     window.localStorage.removeItem(STORAGE_KEY);
+    return true;
   } catch {
-    /* ignore */
+    return false;
   }
 }
 

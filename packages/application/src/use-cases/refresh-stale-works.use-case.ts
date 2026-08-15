@@ -1,4 +1,4 @@
-import type { Clock, JobQueuePort, WorkRepository } from '@btf/domain';
+import type { Clock, JobQueuePort, WorkRepository } from '@golden/domain';
 import type { UseCase } from '../use-case.js';
 
 export interface RefreshStaleWorksInput {
@@ -46,7 +46,13 @@ export class RefreshStaleWorks implements UseCase<RefreshStaleWorksInput, Refres
     for (const work of staleWorks) {
       const query = `${work.originalTitle} ${work.author}`;
       for (const source of this.deps.sources) {
-        await this.deps.syncQueue.enqueue(refreshJobId(source, work.id, now), { source, query });
+        // `deferred`: a nightly freshness pass enqueues `batchSize × sources` jobs at 03:00, and
+        // whoever is awake and searching then must not queue behind all of them.
+        await this.deps.syncQueue.enqueue(
+          refreshJobId(source, work.id, now),
+          { source, query },
+          { priority: 'deferred' },
+        );
         enqueued += 1;
       }
     }
