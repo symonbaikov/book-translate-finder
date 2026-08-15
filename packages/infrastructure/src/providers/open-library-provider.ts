@@ -6,8 +6,8 @@ import type {
   ProviderWorkDetails,
   RightsStatus,
   SearchQuery,
-} from '@btf/domain';
-import { ProviderId } from '@btf/domain';
+} from '@golden/domain';
+import { ProviderId } from '@golden/domain';
 import type { ResilientFetcher } from '../http/resilient-fetch.js';
 
 const SEARCH_CACHE_TTL_SECONDS = 60 * 60; // 1h — matches docs/architecture.md §6 hot-response TTLs
@@ -36,6 +36,15 @@ const MAX_EDITIONS = 1000;
  * editions actually come from.
  */
 const MAX_AVAILABILITY_EDITION_KEYS = 100;
+/**
+ * The matching cap on the work's `ia` list. It was previously uncapped, on the reasoning that it
+ * is the list without editions.json's blind spot — true, but a heavily digitized classic carries
+ * hundreds of scans, and at `AVAILABILITY_BATCH_SIZE` per request that is another six or eight
+ * round trips of a reader's first search. 100 keeps the whole availability step to four requests
+ * that run together, and the copies past the hundredth are overwhelmingly repeat scans of the
+ * same few editions — they contribute no borrow link the first hundred did not already.
+ */
+const MAX_AVAILABILITY_IA_IDS = 100;
 
 interface OpenLibrarySearchDoc {
   key: string;
@@ -160,17 +169,72 @@ function mapEditionEntry(entry: OpenLibraryEditionEntry): ProviderEdition {
  * ("Internet Archive reports an open-access label (not lending) → public_domain") and the
  * `download` allowlist in I-1, which lists `internet-archive`, not `open-library`.
  */
-function mapAvailability(item: AvailabilityItem): {
+function extractIAIdentifier(url: string): string | null {
+  // Match internet-archive URLs: https://archive.org/details/{id} or https://archive.org/download/{id}/...
+  const match = url.match(/archive\.org\/(?:details|download)\/([^/?]+)/);
+  return match?.[1] ?? null;
+}
+
+/**
+ * Парсит доступные форматы из Internet Archive metadata API.
+ * Использует regex для определения расширений файлов.
+ */
+function parseIAFormats(files: Array<{ name: string; format?: string }> | undefined): string[] {
+  if (!files) return [];
+
+  const formats = new Set<string>();
+  const formatRegex = /\.([a-z0-9]+)$/i;
+
+  for (const file of files) {
+    // Приоритет: используем поле `format` если есть, иначе парсим расширение из имени файла
+    if (file.format) {
+      formats.add(file.format.toLowerCase());
+    } else {
+      const match = file.name.match(formatRegex);
+      if (match?.[1]) {
+        const ext = match[1].toLowerCase();
+        // Отфильтровываем служебные расширения
+        if (!['xml', 'json', 'txt', 'pdf_bak', 'orig', 'old'].includes(ext)) {
+          formats.add(ext);
+        }
+      }
+    }
+  }
+
+  // Сортируем по приоритету: популярные форматы в начале
+  const priorityOrder = ['pdf', 'epub', 'mobi', 'txt', 'html', 'djvu'];
+  const sorted = [
+    ...priorityOrder.filter(f => formats.has(f)),
+    ...Array.from(formats).filter(f => !priorityOrder.includes(f)).sort(),
+  ];
+
+  return sorted;
+}
+
+function mapAvailability(
+  item: AvailabilityItem,
+  iaFormats?: Map<string, string[]>,
+): {
   rightsSignal: RightsStatus;
-  link: { type: 'download' | 'borrow'; url: string; provider: string };
+  link: { type: 'download' | 'borrow'; url: string; provider: string; format?: string };
 } | null {
   if (!item.itemURL) return null;
+
+  const iaId = extractIAIdentifier(item.itemURL);
+  const formats = iaId && iaFormats ? iaFormats.get(iaId) : undefined;
+  const format = formats?.[0];
+
+  const baseLink = {
+    url: item.itemURL,
+    provider: 'internet-archive' as const,
+    ...(format && { format }),
+  };
 
   switch (item.status) {
     case 'full access':
       return {
         rightsSignal: 'public_domain',
-        link: { type: 'download', url: item.itemURL, provider: 'internet-archive' },
+        link: { type: 'download' as const, ...baseLink },
       };
     case 'lendable':
     case 'checked out':
@@ -178,7 +242,7 @@ function mapAvailability(item: AvailabilityItem): {
       // I-2/I-4) — the reader joins IA's own waitlist, that's not our concern to model.
       return {
         rightsSignal: 'copyrighted',
-        link: { type: 'borrow', url: item.itemURL, provider: 'internet-archive' },
+        link: { type: 'borrow' as const, ...baseLink },
       };
     default:
       return null;
@@ -227,7 +291,13 @@ export class OpenLibraryProvider implements BookMetadataProvider {
     const cached = await this.cache.get<ProviderEdition[]>(cacheKey);
     if (cached) return cached;
 
-    const entries = await this.fetchAllEditionEntries(externalWorkId);
+    // The work's `ia` list has no dependency on its editions — it comes from a different endpoint
+    // and is only *combined* with them below — so the two runs start together. Sequentially this
+    // was one full Open Library round trip (up to 22s under load) of pure waiting per sync.
+    const [entries, iaIds] = await Promise.all([
+      this.fetchAllEditionEntries(externalWorkId),
+      this.fetchWorkIaIds(externalWorkId),
+    ]);
     const editions = entries.map(mapEditionEntry);
     const knownOlids = new Set(entries.map(editionOlid));
 
@@ -238,18 +308,35 @@ export class OpenLibraryProvider implements BookMetadataProvider {
     // and editions.json's ordering has no relationship to which ones are actually lendable, so
     // the batch of 50 we just fetched can easily miss every one of them. The work's own `ia` list
     // (from search.json, not capped like editions.json) doesn't have that blind spot.
-    const iaIds = await this.fetchWorkIaIds(externalWorkId);
     const requestKeys = [
       ...entries.slice(0, MAX_AVAILABILITY_EDITION_KEYS).map((e) => `olid:${editionOlid(e)}`),
-      ...iaIds.map((id) => `ocaid:${id}`),
+      ...iaIds.slice(0, MAX_AVAILABILITY_IA_IDS).map((id) => `ocaid:${id}`),
     ];
     const availability = await this.fetchAvailability(requestKeys);
+
+    // Подготовим карту форматов для всех IA идентификаторов
+    const iaFormatsCache = new Map<string, string[]>();
+    const iaIdentifiersToFetch = new Set<string>();
+    for (const item of availability.values()) {
+      const iaId = extractIAIdentifier(item.itemURL ?? '');
+      if (iaId) iaIdentifiersToFetch.add(iaId);
+    }
+    // Получаем форматы параллельно для всех идентификаторов
+    await Promise.all(
+      Array.from(iaIdentifiersToFetch).map(async (iaId) => {
+        const formats = await this.fetchIAFormats(iaId);
+        iaFormatsCache.set(iaId, formats);
+      }),
+    );
 
     for (let i = 0; i < editions.length; i++) {
       const olid = editionOlid(entries[i]!);
       const item = availability.get(olid);
       if (!item) continue;
-      const mapped = mapAvailability(item);
+      const iaId = extractIAIdentifier(item.itemURL ?? '');
+      const formats = iaId ? iaFormatsCache.get(iaId) : undefined;
+      const formatsMap = iaId && formats ? new Map([[iaId, formats]]) : undefined;
+      const mapped = mapAvailability(item, formatsMap);
       if (!mapped) continue;
       editions[i] = { ...editions[i]!, rightsSignal: mapped.rightsSignal, links: [mapped.link] };
     }
@@ -260,7 +347,10 @@ export class OpenLibraryProvider implements BookMetadataProvider {
     let extraFetched = 0;
     for (const [olid, item] of availability) {
       if (knownOlids.has(olid) || extraFetched >= MAX_EXTRA_AVAILABILITY_EDITIONS) continue;
-      const mapped = mapAvailability(item);
+      const iaId = extractIAIdentifier(item.itemURL ?? '');
+      const formats = iaId ? iaFormatsCache.get(iaId) : undefined;
+      const formatsMap = iaId && formats ? new Map([[iaId, formats]]) : undefined;
+      const mapped = mapAvailability(item, formatsMap);
       if (!mapped) continue;
       const extra = await this.fetchSingleEdition(olid);
       extraFetched += 1;
@@ -386,6 +476,33 @@ export class OpenLibraryProvider implements BookMetadataProvider {
     return entries.slice(0, MAX_EDITIONS);
   }
 
+  /**
+   * Получает доступные форматы для документа Internet Archive через metadata API.
+   * Использует regex для парсинга расширений файлов.
+   */
+  private async fetchIAFormats(iaIdentifier: string): Promise<string[]> {
+    const cacheKey = `provider:open-library:ia-formats:${iaIdentifier}`;
+    const cached = await this.cache.get<string[]>(cacheKey);
+    if (cached) return cached;
+
+    try {
+      const url = `https://archive.org/metadata/${iaIdentifier}`;
+      const res = await this.fetcher.fetch(url, { headers: { 'User-Agent': this.userAgent } });
+      if (!res.ok) return [];
+
+      interface IAMetadata {
+        files?: Array<{ name: string; format?: string }>;
+      }
+      const data = (await res.json()) as IAMetadata;
+      const formats = parseIAFormats(data.files);
+      await this.cache.set(cacheKey, formats, EDITIONS_CACHE_TTL_SECONDS);
+      return formats;
+    } catch {
+      // best-effort — формат определен из URL, если API не доступен
+      return [];
+    }
+  }
+
   private async fetchAvailability(requestKeys: string[]): Promise<Map<string, AvailabilityItem>> {
     const result = new Map<string, AvailabilityItem>();
     if (requestKeys.length === 0) return result;
@@ -394,14 +511,28 @@ export class OpenLibraryProvider implements BookMetadataProvider {
     const cached = await this.cache.get<[string, AvailabilityItem][]>(cacheKey);
     if (cached) return new Map(cached);
 
+    const batches: string[][] = [];
     for (let i = 0; i < requestKeys.length; i += AVAILABILITY_BATCH_SIZE) {
-      const batch = requestKeys.slice(i, i + AVAILABILITY_BATCH_SIZE);
-      const url = `https://openlibrary.org/api/volumes/brief/json/${batch.join('|')}`;
+      batches.push(requestKeys.slice(i, i + AVAILABILITY_BATCH_SIZE));
+    }
 
-      const res = await this.fetcher.fetch(url, { headers: { 'User-Agent': this.userAgent } });
-      if (!res.ok) continue; // best-effort — a failed availability lookup shouldn't fail the whole sync
+    // Concurrent, because the batches are a page-size artefact, not a sequence: no batch's request
+    // depends on any other's answer, and running them in turn simply multiplied one work's sync by
+    // the number of pages. Bounded to four by the two caps above (`MAX_AVAILABILITY_EDITION_KEYS`
+    // + `MAX_AVAILABILITY_IA_IDS` at `AVAILABILITY_BATCH_SIZE` each), which is a burst Open
+    // Library's rate limits absorb comfortably — the caps are what make this safe to fan out, so
+    // raising either one means reconsidering this line.
+    const pages = await Promise.all(
+      batches.map(async (batch) => {
+        const url = `https://openlibrary.org/api/volumes/brief/json/${batch.join('|')}`;
+        const res = await this.fetcher.fetch(url, { headers: { 'User-Agent': this.userAgent } });
+        // best-effort — a failed availability lookup shouldn't fail the whole sync
+        if (!res.ok) return { batch, data: {} as AvailabilityResponse };
+        return { batch, data: (await res.json()) as AvailabilityResponse };
+      }),
+    );
 
-      const data = (await res.json()) as AvailabilityResponse;
+    for (const { batch, data } of pages) {
       for (const key of batch) {
         const items = data[key]?.items ?? [];
         const exact = items.find((item) => item.match === 'exact' && item['ol-edition-id']);
