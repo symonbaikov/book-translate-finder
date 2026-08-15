@@ -126,7 +126,18 @@ export function buildWorkerContext(env: WorkerEnv): WorkerContext {
     // two national library catalogues are the only ones that know a contemporary novel came out
     // in French or German at all — with the publisher, the ISBN and the translator's name, which
     // is the fact this project promises and open bibliographic data almost never carries.
-    enrichmentSources: ['gutenberg', 'authorized-free', 'librivox', 'bnf', 'dnb'],
+    //
+    // Wikidata was already a *discovery* source and is now an enrichment one too, which is a
+    // separate job: discovery asks "does this book exist", enrichment asks "what languages is it
+    // in", and it was only ever being asked the first. Measured over five books
+    // (scripts/measure-wikidata-languages.ts), it adds languages nobody else here had — nine to
+    // Le petit prince, including Kinyarwanda, Xhosa, Wolof and Zulu, and three to Dracula.
+    //
+    // It is worth stating what it does not do, since it is easy to read the above as a fix: on
+    // «Метро 2033» — the book whose thin language list prompted the measurement — Wikidata holds
+    // no editions at all and contributes exactly nothing. This widens good coverage; it does not
+    // rescue bad coverage.
+    enrichmentSources: ['gutenberg', 'authorized-free', 'librivox', 'bnf', 'dnb', 'wikidata'],
   });
 
   return {

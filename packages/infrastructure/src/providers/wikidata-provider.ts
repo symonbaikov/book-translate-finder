@@ -15,8 +15,20 @@ const EDITIONS_CACHE_TTL_SECONDS = 6 * 60 * 60;
 const ENTITY_SEARCH_URL = 'https://www.wikidata.org/w/api.php';
 const SPARQL_URL = 'https://query.wikidata.org/sparql';
 
-/** Candidates pulled from the label search before the book filter is applied. */
-const SEARCH_CANDIDATES = 7;
+/**
+ * Candidates pulled from the label search before the book filter is applied.
+ *
+ * Wide on purpose. Wikidata's label search ranks by nothing this project cares about, and a famous
+ * title is a crowd: "Le petit prince" returns a 2015 film, its French dub, its soundtrack album, a
+ * comic book, an opera and an Antarctic island before it returns the novella — which sits at
+ * position 19. At seven candidates the book was simply never among them, and the enrichment that
+ * would have added nine languages to it reported "not found" instead.
+ *
+ * Widening is cheap and safe here: everything found is still filtered by `BOOK_CLASSES`, ranked by
+ * author mention, and — on the enrichment path — checked against the work it is being attached to
+ * before any of it is written down.
+ */
+const SEARCH_CANDIDATES = 25;
 /**
  * How many trailing words may be dropped when the whole query finds nothing.
  *

@@ -33,8 +33,18 @@ async function main(): Promise<void> {
     return;
   }
 
+  // Attached to the work that was asked about, not merely searched for with its words. `--work=`
+  // names a book; letting the use case re-decide which book this is means a source that files the
+  // novel under a translated title creates a *second* one instead of contributing to it. Observed:
+  // syncing «Le petit prince» from Wikidata produced a separate "The Little Prince" holding the
+  // fourteen editions that should have joined the first. This is the same mode the enrichment path
+  // has used since it existed; the CLI was resolving the work id and then throwing it away.
   const query = `${work.originalTitle} ${work.author}`;
-  const result = await ctx.syncWorkFromSource.execute({ source, query });
+  const result = await ctx.syncWorkFromSource.execute({
+    source,
+    query,
+    attachToWorkId: work.id,
+  });
 
   console.log(JSON.stringify(result, null, 2));
   await ctx.close();

@@ -98,6 +98,17 @@ describe('isPlausibleSameWork', () => {
     ).toBe(true);
   });
 
+  it('accepts a Cyrillic surname whose romanized ending differs from the catalogue spelling', () => {
+    // «Глуховский» romanizes here as "glukhovskii"; Wikidata files him as "Glukhovsky". Two edits
+    // apart, so the single-edit rule alone rejected «Метро 2033» outright — measured, not imagined.
+    expect(
+      isPlausibleSameWork(
+        { title: 'Метро 2033', author: 'Дмитрий Глуховский' },
+        { title: 'Metro 2033', authorNames: ['Dmitry Glukhovsky'] },
+      ),
+    ).toBe(true);
+  });
+
   it('does not stretch that tolerance to short words that merely rhyme', () => {
     expect(
       isPlausibleSameWork(

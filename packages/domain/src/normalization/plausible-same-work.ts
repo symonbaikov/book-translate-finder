@@ -42,6 +42,25 @@ function authorTokens(name: string): Set<string> {
 }
 
 /**
+ * How many leading characters two long surnames must share to be treated as the same name when
+ * they are too far apart for the single-edit rule.
+ *
+ * Transliteration diverges at the *end* of a Slavic surname and agrees at the front: this project's
+ * romanization writes «Глуховский» as "glukhovskii" while catalogues write "Glukhovsky" — two
+ * edits apart, nine characters identical. Measured on «Метро 2033», whose enrichment this rejected
+ * outright before the rule existed. Six characters is short enough to catch that family of endings
+ * and long enough that two unrelated surnames rarely reach it.
+ */
+const SHARED_PREFIX_FOR_AGREEMENT = 6;
+
+function sharedPrefixLength(a: string, b: string): number {
+  const limit = Math.min(a.length, b.length);
+  let shared = 0;
+  while (shared < limit && a[shared] === b[shared]) shared += 1;
+  return shared;
+}
+
+/**
  * Whether two name tokens are the same name, allowing for the way surnames survive being carried
  * between catalogues in different languages: "Tolstoy" is filed in France as "Tolstoï", Dostoyevsky
  * loses a letter about as often as he keeps it, and requiring character-for-character equality
@@ -49,11 +68,13 @@ function authorTokens(name: string): Set<string> {
  *
  * One edit, and only for tokens long enough that one edit is a spelling variant rather than a
  * different word — "king" and "ring" are four letters and one edit apart, and nothing about them
- * suggests the same person.
+ * suggests the same person. Beyond one edit, a long shared prefix stands in, for the transliterated
+ * endings that a single edit cannot reach.
  */
 function tokensAgree(a: string, b: string): boolean {
   if (a === b) return true;
   if (a.length < 5 || b.length < 5) return false;
+  if (sharedPrefixLength(a, b) >= SHARED_PREFIX_FOR_AGREEMENT) return true;
   if (Math.abs(a.length - b.length) > 1) return false;
 
   // Levenshtein distance, bailing out as soon as it exceeds one — the only answer this needs.
