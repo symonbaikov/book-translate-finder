@@ -170,8 +170,8 @@ function mapEditionEntry(entry: OpenLibraryEditionEntry): ProviderEdition {
  * `download` allowlist in I-1, which lists `internet-archive`, not `open-library`.
  */
 function extractIAIdentifier(url: string): string | null {
-  // Match internet-archive URLs: https://archive.org/details/{id} or https://archive.org/download/{id}/...
-  const match = url.match(/archive\.org\/(?:details|download)\/([^/?]+)/);
+  // Match internet-archive URLs: https://archive.org/details/{id}, /download/{id}, or /stream/{id}
+  const match = url.match(/archive\.org\/(?:details|download|stream)\/([^/?]+)/);
   return match?.[1] ?? null;
 }
 
