@@ -109,6 +109,8 @@ export const pt: Dictionary = {
   'compare.heading': 'Comparar edições',
   'compare.blurb': 'Escolha duas ou três edições para ver o que realmente as distingue.',
   'compare.selected': '{count} selecionada(s), são precisas pelo menos 2.',
+  'compare.editSelection': 'Alterar edições',
+  'compare.showAllEditions': 'Mostrar todas as {count} edições',
   'compare.columnDifference': 'Diferença',
   'compare.identical': 'Em tudo o que as fontes registam, estas edições são idênticas.',
   'compare.rowLanguage': 'Idioma',
@@ -336,6 +338,34 @@ export const pt: Dictionary = {
     '«{name}» está desligada. Continua instalada com as definições, mas nada do que devolve será mostrado.',
   'settings.addons.reordered': '«{name}» responde agora em {position}.º de {total}.',
   'settings.addons.rejected': 'Não foi instalado nada: {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': 'Fontes personalizadas',
+  'customSources.title': 'Fontes personalizadas',
+  'customSources.intro':
+    'Adicione a sua própria loja ou catálogo dando-lhe um nome e um URL de pesquisa com {isbn}, {query}, {title}, {author} ou {language}. O link é criado neste dispositivo e este site nunca o consulta.',
+  'customSources.nameLabel': 'Nome',
+  'customSources.templateLabel': 'Modelo de URL',
+  'customSources.templateHint':
+    'Um endereço https:// absoluto. {isbn}, {query}, {title}, {author} e {language} são preenchidos a partir da edição; se um marcador ficar vazio, o link é omitido para essa edição.',
+  'customSources.add': 'Adicionar fonte',
+  'customSources.listHeading': 'As suas fontes',
+  'customSources.none': 'Ainda sem fontes personalizadas.',
+  'customSources.off': 'Desativada',
+  'customSources.enable': 'Ativar',
+  'customSources.disable': 'Desativar',
+  'customSources.remove': 'Remover',
+  'customSources.heading': 'As suas fontes',
+  'customSources.caption':
+    'Links que configurou você mesmo. Esta instância não verifica para onde levam.',
+
+  'settings.customSources.title': 'As suas fontes personalizadas',
+  'settings.customSources.added': '«{name}» foi adicionada e será oferecida com as outras.',
+  'settings.customSources.removed': '«{name}» foi removida deste navegador.',
+  'settings.customSources.enabled': '«{name}» está ativa novamente.',
+  'settings.customSources.disabled':
+    '«{name}» está desativada. Continua configurada, mas o seu link não será mostrado.',
+  'settings.customSources.rejected': 'Nada foi adicionado: {reason}',
 
   // --- Books in the reader's own language, and localized descriptions -------
   'featured.inLanguageHeading': 'Livros no seu idioma',

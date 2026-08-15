@@ -116,6 +116,8 @@ export const ru: Dictionary = {
   'compare.heading': 'Сравнить издания',
   'compare.blurb': 'Выберите два или три издания, чтобы увидеть, чем они действительно отличаются.',
   'compare.selected': 'Выбрано {count}, нужно минимум 2.',
+  'compare.editSelection': 'Изменить издания',
+  'compare.showAllEditions': 'Показать все издания ({count})',
   'compare.columnDifference': 'Отличие',
   'compare.identical': 'По всем данным источников эти издания идентичны.',
   'compare.rowLanguage': 'Язык',
@@ -346,6 +348,34 @@ export const ru: Dictionary = {
     'Дополнение «{name}» выключено. Оно остаётся установленным вместе со своими настройками, но ничего из того, что оно возвращает, показано не будет.',
   'settings.addons.reordered': 'Дополнение «{name}» теперь отвечает {position}-м из {total}.',
   'settings.addons.rejected': 'Ничего не установлено: {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': 'Свои источники',
+  'customSources.title': 'Свои источники',
+  'customSources.intro':
+    'Добавьте свой магазин или каталог, задав ему название и URL поиска с {isbn}, {query}, {title}, {author} или {language}. Ссылка строится на этом устройстве, и этот сайт никогда её не запрашивает.',
+  'customSources.nameLabel': 'Название',
+  'customSources.templateLabel': 'Шаблон URL',
+  'customSources.templateHint':
+    'Абсолютный адрес https://. {isbn}, {query}, {title}, {author} и {language} подставляются из издания; если какая-то подстановка окажется пустой, ссылка для этого издания пропускается.',
+  'customSources.add': 'Добавить источник',
+  'customSources.listHeading': 'Ваши источники',
+  'customSources.none': 'Пока нет своих источников.',
+  'customSources.off': 'Выключен',
+  'customSources.enable': 'Включить',
+  'customSources.disable': 'Выключить',
+  'customSources.remove': 'Удалить',
+  'customSources.heading': 'Ваши источники',
+  'customSources.caption':
+    'Ссылки, которые вы настроили сами. Этот экземпляр не проверяет, куда они ведут.',
+
+  'settings.customSources.title': 'Ваши источники',
+  'settings.customSources.added': '«{name}» добавлен и будет предложен наравне с остальными.',
+  'settings.customSources.removed': '«{name}» удалён из этого браузера.',
+  'settings.customSources.enabled': '«{name}» снова включён.',
+  'settings.customSources.disabled':
+    '«{name}» выключен. Настройки сохранены, но ссылка не будет показана.',
+  'settings.customSources.rejected': 'Ничего не добавлено: {reason}',
 
   // --- Books in the reader's own language, and localized descriptions -------
   'featured.inLanguageHeading': 'Книги на вашем языке',

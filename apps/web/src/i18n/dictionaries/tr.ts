@@ -107,6 +107,8 @@ export const tr: Dictionary = {
   'compare.heading': 'Baskıları karşılaştır',
   'compare.blurb': 'Gerçekten neyin farklı olduğunu görmek için iki ya da üç baskı seçin.',
   'compare.selected': '{count} seçildi, en az 2 gerekiyor.',
+  'compare.editSelection': 'Baskıları değiştir',
+  'compare.showAllEditions': 'Tüm {count} baskıyı göster',
   'compare.columnDifference': 'Fark',
   'compare.identical': 'Kaynakların kaydettiği her şeyde bu baskılar aynı.',
   'compare.rowLanguage': 'Dil',
@@ -333,6 +335,34 @@ export const tr: Dictionary = {
     '“{name}” kapalı. Ayarlarıyla birlikte kurulu kalır ama döndürdüğü hiçbir şey gösterilmez.',
   'settings.addons.reordered': '“{name}” artık {total} içinde {position}. sırada yanıt veriyor.',
   'settings.addons.rejected': 'Hiçbir şey kurulmadı: {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': 'Özel kaynaklar',
+  'customSources.title': 'Özel kaynaklar',
+  'customSources.intro':
+    'Kendi mağazanızı veya kataloğunuzu, ona bir ad ve {isbn}, {query}, {title}, {author} veya {language} içeren bir arama URL’si vererek ekleyin. Bağlantı bu cihazda oluşturulur ve bu site onu asla getirmez.',
+  'customSources.nameLabel': 'Ad',
+  'customSources.templateLabel': 'URL şablonu',
+  'customSources.templateHint':
+    'Mutlak bir https:// adresi. {isbn}, {query}, {title}, {author} ve {language} baskı bilgilerinden doldurulur; bir yer tutucu boş kalırsa o baskı için bağlantı atlanır.',
+  'customSources.add': 'Kaynak ekle',
+  'customSources.listHeading': 'Kaynaklarınız',
+  'customSources.none': 'Henüz özel kaynak yok.',
+  'customSources.off': 'Kapalı',
+  'customSources.enable': 'Aç',
+  'customSources.disable': 'Kapat',
+  'customSources.remove': 'Kaldır',
+  'customSources.heading': 'Kaynaklarınız',
+  'customSources.caption':
+    'Kendinizin yapılandırdığı bağlantılar. Bu örnek nereye gittiklerini denetlemez.',
+
+  'settings.customSources.title': 'Özel kaynaklarınız',
+  'settings.customSources.added': '“{name}” eklendi ve diğerleriyle birlikte sunulacak.',
+  'settings.customSources.removed': '“{name}” bu tarayıcıdan kaldırıldı.',
+  'settings.customSources.enabled': '“{name}” tekrar açık.',
+  'settings.customSources.disabled':
+    '“{name}” kapalı. Yapılandırması kalır, ancak bağlantısı gösterilmeyecek.',
+  'settings.customSources.rejected': 'Hiçbir şey eklenmedi: {reason}',
 
   // --- Books in the reader's own language, and localized descriptions -------
   'featured.inLanguageHeading': 'Kendi dilinizdeki kitaplar',

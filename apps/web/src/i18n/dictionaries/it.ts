@@ -109,6 +109,8 @@ export const it: Dictionary = {
   'compare.heading': 'Confronta le edizioni',
   'compare.blurb': 'Scegli due o tre edizioni per vedere in cosa differiscono davvero.',
   'compare.selected': 'Selezionate {count}, ne servono almeno 2.',
+  'compare.editSelection': 'Cambia edizioni',
+  'compare.showAllEditions': 'Mostra tutte le {count} edizioni',
   'compare.columnDifference': 'Differenza',
   'compare.identical': 'In tutto ciò che le fonti registrano, queste edizioni sono identiche.',
   'compare.rowLanguage': 'Lingua',
@@ -337,6 +339,34 @@ export const it: Dictionary = {
     '«{name}» è disattivata. Resta installata con le sue impostazioni, ma nulla di ciò che restituisce verrà mostrato.',
   'settings.addons.reordered': '«{name}» ora risponde come {position} su {total}.',
   'settings.addons.rejected': 'Non è stato installato nulla: {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': 'Fonti personalizzate',
+  'customSources.title': 'Fonti personalizzate',
+  'customSources.intro':
+    'Aggiungi un tuo negozio o catalogo dandogli un nome e un URL di ricerca con {isbn}, {query}, {title}, {author} o {language}. Il link viene creato su questo dispositivo e questo sito non lo recupera mai.',
+  'customSources.nameLabel': 'Nome',
+  'customSources.templateLabel': 'Modello di URL',
+  'customSources.templateHint':
+    'Un indirizzo https:// assoluto. {isbn}, {query}, {title}, {author} e {language} vengono compilati dall’edizione; se un segnaposto resta vuoto, il link viene omesso per quell’edizione.',
+  'customSources.add': 'Aggiungi fonte',
+  'customSources.listHeading': 'Le tue fonti',
+  'customSources.none': 'Ancora nessuna fonte personalizzata.',
+  'customSources.off': 'Disattivata',
+  'customSources.enable': 'Attiva',
+  'customSources.disable': 'Disattiva',
+  'customSources.remove': 'Rimuovi',
+  'customSources.heading': 'Le tue fonti',
+  'customSources.caption':
+    'Link che hai configurato tu stesso. Questa istanza non verifica dove portano.',
+
+  'settings.customSources.title': 'Le tue fonti personalizzate',
+  'settings.customSources.added': '«{name}» è stata aggiunta e sarà proposta insieme alle altre.',
+  'settings.customSources.removed': '«{name}» è stata rimossa da questo browser.',
+  'settings.customSources.enabled': '«{name}» è di nuovo attiva.',
+  'settings.customSources.disabled':
+    '«{name}» è disattivata. Resta configurata, ma il suo link non sarà mostrato.',
+  'settings.customSources.rejected': 'Non è stato aggiunto nulla: {reason}',
 
   // --- Books in the reader's own language, and localized descriptions -------
   'featured.inLanguageHeading': 'Libri nella tua lingua',

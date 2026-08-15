@@ -2,10 +2,12 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import type { SourceLinkDto } from '@golden/contracts';
+import type { BookQueryMeta } from '@golden/plugins';
 import { ApiRequestError, getEditionLinks } from '../lib/api-client';
 import { COUNTRY_CHANGE_EVENT, readCountry } from '../lib/country';
 import { rightsStatusTone } from '../lib/link-labels';
 import { useT } from '../i18n/I18nProvider';
+import { CustomSources } from './CustomSources';
 import { Badge, Button, ChipLink, Sheet, Skeleton } from '../ui';
 import type { Translate } from '../i18n/dictionary';
 import styles from './EditionLinks.module.css';
@@ -16,7 +18,15 @@ type LinksData =
   | { kind: 'loaded'; links: SourceLinkDto[]; bookstores: SourceLinkDto[] }
   | { kind: 'error'; message: string };
 
-export function EditionLinks({ editionId, language }: { editionId: string; language?: string }) {
+export function EditionLinks({
+  editionId,
+  language,
+  bookMeta,
+}: {
+  editionId: string;
+  language?: string;
+  bookMeta: BookQueryMeta;
+}) {
   const t = useT();
   // Openness and data are separate pieces of state, so that closing a panel does not discard links
   // already fetched — reopening it is then instant and costs the API nothing.
@@ -87,6 +97,7 @@ export function EditionLinks({ editionId, language }: { editionId: string; langu
             <>
               <LinkList links={data.links} t={t} />
               <BookstoreList bookstores={data.bookstores} language={language ?? null} t={t} />
+              <CustomSources bookMeta={bookMeta} open={open} />
             </>
           )}
         </Sheet>

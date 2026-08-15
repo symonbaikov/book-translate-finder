@@ -118,6 +118,8 @@ export const fr: Dictionary = {
   'compare.heading': 'Comparer les éditions',
   'compare.blurb': 'Choisissez deux ou trois éditions pour voir ce qui les distingue réellement.',
   'compare.selected': '{count} sélectionnée(s), il en faut au moins 2.',
+  'compare.editSelection': 'Modifier les éditions',
+  'compare.showAllEditions': 'Afficher les {count} éditions',
   'compare.columnDifference': 'Différence',
   'compare.identical': 'Sur tout ce que les sources enregistrent, ces éditions sont identiques.',
   'compare.rowLanguage': 'Langue',
@@ -351,6 +353,34 @@ export const fr: Dictionary = {
     '« {name} » est désactivée. Elle reste installée avec ses réglages, mais rien de ce qu’elle renvoie ne sera affiché.',
   'settings.addons.reordered': '« {name} » répond maintenant en position {position} sur {total}.',
   'settings.addons.rejected': 'Rien n’a été installé : {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': 'Sources personnalisées',
+  'customSources.title': 'Sources personnalisées',
+  'customSources.intro':
+    'Ajoutez votre propre boutique ou catalogue en lui donnant un nom et une URL de recherche contenant {isbn}, {query}, {title}, {author} ou {language}. Le lien est construit sur cet appareil et ce site ne le récupère jamais.',
+  'customSources.nameLabel': 'Nom',
+  'customSources.templateLabel': 'Modèle d’URL',
+  'customSources.templateHint':
+    'Une adresse https:// absolue. {isbn}, {query}, {title}, {author} et {language} sont remplis à partir de l’édition ; si un espace réservé reste vide, le lien est omis pour cette édition.',
+  'customSources.add': 'Ajouter une source',
+  'customSources.listHeading': 'Vos sources',
+  'customSources.none': 'Aucune source personnalisée pour l’instant.',
+  'customSources.off': 'Désactivée',
+  'customSources.enable': 'Activer',
+  'customSources.disable': 'Désactiver',
+  'customSources.remove': 'Supprimer',
+  'customSources.heading': 'Vos sources',
+  'customSources.caption':
+    'Liens que vous avez configurés vous-même. Cette instance ne vérifie pas où ils mènent.',
+
+  'settings.customSources.title': 'Vos sources personnalisées',
+  'settings.customSources.added': '« {name} » a été ajoutée et sera proposée avec les autres.',
+  'settings.customSources.removed': '« {name} » a été supprimée de ce navigateur.',
+  'settings.customSources.enabled': '« {name} » est de nouveau activée.',
+  'settings.customSources.disabled':
+    '« {name} » est désactivée. Elle reste configurée, mais son lien ne sera pas affiché.',
+  'settings.customSources.rejected': 'Rien n’a été ajouté : {reason}',
 
   // --- Books in the reader's own language, and localized descriptions -------
   'featured.inLanguageHeading': 'Livres dans votre langue',

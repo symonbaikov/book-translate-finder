@@ -115,6 +115,8 @@ export const uk: Dictionary = {
   'compare.heading': 'Порівняти видання',
   'compare.blurb': 'Оберіть два або три видання, щоб побачити, чим вони справді різняться.',
   'compare.selected': 'Обрано {count}, потрібно щонайменше 2.',
+  'compare.editSelection': 'Змінити видання',
+  'compare.showAllEditions': 'Показати всі видання ({count})',
   'compare.columnDifference': 'Відмінність',
   'compare.identical': 'За всіма даними джерел ці видання ідентичні.',
   'compare.rowLanguage': 'Мова',
@@ -345,6 +347,34 @@ export const uk: Dictionary = {
     'Доповнення «{name}» вимкнено. Воно лишається встановленим разом зі своїми налаштуваннями, але нічого з того, що воно повертає, показано не буде.',
   'settings.addons.reordered': 'Доповнення «{name}» тепер відповідає {position}-м з {total}.',
   'settings.addons.rejected': 'Нічого не встановлено: {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': 'Власні джерела',
+  'customSources.title': 'Власні джерела',
+  'customSources.intro':
+    'Додайте власний магазин чи каталог, надавши йому назву та URL пошуку з {isbn}, {query}, {title}, {author} або {language}. Посилання будується на цьому пристрої, і цей сайт ніколи його не запитує.',
+  'customSources.nameLabel': 'Назва',
+  'customSources.templateLabel': 'Шаблон URL',
+  'customSources.templateHint':
+    'Абсолютна адреса https://. {isbn}, {query}, {title}, {author} і {language} підставляються з видання; якщо якась підстановка залишиться порожньою, посилання для цього видання пропускається.',
+  'customSources.add': 'Додати джерело',
+  'customSources.listHeading': 'Ваші джерела',
+  'customSources.none': 'Поки що немає власних джерел.',
+  'customSources.off': 'Вимкнено',
+  'customSources.enable': 'Увімкнути',
+  'customSources.disable': 'Вимкнути',
+  'customSources.remove': 'Видалити',
+  'customSources.heading': 'Ваші джерела',
+  'customSources.caption':
+    'Посилання, які ви налаштували самі. Цей екземпляр не перевіряє, куди вони ведуть.',
+
+  'settings.customSources.title': 'Ваші власні джерела',
+  'settings.customSources.added': '«{name}» додано, і його пропонуватимуть нарівні з іншими.',
+  'settings.customSources.removed': '«{name}» видалено з цього браузера.',
+  'settings.customSources.enabled': '«{name}» знову увімкнено.',
+  'settings.customSources.disabled':
+    '«{name}» вимкнено. Налаштування збережено, але посилання не показуватиметься.',
+  'settings.customSources.rejected': 'Нічого не додано: {reason}',
 
   // --- Books in the reader's own language, and localized descriptions -------
   'featured.inLanguageHeading': 'Книжки вашою мовою',

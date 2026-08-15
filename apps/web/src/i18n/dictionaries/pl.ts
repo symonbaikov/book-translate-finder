@@ -106,6 +106,8 @@ export const pl: Dictionary = {
   'compare.heading': 'Porównaj wydania',
   'compare.blurb': 'Wybierz dwa lub trzy wydania, aby zobaczyć, czym naprawdę się różnią.',
   'compare.selected': 'Wybrano {count}, potrzeba co najmniej 2.',
+  'compare.editSelection': 'Zmień wydania',
+  'compare.showAllEditions': 'Pokaż wszystkie wydania ({count})',
   'compare.columnDifference': 'Różnica',
   'compare.identical': 'We wszystkim, co zapisują źródła, te wydania są identyczne.',
   'compare.rowLanguage': 'Język',
@@ -333,6 +335,35 @@ export const pl: Dictionary = {
     '„{name}” jest wyłączony. Pozostaje zainstalowany wraz z ustawieniami, ale nic z tego, co zwraca, nie zostanie pokazane.',
   'settings.addons.reordered': '„{name}” odpowiada teraz jako {position} z {total}.',
   'settings.addons.rejected': 'Nic nie zainstalowano: {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': 'Własne źródła',
+  'customSources.title': 'Własne źródła',
+  'customSources.intro':
+    'Dodaj własny sklep lub katalog, nadając mu nazwę i adres URL wyszukiwania z {isbn}, {query}, {title}, {author} lub {language}. Link jest budowany na tym urządzeniu, a ta strona nigdy go nie pobiera.',
+  'customSources.nameLabel': 'Nazwa',
+  'customSources.templateLabel': 'Szablon adresu URL',
+  'customSources.templateHint':
+    'Bezwzględny adres https://. {isbn}, {query}, {title}, {author} i {language} są uzupełniane danymi wydania; jeśli jakiś symbol zastępczy zostanie pusty, link dla tego wydania jest pomijany.',
+  'customSources.add': 'Dodaj źródło',
+  'customSources.listHeading': 'Twoje źródła',
+  'customSources.none': 'Brak własnych źródeł.',
+  'customSources.off': 'Wyłączone',
+  'customSources.enable': 'Włącz',
+  'customSources.disable': 'Wyłącz',
+  'customSources.remove': 'Usuń',
+  'customSources.heading': 'Twoje źródła',
+  'customSources.caption':
+    'Linki, które sam skonfigurowałeś. Ta instancja nie sprawdza, dokąd prowadzą.',
+
+  'settings.customSources.title': 'Twoje własne źródła',
+  'settings.customSources.added':
+    '„{name}” zostało dodane i będzie proponowane razem z pozostałymi.',
+  'settings.customSources.removed': '„{name}” zostało usunięte z tej przeglądarki.',
+  'settings.customSources.enabled': '„{name}” jest znów włączone.',
+  'settings.customSources.disabled':
+    '„{name}” jest wyłączone. Pozostaje skonfigurowane, ale jego link nie będzie wyświetlany.',
+  'settings.customSources.rejected': 'Nic nie dodano: {reason}',
 
   // --- Books in the reader's own language, and localized descriptions -------
   'featured.inLanguageHeading': 'Książki w Twoim języku',

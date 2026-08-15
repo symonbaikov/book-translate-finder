@@ -347,49 +347,6 @@ input::placeholder {
   animation-delay: calc(var(--i, 0) * 40ms);
 }
 
-/* --- Edition comparison ---------------------------------------------------
-   The table scrolls inside its own container rather than widening the page: three columns of
-   publisher names overflow a phone otherwise. */
-
-.compare-picker {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2) var(--space-5);
-  margin-block: var(--space-4);
-}
-
-.compare-picker__item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-block-size: var(--control-h-md);
-  font-size: var(--step--1);
-  cursor: pointer;
-}
-
-.compare-table {
-  border-collapse: collapse;
-  min-inline-size: 100%;
-  font-size: var(--step--1);
-}
-
-.compare-table th,
-.compare-table td {
-  border: 1px solid var(--hairline);
-  padding: var(--space-3);
-  text-align: start;
-  vertical-align: top;
-}
-
-.compare-table thead th {
-  background: var(--surface-2);
-}
-
-.compare-table tbody th {
-  font-weight: var(--weight-semibold);
-  white-space: nowrap;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .skeleton {
     animation: none;

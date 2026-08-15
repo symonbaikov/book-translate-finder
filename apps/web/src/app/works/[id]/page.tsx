@@ -335,7 +335,13 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
           <p className={styles.empty}>{t('work.noEditionsMatch')}</p>
         ) : (
           visibleEditions.map((edition) => (
-            <EditionCard key={edition.id} edition={edition} t={t} locale={locale} />
+            <EditionCard
+              key={edition.id}
+              edition={edition}
+              author={work.author}
+              t={t}
+              locale={locale}
+            />
           ))
         )}
 
@@ -367,10 +373,12 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
 
 function EditionCard({
   edition,
+  author,
   t,
   locale,
 }: {
   edition: EditionSummary;
+  author: string;
   t: Translate;
   locale: string;
 }) {
@@ -400,7 +408,16 @@ function EditionCard({
           {edition.isbn ? ` · ISBN ${edition.isbn}` : ''}
         </div>
         <FreeDownloads downloads={edition.freeDownloads} t={t} />
-        <EditionLinks editionId={edition.id} language={languageName(edition.language, locale)} />
+        <EditionLinks
+          editionId={edition.id}
+          language={languageName(edition.language, locale)}
+          bookMeta={{
+            isbn: edition.isbn,
+            title: edition.title,
+            author,
+            language: edition.language,
+          }}
+        />
         {/* Module C. Per edition, because a price is a price for one binding — and collapsed
             by default, because a popular work lists dozens of editions and fetching them all
             on mount trips the API's own rate limit for prices nobody asked for. */}

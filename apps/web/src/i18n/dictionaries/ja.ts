@@ -106,6 +106,8 @@ export const ja: Dictionary = {
   'compare.heading': '版を比較する',
   'compare.blurb': '2 つか 3 つの版を選ぶと、実際に違う点だけが表示されます。',
   'compare.selected': '{count} 件選択中（最低 2 件必要）。',
+  'compare.editSelection': '版を変更',
+  'compare.showAllEditions': 'すべての版を表示（{count} 件）',
   'compare.columnDifference': '違い',
   'compare.identical': '各ソースが記録している範囲では、これらの版は同一です。',
   'compare.rowLanguage': '言語',
@@ -333,6 +335,33 @@ export const ja: Dictionary = {
   'settings.addons.reordered':
     '「{name}」は {total} 件中 {position} 番目に答えるようになりました。',
   'settings.addons.rejected': '何も導入されませんでした: {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': 'カスタムソース',
+  'customSources.title': 'カスタムソース',
+  'customSources.intro':
+    '名前と、{isbn}、{query}、{title}、{author}、{language} を含む検索URLを指定して、自分の店やカタログを追加できます。リンクはこの端末上で作られ、このサイトが取得することはありません。',
+  'customSources.nameLabel': '名前',
+  'customSources.templateLabel': 'URLテンプレート',
+  'customSources.templateHint':
+    '絶対URL（https://）。{isbn}、{query}、{title}、{author}、{language} はエディションの情報から埋められます。空のままのプレースホルダーがあると、そのエディションのリンクは省略されます。',
+  'customSources.add': 'ソースを追加',
+  'customSources.listHeading': 'あなたのソース',
+  'customSources.none': 'カスタムソースはまだありません。',
+  'customSources.off': 'オフ',
+  'customSources.enable': 'オンにする',
+  'customSources.disable': 'オフにする',
+  'customSources.remove': '削除',
+  'customSources.heading': 'あなたのソース',
+  'customSources.caption': 'ご自身で設定したリンクです。このインスタンスはリンク先を確認しません。',
+
+  'settings.customSources.title': 'あなたのカスタムソース',
+  'settings.customSources.added': '「{name}」を追加しました。他のソースと並んで提示されます。',
+  'settings.customSources.removed': '「{name}」をこのブラウザから削除しました。',
+  'settings.customSources.enabled': '「{name}」を再びオンにしました。',
+  'settings.customSources.disabled':
+    '「{name}」はオフです。設定は残りますが、リンクは表示されません。',
+  'settings.customSources.rejected': '何も追加されませんでした: {reason}',
 
   // --- Books in the reader's own language, and localized descriptions -------
   'featured.inLanguageHeading': 'あなたの言語の本',

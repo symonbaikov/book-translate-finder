@@ -101,6 +101,8 @@ export const zh: Dictionary = {
   'compare.heading': '比较版本',
   'compare.blurb': '选择两三个版本，看看它们究竟有什么不同。',
   'compare.selected': '已选 {count} 个，至少需要 2 个。',
+  'compare.editSelection': '更改版本',
+  'compare.showAllEditions': '显示全部 {count} 个版本',
   'compare.columnDifference': '差异',
   'compare.identical': '就各来源记录的全部信息而言，这些版本完全相同。',
   'compare.rowLanguage': '语言',
@@ -309,6 +311,32 @@ export const zh: Dictionary = {
   'settings.addons.disabled': '“{name}”已关闭。它连同设置仍然装着，但它返回的内容不会显示。',
   'settings.addons.reordered': '“{name}”现在排在 {total} 个中的第 {position} 位回答。',
   'settings.addons.rejected': '没有安装任何东西：{reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': '自定义来源',
+  'customSources.title': '自定义来源',
+  'customSources.intro':
+    '为自己的商店或目录添加名称，以及包含 {isbn}、{query}、{title}、{author} 或 {language} 的搜索 URL。链接在本设备上生成，本站从不获取它。',
+  'customSources.nameLabel': '名称',
+  'customSources.templateLabel': 'URL 模板',
+  'customSources.templateHint':
+    '一个绝对的 https:// 地址。{isbn}、{query}、{title}、{author} 和 {language} 会用版本信息填充；若某个占位符为空，则该版本会跳过此链接。',
+  'customSources.add': '添加来源',
+  'customSources.listHeading': '你的来源',
+  'customSources.none': '暂无自定义来源。',
+  'customSources.off': '已关闭',
+  'customSources.enable': '开启',
+  'customSources.disable': '关闭',
+  'customSources.remove': '移除',
+  'customSources.heading': '你的来源',
+  'customSources.caption': '这些链接由你自己配置。本实例不会检查它们指向何处。',
+
+  'settings.customSources.title': '你的自定义来源',
+  'settings.customSources.added': '“{name}”已添加，将与其他来源一起显示。',
+  'settings.customSources.removed': '“{name}”已从此浏览器中移除。',
+  'settings.customSources.enabled': '“{name}”已重新开启。',
+  'settings.customSources.disabled': '“{name}”已关闭。配置仍会保留，但不会显示其链接。',
+  'settings.customSources.rejected': '未添加任何内容：{reason}',
 
   // --- Books in the reader's own language, and localized descriptions -------
   'featured.inLanguageHeading': '你所用语言的图书',

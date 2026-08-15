@@ -88,3 +88,19 @@ export type {
   StoreAvailability,
   StoreMoney,
 } from './geo/types.js';
+
+export {
+  InvalidUrlTemplateError,
+  assertHttpUrlTemplate,
+  formatUrlTemplate,
+  urlTemplateTokenNames,
+  type UrlTemplateTokens,
+} from './url-source/template.js';
+export {
+  activeSourceProviders,
+  createCustomSourceProvider,
+  type BookQueryMeta,
+  type SourceProvider,
+  type SourceProviderConfig,
+  type SourceProviderPlugin,
+} from './url-source/source-provider.js';

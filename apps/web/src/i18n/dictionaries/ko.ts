@@ -106,6 +106,8 @@ export const ko: Dictionary = {
   'compare.heading': '판본 비교',
   'compare.blurb': '두세 개의 판본을 고르면 실제로 다른 점만 보여 줍니다.',
   'compare.selected': '{count}개 선택됨 (최소 2개 필요).',
+  'compare.editSelection': '판본 변경',
+  'compare.showAllEditions': '전체 {count}개 판본 보기',
   'compare.columnDifference': '차이',
   'compare.identical': '출처가 기록한 모든 항목에서 이 판본들은 동일합니다.',
   'compare.rowLanguage': '언어',
@@ -328,6 +330,33 @@ export const ko: Dictionary = {
     '“{name}”을(를) 껐습니다. 설정과 함께 설치된 채로 남지만, 돌려주는 내용은 표시되지 않습니다.',
   'settings.addons.reordered': '“{name}”이(가) 이제 {total}개 중 {position}번째로 답합니다.',
   'settings.addons.rejected': '아무것도 설치되지 않았습니다: {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': '사용자 소스',
+  'customSources.title': '사용자 소스',
+  'customSources.intro':
+    '이름과 {isbn}, {query}, {title}, {author}, {language}가 포함된 검색 URL을 지정해 나만의 상점이나 카탈로그를 추가하세요. 링크는 이 기기에서 만들어지며, 이 사이트는 절대 가져오지 않습니다.',
+  'customSources.nameLabel': '이름',
+  'customSources.templateLabel': 'URL 템플릿',
+  'customSources.templateHint':
+    '절대 https:// 주소입니다. {isbn}, {query}, {title}, {author}, {language}는 판본 정보로 채워집니다. 자리표시자가 비어 있으면 해당 판본의 링크는 생략됩니다.',
+  'customSources.add': '소스 추가',
+  'customSources.listHeading': '내 소스',
+  'customSources.none': '아직 사용자 소스가 없습니다.',
+  'customSources.off': '꺼짐',
+  'customSources.enable': '켜기',
+  'customSources.disable': '끄기',
+  'customSources.remove': '제거',
+  'customSources.heading': '내 소스',
+  'customSources.caption': '직접 설정한 링크입니다. 이 인스턴스는 연결 대상을 확인하지 않습니다.',
+
+  'settings.customSources.title': '내 사용자 소스',
+  'settings.customSources.added': '“{name}”이(가) 추가되어 다른 소스와 함께 제공됩니다.',
+  'settings.customSources.removed': '“{name}”이(가) 이 브라우저에서 제거되었습니다.',
+  'settings.customSources.enabled': '“{name}”이(가) 다시 켜졌습니다.',
+  'settings.customSources.disabled':
+    '“{name}”이(가) 꺼졌습니다. 설정은 유지되지만 링크는 표시되지 않습니다.',
+  'settings.customSources.rejected': '아무것도 추가되지 않았습니다: {reason}',
 
   // --- Books in the reader's own language, and localized descriptions -------
   'featured.inLanguageHeading': '당신의 언어로 쓰인 책',

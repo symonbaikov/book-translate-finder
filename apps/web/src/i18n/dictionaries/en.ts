@@ -128,6 +128,8 @@ export const en = {
   'compare.heading': 'Compare editions',
   'compare.blurb': 'Pick two or three editions to see what actually differs between them.',
   'compare.selected': 'Selected {count} of at least 2.',
+  'compare.editSelection': 'Change editions',
+  'compare.showAllEditions': 'Show all {count} editions',
   'compare.columnDifference': 'Difference',
   'compare.identical': 'These editions are identical in everything the sources record.',
   'compare.rowLanguage': 'Language',
@@ -365,6 +367,34 @@ export const en = {
     '“{name}” is off. It stays installed with its settings, but nothing it returns will be shown.',
   'settings.addons.reordered': '“{name}” now answers {position} of {total}.',
   'settings.addons.rejected': 'Nothing was installed: {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': 'Custom sources',
+  'customSources.title': 'Custom sources',
+  'customSources.intro':
+    'Add a shop or catalog of your own by giving it a name and a search URL with {isbn}, {query}, {title}, {author} or {language} in it. The link is built on this device and this site never fetches it.',
+  'customSources.nameLabel': 'Name',
+  'customSources.templateLabel': 'URL template',
+  'customSources.templateHint':
+    'An absolute https:// address. {isbn}, {query}, {title}, {author} and {language} are filled in from the edition; a placeholder left empty means the link is skipped for that edition.',
+  'customSources.add': 'Add source',
+  'customSources.listHeading': 'Your sources',
+  'customSources.none': 'No custom sources yet.',
+  'customSources.off': 'Off',
+  'customSources.enable': 'Turn on',
+  'customSources.disable': 'Turn off',
+  'customSources.remove': 'Remove',
+  'customSources.heading': 'Your sources',
+  'customSources.caption':
+    'Links you configured yourself. This instance does not check where they lead.',
+
+  'settings.customSources.title': 'Your custom sources',
+  'settings.customSources.added': '“{name}” was added and will be offered alongside the others.',
+  'settings.customSources.removed': '“{name}” was removed from this browser.',
+  'settings.customSources.enabled': '“{name}” is on again.',
+  'settings.customSources.disabled':
+    '“{name}” is off. It stays configured, but its link will not be shown.',
+  'settings.customSources.rejected': 'Nothing was added: {reason}',
 
   // --- Books in the reader's own language, and localized descriptions -------
   'featured.inLanguageHeading': 'Books in your language',

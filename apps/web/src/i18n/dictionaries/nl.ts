@@ -108,6 +108,8 @@ export const nl: Dictionary = {
   'compare.heading': 'Edities vergelijken',
   'compare.blurb': 'Kies twee of drie edities om te zien waarin ze werkelijk verschillen.',
   'compare.selected': '{count} geselecteerd, er zijn er minstens 2 nodig.',
+  'compare.editSelection': 'Edities wijzigen',
+  'compare.showAllEditions': 'Alle {count} edities tonen',
   'compare.columnDifference': 'Verschil',
   'compare.identical': 'In alles wat de bronnen vastleggen zijn deze edities identiek.',
   'compare.rowLanguage': 'Taal',
@@ -334,6 +336,34 @@ export const nl: Dictionary = {
     '“{name}” staat uit. Hij blijft geïnstalleerd met zijn instellingen, maar er wordt niets van getoond.',
   'settings.addons.reordered': '“{name}” antwoordt nu als {position} van {total}.',
   'settings.addons.rejected': 'Er is niets geïnstalleerd: {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': 'Eigen bronnen',
+  'customSources.title': 'Eigen bronnen',
+  'customSources.intro':
+    'Voeg uw eigen winkel of catalogus toe door er een naam en een zoek-URL met {isbn}, {query}, {title}, {author} of {language} aan te geven. De link wordt op dit apparaat gebouwd en deze site haalt hem nooit op.',
+  'customSources.nameLabel': 'Naam',
+  'customSources.templateLabel': 'URL-sjabloon',
+  'customSources.templateHint':
+    'Een absoluut https://-adres. {isbn}, {query}, {title}, {author} en {language} worden ingevuld vanuit de editie; blijft een plaatshouder leeg, dan wordt de link voor die editie overgeslagen.',
+  'customSources.add': 'Bron toevoegen',
+  'customSources.listHeading': 'Uw bronnen',
+  'customSources.none': 'Nog geen eigen bronnen.',
+  'customSources.off': 'Uit',
+  'customSources.enable': 'Aanzetten',
+  'customSources.disable': 'Uitzetten',
+  'customSources.remove': 'Verwijderen',
+  'customSources.heading': 'Uw bronnen',
+  'customSources.caption':
+    'Links die u zelf hebt ingesteld. Deze instantie controleert niet waar ze naartoe leiden.',
+
+  'settings.customSources.title': 'Uw eigen bronnen',
+  'settings.customSources.added': '“{name}” is toegevoegd en wordt samen met de andere aangeboden.',
+  'settings.customSources.removed': '“{name}” is uit deze browser verwijderd.',
+  'settings.customSources.enabled': '“{name}” staat weer aan.',
+  'settings.customSources.disabled':
+    '“{name}” staat uit. Blijft geconfigureerd, maar de link wordt niet getoond.',
+  'settings.customSources.rejected': 'Er is niets toegevoegd: {reason}',
 
   // --- Books in the reader's own language, and localized descriptions -------
   'featured.inLanguageHeading': 'Boeken in uw taal',

@@ -22,7 +22,9 @@ export type PluginKind =
   /** Answers "which physical shops near this point" (Module B). */
   | 'geo-store'
   /** Answers "what does this edition cost and where" (Module C). */
-  | 'price';
+  | 'price'
+  /** Builds a deterministic search link for one edition from a reader-authored URL template. */
+  | 'url-source';
 
 /**
  * How a plugin gets its data. This is a legal boundary, not a technical detail — the project's

@@ -119,6 +119,8 @@ export const de: Dictionary = {
   'compare.blurb':
     'Wählen Sie zwei oder drei Ausgaben, um zu sehen, worin sie sich tatsächlich unterscheiden.',
   'compare.selected': '{count} ausgewählt, mindestens 2 nötig.',
+  'compare.editSelection': 'Ausgaben ändern',
+  'compare.showAllEditions': 'Alle {count} Ausgaben anzeigen',
   'compare.columnDifference': 'Unterschied',
   'compare.identical': 'In allem, was die Quellen erfassen, sind diese Ausgaben identisch.',
   'compare.rowLanguage': 'Sprache',
@@ -353,6 +355,35 @@ export const de: Dictionary = {
     '„{name}“ ist aus. Es bleibt mitsamt seinen Einstellungen installiert, aber nichts davon wird angezeigt.',
   'settings.addons.reordered': '„{name}“ antwortet jetzt als {position}. von {total}.',
   'settings.addons.rejected': 'Es wurde nichts installiert: {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': 'Eigene Quellen',
+  'customSources.title': 'Eigene Quellen',
+  'customSources.intro':
+    'Fügen Sie einen eigenen Shop oder Katalog hinzu, indem Sie ihm einen Namen und eine Such-URL mit {isbn}, {query}, {title}, {author} oder {language} geben. Der Link wird auf diesem Gerät erstellt, diese Seite ruft ihn nie ab.',
+  'customSources.nameLabel': 'Name',
+  'customSources.templateLabel': 'URL-Vorlage',
+  'customSources.templateHint':
+    'Eine absolute https://-Adresse. {isbn}, {query}, {title}, {author} und {language} werden aus der Ausgabe gefüllt; bleibt ein Platzhalter leer, wird der Link für diese Ausgabe übersprungen.',
+  'customSources.add': 'Quelle hinzufügen',
+  'customSources.listHeading': 'Ihre Quellen',
+  'customSources.none': 'Noch keine eigenen Quellen.',
+  'customSources.off': 'Aus',
+  'customSources.enable': 'Einschalten',
+  'customSources.disable': 'Ausschalten',
+  'customSources.remove': 'Entfernen',
+  'customSources.heading': 'Ihre Quellen',
+  'customSources.caption':
+    'Links, die Sie selbst eingerichtet haben. Diese Instanz prüft nicht, wohin sie führen.',
+
+  'settings.customSources.title': 'Ihre eigenen Quellen',
+  'settings.customSources.added':
+    '„{name}“ wurde hinzugefügt und wird neben den anderen angeboten.',
+  'settings.customSources.removed': '„{name}“ wurde aus diesem Browser entfernt.',
+  'settings.customSources.enabled': '„{name}“ ist wieder an.',
+  'settings.customSources.disabled':
+    '„{name}“ ist aus. Es bleibt konfiguriert, aber sein Link wird nicht angezeigt.',
+  'settings.customSources.rejected': 'Es wurde nichts hinzugefügt: {reason}',
 
   // --- Books in the reader's own language, and localized descriptions -------
   'featured.inLanguageHeading': 'Bücher in Ihrer Sprache',

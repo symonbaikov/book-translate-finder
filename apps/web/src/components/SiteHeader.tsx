@@ -39,6 +39,9 @@ export function SiteHeader() {
           <Link href="/addons" className={styles.link}>
             {t('nav.addons')}
           </Link>
+          <Link href="/custom-sources" className={styles.link}>
+            {t('nav.customSources')}
+          </Link>
           <LanguageSelector />
           {/* The account links wait for the session — flashing "Sign in" at someone already
               signed in reads as being logged out. */}

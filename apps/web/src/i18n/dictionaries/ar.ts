@@ -103,6 +103,8 @@ export const ar: Dictionary = {
   'compare.heading': 'قارن الطبعات',
   'compare.blurb': 'اختر طبعتين أو ثلاثاً لترى ما يختلف بينها فعلاً.',
   'compare.selected': 'اخترت {count}، والمطلوب اثنتان على الأقل.',
+  'compare.editSelection': 'تغيير الطبعات',
+  'compare.showAllEditions': 'عرض كل الطبعات ({count})',
   'compare.columnDifference': 'الفرق',
   'compare.identical': 'في كل ما تسجّله المصادر، هذه الطبعات متطابقة.',
   'compare.rowLanguage': 'اللغة',
@@ -318,6 +320,32 @@ export const ar: Dictionary = {
     'أُوقفت «{name}». تبقى مثبَّتة بإعداداتها، لكن لن يُعرض شيء مما تُعيده.',
   'settings.addons.reordered': 'تُجيب «{name}» الآن في الموضع {position} من {total}.',
   'settings.addons.rejected': 'لم يُثبَّت شيء: {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': 'مصادر مخصصة',
+  'customSources.title': 'مصادر مخصصة',
+  'customSources.intro':
+    'أضف متجرًا أو فهرسًا خاصًا بك بإعطائه اسمًا ورابط بحث يحتوي على {isbn} أو {query} أو {title} أو {author} أو {language}. يُبنى الرابط على هذا الجهاز، ولا يجلبه هذا الموقع أبدًا.',
+  'customSources.nameLabel': 'الاسم',
+  'customSources.templateLabel': 'قالب الرابط',
+  'customSources.templateHint':
+    'عنوان https:// كامل. تُملأ {isbn} و{query} و{title} و{author} و{language} من بيانات الإصدار؛ إذا بقي أحدها فارغًا يُتجاهل الرابط لهذا الإصدار.',
+  'customSources.add': 'إضافة مصدر',
+  'customSources.listHeading': 'مصادرك',
+  'customSources.none': 'لا توجد مصادر مخصصة بعد.',
+  'customSources.off': 'معطّل',
+  'customSources.enable': 'تفعيل',
+  'customSources.disable': 'تعطيل',
+  'customSources.remove': 'إزالة',
+  'customSources.heading': 'مصادرك',
+  'customSources.caption': 'روابط أعددتها بنفسك. لا يتحقق هذا الموقع من وجهتها.',
+
+  'settings.customSources.title': 'مصادرك المخصصة',
+  'settings.customSources.added': 'أُضيف «{name}» وسيُعرض مع البقية.',
+  'settings.customSources.removed': 'أُزيل «{name}» من هذا المتصفح.',
+  'settings.customSources.enabled': '«{name}» مفعّل مجددًا.',
+  'settings.customSources.disabled': '«{name}» معطّل. يبقى مُعدًّا، لكن رابطه لن يظهر.',
+  'settings.customSources.rejected': 'لم تتم الإضافة: {reason}',
 
   // --- Books in the reader's own language, and localized descriptions -------
   'featured.inLanguageHeading': 'كتب بلغتك',
