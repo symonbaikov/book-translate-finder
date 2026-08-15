@@ -12,7 +12,7 @@ export const uk: Dictionary = {
   'footer.openSource': 'Відкритий код',
   'footer.openSourceRest': '— ліцензія MIT, можна розгорнути у себе. Код на GitHub.',
 
-  'home.title': 'BookTranslate Finder',
+  'home.title': 'Golden Library',
   'home.subtitle': 'Відкритий агрегатор перекладів книжок: мови, видання та законні джерела.',
   'home.searchLabel': 'Назва та автор',
   'home.searchPlaceholder': 'Війна і мир Толстой',
@@ -33,11 +33,37 @@ export const uk: Dictionary = {
   'featured.filling': 'Частина книжок ще завантажується у фоні. Оновіть сторінку за хвилину.',
   'featured.freeCopy': 'Є безкоштовно',
 
+  // --- Free books ---------------------------------------------------------
+  'free.homeHeading': 'Можна читати безкоштовно',
+  'free.homeBlurb':
+    'Книжки в суспільному надбанні та під відкритими ліцензіями — ця копія сайту віддає їх напряму.',
+  'free.seeAll': 'Дивитися ще',
+  'free.downloadable': 'Завантажити',
+  'free.pageTitle': 'Безкоштовні книжки',
+  'free.pageBlurb':
+    'Кожна книжка тут має щонайменше одну легальну безкоштовну копію: суспільне надбання або дозвіл правовласника. Без купівлі й без читацького квитка.',
+  'free.empty':
+    'Поки що нічого безкоштовного. Безкоштовні копії з’являються, коли ця копія сайту завантажує книжки, — пошукайте книжку й загляньте сюди знову.',
+  'free.emptyForLanguage':
+    'Безкоштовних копій цією мовою ({language}) поки немає. Зніміть фільтр вище, щоб побачити всю полицю.',
+  'free.showMore': 'Показати ще',
+  'free.shown': 'Показано {shown} з {total}.',
+  'free.allLanguages': 'Безкоштовні копії всіма мовами.',
+  'free.filteredByLanguage': 'Лише безкоштовні копії мовою: {language}.',
+  'free.filterByLanguage': 'Показати лише безкоштовні копії мовою: {language}.',
+  'free.dropLanguageFilter': 'показати всі мови',
+  'free.loadFailed': 'Зараз не вдалося завантажити безкоштовні книжки.',
+
   'work.original': 'оригінал',
   'work.dataSources': 'Джерела даних',
   'work.about': 'Про цю книжку',
   'work.translatedInto': 'Перекладено на',
   'work.noTranslations': 'Перекладів поки не знайдено.',
+  'work.yourLanguage.title': 'Вашою мовою',
+  'work.yourLanguage.yes': 'Переклад є. Мова: {language}.',
+  'work.yourLanguage.original': 'Це мова оригіналу: {language}.',
+  'work.yourLanguage.no': 'Серед відомих видань перекладу немає. Мова: {language}.',
+  'work.yourLanguage.show': 'Показати видання: {language}',
   'work.editions': 'Видання ({shown} з {total})',
   'work.filterLanguage': 'Мова',
   'work.filterAllLanguages': 'Усі мови',
@@ -45,6 +71,10 @@ export const uk: Dictionary = {
   'work.filterApply': 'Фільтрувати',
   'work.filterReset': 'Скинути',
   'work.noEditionsMatch': 'Під ці фільтри не підходить жодне видання.',
+  'work.showMoreEditions': 'Показати ще видання (лишилося {remaining})',
+  'work.badgeFreeDownload': 'завантажити безкоштовно',
+  'work.freeDownloadFormat': 'Завантажити {format}',
+  'work.freeDownloadNote': '{rights}. Безкоштовно, джерело — {provider}: без акаунта й без оплати.',
   'work.badgeReadBorrow': 'читати або взяти',
   'work.badgeInBookstores': 'у магазинах',
   'work.translatedBy': 'переклад: {name}',
@@ -59,6 +89,7 @@ export const uk: Dictionary = {
   'links.hide': 'Сховати посилання',
   'links.loading': 'Завантажуємо посилання',
   'links.none': 'Для цього видання законних посилань поки немає.',
+  'links.viaOtherEdition': 'безкоштовна копія з видання {label}',
   'links.failed': 'Не вдалося завантажити посилання.',
   'links.storesHeading': 'Знайти в магазині',
   'links.storesInCountry': 'У країні: {country}',
@@ -135,6 +166,9 @@ export const uk: Dictionary = {
   'search.notFoundHint': 'Нічого не знайшлося. Спробуйте уточнити назву або автора.',
   'search.timedOut':
     'Джерела відповідають повільно, даних поки немає. Фонова синхронізація могла вже завершитися — спробуйте ще раз.',
+  'search.freeOnlyToggle': 'Є безкоштовно',
+  'search.noFreeResults':
+    'Серед цих результатів поки немає безкоштовних — спробуйте вимкнути фільтр.',
   'home.tagline': 'Знайдіть свій наступний magnum opus',
   'subject.allLanguages': 'Усі мови.',
   'subject.filteredByLanguage': 'Лише книжки з виданням мовою: {language}.',
@@ -204,4 +238,117 @@ export const uk: Dictionary = {
   'prices.format.unknown': 'Формат не вказано',
   'recommend.hideGenre': 'сховати «{genre}»',
   'recommend.hiddenList': 'Приховані жанри (натисніть, щоб повернути):',
+
+  // --- Спливаючі вікна налаштувань ---
+  'settings.status.saved': 'Збережено',
+  'settings.status.cleared': 'Скинуто',
+  'settings.status.unstored': 'Не збережено',
+  'settings.status.failed': 'Без змін',
+  'settings.notStored':
+    'Браузер відмовився зберегти зміну, тож нічого не сталося — діє попереднє значення.',
+  'settings.language.title': 'Мова інтерфейсу',
+  'settings.language.changed':
+    'Змінено з {from} на {to}. Інтерфейс перезавантажується мовою {to}; назви книжок та імена авторів лишаються своїми мовами.',
+  'settings.country.title': 'Країна покупок',
+  'settings.country.changed':
+    'Обрано: {country}. У посиланнях на книгарні тепер є ті, що доставляють туди, разом із міжнародними.',
+  'settings.country.cleared':
+    'Країну не обрано. Пропонуватимуться лише книгарні з доставкою по всьому світу.',
+  'settings.bookLanguage.title': 'Мова книжок',
+  'settings.bookLanguage.changed':
+    'Обрано: {language}. На сторінках жанрів спершу будуть книжки з виданням мовою {language} — доки ви не скинете фільтр.',
+  'settings.bookLanguage.cleared':
+    'Скинуто. На сторінках жанрів знову показуються книжки всіма мовами.',
+  'settings.hiddenGenres.title': 'Приховані жанри',
+  'settings.hiddenGenres.hidden':
+    'Жанр «{genre}» приховано. Він більше не надсилається на сервер під час запиту рекомендацій; усього приховано жанрів: {count}.',
+  'settings.hiddenGenres.restored':
+    'Жанр «{genre}» знову в рекомендаціях. Ще приховано жанрів: {count}.',
+  'settings.history.title': 'Історія читання',
+  'settings.history.cleared':
+    'Відкриті вами книжки видалено з цього браузера. Рекомендації не з’являться, доки ви не відкриєте наступну книжку.',
+  'settings.bookmarks.title': 'Збережені книжки',
+  'settings.bookmarks.added': '«{title}» додано до збережених книжок.',
+  'settings.bookmarks.removed': '«{title}» вилучено зі збережених книжок.',
+  'settings.bookmarks.failed':
+    'Сервер не прийняв зміну, тож список збережених книжок лишився без змін.',
+  'settings.catalogs.title': 'Ваші каталоги',
+  'settings.catalogs.added':
+    'Каталог «{name}» додано за адресою {url}. Його адреса лишається в цьому браузері й ніколи не надсилається на цей сайт.',
+  'settings.catalogs.addedWithCredentials':
+    'Каталог «{name}» додано за адресою {url} разом із введеними логіном і паролем. Усе це лишається в цьому браузері й не надсилається на цей сайт.',
+  'settings.catalogs.removed':
+    'Каталог «{name}» вилучено з цього браузера разом із збереженими для нього обліковими даними.',
+  'settings.catalogs.rejected': 'Нічого не додано: {reason}',
+  // --- Addons ---------------------------------------------------------------
+  'nav.addons': 'Доповнення',
+  'addons.title': 'Доповнення',
+  'addons.intro':
+    'Доповнення додає власні джерела. Ви встановлюєте його, вставивши адресу; воно працює або на вашому пристрої в пісочниці, або на сервері свого автора. Golden Library не постачає доповнень, не веде їхнього списку й не перевіряє, що вони повертають.',
+  'addons.addressLabel': 'Адреса доповнення',
+  'addons.addressHint': 'Посилання на маніфест, яке дав автор доповнення.',
+  'addons.continue': 'Далі',
+  'addons.fromServer': 'З сервера',
+  'addons.fromFile': 'З файлу, на вашому пристрої',
+  'addons.bundleLabel': 'Адреса коду доповнення',
+  'addons.bundleHint':
+    'Посилання на код доповнення. Він виконуватиметься на цьому пристрої, а не на сервері.',
+  'addons.integrityLabel': 'Хеш цілісності',
+  'addons.integrityHint':
+    'Його дає автор доповнення, у вигляді sha256-… . Обовʼязковий: без нього одного разу схвалений код міг би потім змінитися, а ви б про це не дізналися.',
+  'addons.checking': 'Читаємо доповнення…',
+  'addons.installedHeading': 'Встановлені',
+  'addons.none': 'Доповнень поки немає. Усе, що ви бачите на сайті, надходить від самого інстансу.',
+  'addons.priorityHint': 'Порядок — це пріоритет: перше доповнення відповідає першим.',
+  'addons.enable': 'Увімкнути',
+  'addons.disable': 'Вимкнути',
+  'addons.off': 'Вимкнено',
+  'addons.remove': 'Видалити',
+  'addons.moveUp': 'Вище',
+  'addons.moveDown': 'Нижче',
+  'addons.configure': 'Налаштувати',
+  'addons.failedToStart': 'Доповнення «{name}» не запустилося: {reason}',
+  'addons.consentTitle': 'Встановити «{name}»?',
+  'addons.consentHosts': 'Воно звертатиметься до: {hosts}',
+  'addons.consentNoHosts': 'Воно не запитало доступу до жодної адреси.',
+  'addons.consentSeesYou':
+    'Це доповнення працює на сервері свого автора. Він побачить вашу адресу й усе, що ви через нього шукаєте.',
+  'addons.consentSandboxed':
+    'Це доповнення працює на вашому пристрої в пісочниці. Воно не може прочитати ваші куки, дані цього сайту чи будь-що інше, що у вас відкрито.',
+  'addons.consentNotVetted':
+    'Golden Library не перевіряє, що повертає доповнення, і не рекомендувала це. Що встановлювати — ваш вибір.',
+  'addons.install': 'Встановити',
+  'addons.cancel': 'Скасувати',
+  'addons.via': 'через {name}',
+  'addons.sourcesTitle': 'Від ваших доповнень',
+  'addons.searchTitle': 'Знайдено вашими доповненнями',
+  'addons.showLinks': 'Показати посилання для завантаження',
+  'addons.unreadable': 'Записів від цього доповнення не вдалося прочитати: {count}.',
+  'addons.browse': 'Переглянути каталог',
+  'addons.browseTitle': 'Каталог «{name}»',
+  'addons.browseNoCatalog': 'Це доповнення не пропонує каталогу для перегляду.',
+  'addons.browseEmpty': 'Каталог цього доповнення поки що порожній.',
+  'addons.browseFailed': 'Не вдалося завантажити каталог «{name}»: {reason}',
+  'addons.loadMore': 'Показати ще',
+  'addons.notInstalled': 'Це доповнення не встановлено.',
+
+  'settings.addons.title': 'Ваші доповнення',
+  'settings.addons.installed':
+    'Доповнення «{name}» встановлено. Його питатимуть нарівні з іншими, і воно може звертатися до {hosts}.',
+  'settings.addons.removed':
+    'Доповнення «{name}» видалено. Його результати зникли з цього браузера разом з усім, що воно тут зберігало.',
+  'settings.addons.enabled': 'Доповнення «{name}» знову увімкнено і буде опитуватися з усіма.',
+  'settings.addons.disabled':
+    'Доповнення «{name}» вимкнено. Воно лишається встановленим разом зі своїми налаштуваннями, але нічого з того, що воно повертає, показано не буде.',
+  'settings.addons.reordered': 'Доповнення «{name}» тепер відповідає {position}-м з {total}.',
+  'settings.addons.rejected': 'Нічого не встановлено: {reason}',
+
+  // --- Books in the reader's own language, and localized descriptions -------
+  'featured.inLanguageHeading': 'Книжки вашою мовою',
+  'featured.inLanguageBlurb':
+    'Книжки, написані мовою, якою ви читаєте цей сайт; спершу найчастіше перевидані — це порядок самої Open Library, а не рейтинг продажів.',
+  'work.newSearch': 'Новий пошук',
+  'work.descriptionFrom': 'Опис:',
+  'work.descriptionNotLocalized':
+    'Опис подано так, як його написало джерело, — вашою мовою для цієї книжки його поки немає.',
 };

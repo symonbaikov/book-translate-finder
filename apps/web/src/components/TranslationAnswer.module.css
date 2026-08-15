@@ -1,0 +1,30 @@
+/* The answer line reads as a statement, not as a control panel: one sentence, and the action that
+ * follows from it on the same row. It wraps to two rows on a phone rather than shrinking the
+ * button, because the button is the thing a thumb has to hit. */
+
+.answer,
+.answerMissing {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--r-md);
+  border-inline-start: 3px solid var(--accent);
+  background: var(--surface-inset);
+}
+
+/* A missing translation is information, not an error — muted rather than red. Nothing went wrong;
+ * the book simply has not been translated, and colouring that like a failure would tell the reader
+ * to do something about it. */
+.answerMissing {
+  border-inline-start-color: var(--hairline-strong);
+  color: var(--text-muted);
+}
+
+.sentence {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  font-size: var(--step-0);
+}
