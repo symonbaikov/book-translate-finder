@@ -59,6 +59,9 @@ export const ru: Dictionary = {
   'work.dataSources': 'Источники данных',
   'work.about': 'Об этой книге',
   'work.translatedInto': 'Переведена на',
+  'work.availableIn': 'Доступные языки',
+  'work.languagesNote':
+    'Только то, что перечисляют наши источники. Отсутствие языка здесь не значит, что перевода нет.',
   'work.noTranslations': 'Переводы пока не найдены.',
   'work.yourLanguage.title': 'На вашем языке',
   'work.yourLanguage.yes': 'Перевод на {language} есть.',

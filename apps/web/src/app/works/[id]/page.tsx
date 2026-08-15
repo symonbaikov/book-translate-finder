@@ -225,15 +225,24 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
         />
       </Section>
 
-      <Section title={t('work.translatedInto')}>
-        {work.translatedLanguages.length > 0 ? (
-          // Chips rather than a comma-separated sentence: each one is also the filter for that
-          // language's editions, which is the question a reader asks straight after "does it exist
-          // in my language" — and a list of 47 names in prose answers neither question well.
+      {/* Every language the book exists in *here*, the original among them.
+       *
+       * It used to list translations only, which is the literally correct reading of "translated
+       * into" and the wrong answer to the question being asked. «Метро 2033» then showed six
+       * languages with Russian absent — while holding two Russian editions all along — and a
+       * reader looking for the original could only conclude the site did not have it. A list of
+       * available languages that silently omits one of them is worse than no list.
+       *
+       * Chips rather than prose: each one is also the filter for that language's editions, which
+       * is what a reader asks the moment they find their language in the list. */}
+      <Section title={t('work.availableIn')} note={t('work.languagesNote')}>
+        {languageOptions.length > 0 ? (
           <Cluster>
-            {work.translatedLanguages.map((code) => (
+            {languageOptions.map((code) => (
               <ChipLink key={code} href={filterHref(params.id, searchParams, code)}>
-                {languageName(code, locale)}
+                {code === work.originalLanguage
+                  ? `${languageName(code, locale)} · ${t('work.original')}`
+                  : languageName(code, locale)}
               </ChipLink>
             ))}
           </Cluster>

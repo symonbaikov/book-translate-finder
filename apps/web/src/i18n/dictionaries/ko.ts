@@ -53,6 +53,9 @@ export const ko: Dictionary = {
   'work.dataSources': '데이터 출처',
   'work.about': '이 책에 대하여',
   'work.translatedInto': '번역된 언어',
+  'work.availableIn': '이용 가능한 언어',
+  'work.languagesNote':
+    '참조한 자료에 있는 것만 표시합니다. 여기에 없는 번역본도 존재할 수 있습니다.',
   'work.noTranslations': '아직 번역본을 찾지 못했습니다.',
   'work.yourLanguage.title': '내 언어로',
   'work.yourLanguage.yes': '{language} 번역본이 있습니다.',

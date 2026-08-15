@@ -58,6 +58,9 @@ export const uk: Dictionary = {
   'work.dataSources': 'Джерела даних',
   'work.about': 'Про цю книжку',
   'work.translatedInto': 'Перекладено на',
+  'work.availableIn': 'Доступні мови',
+  'work.languagesNote':
+    'Лише те, що перелічують наші джерела. Відсутність мови тут не означає, що перекладу немає.',
   'work.noTranslations': 'Перекладів поки не знайдено.',
   'work.yourLanguage.title': 'Вашою мовою',
   'work.yourLanguage.yes': 'Переклад є. Мова: {language}.',

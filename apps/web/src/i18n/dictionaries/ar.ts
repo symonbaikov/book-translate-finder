@@ -52,6 +52,8 @@ export const ar: Dictionary = {
   'work.dataSources': 'مصادر البيانات',
   'work.about': 'عن هذا الكتاب',
   'work.translatedInto': 'مترجم إلى',
+  'work.availableIn': 'متوفّر بلغات',
+  'work.languagesNote': 'ما تذكره مصادرنا فقط — غياب ترجمة هنا لا يعني أنها غير موجودة.',
   'work.noTranslations': 'لم يُعثر على ترجمات بعد.',
   'work.yourLanguage.title': 'بلغتك',
   'work.yourLanguage.yes': 'توجد ترجمة إلى {language}.',

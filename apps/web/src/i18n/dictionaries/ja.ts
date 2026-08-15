@@ -53,6 +53,9 @@ export const ja: Dictionary = {
   'work.dataSources': 'データ提供元',
   'work.about': 'この本について',
   'work.translatedInto': '翻訳されている言語',
+  'work.availableIn': '収録されている言語',
+  'work.languagesNote':
+    '参照している情報源に載っているものだけです。ここにない翻訳が存在することもあります。',
   'work.noTranslations': 'まだ翻訳が見つかっていません。',
   'work.yourLanguage.title': 'あなたの言語で',
   'work.yourLanguage.yes': '{language}の翻訳があります。',

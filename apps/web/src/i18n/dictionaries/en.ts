@@ -69,6 +69,9 @@ export const en = {
   'work.dataSources': 'Data sources',
   'work.about': 'About this book',
   'work.translatedInto': 'Translated into',
+  'work.availableIn': 'Available in',
+  'work.languagesNote':
+    'Only what the sources we read list — a translation missing here may still exist.',
   'work.noTranslations': 'No translations found yet.',
   'work.yourLanguage.title': 'In your language',
   'work.yourLanguage.yes': 'There is a translation into {language}.',

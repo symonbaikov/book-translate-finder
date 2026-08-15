@@ -54,6 +54,9 @@ export const tr: Dictionary = {
   'work.dataSources': 'Veri kaynakları',
   'work.about': 'Bu kitap hakkında',
   'work.translatedInto': 'Çevrildiği diller',
+  'work.availableIn': 'Mevcut diller',
+  'work.languagesNote':
+    'Yalnızca kaynaklarımızın listelediği diller — burada olmayan bir çeviri yine de var olabilir.',
   'work.noTranslations': 'Henüz çeviri bulunamadı.',
   'work.yourLanguage.title': 'Sizin dilinizde',
   'work.yourLanguage.yes': '{language} çevirisi var.',

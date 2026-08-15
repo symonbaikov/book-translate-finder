@@ -61,6 +61,9 @@ export const de: Dictionary = {
   'work.dataSources': 'Datenquellen',
   'work.about': 'Über dieses Buch',
   'work.translatedInto': 'Übersetzt in',
+  'work.availableIn': 'Verfügbar auf',
+  'work.languagesNote':
+    'Nur was unsere Quellen führen — eine hier fehlende Übersetzung kann trotzdem existieren.',
   'work.noTranslations': 'Noch keine Übersetzungen gefunden.',
   'work.yourLanguage.title': 'In Ihrer Sprache',
   'work.yourLanguage.yes': 'Eine Übersetzung ist vorhanden: {language}.',

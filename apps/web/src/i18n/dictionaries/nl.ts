@@ -55,6 +55,9 @@ export const nl: Dictionary = {
   'work.dataSources': 'Databronnen',
   'work.about': 'Over dit boek',
   'work.translatedInto': 'Vertaald in',
+  'work.availableIn': 'Beschikbaar in',
+  'work.languagesNote':
+    'Alleen wat onze bronnen vermelden — een vertaling die hier ontbreekt, kan toch bestaan.',
   'work.noTranslations': 'Nog geen vertalingen gevonden.',
   'work.yourLanguage.title': 'In jouw taal',
   'work.yourLanguage.yes': 'Er bestaat een vertaling in het {language}.',

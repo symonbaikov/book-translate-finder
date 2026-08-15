@@ -50,6 +50,8 @@ export const zh: Dictionary = {
   'work.dataSources': '数据来源',
   'work.about': '关于本书',
   'work.translatedInto': '已译成',
+  'work.availableIn': '可用语言',
+  'work.languagesNote': '仅为我们的数据源所列。此处未列出的译本仍可能存在。',
   'work.noTranslations': '暂未找到译本。',
   'work.yourLanguage.title': '你的语言',
   'work.yourLanguage.yes': '有{language}译本。',
