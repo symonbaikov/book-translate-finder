@@ -11,9 +11,7 @@ under copyright.
 
 The project is designed for self-hosting: deploy your own copy on your own server or home NAS.
 
-![Book card: cover, description, translation languages, editions, legal links](docs/images/work-card.png)
-
-![Home page: books of the year, several per year, with covers](docs/images/books-of-the-year.png)
+![Home page: search, and personalized recommendations based on browsing history worked out in the browser](docs/images/home.png)
 
 ## Legal policy
 
