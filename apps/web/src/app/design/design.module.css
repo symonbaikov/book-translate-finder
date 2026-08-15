@@ -1,0 +1,84 @@
+/* Specimen sheet. This file is allowed to lay out its own page furniture; it is not allowed to
+   invent a colour, a size or a duration — everything it uses comes from the token layer. */
+
+.page {
+  max-inline-size: var(--container);
+  margin-inline: auto;
+  padding: var(--space-7) var(--container-pad) var(--space-10);
+}
+
+.note {
+  color: var(--text-muted);
+  max-inline-size: var(--container-prose);
+}
+
+.spaced {
+  margin-block-start: var(--space-4);
+}
+
+/* --- Type ----------------------------------------------------------------- */
+
+.typeRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  padding-block: var(--space-2);
+  border-block-end: 1px solid var(--hairline);
+}
+
+.typeMeta {
+  flex: 0 0 7rem;
+  font-size: var(--step--2);
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.display {
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-tight);
+}
+
+/* --- Fields --------------------------------------------------------------- */
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-5);
+  align-items: start;
+}
+
+/* --- Surfaces ------------------------------------------------------------- */
+
+.surfaces {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+}
+
+.surface {
+  border-radius: var(--r-lg);
+  padding: var(--space-5);
+  border: 1px solid var(--hairline);
+  font-size: var(--step--1);
+  color: var(--text-muted);
+}
+
+.s0 {
+  background: var(--bg);
+}
+
+.s1 {
+  background: var(--surface-1);
+  box-shadow: var(--elev-1);
+}
+
+.s2 {
+  background: var(--surface-2);
+  box-shadow: var(--elev-2);
+}
+
+.s3 {
+  background: var(--surface-3);
+  box-shadow: var(--elev-3);
+}

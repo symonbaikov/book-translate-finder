@@ -1,0 +1,59 @@
+/* A statement of fact, never a control. Outlined rather than filled, because filled brass is the
+   application's word for "press me" — if a status were also a solid colour, the reader would have
+   to learn which solid colours are pressable and which are not.
+ *
+ * The glyph is not decoration. Rights status is the one fact on this site that must not be
+ * guessed, and colour alone excludes anyone who cannot separate these hues — on a monochrome
+ * display, in bright sun, or with any of the common colour-vision deficiencies. Glyph, word and
+ * colour all carry it. */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.15em var(--space-3);
+  border-radius: var(--r-pill);
+  border: 1px solid currentColor;
+  background: transparent;
+  font-size: var(--step--1);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-snug);
+  white-space: nowrap;
+}
+
+.glyph {
+  font-size: 0.95em;
+  line-height: 1;
+  opacity: 0.9;
+}
+
+/* A tinted fill for the rare case where a badge sits on the same surface colour as its own border
+   and would otherwise disappear — a badge over a cover, for instance. */
+.solid {
+  background: var(--badge-tint, transparent);
+}
+
+.positive {
+  color: var(--positive-text);
+  --badge-tint: var(--positive-soft);
+}
+
+.info {
+  color: var(--info-text);
+  --badge-tint: var(--info-soft);
+}
+
+.neutral {
+  color: var(--neutral-text);
+  --badge-tint: var(--neutral-soft);
+}
+
+.caution {
+  color: var(--caution-text);
+  --badge-tint: var(--caution-soft);
+}
+
+.danger {
+  color: var(--danger-text);
+  --badge-tint: var(--danger-soft);
+}

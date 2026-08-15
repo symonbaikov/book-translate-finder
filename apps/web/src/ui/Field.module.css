@@ -1,0 +1,83 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-inline-size: 0;
+}
+
+.label {
+  font-size: var(--step--1);
+  font-weight: var(--weight-medium);
+  color: var(--text-muted);
+  letter-spacing: var(--tracking-wide);
+}
+
+.hint {
+  font-size: var(--step--1);
+  color: var(--text-faint);
+  margin: 0;
+}
+
+.error {
+  font-size: var(--step--1);
+  color: var(--danger-text);
+  margin: 0;
+}
+
+/* --- Controls -------------------------------------------------------------
+ * `font-size` never drops below 16px on a control: below that, iOS Safari zooms the page on focus
+ * — a "helpful" behaviour that throws the reader out of the layout mid-sign-in. `--step-1` is
+ * 17px, comfortably clear of it. */
+
+.control {
+  inline-size: 100%;
+  min-block-size: var(--control-h-lg);
+  padding-inline: var(--space-4);
+  font: inherit;
+  font-size: var(--step-1);
+  color: var(--text);
+  background: var(--surface-1);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-md);
+  transition:
+    border-color var(--dur-fast) var(--ease-standard),
+    box-shadow var(--dur-fast) var(--ease-standard),
+    background-color var(--dur-fast) var(--ease-standard);
+}
+
+.control::placeholder {
+  color: var(--text-faint);
+}
+
+.control:hover:not(:disabled) {
+  border-color: var(--hairline-strong);
+  background: var(--surface-2);
+}
+
+/* The ring replaces the global outline here rather than adding to it: an outline plus a border on
+   a rounded field reads as two rings of slightly different radius. */
+.control:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--ring);
+  background: var(--surface-1);
+}
+
+.control:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* The hero search field on the home page: the one control the whole site is built around. */
+.hero {
+  min-block-size: var(--control-h-xl);
+  font-size: var(--step-2);
+  border-radius: var(--r-lg);
+  padding-inline: var(--space-5);
+}
+
+.compact {
+  min-block-size: var(--control-h-md);
+  font-size: var(--step-0);
+  padding-inline: var(--space-3);
+}

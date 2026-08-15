@@ -1,0 +1,245 @@
+/* A dropdown that belongs to this design system.
+ *
+ * A native `<select>` is drawn by the operating system: its list cannot be given our surfaces, our
+ * radii, our type or our motion — on Linux it arrives as a grey system menu that shares nothing
+ * with the page it opened from. That is the whole reason this component exists, and the cost is
+ * real: the browser's own keyboard handling, its type-ahead and its mobile wheel picker all have
+ * to be rebuilt here rather than inherited. See Select.tsx for how. */
+
+.root {
+  position: relative;
+  display: inline-block;
+  min-inline-size: 0;
+}
+
+.block {
+  display: block;
+  inline-size: 100%;
+}
+
+/* --- The trigger ---------------------------------------------------------- */
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  inline-size: 100%;
+  min-block-size: var(--control-h-lg);
+  padding-inline: var(--space-4);
+  font: inherit;
+  font-size: var(--step-1);
+  font-weight: var(--weight-medium);
+  text-align: start;
+  color: var(--text);
+  background: var(--surface-1);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition:
+    border-color var(--dur-fast) var(--ease-standard),
+    background-color var(--dur-fast) var(--ease-standard),
+    box-shadow var(--dur-fast) var(--ease-standard);
+}
+
+.trigger:hover:not(:disabled) {
+  background: var(--surface-2);
+  border-color: var(--accent);
+}
+
+.trigger:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+.trigger:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.compact {
+  min-block-size: var(--control-h-md);
+  font-size: var(--step-0);
+  padding-inline: var(--space-3);
+}
+
+.hero {
+  min-block-size: var(--control-h-xl);
+  font-size: var(--step-2);
+  border-radius: var(--r-lg);
+  padding-inline: var(--space-5);
+}
+
+/* A quiet trigger for a control that lives in the chrome rather than in a form. */
+.bare {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-muted);
+}
+
+.bare:hover:not(:disabled) {
+  background: var(--surface-inset);
+  border-color: transparent;
+  color: var(--text);
+}
+
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--text-faint);
+  transition: transform var(--dur-base) var(--ease-emphasized);
+}
+
+.open .chevron {
+  transform: rotate(180deg);
+  color: var(--accent);
+}
+
+/* --- The panel ------------------------------------------------------------
+ * It unrolls: the panel's row grows from `0fr` to `1fr`, which animates to the list's real height
+ * rather than to a guessed maximum, and the options behind it are clipped by the growing edge —
+ * the same motion as a scroll being unrolled from its rod. The options then arrive one after
+ * another, so that the eye follows the edge downward instead of the whole block appearing at once.
+ *
+ * The panel stays mounted when closed. That is what lets the closing animation run at all, and it
+ * keeps the option list in the DOM for assistive technology to find; `inert` and `pointer-events`
+ * are what make a closed panel unreachable rather than merely invisible. */
+
+.panel {
+  position: absolute;
+  z-index: var(--z-sheet);
+  inset-inline-start: 0;
+  inset-block-start: calc(100% + var(--space-2));
+  inline-size: max-content;
+  min-inline-size: 100%;
+  max-inline-size: min(22rem, 85vw);
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  pointer-events: none;
+  transform-origin: top center;
+  /* `visibility` flips only after the roll-up has finished, which is what keeps the closing
+     animation visible while still leaving a genuinely hidden panel behind — not merely a
+     zero-height one whose list still has a box, and which find-in-page would still hit. */
+  visibility: hidden;
+  transition:
+    grid-template-rows var(--dur-base) var(--ease-emphasized),
+    opacity var(--dur-fast) var(--ease-standard),
+    visibility 0s linear var(--dur-base);
+}
+
+/* Hung from the end of the trigger instead of its start — for a control at the end of a row, where
+   a panel wider than its trigger would otherwise unroll off the edge of the window. */
+.alignEnd {
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+}
+
+/* Opening upward when there is no room below — the rod is then at the bottom and the scroll
+   unrolls toward the top, so the origin flips with it. */
+.up {
+  inset-block-start: auto;
+  inset-block-end: calc(100% + var(--space-2));
+  transform-origin: bottom center;
+}
+
+.panelOpen {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  transition:
+    grid-template-rows var(--dur-base) var(--ease-emphasized),
+    opacity var(--dur-fast) var(--ease-standard),
+    visibility 0s;
+}
+
+.clip {
+  overflow: hidden;
+  min-block-size: 0;
+}
+
+.list {
+  max-block-size: 18rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin: 0;
+  padding: var(--space-2);
+  list-style: none;
+  background: var(--surface-2);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-lg);
+  box-shadow: var(--elev-3);
+  /* Scrollbars inside a rounded, clipped panel look like a seam; keep them thin and unobtrusive. */
+  scrollbar-width: thin;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-block-size: var(--control-h-md);
+  padding-inline: var(--space-3);
+  border-radius: var(--r-sm);
+  font-size: var(--step-0);
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity var(--dur-fast) var(--ease-standard),
+    transform var(--dur-fast) var(--ease-standard),
+    background-color var(--dur-fast) var(--ease-standard),
+    color var(--dur-fast) var(--ease-standard);
+}
+
+/* The stagger is capped: with fifteen languages an uncapped 18ms step would still be dealing out
+   options a quarter of a second after the panel finished opening. */
+.panelOpen .option {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(min(var(--i, 0), 8) * 18ms);
+}
+
+/* Hover and keyboard share one highlight. Two different ones would mean the reader has to learn
+   that "the mouse is here" and "the keyboard is here" look different for no reason. */
+.option:hover,
+.active {
+  background: var(--surface-3);
+  color: var(--text);
+}
+
+.selected {
+  color: var(--accent);
+  font-weight: var(--weight-semibold);
+}
+
+.check {
+  flex-shrink: 0;
+  opacity: 0;
+}
+
+.selected .check {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .option,
+  .chevron,
+  .trigger {
+    transition: none;
+  }
+
+  .panelOpen .option {
+    transition-delay: 0ms;
+  }
+}

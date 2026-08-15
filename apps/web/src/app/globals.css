@@ -1,56 +1,10 @@
-:root {
-  --color-text: #0f172a;
-  --color-muted: #64748b;
-  --color-border: #e2e8f0;
-  --color-bg: #f8fafc;
-  --color-surface: #ffffff;
-  --color-bg-subtle: #f1f5f9;
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-primary-active: #1e40af;
-  --color-primary-soft: #eff6ff;
-  --color-on-primary: #ffffff;
-  --color-ring: rgba(37, 99, 235, 0.35);
-  --color-link: #2563eb;
-  --color-positive-bg: #ecfdf5;
-  --color-positive-text: #047857;
-  --color-neutral-bg: #f1f5f9;
-  --color-neutral-text: #475569;
-  --color-caution-bg: #fffbeb;
-  --color-caution-text: #b45309;
-  --color-error-bg: #fef2f2;
-  --color-error-text: #b91c1c;
-  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
-  --shadow-card-hover: 0 4px 6px rgba(15, 23, 42, 0.05), 0 10px 15px rgba(15, 23, 42, 0.08);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-text: #e2e8f0;
-    --color-muted: #94a3b8;
-    --color-border: #334155;
-    --color-bg: #0f172a;
-    --color-surface: #1e293b;
-    --color-bg-subtle: #263449;
-    --color-primary: #3b82f6;
-    --color-primary-hover: #60a5fa;
-    --color-primary-active: #2563eb;
-    --color-primary-soft: #1e3a8a;
-    --color-on-primary: #ffffff;
-    --color-ring: rgba(96, 165, 250, 0.4);
-    --color-link: #60a5fa;
-    --color-positive-bg: #064e3b;
-    --color-positive-text: #6ee7b7;
-    --color-neutral-bg: #334155;
-    --color-neutral-text: #cbd5e1;
-    --color-caution-bg: #451a03;
-    --color-caution-text: #fbbf24;
-    --color-error-bg: #450a0a;
-    --color-error-text: #fca5a5;
-    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.45);
-  }
-}
+/* The base layer, and the short list of classes that are deliberately global.
+ *
+ * Everything else is a CSS Module next to the component it dresses. A class survives here only if
+ * it has a reason to be global — it is an element-level default, it is asserted on by the
+ * end-to-end suite, or it is a one-word utility used across unrelated components. Colours, sizes
+ * and durations all come from ../styles/tokens.css; a literal value below is a bug, not a
+ * shortcut. */
 
 * {
   box-sizing: border-box;
@@ -58,287 +12,230 @@
 
 body {
   margin: 0;
-  font-family:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    sans-serif;
-  color: var(--color-text);
-  background: var(--color-bg);
-  line-height: 1.6;
+  font-family: var(--font-ui);
+  font-size: var(--step-0);
+  color: var(--text);
+  background: var(--bg);
+  line-height: var(--leading-normal);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
+/* A book's title is the thing the reader came for, so it is set in the reading face, large, with
+   the tracking pulled in — display sizes need it or the letters drift apart. Section headings stay
+   in the interface face: they are navigation, not content, and should not compete. */
 h1 {
-  font-size: 1.9rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  margin: 0.5rem 0 1rem;
+  font-family: var(--font-display);
+  font-size: var(--step-5);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-tight);
+  margin: 0 0 var(--space-4);
+  text-wrap: balance;
 }
 
 h2 {
-  font-size: 1.25rem;
-  font-weight: 650;
-  letter-spacing: -0.01em;
-  margin: 0 0 0.75rem;
+  font-size: var(--step-3);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-snug);
+  margin: 0 0 var(--space-3);
+  text-wrap: balance;
+}
+
+h3 {
+  font-size: var(--step-1);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-snug);
+  margin: 0 0 var(--space-2);
+}
+
+p {
+  text-wrap: pretty;
 }
 
 a {
-  color: var(--color-link);
+  color: var(--accent);
   text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
+  text-underline-offset: 3px;
+  transition: color var(--dur-fast) var(--ease-standard);
 }
 
 a:hover {
-  color: var(--color-primary-hover);
+  color: var(--accent-hover);
 }
 
-.container {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 2.5rem 1.25rem;
+/* One focus ring for the whole application, on the element that actually has focus. Individual
+   components may replace it with something better suited to their shape; none may remove it. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
-.muted {
-  color: var(--color-muted);
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
-  padding: 0.2em 0.65em;
-  border-radius: 999px;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.badge--positive {
-  background: var(--color-positive-bg);
-  color: var(--color-positive-text);
-}
-
-.badge--neutral {
-  background: var(--color-neutral-bg);
-  color: var(--color-neutral-text);
-}
-
-.badge--caution {
-  background: var(--color-caution-bg);
-  color: var(--color-caution-text);
-}
-
-.error-box {
-  background: var(--color-error-bg);
-  color: var(--color-error-text);
-  border-radius: 12px;
-  padding: 1rem 1.25rem;
-}
-
-.card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 14px;
-  padding: 1.1rem 1.35rem;
-  box-shadow: var(--shadow-card);
-  transition:
-    box-shadow 0.15s ease,
-    transform 0.15s ease;
-}
-
-.card:hover {
-  box-shadow: var(--shadow-card-hover);
-}
-
-.card + .card {
-  margin-top: 0.85rem;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.field label {
-  font-size: 0.875rem;
-  font-weight: 550;
-  color: var(--color-muted);
-}
-
-input[type='search'] {
-  width: 100%;
-  max-width: 34rem;
-}
-
-/* Every text-entry type, listed out. Styling only `[type='search']` and `input:not([type])` left
-   the sign-in form's email and password fields as raw browser defaults — white, square, and
-   nothing like the rest of the site. */
-input[type='search'],
-input[type='text'],
-input[type='email'],
-input[type='password'],
-input[type='number'],
-input:not([type]),
-select {
-  font: inherit;
-  /* Comfortably above the 16px below which iOS Safari zooms the page on focus — a "helpful"
-     behaviour that throws the reader out of the layout mid-sign-in. */
-  font-size: 1.05rem;
-  color: inherit;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 14px;
-  padding: 0.85rem 1.05rem;
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-/* The sign-in form is the one place a reader types something they must get exactly right, so its
-   fields are given the full width of the form and a little more height than elsewhere. */
-.auth-form input {
-  width: 100%;
-  padding: 0.95rem 1.1rem;
-}
-
-.auth-form button[type='submit'] {
-  font-size: 1.02rem;
-  padding: 0.85rem 1.4rem;
-  border-radius: 14px;
-}
-
-input[type='search']:focus-visible,
-input[type='text']:focus-visible,
-input[type='email']:focus-visible,
-input[type='password']:focus-visible,
-input[type='number']:focus-visible,
-input:not([type]):focus-visible,
-select:focus-visible {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-ring);
-}
+/* --- Element defaults -----------------------------------------------------
+ * A handful of components still render bare `<button>` and `<input>` elements. These rules are
+ * what keep those consistent with `ui/Button` and `ui/Field` — same heights, same radii, same
+ * accent — rather than falling back to the browser's. A module class always wins over an element
+ * selector, so nothing here can override a primitive. */
 
 button {
+  min-block-size: var(--control-h-md);
+  padding-inline: var(--space-4);
   font: inherit;
-  font-weight: 550;
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
   cursor: pointer;
   border: 1px solid transparent;
-  border-radius: 10px;
-  padding: 0.65rem 1.25rem;
-  background: var(--color-primary);
-  color: var(--color-on-primary);
+  border-radius: var(--r-md);
+  background: var(--accent);
+  color: var(--text-on-accent);
   transition:
-    background 0.15s ease,
-    box-shadow 0.15s ease,
-    transform 0.05s ease;
+    background-color var(--dur-fast) var(--ease-standard),
+    color var(--dur-fast) var(--ease-standard),
+    transform var(--dur-fast) var(--ease-standard);
 }
 
-button:hover {
-  background: var(--color-primary-hover);
+/* `:where()` around the state, not `:hover:not(:disabled)` directly — those two pseudo-classes
+   together push this rule's specificity to (0,2,1), which ties a naive `.myClass:hover` at (0,2,0)
+   and then wins on the element column. That silently defeated `.inline:hover` in Recommendations
+   and `.switch:hover` on the sign-in page: neither declared its own `background`, so this rule's
+   gold fill went straight through underneath, printing a filled 44px pill behind a link-styled
+   button that was supposed to stay flat. `:where()` drops this rule back to plain `button`'s own
+   specificity (0,0,1), so any component class — one class, no pseudo-class gymnastics required —
+   overrides every state here exactly as the comment above already promised it would. */
+button:where(:hover):where(:not(:disabled)) {
+  background: var(--accent-hover);
 }
 
-button:active {
-  background: var(--color-primary-active);
+button:where(:active):where(:not(:disabled)) {
   transform: translateY(1px);
 }
 
-button:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--color-ring);
-}
-
+/* Same reasoning as ui/Button: a disabled control changes colour rather than fading, so its label
+   stays readable. */
 button:disabled {
-  opacity: 0.55;
+  background: var(--surface-2);
+  border-color: var(--hairline);
+  color: var(--text-faint);
   cursor: not-allowed;
   transform: none;
 }
 
-button:disabled:hover {
-  background: var(--color-primary);
-}
-
-/* Secondary buttons (per-edition link toggles) — quieter than the primary action, still blue. */
+/* The quieter action: still brass, but as an outline. Used by the components that have not been
+   rebuilt on `ui/Button` yet — the shelf, the bookshop lookup, the price panel. */
 button.button--secondary {
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
-  border-color: transparent;
-  padding: 0.45rem 0.95rem;
-  font-size: 0.9rem;
+  background: var(--surface-1);
+  border-color: var(--hairline-strong);
+  color: var(--text);
 }
 
-button.button--secondary:hover {
-  background: var(--color-primary);
-  color: var(--color-on-primary);
+button.button--secondary:hover:not(:disabled) {
+  background: var(--surface-2);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
-button.button--secondary:active {
-  background: var(--color-primary-active);
-  color: var(--color-on-primary);
+input,
+select,
+textarea {
+  min-block-size: var(--control-h-lg);
+  padding-inline: var(--space-4);
+  font: inherit;
+  /* Comfortably above the 16px below which iOS Safari zooms the page on focus — a "helpful"
+     behaviour that throws the reader out of the layout mid-typing. */
+  font-size: var(--step-1);
+  color: var(--text);
+  background: var(--surface-1);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-md);
+  transition:
+    border-color var(--dur-fast) var(--ease-standard),
+    box-shadow var(--dur-fast) var(--ease-standard);
 }
 
-@media (prefers-color-scheme: dark) {
-  button.button--secondary {
-    color: #bfdbfe;
-  }
+/* A checkbox is 13px by default, which is a poor target for a finger. It is grown here and always
+   wrapped in a label that carries the full 44px box, so the thing being pressed is the whole row
+   rather than the box itself. */
+input[type='checkbox'],
+input[type='radio'] {
+  min-block-size: auto;
+  inline-size: 1.15rem;
+  block-size: 1.15rem;
+  padding: 0;
+  accent-color: var(--accent);
 }
 
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  align-items: flex-end;
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--ring);
 }
 
+input::placeholder {
+  color: var(--text-faint);
+}
+
+/* --- Utilities ------------------------------------------------------------ */
+
+.muted {
+  color: var(--text-muted);
+}
+
+/* Global, and asserted on: the end-to-end suite proves a panel resolved without error by checking
+   `.error-box` has count 0. A hashed module class would make that assertion pass for the wrong
+   reason, silently and forever. */
+.error-box {
+  background: var(--danger-soft);
+  color: var(--danger-text);
+  border: 1px solid currentColor;
+  border-radius: var(--r-md);
+  padding: var(--space-4);
+}
+
+/* Named for screen readers, invisible to everyone else. */
+.visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Off-screen until focused, then a real control at a real size — it is the first thing a keyboard
+   reader meets, and a 22px sliver would be a poor greeting. Above the sticky header's layer, or it
+   would appear behind it. */
 .skip-link {
   position: absolute;
-  left: -9999px;
+  inset-inline-start: -9999px;
 }
 
 .skip-link:focus {
-  left: 1rem;
-  top: 1rem;
-  z-index: 10;
-  background: var(--color-surface);
-  padding: 0.5rem 1rem;
-  border-radius: 10px;
-  border: 1px solid var(--color-border);
-}
-
-/* --- Covers ------------------------------------------------------------- */
-
-.cover {
-  flex-shrink: 0;
-  border-radius: 8px;
-  object-fit: cover;
-  background: var(--color-bg-subtle);
-  box-shadow: var(--shadow-card);
-}
-
-.cover--placeholder {
-  display: flex;
+  inset-inline-start: var(--space-4);
+  inset-block-start: var(--space-4);
+  z-index: calc(var(--z-header) + 1);
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  color: var(--color-muted);
-  font-size: 1.5rem;
-  user-select: none;
+  min-block-size: var(--control-h-md);
+  padding-inline: var(--space-4);
+  background: var(--surface-1);
+  color: var(--text);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--r-md);
+  box-shadow: var(--elev-2);
+  text-decoration: none;
 }
 
-.media-row {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-}
-
-.media-row__body {
-  min-width: 0;
-  flex: 1;
-}
-
-/* --- Skeletons ----------------------------------------------------------- */
+/* --- Skeletons ------------------------------------------------------------
+   Global for the same reason as `.error-box`: the suite asserts `.skeleton` has count 0 once a
+   panel has resolved. See ui/Skeleton.tsx. */
 
 @keyframes shimmer {
   from {
@@ -350,36 +247,45 @@ button.button--secondary:active {
 }
 
 .skeleton {
-  border-radius: 8px;
+  display: block;
+  border-radius: var(--r-sm);
   background: linear-gradient(
     100deg,
-    var(--color-bg-subtle) 40%,
-    var(--color-border) 50%,
-    var(--color-bg-subtle) 60%
+    var(--surface-2) 40%,
+    var(--surface-3) 50%,
+    var(--surface-2) 60%
   );
   background-size: 200% 100%;
   animation: shimmer 1.4s ease-in-out infinite;
 }
 
 .skeleton--text {
-  height: 0.9rem;
-  margin: 0.35rem 0;
+  block-size: 0.85em;
+  margin-block: 0.35em;
 }
 
-.skeleton--cover {
-  width: 56px;
-  height: 84px;
-  flex-shrink: 0;
+.skeleton--title {
+  block-size: 1.4em;
+  margin-block: 0.4em;
+  border-radius: var(--r-xs);
 }
 
-.skeleton--cover-lg {
-  width: 128px;
-  height: 192px;
-  flex-shrink: 0;
-  border-radius: 10px;
+/* Matches Poster's frame exactly, so a grid does not resize when the real covers arrive. */
+.skeleton--poster {
+  inline-size: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--r-md);
 }
 
-/* --- Entry animations ----------------------------------------------------- */
+.skeleton--block {
+  block-size: 100%;
+  border-radius: var(--r-md);
+}
+
+/* --- Entry animation ------------------------------------------------------
+   One shared entrance, so that content arriving from a fetch settles the same way everywhere. The
+   stagger is driven by a custom property rather than nth-child rules, which used to cover only the
+   first five items and left the sixth onwards popping in without it. */
 
 @keyframes fade-in-up {
   from {
@@ -393,352 +299,71 @@ button.button--secondary:active {
 }
 
 .animate-in {
-  animation: fade-in-up 0.35s ease-out both;
+  animation: fade-in-up var(--dur-slow) var(--ease-standard) both;
+  animation-delay: calc(var(--i, 0) * 40ms);
 }
 
-/* Stagger the first results so the list cascades in rather than popping at once. */
-.animate-in:nth-child(1) {
-  animation-delay: 0ms;
-}
-.animate-in:nth-child(2) {
-  animation-delay: 60ms;
-}
-.animate-in:nth-child(3) {
-  animation-delay: 120ms;
-}
-.animate-in:nth-child(4) {
-  animation-delay: 180ms;
-}
-.animate-in:nth-child(5) {
-  animation-delay: 240ms;
-}
+/* --- Edition comparison ---------------------------------------------------
+   The table scrolls inside its own container rather than widening the page: three columns of
+   publisher names overflow a phone otherwise. */
 
-@keyframes pulse-dot {
-  0%,
-  80%,
-  100% {
-    opacity: 0.25;
-    transform: scale(0.85);
-  }
-  40% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.searching-dots {
-  display: inline-flex;
-  gap: 0.3rem;
-  margin-left: 0.4rem;
-  vertical-align: middle;
-}
-
-.searching-dots span {
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 999px;
-  background: var(--color-primary);
-  animation: pulse-dot 1.2s ease-in-out infinite;
-}
-
-.searching-dots span:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.searching-dots span:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .skeleton,
-  .searching-dots span {
-    animation: none;
-  }
-  .animate-in {
-    animation: none;
-  }
-  .card {
-    transition: none;
-  }
-}
-
-/* --- Bookstore chips ------------------------------------------------------ */
-
-.store-chip {
-  display: inline-block;
-  padding: 0.3rem 0.75rem;
-  border-radius: 999px;
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
-  border: 1px solid transparent;
-  font-size: 0.85rem;
-  font-weight: 500;
-  text-decoration: none;
-  transition:
-    background 0.15s ease,
-    color 0.15s ease;
-}
-
-.store-chip:hover {
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-}
-
-.store-chip:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--color-ring);
-}
-
-@media (prefers-color-scheme: dark) {
-  .store-chip {
-    color: #bfdbfe;
-  }
-  .store-chip:hover {
-    color: var(--color-on-primary);
-  }
-}
-
-/* Genre tags on the work card. Read-only labels, not filters: the source's subject headings are
-   contributor-written free text, so making them clickable would promise a taxonomy we do not have. */
-.tag-list {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  padding: 0;
-  margin: 0.6rem 0 0;
-}
-
-.tag {
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  background: var(--color-surface-muted, rgba(127, 127, 127, 0.12));
-  border: 1px solid var(--color-border, rgba(127, 127, 127, 0.25));
-  font-size: 0.78rem;
-  color: var(--color-text-muted, inherit);
-}
-
-/* Edition comparison. The table scrolls inside its own container rather than widening the page —
-   three columns of publisher names overflow a phone otherwise. */
 .compare-picker {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem 1rem;
-  margin: 0.8rem 0;
+  gap: var(--space-2) var(--space-5);
+  margin-block: var(--space-4);
 }
 
 .compare-picker__item {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  font-size: 0.9rem;
+  gap: var(--space-2);
+  min-block-size: var(--control-h-md);
+  font-size: var(--step--1);
   cursor: pointer;
 }
 
 .compare-table {
   border-collapse: collapse;
-  min-width: 100%;
-  font-size: 0.9rem;
+  min-inline-size: 100%;
+  font-size: var(--step--1);
 }
 
 .compare-table th,
 .compare-table td {
-  border: 1px solid var(--color-border, rgba(127, 127, 127, 0.25));
-  padding: 0.5rem 0.7rem;
-  text-align: left;
+  border: 1px solid var(--hairline);
+  padding: var(--space-3);
+  text-align: start;
   vertical-align: top;
 }
 
 .compare-table thead th {
-  background: var(--color-surface-muted, rgba(127, 127, 127, 0.1));
+  background: var(--surface-2);
 }
 
 .compare-table tbody th {
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   white-space: nowrap;
 }
 
-/* Footer. Separated by a rule rather than a coloured block so it reads as the end of the page in
-   both themes without needing a second background colour defined for each. */
-.site-footer {
-  margin-top: 3rem;
-  padding: 1.5rem 0 2.5rem;
-  border-top: 1px solid var(--color-border, rgba(127, 127, 127, 0.25));
-}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
 
-.site-footer__row {
-  margin-top: 1rem;
-}
+  .animate-in {
+    animation: none;
+  }
 
-.site-footer__repo {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: 0.88rem;
-  color: inherit;
-  text-decoration: none;
-}
+  a,
+  button,
+  input,
+  select,
+  textarea {
+    transition: none;
+  }
 
-.site-footer__repo:hover span {
-  text-decoration: underline;
-}
-
-/* Bookstore groups. The heading naming the reader's own country is the point: their choice must be
-   visible as a choice, not blended into a single undifferentiated list of shops. */
-.store-group + .store-group {
-  margin-top: 0.9rem;
-}
-
-.store-group__label {
-  font-size: 0.82em;
-  font-weight: 600;
-}
-
-/* Header. One row: what this is, and the reader's account. Nothing else belongs here — the search
-   box lives on the page it serves, not in a chrome that follows people around. */
-.site-header {
-  border-bottom: 1px solid var(--color-border, rgba(127, 127, 127, 0.25));
-}
-
-.site-header__inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding-top: 0.9rem;
-  padding-bottom: 0.9rem;
-  flex-wrap: wrap;
-}
-
-.site-header__brand {
-  font-weight: 650;
-  text-decoration: none;
-  color: inherit;
-}
-
-.site-header__nav {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  font-size: 0.9rem;
-}
-
-.auth-form {
-  max-width: 26rem;
-  margin-top: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-}
-
-/* A button that is semantically a button but reads as a link — used for the sign-in/register
-   toggle, which changes state on this page rather than navigating anywhere. */
-.link-button {
-  background: none;
-  border: 0;
-  padding: 0;
-  color: var(--color-primary);
-  font: inherit;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-/* The soft invitation on search results. Muted on purpose: it is an offer, not a gate. */
-.signin-prompt {
-  margin: 1rem 0;
-  padding: 0.8rem 1rem;
-  border: 1px dashed var(--color-border, rgba(127, 127, 127, 0.35));
-  border-radius: 10px;
-  font-size: 0.9rem;
-}
-
-/* Featured books. A grid that reflows rather than a carousel: a reader scanning for a book should
-   see them all at once, not press an arrow ten times. */
-.featured-grid {
-  list-style: none;
-  padding: 0;
-  margin: 1rem 0 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 1.2rem 1rem;
-}
-
-.featured-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  text-decoration: none;
-  color: inherit;
-}
-
-.featured-card:hover .featured-card__title {
-  text-decoration: underline;
-}
-
-.featured-card__title {
-  font-weight: 550;
-  font-size: 0.92rem;
-  line-height: 1.25;
-}
-
-.featured-card__meta {
-  font-size: 0.8rem;
-}
-
-/* Language selector in the header. Compact by design — it is set once and then ignored. */
-.language-selector select {
-  font-size: 0.85rem;
-  padding: 0.25rem 0.4rem;
-}
-
-/* Visible to screen readers only: the selector has a visual affordance but still needs a name. */
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* A year is a heading, not a caption: the "books of the year" list is organised by year, and a
-   reader scanning for 2023 should find it as a label, not in small print under a cover. */
-.featured-year + .featured-year {
-  margin-top: 1.4rem;
-}
-
-.featured-year__label {
-  font-size: 0.95rem;
-  margin: 0.9rem 0 0;
-  color: var(--color-text-muted, inherit);
-}
-
-/* Tags are links now; keep the chip look and add the affordance. */
-a.tag {
-  text-decoration: none;
-  color: inherit;
-  display: inline-block;
-}
-
-a.tag:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-/* The mark sits beside the wordmark rather than replacing it: a 28px pixel-art book is a nice
-   thing to spot, but it is not something a first-time visitor can read the site's name from. */
-.site-header__brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-}
-
-/* The per-card "hide this genre" control. Outside the card's link, because a button nested in an
-   anchor is invalid HTML and behaves unpredictably for keyboard and screen-reader users. */
-.featured-card__hide {
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
+  button:active:not(:disabled) {
+    transform: none;
+  }
 }

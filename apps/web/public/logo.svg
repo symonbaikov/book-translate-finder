@@ -1,90 +1,78 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" role="img"
-     aria-label="BookTranslate Finder" shape-rendering="crispEdges">
-  <title>BookTranslate Finder</title>
-  <rect x="3" y="1" width="10" height="1" fill="#2e1650"/>
-  <rect x="2" y="2" width="1" height="1" fill="#2e1650"/>
-  <rect x="3" y="2" width="10" height="1" fill="#7c4dbe"/>
-  <rect x="13" y="2" width="1" height="1" fill="#2e1650"/>
-  <rect x="1" y="3" width="1" height="1" fill="#2e1650"/>
-  <rect x="2" y="3" width="1" height="1" fill="#7c4dbe"/>
-  <rect x="3" y="3" width="4" height="1" fill="#f1e9ff"/>
-  <rect x="7" y="3" width="2" height="1" fill="#e6338a"/>
-  <rect x="9" y="3" width="4" height="1" fill="#f1e9ff"/>
-  <rect x="13" y="3" width="1" height="1" fill="#7c4dbe"/>
-  <rect x="14" y="3" width="1" height="1" fill="#2e1650"/>
-  <rect x="1" y="4" width="1" height="1" fill="#2e1650"/>
-  <rect x="2" y="4" width="1" height="1" fill="#7c4dbe"/>
-  <rect x="3" y="4" width="1" height="1" fill="#f1e9ff"/>
-  <rect x="4" y="4" width="3" height="1" fill="#b39ae0"/>
-  <rect x="7" y="4" width="2" height="1" fill="#e6338a"/>
-  <rect x="9" y="4" width="3" height="1" fill="#b39ae0"/>
-  <rect x="12" y="4" width="1" height="1" fill="#f1e9ff"/>
-  <rect x="13" y="4" width="1" height="1" fill="#7c4dbe"/>
-  <rect x="14" y="4" width="1" height="1" fill="#2e1650"/>
-  <rect x="1" y="5" width="1" height="1" fill="#2e1650"/>
-  <rect x="2" y="5" width="1" height="1" fill="#7c4dbe"/>
-  <rect x="3" y="5" width="4" height="1" fill="#f1e9ff"/>
-  <rect x="7" y="5" width="2" height="1" fill="#e6338a"/>
-  <rect x="9" y="5" width="4" height="1" fill="#f1e9ff"/>
-  <rect x="13" y="5" width="1" height="1" fill="#7c4dbe"/>
-  <rect x="14" y="5" width="1" height="1" fill="#2e1650"/>
-  <rect x="1" y="6" width="1" height="1" fill="#2e1650"/>
-  <rect x="2" y="6" width="1" height="1" fill="#7c4dbe"/>
-  <rect x="3" y="6" width="1" height="1" fill="#f1e9ff"/>
-  <rect x="4" y="6" width="3" height="1" fill="#b39ae0"/>
-  <rect x="7" y="6" width="2" height="1" fill="#e6338a"/>
-  <rect x="9" y="6" width="3" height="1" fill="#b39ae0"/>
-  <rect x="12" y="6" width="1" height="1" fill="#f1e9ff"/>
-  <rect x="13" y="6" width="1" height="1" fill="#7c4dbe"/>
-  <rect x="14" y="6" width="1" height="1" fill="#2e1650"/>
-  <rect x="1" y="7" width="1" height="1" fill="#2e1650"/>
-  <rect x="2" y="7" width="1" height="1" fill="#7c4dbe"/>
-  <rect x="3" y="7" width="4" height="1" fill="#f1e9ff"/>
-  <rect x="7" y="7" width="2" height="1" fill="#e6338a"/>
-  <rect x="9" y="7" width="4" height="1" fill="#f1e9ff"/>
-  <rect x="13" y="7" width="1" height="1" fill="#7c4dbe"/>
-  <rect x="14" y="7" width="1" height="1" fill="#2e1650"/>
-  <rect x="1" y="8" width="1" height="1" fill="#2e1650"/>
-  <rect x="2" y="8" width="1" height="1" fill="#7c4dbe"/>
-  <rect x="3" y="8" width="1" height="1" fill="#f1e9ff"/>
-  <rect x="4" y="8" width="3" height="1" fill="#b39ae0"/>
-  <rect x="7" y="8" width="2" height="1" fill="#e6338a"/>
-  <rect x="9" y="8" width="3" height="1" fill="#b39ae0"/>
-  <rect x="12" y="8" width="1" height="1" fill="#f1e9ff"/>
-  <rect x="13" y="8" width="1" height="1" fill="#7c4dbe"/>
-  <rect x="14" y="8" width="1" height="1" fill="#2e1650"/>
-  <rect x="1" y="9" width="1" height="1" fill="#2e1650"/>
-  <rect x="2" y="9" width="1" height="1" fill="#7c4dbe"/>
-  <rect x="3" y="9" width="4" height="1" fill="#f1e9ff"/>
-  <rect x="7" y="9" width="2" height="1" fill="#e6338a"/>
-  <rect x="9" y="9" width="4" height="1" fill="#f1e9ff"/>
-  <rect x="13" y="9" width="1" height="1" fill="#7c4dbe"/>
-  <rect x="14" y="9" width="1" height="1" fill="#2e1650"/>
-  <rect x="1" y="10" width="1" height="1" fill="#2e1650"/>
-  <rect x="2" y="10" width="1" height="1" fill="#7c4dbe"/>
-  <rect x="3" y="10" width="1" height="1" fill="#f1e9ff"/>
-  <rect x="4" y="10" width="3" height="1" fill="#b39ae0"/>
-  <rect x="7" y="10" width="2" height="1" fill="#e6338a"/>
-  <rect x="9" y="10" width="3" height="1" fill="#b39ae0"/>
-  <rect x="12" y="10" width="1" height="1" fill="#f1e9ff"/>
-  <rect x="13" y="10" width="1" height="1" fill="#7c4dbe"/>
-  <rect x="14" y="10" width="1" height="1" fill="#2e1650"/>
-  <rect x="1" y="11" width="1" height="1" fill="#2e1650"/>
-  <rect x="2" y="11" width="1" height="1" fill="#7c4dbe"/>
-  <rect x="3" y="11" width="4" height="1" fill="#f1e9ff"/>
-  <rect x="7" y="11" width="2" height="1" fill="#e6338a"/>
-  <rect x="9" y="11" width="4" height="1" fill="#f1e9ff"/>
-  <rect x="13" y="11" width="1" height="1" fill="#7c4dbe"/>
-  <rect x="14" y="11" width="1" height="1" fill="#2e1650"/>
-  <rect x="2" y="12" width="1" height="1" fill="#2e1650"/>
-  <rect x="3" y="12" width="4" height="1" fill="#7c4dbe"/>
-  <rect x="7" y="12" width="2" height="1" fill="#e6338a"/>
-  <rect x="9" y="12" width="4" height="1" fill="#7c4dbe"/>
-  <rect x="13" y="12" width="1" height="1" fill="#2e1650"/>
-  <rect x="3" y="13" width="4" height="1" fill="#2e1650"/>
-  <rect x="7" y="13" width="2" height="1" fill="#e6338a"/>
-  <rect x="9" y="13" width="4" height="1" fill="#2e1650"/>
-  <rect x="7" y="14" width="2" height="1" fill="#e6338a"/>
-  <rect x="6" y="15" width="1" height="1" fill="#e6338a"/>
-  <rect x="9" y="15" width="1" height="1" fill="#e6338a"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img"
+     aria-label="Golden Library">
+  <title>Golden Library</title>
+  <defs>
+    <!-- The open page: pale where the light falls, deep gold where it curls away. -->
+    <linearGradient id="gl-page" x1="0" y1="0" x2=".55" y2="1">
+      <stop offset="0" stop-color="#ffef9b"/>
+      <stop offset=".34" stop-color="#ffdf49"/>
+      <stop offset=".72" stop-color="#ffce05"/>
+      <stop offset="1" stop-color="#f2b100"/>
+    </linearGradient>
+    <!-- The leaves stacked behind it lie in that page's shadow, so they start a shade darker. -->
+    <linearGradient id="gl-leaf-near" x1="0" y1="0" x2=".5" y2="1">
+      <stop offset="0" stop-color="#ffda57"/>
+      <stop offset=".6" stop-color="#ffc709"/>
+      <stop offset="1" stop-color="#eda800"/>
+    </linearGradient>
+    <linearGradient id="gl-leaf-far" x1="0" y1="0" x2=".5" y2="1">
+      <stop offset="0" stop-color="#ffcf2e"/>
+      <stop offset=".6" stop-color="#fbbe00"/>
+      <stop offset="1" stop-color="#e59f00"/>
+    </linearGradient>
+    <!-- Holds the gloss inside the page it lies on: the same outline as the page itself. -->
+    <clipPath id="gl-page-clip">
+      <path d="M64 98 L64 45
+               C66.5 33 71 22 76.5 17.6
+               C79.5 15.6 83 15 87 14.9
+               L101 14.5
+               C105.5 14.2 108 16.5 108 21
+               L108 75
+               C108 79 106.5 81.3 103.5 82.7
+               C91 87.5 78.5 93 64 98 Z"/>
+    </clipPath>
+
+    <!-- One half of the book. The other is this one mirrored about the spine. -->
+    <g id="gl-half">
+      <path fill="url(#gl-leaf-far)"
+            d="M115.5 38 L120 39.5
+               C122.3 39.6 123 41.3 123 43.5
+               L123 88
+               C123 91.5 121.8 93.7 119 95
+               C106 100.5 88 104.5 64 108
+               L64 103
+               C84 99 99 94 111.5 89
+               C114.3 87.6 115.5 85.5 115.5 82 Z"/>
+      <path fill="url(#gl-leaf-near)"
+            d="M108 31 L112.5 32.3
+               C114.6 32.2 115.5 34 115.5 36.5
+               L115.5 82
+               C115.5 85.5 114.3 87.6 111.5 89
+               C99 94 84 99 64 103
+               L64 98
+               C78.5 93 91 87.5 103.5 82.7
+               C106.5 81.3 108 79 108 75 Z"/>
+      <path fill="url(#gl-page)"
+            d="M64 98 L64 45
+               C66.5 33 71 22 76.5 17.6
+               C79.5 15.6 83 15 87 14.9
+               L101 14.5
+               C105.5 14.2 108 16.5 108 21
+               L108 75
+               C108 79 106.5 81.3 103.5 82.7
+               C91 87.5 78.5 93 64 98 Z"/>
+      <g clip-path="url(#gl-page-clip)">
+        <ellipse cx="0" cy="0" rx="15" ry="3.5" fill="#fff" opacity=".42" stroke="none"
+                 transform="translate(77 32) rotate(-65)"/>
+      </g>
+    </g>
+  </defs>
+
+  <g stroke="#20262f" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+    <use href="#gl-half"/>
+    <use href="#gl-half" transform="translate(128 0) scale(-1 1)"/>
+    <!-- The binding, where every leaf converges. -->
+    <path fill="#ffd21f" d="M56.5 101 C58 94 61 91 64 91 C67 91 70 94 71.5 101 Z"/>
+    <ellipse cx="64" cy="103.5" rx="8" ry="6.8" fill="#20262f"/>
+  </g>
 </svg>
