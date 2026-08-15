@@ -3,10 +3,12 @@
 import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { MIN_PASSWORD_LENGTH } from '@btf/contracts';
+import { MIN_PASSWORD_LENGTH } from '@golden/contracts';
 import { googleSignInUrl, login, register } from '../../lib/auth-client';
 import { useSession } from '../../components/SessionProvider';
 import { useT } from '../../i18n/I18nProvider';
+import { Button, ButtonLink, Card, Field, TextInput } from '../../ui';
+import styles from './login.module.css';
 
 type Mode = 'login' | 'register';
 
@@ -50,88 +52,89 @@ function LoginForm() {
   }
 
   return (
-    <main className="container" id="main-content">
-      <h1>{mode === 'login' ? t('auth.signInTitle') : t('auth.registerTitle')}</h1>
-      <p className="muted" style={{ maxWidth: '34rem' }}>
-        {t('auth.blurb')}
-      </p>
+    <main id="main-content" className={styles.page}>
+      <Card className={styles.card}>
+        <h1 className={styles.title}>
+          {mode === 'login' ? t('auth.signInTitle') : t('auth.registerTitle')}
+        </h1>
+        <p className={styles.blurb}>{t('auth.blurb')}</p>
 
-      <form onSubmit={(event) => void submit(event)} className="auth-form">
-        {mode === 'register' && (
-          <div className="field">
-            <label htmlFor="displayName">{t('auth.name')}</label>
-            <input
-              id="displayName"
-              value={displayName}
-              onChange={(event) => setDisplayName(event.target.value)}
-              autoComplete="nickname"
-            />
-          </div>
-        )}
-        <div className="field">
-          <label htmlFor="email">{t('auth.email')}</label>
-          <input
-            id="email"
-            type="email"
-            required
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            autoComplete="email"
-          />
-        </div>
-        <div className="field">
-          <label htmlFor="password">{t('auth.password')}</label>
-          <input
-            id="password"
-            type="password"
-            required
-            minLength={mode === 'register' ? MIN_PASSWORD_LENGTH : 1}
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
-          />
+        <form onSubmit={(event) => void submit(event)} className={styles.form}>
           {mode === 'register' && (
-            <span className="muted" style={{ fontSize: '0.8em' }}>
-              {t('auth.passwordHint', { min: MIN_PASSWORD_LENGTH })}
-            </span>
+            <Field label={t('auth.name')} htmlFor="displayName">
+              <TextInput
+                id="displayName"
+                value={displayName}
+                onChange={(event) => setDisplayName(event.target.value)}
+                autoComplete="nickname"
+              />
+            </Field>
           )}
-        </div>
+          <Field label={t('auth.email')} htmlFor="email">
+            <TextInput
+              id="email"
+              type="email"
+              required
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="email"
+            />
+          </Field>
+          <Field
+            label={t('auth.password')}
+            htmlFor="password"
+            hint={
+              mode === 'register' ? t('auth.passwordHint', { min: MIN_PASSWORD_LENGTH }) : undefined
+            }
+          >
+            <TextInput
+              id="password"
+              type="password"
+              required
+              minLength={mode === 'register' ? MIN_PASSWORD_LENGTH : 1}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
+            />
+          </Field>
 
-        {error && <p className="error-box">{error}</p>}
+          {error && <p className="error-box">{error}</p>}
 
-        <button type="submit" disabled={busy}>
-          {busy
-            ? t('auth.working')
-            : mode === 'login'
-              ? t('auth.submitSignIn')
-              : t('auth.submitRegister')}
-        </button>
-      </form>
+          <Button type="submit" variant="primary" size="lg" block loading={busy}>
+            {busy
+              ? t('auth.working')
+              : mode === 'login'
+                ? t('auth.submitSignIn')
+                : t('auth.submitRegister')}
+          </Button>
+        </form>
 
-      {/* Rendered only where the instance actually has Google credentials — a button that always
-          fails is worse than no button (docs/plan.md Phase 4.5). */}
-      {googleEnabled && (
-        <p style={{ marginTop: '1rem' }}>
-          <a className="button--secondary" href={googleSignInUrl()}>
-            {t('auth.google')}
-          </a>
-        </p>
-      )}
-
-      <p style={{ marginTop: '1.5rem' }}>
-        {mode === 'login' ? (
-          <button type="button" className="link-button" onClick={() => setMode('register')}>
-            {t('auth.toRegister')}
-          </button>
-        ) : (
-          <button type="button" className="link-button" onClick={() => setMode('login')}>
-            {t('auth.toSignIn')}
-          </button>
+        {/* Rendered only where the instance actually has Google credentials — a button that always
+            fails is worse than no button (docs/plan.md Phase 4.5). */}
+        {googleEnabled && (
+          <>
+            <div className={styles.divider}>·</div>
+            <ButtonLink variant="secondary" size="lg" block href={googleSignInUrl()}>
+              {t('auth.google')}
+            </ButtonLink>
+          </>
         )}
-      </p>
-      <p className="muted" style={{ fontSize: '0.85em' }}>
-        <Link href="/">{t('auth.backToSearch')}</Link>
-      </p>
+
+        <div className={styles.footer}>
+          {mode === 'login' ? (
+            <button type="button" className={styles.switch} onClick={() => setMode('register')}>
+              {t('auth.toRegister')}
+            </button>
+          ) : (
+            <button type="button" className={styles.switch} onClick={() => setMode('login')}>
+              {t('auth.toSignIn')}
+            </button>
+          )}
+          <Link href="/" className={styles.back}>
+            {t('auth.backToSearch')}
+          </Link>
+        </div>
+      </Card>
     </main>
   );
 }

@@ -1,0 +1,11 @@
+.grid {
+  margin-block-start: var(--space-6);
+}
+
+/* An empty shelf is not an error, so it is not styled as one — one sentence and the way out of it,
+   in the same grey as any other aside. */
+.empty {
+  margin-block-start: var(--space-5);
+  color: var(--text-muted);
+  max-inline-size: var(--container-prose);
+}

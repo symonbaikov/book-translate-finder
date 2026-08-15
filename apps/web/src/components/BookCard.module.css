@@ -1,0 +1,85 @@
+/* One book in a grid or a row. The whole card is the link — a reader aiming at a cover should not
+   have to find the four words of the title underneath it. */
+
+.item {
+  min-inline-size: 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--r-md);
+}
+
+/* The hook the card's hover reaches for. It carries the transition rather than relying on the one
+   in Poster's own module, so that an empty rule here cannot be dropped by the minifier — which
+   would take the class name with it and silently break every hover on the site. */
+.poster {
+  transition:
+    transform var(--dur-base) var(--ease-standard),
+    box-shadow var(--dur-base) var(--ease-standard);
+}
+
+/* The lift is on the cover, not the whole card: the title and author underneath staying put is
+   what makes the cover look like it is rising off the page rather than the text sliding around. */
+.card:hover .poster {
+  transform: translateY(-4px);
+  box-shadow: var(--elev-2), var(--cover-ring);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* The default outline traces the flex column — cover, title and author — which on a tall card is a
+   long thin rectangle that does not read as "this cover is selected". */
+.card:focus-visible .poster {
+  transform: translateY(-4px);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--step-0);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-snug);
+  /* Two lines, then an ellipsis. Titles in this catalogue run to full sentences, and one card
+     growing to six lines drags the whole grid row down with it. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card:hover .title {
+  color: var(--accent);
+}
+
+.meta {
+  font-size: var(--step--2);
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.badge {
+  margin-block-start: var(--space-1);
+}
+
+/* Controls belonging to the card sit outside the link: a `<button>` inside an `<a>` is invalid
+   HTML and behaves unpredictably for keyboard and screen-reader users. */
+.action {
+  margin-block-start: var(--space-1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card:hover .poster,
+  .card:focus-visible .poster {
+    transform: none;
+  }
+}

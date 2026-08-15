@@ -1,0 +1,89 @@
+.wrap {
+  margin-block-start: var(--space-2);
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.link {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+
+/* The link itself is the action, so it is sized like one — a "Download EPUB" that is 14px of
+   underlined text is the smallest target on the page for the thing the page exists to offer. */
+.action {
+  font-weight: var(--weight-semibold);
+}
+
+.provider {
+  font-size: var(--step--1);
+  color: var(--text-faint);
+}
+
+/* Marks a link found on a different print of the same work — the reader must be able to tell it
+   apart from a link that matches this exact edition. */
+.viaEdition {
+  font-size: var(--step--2);
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+.none {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.stores {
+  margin-block-start: var(--space-5);
+}
+
+.storesHeading {
+  font-size: var(--step--1);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.group {
+  margin-block-start: var(--space-4);
+}
+
+/* The heading naming the reader's own country is the point: their choice must be visible as a
+   choice, not blended into one undifferentiated list of shops. */
+.groupLabel {
+  font-size: var(--step--1);
+  color: var(--text-muted);
+  margin-block-end: var(--space-2);
+}
+
+.storeList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.caption {
+  margin-block-start: var(--space-4);
+  font-size: var(--step--2);
+  color: var(--text-faint);
+  max-inline-size: var(--container-prose);
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}

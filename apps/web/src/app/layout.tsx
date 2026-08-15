@@ -1,39 +1,64 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+// Order is the cascade: faces, then the tokens that name them, then the base layer that spends
+// both. Imported here rather than through `@import` inside globals.css so the order is stated in
+// one readable place and cannot be reshuffled by a bundler's idea of dependency order.
+import '../styles/fonts.css';
+import '../styles/tokens.css';
 import './globals.css';
 import { I18nProvider } from '../i18n/I18nProvider';
 import { getDictionary } from '../i18n/server';
 import { isRtl } from '../i18n/locales';
 import { makeTranslate } from '../i18n/dictionary';
 import { SessionProvider } from '../components/SessionProvider';
+import { SettingsToaster } from '../components/SettingsToaster';
+import { SiteFooter } from '../components/SiteFooter';
 import { SiteHeader } from '../components/SiteHeader';
 
 export const metadata: Metadata = {
-  title: 'BookTranslate Finder',
+  title: 'Golden Library',
   icons: { icon: '/logo.svg' },
   description: 'An open book translation aggregator: languages, editions, legal sources.',
 };
 
-const REPOSITORY_URL = 'https://github.com/symonbaikov/book-translate-finder';
-
 /**
- * GitHub's mark, inlined as SVG rather than fetched from a CDN or an icon package: the page must
- * stay renderable with no third-party requests, and one 24px glyph is not worth a dependency.
+ * Which font files to fetch before the browser has read a single glyph.
+ *
+ * Only one script per locale is preloaded, not all four subsets: a Russian reader who is handed
+ * the Latin-Extended file up front has paid 84 KB for glyphs that may never appear on the page.
+ * The other subsets still load — lazily, the moment a character in their `unicode-range` is
+ * rendered, which is exactly what `unicode-range` is for. Locales whose script we do not ship
+ * (ar, ja, ko, zh) get the Latin files anyway: their pages are still full of Latin book titles.
  */
-function GitHubMark() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
-    </svg>
-  );
+function preloadedSubset(locale: string): 'cyrillic' | 'latin' {
+  return locale === 'ru' || locale === 'uk' ? 'cyrillic' : 'latin';
 }
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const { locale, dictionary } = await getDictionary();
   const t = makeTranslate(dictionary);
+  const subset = preloadedSubset(locale);
 
   return (
     <html lang={locale} dir={isRtl(locale) ? 'rtl' : 'ltr'}>
+      <head>
+        {/* `crossOrigin` is required even for a same-origin font: without it the preload is made
+            as a plain fetch and the font request is issued a second time, anonymously. */}
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href={`/fonts/inter-${subset}.woff2`}
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href={`/fonts/literata-${subset}.woff2`}
+          crossOrigin="anonymous"
+        />
+      </head>
       <body>
         <a className="skip-link" href="#main-content">
           {t('nav.skipToContent')}
@@ -42,25 +67,12 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <SessionProvider>
             <SiteHeader />
             {children}
+            {/* Inside the provider: every popup is written by the same dictionary as the page
+                that triggered it. */}
+            <SettingsToaster dir={isRtl(locale) ? 'rtl' : 'ltr'} />
           </SessionProvider>
         </I18nProvider>
-        <footer className="site-footer">
-          <div className="container">
-            <p className="muted" style={{ fontSize: '0.85em', marginTop: 0 }}>
-              Legal sources only: direct downloads exclusively for public domain and openly licensed
-              works; copyrighted books — purchase or library lending. Every link carries an explicit
-              rights status.
-            </p>
-            <div className="site-footer__row">
-              <a className="site-footer__repo" href={REPOSITORY_URL} rel="noopener noreferrer">
-                <GitHubMark />
-                <span>
-                  <strong>{t('footer.openSource')}</strong> {t('footer.openSourceRest')}
-                </span>
-              </a>
-            </div>
-          </div>
-        </footer>
+        <SiteFooter />
       </body>
     </html>
   );

@@ -1,13 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { RecommendationsResponseSchema, type RecommendationsResponse } from '@btf/contracts';
+import { RecommendationsResponseSchema, type RecommendationsResponse } from '@golden/contracts';
 import { webEnv } from '../config/web-env';
-import { CoverImage } from './CoverImage';
+import { BookCard } from './BookCard';
+import { PosterGrid, Section } from '../ui';
 import { useT } from '../i18n/I18nProvider';
+import styles from './Recommendations.module.css';
 import { buildTasteProfile, clearHistory, type TasteProfile } from '../lib/reading-history';
 import { hideTag, readHiddenTags, unhideTag } from '../lib/hidden-tags';
+import { outcomeOfWrite } from '../lib/setting-change';
+import { useSettingChangeToast } from '../lib/settings-toast';
 
 type Book = RecommendationsResponse['books'][number];
 
@@ -26,6 +29,7 @@ export function Recommendations() {
   const [hidden, setHidden] = useState<string[]>([]);
   // Bumped to re-run the effect after the reader hides or restores a genre.
   const [revision, setRevision] = useState(0);
+  const announce = useSettingChangeToast();
 
   useEffect(() => {
     const hiddenNow = readHiddenTags();
@@ -56,79 +60,110 @@ export function Recommendations() {
   }, [revision]);
 
   function forget(): void {
-    clearHistory();
+    const cleared = clearHistory();
     setProfile(null);
     setBooks(null);
+    // The section disappears as soon as this runs, so without the popup the only feedback for
+    // deleting the history is the page losing a block — indistinguishable from a bug.
+    announce({
+      setting: 'reading-history',
+      outcome: cleared ? 'cleared' : 'failed',
+      title: t('settings.history.title'),
+      detail: t('settings.history.cleared'),
+    });
   }
 
   function hide(tag: string): void {
-    hideTag(tag);
+    const persisted = hideTag(tag);
     setRevision((n) => n + 1);
+    announce({
+      setting: 'hidden-genres',
+      outcome: outcomeOfWrite(persisted, 'set'),
+      title: t('settings.hiddenGenres.title'),
+      detail: t('settings.hiddenGenres.hidden', {
+        genre: tag,
+        count: readHiddenTags().length,
+      }),
+    });
   }
 
   function restore(tag: string): void {
-    unhideTag(tag);
+    const persisted = unhideTag(tag);
     setRevision((n) => n + 1);
+    announce({
+      setting: 'hidden-genres',
+      outcome: outcomeOfWrite(persisted, 'clear'),
+      title: t('settings.hiddenGenres.title'),
+      detail: t('settings.hiddenGenres.restored', {
+        genre: tag,
+        count: readHiddenTags().length,
+      }),
+    });
   }
 
   if (!profile || profile.subjects.length === 0 || !books || books.length === 0) return null;
 
   return (
-    <section aria-labelledby="recommendations" style={{ marginTop: '2.5rem' }}>
-      <h2 id="recommendations" style={{ marginBottom: '0.2rem' }}>
-        {t('recommend.heading')}
-      </h2>
-      <p className="muted" style={{ marginTop: 0, fontSize: '0.88em' }}>
-        {profile.lastTitle
-          ? t('recommend.becauseOf', { title: profile.lastTitle })
-          : t('recommend.blurb')}{' '}
-        {t('recommend.privacy')}{' '}
-        <button type="button" className="link-button" onClick={forget}>
-          {t('recommend.forget')}
-        </button>
-      </p>
-      <ul className="featured-grid">
+    <Section
+      title={t('recommend.heading')}
+      note={
+        <>
+          {profile.lastTitle
+            ? t('recommend.becauseOf', { title: profile.lastTitle })
+            : t('recommend.blurb')}{' '}
+          {t('recommend.privacy')}{' '}
+          <button type="button" className={styles.inline} onClick={forget}>
+            {t('recommend.forget')}
+          </button>
+        </>
+      }
+    >
+      <PosterGrid>
         {books.map((book) => (
-          <li key={book.id}>
-            <Link href={`/works/${book.id}`} className="featured-card">
-              <CoverImage src={book.coverUrl} alt="" width={110} height={165} />
-              <span className="featured-card__title">{book.originalTitle}</span>
-              <span className="muted featured-card__meta">
-                {book.author}
-                {book.firstPublishedYear ? ` · ${book.firstPublishedYear}` : ''}
-              </span>
-              {/* The reason this book is here, in the reader's own terms — a recommendation that
-                  cannot explain itself is indistinguishable from an advert. */}
-              {book.matchedSubjects[0] && (
-                <span className="muted featured-card__meta">{book.matchedSubjects[0]}</span>
-              )}
-            </Link>
-            {book.matchedSubjects[0] && (
-              <button
-                type="button"
-                className="link-button featured-card__hide"
-                onClick={() => hide(book.matchedSubjects[0]!)}
-              >
-                {t('recommend.hideGenre', { genre: book.matchedSubjects[0] })}
-              </button>
-            )}
-          </li>
+          <BookCard
+            key={book.id}
+            href={`/works/${book.id}`}
+            title={book.originalTitle}
+            author={book.author}
+            coverUrl={book.coverUrl}
+            meta={
+              book.firstPublishedYear ? `${book.author} · ${book.firstPublishedYear}` : book.author
+            }
+            // The reason this book is here, in the reader's own terms — a recommendation that
+            // cannot explain itself is indistinguishable from an advert.
+            badge={
+              book.matchedSubjects[0] ? (
+                <span className={styles.reason}>{book.matchedSubjects[0]}</span>
+              ) : undefined
+            }
+            action={
+              book.matchedSubjects[0] ? (
+                <button
+                  type="button"
+                  className={`${styles.inline} ${styles.hide}`}
+                  onClick={() => hide(book.matchedSubjects[0]!)}
+                >
+                  {t('recommend.hideGenre', { genre: book.matchedSubjects[0] })}
+                </button>
+              ) : undefined
+            }
+          />
         ))}
-      </ul>
+      </PosterGrid>
 
       {hidden.length > 0 && (
-        <p className="muted" style={{ fontSize: '0.82em', marginTop: '0.9rem' }}>
+        <p className={styles.hidden}>
           {t('recommend.hiddenList')}{' '}
           {hidden.map((tag, i) => (
             <span key={tag}>
               {i > 0 && ', '}
-              <button type="button" className="link-button" onClick={() => restore(tag)}>
+              <button type="button" className={styles.inline} onClick={() => restore(tag)}>
                 {tag}
               </button>
             </span>
           ))}
         </p>
       )}
-    </section>
+    </Section>
   );
 }

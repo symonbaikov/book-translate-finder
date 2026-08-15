@@ -103,11 +103,18 @@ function LinkList({ links, t }: { links: SourceLinkDto[]; t: Translate }) {
   // Group links by provider name + type for deduplication, preserving the first URL and rights status
   const groupedByProviderAndType = new Map<
     string,
-    { url: string; formats: string[]; rightsStatus: string; provider: string; type: SourceLinkDto['type'] }
+    {
+      url: string;
+      formats: string[];
+      rightsStatus: string;
+      provider: string;
+      type: SourceLinkDto['type'];
+      viaEdition?: { id: string; label: string };
+    }
   >();
 
   links.forEach((link) => {
-    const key = `${link.provider}:${link.type}`;
+    const key = `${link.provider}:${link.type}:${link.viaEdition?.id ?? ''}`;
     const existing = groupedByProviderAndType.get(key);
 
     if (existing) {
@@ -121,6 +128,7 @@ function LinkList({ links, t }: { links: SourceLinkDto[]; t: Translate }) {
         rightsStatus: link.rightsStatus,
         provider: link.provider,
         type: link.type,
+        ...(link.viaEdition && { viaEdition: link.viaEdition }),
       });
     }
   });
@@ -140,6 +148,11 @@ function LinkList({ links, t }: { links: SourceLinkDto[]; t: Translate }) {
             {t(`rights.${group.rightsStatus}` as never)}
           </Badge>
           <span className={styles.provider}>{group.provider}</span>
+          {group.viaEdition && (
+            <span className={styles.viaEdition}>
+              {t('links.viaOtherEdition', { label: group.viaEdition.label })}
+            </span>
+          )}
         </li>
       ))}
     </ul>

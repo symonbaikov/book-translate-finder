@@ -1,13 +1,16 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { SearchHit } from '@btf/contracts';
+import type { SearchHit } from '@golden/contracts';
 import Link from 'next/link';
 import { useSession } from './SessionProvider';
 import { useT } from '../i18n/I18nProvider';
 import { ApiRequestError, searchWorks } from '../lib/api-client';
-import { CoverImage, CoverSkeleton } from './CoverImage';
+import { AddonSearchResults } from './AddonSearchResults';
+import { BookCard, BookCardSkeleton } from './BookCard';
+import { Button, ChipToggle, Cluster, Field, PosterGrid, TextInput } from '../ui';
 import type { Translate } from '../i18n/dictionary';
+import styles from './SearchBox.module.css';
 
 type SearchState =
   | { kind: 'idle' }
@@ -32,6 +35,10 @@ export function SearchBox() {
   const t = useT();
   const [query, setQuery] = useState('');
   const [state, setState] = useState<SearchState>({ kind: 'idle' });
+  const [submitted, setSubmitted] = useState('');
+  // Not reset between searches — a sticky preference, same as the language/year filter on the
+  // work detail page, rather than a one-shot per query.
+  const [freeOnly, setFreeOnly] = useState(false);
   const requestIdRef = useRef(0);
 
   const runSearch = useCallback(async (q: string, attempt: number) => {
@@ -67,6 +74,9 @@ export function SearchBox() {
   const startSearch = useCallback(() => {
     const trimmed = query.trim();
     if (!trimmed) return;
+    // Kept apart from `query`, which changes on every keystroke: the addons are asked about what
+    // was actually submitted, not about what is currently in the box.
+    setSubmitted(trimmed);
     setState({ kind: 'loading' });
     void runSearch(trimmed, 0);
   }, [query, runSearch]);
@@ -78,64 +88,77 @@ export function SearchBox() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <div className="field">
-          <label htmlFor="search-query">{t('home.searchLabel')}</label>
-          <input
-            id="search-query"
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={t('home.searchPlaceholder')}
-            autoComplete="off"
-          />
-        </div>
-        <p style={{ marginTop: '0.75rem' }}>
-          <button type="submit" disabled={state.kind === 'loading' || !query.trim()}>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <div className={styles.row}>
+          <Field
+            label={t('home.searchLabel')}
+            htmlFor="search-query"
+            visuallyHidden
+            className={styles.input}
+          >
+            <TextInput
+              id="search-query"
+              type="search"
+              size="hero"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={t('home.searchPlaceholder')}
+              autoComplete="off"
+            />
+          </Field>
+          <Button
+            type="submit"
+            variant="primary"
+            size="xl"
+            disabled={state.kind === 'loading' || !query.trim()}
+          >
             {t('home.searchButton')}
-          </button>
-        </p>
+          </Button>
+        </div>
       </form>
 
-      <div aria-live="polite" style={{ marginTop: '1.5rem' }}>
-        <SearchResults state={state} onRetry={startSearch} t={t} />
+      <div aria-live="polite" className={styles.results}>
+        <SearchResults
+          state={state}
+          onRetry={startSearch}
+          t={t}
+          freeOnly={freeOnly}
+          onToggleFreeOnly={() => setFreeOnly((v) => !v)}
+        />
       </div>
+
+      {/* Below the instance's own results and never merged with them: two lists, each saying where
+          it came from (docs/adr/0010-addon-engine.md §7). It renders nothing at all when the reader
+          has no addons, which is the default. */}
+      <AddonSearchResults query={submitted} />
     </div>
   );
 }
 
-/** Shimmering stand-ins shaped like real result cards — the list "arrives" instead of flashing
+/** Shimmering stand-ins shaped like real result cards — the grid "arrives" instead of flashing
  * from a bare status line into content. */
 function ResultSkeletons({ count }: { count: number }) {
   return (
-    <ul style={{ listStyle: 'none', padding: 0, margin: 0 }} aria-hidden="true">
+    <PosterGrid minWidth="150px">
       {Array.from({ length: count }, (_, i) => (
-        <li key={i} className="card">
-          <div className="media-row">
-            <CoverSkeleton />
-            <div className="media-row__body">
-              <div className="skeleton skeleton--text" style={{ width: '60%' }} />
-              <div className="skeleton skeleton--text" style={{ width: '35%' }} />
-            </div>
-          </div>
-        </li>
+        <BookCardSkeleton key={i} />
       ))}
-    </ul>
+    </PosterGrid>
   );
 }
 
 function SearchingIndicator({ text }: { text: string }) {
   return (
     <div>
-      <p className="muted" style={{ marginBottom: '1rem' }}>
+      <p className={styles.status}>
         {text}
-        <span className="searching-dots" aria-hidden="true">
+        <span className={styles.dots} aria-hidden="true">
           <span />
           <span />
           <span />
         </span>
       </p>
-      <ResultSkeletons count={3} />
+      <ResultSkeletons count={6} />
     </div>
   );
 }
@@ -144,10 +167,14 @@ function SearchResults({
   state,
   onRetry,
   t,
+  freeOnly,
+  onToggleFreeOnly,
 }: {
   state: SearchState;
   onRetry: () => void;
   t: Translate;
+  freeOnly: boolean;
+  onToggleFreeOnly: () => void;
 }) {
   switch (state.kind) {
     case 'idle':
@@ -163,44 +190,54 @@ function SearchResults({
         />
       );
     case 'not_found':
-      return <p>{t('search.notFoundHint')}</p>;
+      return <p className={styles.notice}>{t('search.notFoundHint')}</p>;
     case 'timed_out':
       return (
         <div className="error-box">
           <p style={{ margin: 0 }}>{t('search.timedOut')}</p>
-          <p style={{ margin: '0.75rem 0 0' }}>
-            <button type="button" onClick={onRetry}>
+          <p className={styles.retry}>
+            <Button type="button" variant="secondary" onClick={onRetry}>
               {t('search.retry')}
-            </button>
+            </Button>
           </p>
         </div>
       );
     case 'error':
       return <p className="error-box">{state.message}</p>;
-    case 'found':
+    case 'found': {
+      const freeCount = state.results.filter((hit) => hit.hasFreeCopy).length;
+      const visible = freeOnly ? state.results.filter((hit) => hit.hasFreeCopy) : state.results;
       return (
         <>
           <SignInPrompt />
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-            {state.results.map((hit) => (
-              <li key={hit.id} className="card animate-in">
-                <div className="media-row">
-                  <CoverImage src={hit.coverUrl} alt="" width={56} height={84} />
-                  <div className="media-row__body">
-                    <Link href={`/works/${hit.id}`}>
-                      <strong>{hit.originalTitle}</strong>
-                    </Link>
-                    <div className="muted">
-                      {hit.author}
-                      {hit.firstPublishedYear ? `, ${hit.firstPublishedYear}` : ''}
-                    </div>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <Cluster className={styles.filters}>
+            <ChipToggle selected={freeOnly} count={freeCount} onClick={onToggleFreeOnly}>
+              {t('search.freeOnlyToggle')}
+            </ChipToggle>
+          </Cluster>
+          {visible.length === 0 ? (
+            <p className={styles.notice}>{t('search.noFreeResults')}</p>
+          ) : (
+            <PosterGrid minWidth="150px">
+              {visible.map((hit, index) => (
+                <BookCard
+                  key={hit.id}
+                  href={`/works/${hit.id}`}
+                  title={hit.originalTitle}
+                  author={hit.author}
+                  coverUrl={hit.coverUrl}
+                  // The first row is above the fold on every screen size we support.
+                  priority={index < 6}
+                  meta={
+                    hit.firstPublishedYear ? `${hit.author}, ${hit.firstPublishedYear}` : hit.author
+                  }
+                />
+              ))}
+            </PosterGrid>
+          )}
         </>
       );
+    }
     default:
       return null;
   }
@@ -218,7 +255,7 @@ function SignInPrompt() {
   if (loading || user) return null;
 
   return (
-    <p className="signin-prompt">
+    <p className={styles.signIn}>
       <Link href="/login">{t('nav.signIn')}</Link> {t('search.signInPrompt')}
     </p>
   );

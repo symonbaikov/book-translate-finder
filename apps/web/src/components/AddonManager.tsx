@@ -15,7 +15,7 @@ import {
 } from '../lib/installed-addons';
 import { outcomeOfWrite } from '../lib/setting-change';
 import { useSettingChangeToast } from '../lib/settings-toast';
-import { Badge, Button, Card, Field, Stack, TextInput } from '../ui';
+import { Badge, Button, ButtonLink, Card, Field, Stack, TextInput } from '../ui';
 import styles from './AddonManager.module.css';
 
 /**
@@ -157,52 +157,9 @@ export function AddonManager() {
     });
   }
 
-  /** Recommended addons — pre-filled links for quick installation */
-  const recommendedAddons = [
-    {
-      name: "Anna's Archive",
-      url: 'https://codeberg.org/peterbaikov/js-adon/raw/main/addons/annas-archive/manifest.json',
-      description: 'Book search and download links from Anna\'s Archive. Direct links for EPUB, PDF, FB2.',
-    },
-  ];
-
   return (
     <>
       <p className={styles.intro}>{t('addons.intro')}</p>
-
-      {recommendedAddons.length > 0 && (
-        <>
-          <h2>{t('addons.library', 'Addon Library')}</h2>
-          <div className={styles.library}>
-            {recommendedAddons.map((addon) => (
-              <Card key={addon.url}>
-                <div className={styles.libraryItem}>
-                  <div className={styles.libraryInfo}>
-                    <h3>{addon.name}</h3>
-                    <p>{addon.description}</p>
-                  </div>
-                  <Button
-                    variant="primary"
-                    onClick={() => {
-                      setAddress(addon.url);
-                      void propose(async () => {
-                        const transport = await installHttpAddon(addon.url);
-                        return {
-                          consent: consentFor(transport.manifest, addon.url, 'http'),
-                          descriptor: { kind: 'http', manifestUrl: addon.url },
-                        };
-                      });
-                    }}
-                    loading={checking && address === addon.url}
-                  >
-                    {t('addons.install', 'Install')}
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </>
-      )}
 
       <h2>{t('addons.fromServer')}</h2>
       <form
@@ -349,6 +306,11 @@ export function AddonManager() {
                         </div>
                       </div>
                       <div className={styles.actions}>
+                        {addon.enabled ? (
+                          <ButtonLink variant="ghost" href={`/addons/${addon.id}`}>
+                            {t('addons.browse')}
+                          </ButtonLink>
+                        ) : null}
                         <Button
                           variant="ghost"
                           onClick={() => move(addon, -1)}

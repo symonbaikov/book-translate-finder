@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { EditionSummary } from '@btf/contracts';
+import type { EditionSummary } from '@golden/contracts';
 import { languageName } from '../lib/language-names';
 import { useT } from '../i18n/I18nProvider';
 import type { Translate } from '../i18n/dictionary';
