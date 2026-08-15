@@ -162,7 +162,13 @@ passes (`packages/addons/src/url.ts`).
 Assignment rules:
 
 1. The edition is found in Project Gutenberg / Standard Ebooks / Wikisource → `public_domain`.
-2. Internet Archive reports an open-access label (not lending) → `public_domain`.
+2. Internet Archive reports an open-access label (not lending) → `public_domain`, **unless the work
+   was first published within the last 95 years**, in which case the claim is refused and no
+   download link is created ([ADR-0011](adr/0011-access-label-is-not-a-rights-statement.md)).
+   Rule 1's sources state this about the _work_ — their entire corpus is public domain by charter.
+   Internet Archive is a general-purpose host, and "full access" describes _access_, not _rights_:
+   it once labelled a 2007 translation of a 1997 novel that way, and the card offered it as a free
+   public domain download.
 3. The source reports an open license (CC BY, CC0, etc.) → `open_license`.
 4. No explicit signals → `unknown`.
 
@@ -174,6 +180,32 @@ years in the EU/Russia, a different rule in the US). The project does **not** co
 domain status on its own from the author's year of death — it relies on the status declared by
 an allowlisted source. Rolling our own term-of-protection calculation without legal counsel is
 forbidden.
+
+Rule 2's 95-year window is not such a calculation and does not become one: it can only ever
+_withhold_ `public_domain`, never grant it, and 95 years is a floor on how credible a general-
+purpose host's label is, not a claim about any particular book. Nothing previously refused becomes
+allowed by it.
+
+An instance that stored links before this rule existed keeps them: the check runs when a link is
+created, so a stale row survives until the edition is re-synced. Operators upgrading across
+[ADR-0011](adr/0011-access-label-is-not-a-rights-statement.md) should clear the affected rows:
+
+```sql
+delete from source_link l using edition e, work w
+where e.id = l.edition_id and w.id = e.work_id
+  and l.provider = 'internet-archive' and l.rights_status = 'public_domain'
+  and w.first_published_year > extract(year from now()) - 95;
+```
+
+**Then flush the cache**, or the deleted link keeps being served until its TTL runs out — the
+edition list is cached by work, and Postgres is not its only copy:
+
+```sh
+docker compose exec -T redis sh -c "redis-cli --scan --pattern 'v4:work:*' | xargs -r redis-cli del"
+```
+
+A rights fix that stops at the database is not a fix. Anything that removes a link for legal
+reasons has to invalidate every layer that remembered it.
 
 ---
 

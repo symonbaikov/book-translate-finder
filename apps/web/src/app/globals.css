@@ -233,6 +233,50 @@ input::placeholder {
   text-decoration: none;
 }
 
+/* --- Settings popups ------------------------------------------------------
+   `sonner` renders its toasts into a portal at the end of the document, out of reach of any CSS
+   module, and injects its own stylesheet at runtime — so attribute selectors here are the only
+   place these two things can be said. See lib/settings-toast.tsx for what goes in a popup. */
+
+/* The close button is why this block exists. `[data-close-button]` sizes itself 20x20 and rounds
+   itself to a circle, but says nothing about `min-block-size` — so the element default above
+   stretched it into a 44px-tall ellipse pinned to the toast's corner, which is what a reader
+   actually saw. Reset, and grown a little past the 20px sonner ships.
+
+   This is the one control in the application below `--tap-min`, and deliberately: it rides half
+   off the corner of the message it belongs to, so a 44px disc there would cover the message or
+   spill its hit area onto the page behind. 28px still clears the 24px WCAG 2.2 target minimum,
+   and no popup here depends on being closed by hand — every one of them expires on its own.
+
+   Four attributes in the selector, and every one of them is load-bearing: sonner's own size lives
+   at `[data-sonner-toast][data-styled] [data-close-button]`, and its stylesheet is injected into
+   the head at runtime, so it wins any tie on order. Shortening this selector silently gives the
+   ellipse back. */
+[data-sonner-toaster] [data-sonner-toast][data-styled] [data-close-button] {
+  min-block-size: 0;
+  block-size: 28px;
+  inline-size: 28px;
+  font-weight: inherit;
+}
+
+/* The preference's name and the status word are two facts, not one sentence: without this they set
+   as "Interface languageSaved". Pushed to opposite ends of the line and the status set small, so
+   the eye reads the name first and the verdict second. Colour is inherited — `richColors` has
+   already tinted the whole toast by outcome, and a token colour here would fight it. */
+.setting-toast__heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.setting-toast__status {
+  font-size: var(--step--2);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
 /* --- Skeletons ------------------------------------------------------------
    Global for the same reason as `.error-box`: the suite asserts `.skeleton` has count 0 once a
    panel has resolved. See ui/Skeleton.tsx. */

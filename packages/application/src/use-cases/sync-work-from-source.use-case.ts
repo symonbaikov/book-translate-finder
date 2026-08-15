@@ -196,7 +196,12 @@ export class SyncWorkFromSource implements UseCase<
         let editionsSynced = 0;
         let linksSynced = 0;
         for (const providerEdition of providerEditions) {
-          const outcome = await this.syncEdition(input.source, work.id, providerEdition);
+          const outcome = await this.syncEdition(
+            input.source,
+            work.id,
+            providerEdition,
+            work.firstPublishedYear,
+          );
           if (outcome) {
             editionsSynced += 1;
             linksSynced += outcome.linksSynced;
@@ -270,6 +275,9 @@ export class SyncWorkFromSource implements UseCase<
     source: string,
     workId: string,
     providerEdition: ProviderEdition,
+    /** The work's first publication year, so `LinkPolicy` can disbelieve an implausible
+     *  public-domain claim about it (ADR-0011). */
+    workFirstPublishedYear: number | null,
   ): Promise<{ linksSynced: number } | null> {
     const isbn =
       this.tryParseIsbn(providerEdition.isbn13) ?? this.tryParseIsbn(providerEdition.isbn10);
@@ -325,7 +333,12 @@ export class SyncWorkFromSource implements UseCase<
     await this.deps.editionRepository.save(edition);
     await this.deps.externalRefRepository.save(editionExternalRef, 'edition', edition.id);
 
-    const linksSynced = await this.syncLinks(source, edition.id, providerEdition);
+    const linksSynced = await this.syncLinks(
+      source,
+      edition.id,
+      providerEdition,
+      workFirstPublishedYear,
+    );
     return { linksSynced };
   }
 
@@ -339,6 +352,7 @@ export class SyncWorkFromSource implements UseCase<
     source: string,
     editionId: string,
     providerEdition: ProviderEdition,
+    workFirstPublishedYear: number | null,
   ): Promise<number> {
     let saved = 0;
     for (const candidate of providerEdition.links ?? []) {
@@ -353,6 +367,7 @@ export class SyncWorkFromSource implements UseCase<
           provider: ProviderId.create(candidate.provider ?? source),
           rightsStatus: providerEdition.rightsSignal,
           format: candidate.format ?? null,
+          workFirstPublishedYear,
           verifiedAt: this.deps.clock.now(),
         });
         await this.deps.sourceLinkRepository.save(sourceLink);

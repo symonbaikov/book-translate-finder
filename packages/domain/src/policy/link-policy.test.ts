@@ -4,6 +4,7 @@ import {
   assertLinkAllowed,
   ForbiddenSourceError,
   IllegalDownloadLinkError,
+  ImplausiblePublicDomainClaimError,
   type LinkCandidate,
 } from './link-policy.js';
 
@@ -106,6 +107,90 @@ describe('assertLinkAllowed — I-1 download requires allowlisted provider + pub
       ).not.toThrow();
     },
   );
+});
+
+describe('assertLinkAllowed — an access label is not a rights statement (ADR-0011)', () => {
+  // The case that prompted the rule: a 2007 Tibetan translation of a 1997 novel, scanned and
+  // hosted on archive.org, which Open Library's availability API reported as "full access". The
+  // adapter turned that into public_domain and the card offered a free download of a book that is
+  // very much in copyright.
+  const modernOnInternetArchive = (overrides: Partial<LinkCandidate> = {}) =>
+    baseCandidate({
+      provider: ProviderId.create('internet-archive'),
+      url: 'http://www.archive.org/stream/bdrc-W1KG14543',
+      rightsStatus: 'public_domain',
+      workFirstPublishedYear: 1997,
+      verifiedAt: new Date('2026-08-15T00:00:00Z'),
+      ...overrides,
+    });
+
+  it('rejects a public_domain download for a work young enough to still be in copyright', () => {
+    expect(() => assertLinkAllowed(modernOnInternetArchive())).toThrow(
+      ImplausiblePublicDomainClaimError,
+    );
+  });
+
+  it.each(['download', 'listen'] as const)('applies to %s links alike', (type) => {
+    expect(() => assertLinkAllowed(modernOnInternetArchive({ type }))).toThrow(
+      ImplausiblePublicDomainClaimError,
+    );
+  });
+
+  it('still allows the same host to claim public_domain for a genuinely old work', () => {
+    expect(() =>
+      assertLinkAllowed(modernOnInternetArchive({ workFirstPublishedYear: 1897 })),
+    ).not.toThrow();
+  });
+
+  it('does not fire on a chartered public domain repository — Gutenberg states it about the work', () => {
+    // Gutenberg carries modern public domain texts too (a 1970s government report, a recent
+    // translation released into the public domain). Its whole corpus is the claim, not a label.
+    expect(() =>
+      assertLinkAllowed(
+        modernOnInternetArchive({
+          provider: ProviderId.create('gutenberg'),
+          url: 'https://www.gutenberg.org/ebooks/1342',
+        }),
+      ),
+    ).not.toThrow();
+  });
+
+  it('does not fire on open_license — a rights holder may licence a book published last year', () => {
+    expect(() =>
+      assertLinkAllowed(
+        modernOnInternetArchive({ rightsStatus: 'open_license', workFirstPublishedYear: 2024 }),
+      ),
+    ).not.toThrow();
+  });
+
+  it('treats a missing year as no evidence rather than as grounds to refuse', () => {
+    // Refusing every link whose source omitted the year would delete most of Project Gutenberg
+    // to catch nothing: absence of data cuts both ways, and this rule only ever withholds.
+    expect(() =>
+      assertLinkAllowed(modernOnInternetArchive({ workFirstPublishedYear: null })),
+    ).not.toThrow();
+
+    // And the same when the field is absent altogether rather than explicitly null.
+    const { workFirstPublishedYear: _omitted, ...withoutYear } = modernOnInternetArchive();
+    expect(() => assertLinkAllowed(withoutYear)).not.toThrow();
+  });
+
+  it('moves with the clock rather than pinning a hardcoded year', () => {
+    // A work published in 1935 is inside the window when checked in 2026 and outside it in 2031.
+    const candidate = (verifiedAt: Date) =>
+      modernOnInternetArchive({ workFirstPublishedYear: 1935, verifiedAt });
+
+    expect(() => assertLinkAllowed(candidate(new Date('2026-08-15T00:00:00Z')))).toThrow(
+      ImplausiblePublicDomainClaimError,
+    );
+    expect(() => assertLinkAllowed(candidate(new Date('2031-08-15T00:00:00Z')))).not.toThrow();
+  });
+
+  it('never gates buy or borrow — pointing at a library is legal whatever the status', () => {
+    expect(() =>
+      assertLinkAllowed(modernOnInternetArchive({ type: 'borrow', rightsStatus: 'copyrighted' })),
+    ).not.toThrow();
+  });
 });
 
 describe('assertLinkAllowed — I-2/I-4 buy/borrow links are not status-gated but always carry a status', () => {

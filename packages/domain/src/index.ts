@@ -31,6 +31,7 @@ export {
   assertLinkAllowed,
   ForbiddenSourceError,
   IllegalDownloadLinkError,
+  ImplausiblePublicDomainClaimError,
   type LinkCandidate,
 } from './policy/link-policy.js';
 export {
