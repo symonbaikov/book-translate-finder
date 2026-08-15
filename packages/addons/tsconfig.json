@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    // Empty on purpose, like packages/plugins: this package is bundled into the browser and must
+    // never acquire a Node-only API. Unlike plugins, it is *also* forbidden from being imported by
+    // apps/api and packages/infrastructure at all (docs/adr/0010-addon-engine.md §6), which
+    // `pnpm boundaries` enforces.
+    "types": [],
+    // `URL`, `fetch`, `AbortController` and the timers are standard in browsers and in Node 20
+    // alike; `lib.dom` is what declares them once "types" is empty.
+    "lib": ["ES2022", "DOM"]
+  },
+  "include": ["src"]
+}

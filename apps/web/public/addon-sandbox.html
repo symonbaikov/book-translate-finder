@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Addon sandbox</title>
+    <!--
+      The document a local addon runs inside. Nobody navigates here; it is only ever loaded into a
+      hidden <iframe sandbox="allow-scripts">, which puts it on an opaque origin where cookies,
+      localStorage and IndexedDB all throw.
+
+      Its Content-Security-Policy is set as a real header in apps/web/next.config.mjs, not as a meta
+      tag: the `sandbox` and `frame-ancestors` directives are ignored in meta, and those are two of
+      the ones worth having. The header pins the script below by its SHA-256, which next.config.mjs
+      computes from this very file at build time — so the two cannot drift, and editing this script
+      without editing anything else simply produces a new hash.
+
+      The bootstrap does as little as a bootstrap can. It owns no addon logic: it receives a worker
+      source from the host, starts it, and relays messages both ways. Everything an addon can
+      actually do is decided on the other side of that relay, in the host page, by
+      packages/addons/src/sandbox/capabilities.ts.
+    -->
+  </head>
+  <body>
+    <script>
+      (function () {
+        'use strict';
+
+        var worker = null;
+
+        function toParent(message) {
+          // '*' because the parent cannot be named from here in any way this document could
+          // verify, and because only our own page ever embeds this file. The handle is the real
+          // check, and it is on the parent's side: it compares event.source against the frame it
+          // created.
+          parent.postMessage(message, '*');
+        }
+
+        function fatal(error) {
+          toParent({
+            v: 1,
+            type: 'fatal',
+            error: error && error.message ? String(error.message) : String(error),
+          });
+        }
+
+        addEventListener('message', function (event) {
+          if (event.source !== parent) return;
+          var message = event.data;
+          if (!message || message.v !== 1) return;
+
+          if (message.type === 'start') {
+            if (worker) return;
+            try {
+              var blob = new Blob([message.source], { type: 'text/javascript' });
+              worker = new Worker(URL.createObjectURL(blob));
+            } catch (error) {
+              fatal(error);
+              return;
+            }
+            worker.onmessage = function (fromWorker) {
+              toParent(fromWorker.data);
+            };
+            worker.onerror = function (workerError) {
+              fatal(workerError || new Error('The addon stopped with an error.'));
+            };
+            return;
+          }
+
+          if (worker) worker.postMessage(message);
+        });
+
+        toParent({ v: 1, type: 'booted' });
+      })();
+    </script>
+  </body>
+</html>
