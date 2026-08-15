@@ -17,6 +17,18 @@ The project is designed for self-hosting: deploy your own copy on your own serve
 
 ![Home page: search, and personalized recommendations based on browsing history worked out in the browser](docs/images/home.png)
 
+<p align="center">
+  <a href="https://bank.gov.ua/en/news/all/natsionalniy-bank-vidkriv-rahunok-dlya-gumanitarnoyi-dopomogi-ukrayintsyam-postrajdalim-vid-rosiyskoyi-agresiyi" target="_blank">
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/4/49/Flag_of_Ukraine.svg"
+      alt="Ukraine Flag"
+      width="520"
+      height="120"
+    /><br/>
+    <strong>Humanitarian Aid for Ukraine</strong><br/>
+    Support humanitarian relief via the official National Bank of Ukraine account.
+  </a>
+</p>
 
 ### 🌐 Access Any Digital Archive
 
