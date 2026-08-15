@@ -1,8 +1,12 @@
-<img src="docs/images/logo.svg" alt="" width="72" height="72" align="left" style="margin-right: 16px">
+<div align="center">
 
-# Golden Library
+  <img src="docs/images/logo.svg" alt="Golden Library Logo" width="80" height="80">
 
-_Find your next magnum opus._
+  # Golden Library
+
+  _Find your next magnum opus._
+
+</div>
 
 An open book translation aggregator. Enter a title and author — the service shows which languages
 the book has been translated into, which editions exist, and where to get the text **legally**:
@@ -12,6 +16,16 @@ under copyright.
 The project is designed for self-hosting: deploy your own copy on your own server or home NAS.
 
 ![Home page: search, and personalized recommendations based on browsing history worked out in the browser](docs/images/home.png)
+
+
+### 🌐 Access Any Digital Archive
+
+Golden Library acts as an open, universal front-end for global digital archives, public domains, and community-curated book repositories. 
+
+* **No Paywalls or Walled Gardens:** Bring your own search mirrors (e.g., Anna's Archive, LibGen, OpenLibrary) to index millions of public domain and open-access books instantly.
+* **Uncensored Search Engine:** You control where the search queries go. Bypasses restricted regional catalog views by letting you use your preferred domain mirrors.
+* **Community Presets Available:** Don't want to configure sources manually? Grab ready-to-use search templates directly from our [Telegram Channel](https://t.me/YOUR_CHANNEL).
+
 
 ## Legal policy
 
