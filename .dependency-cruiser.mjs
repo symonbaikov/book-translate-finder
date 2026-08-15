@@ -34,6 +34,30 @@ export default {
       to: { path: '^(packages/(domain|application|infrastructure)|apps)/' },
     },
     {
+      name: 'plugins-is-a-leaf',
+      comment:
+        'packages/plugins is imported by apps/web (browser) and packages/infrastructure (Node) alike, so it must depend on no other workspace package — see docs/adr/0007-plugin-architecture.md.',
+      severity: 'error',
+      from: { path: '^packages/plugins/src' },
+      to: { path: '^(packages/(domain|application|infrastructure|contracts)|apps)/' },
+    },
+    {
+      name: 'addons-is-a-leaf',
+      comment:
+        'packages/addons is bundled into the browser and must depend on no other workspace package — see docs/adr/0010-addon-engine.md.',
+      severity: 'error',
+      from: { path: '^packages/addons/src' },
+      to: { path: '^(packages/(domain|application|infrastructure|contracts|plugins)|apps)/' },
+    },
+    {
+      name: 'addons-never-on-the-server',
+      comment:
+        'An addon is the reader\'s: it runs on their device or on its author\'s server, and this instance is not to learn about it (docs/adr/0010-addon-engine.md §6). Nothing that executes server-side may import packages/addons — that is what makes "zero knowledge" a build failure rather than a promise.',
+      severity: 'error',
+      from: { path: '^(apps/(api|worker)|packages/(domain|application|infrastructure))/' },
+      to: { path: '^packages/addons/' },
+    },
+    {
       name: 'infrastructure-no-apps',
       comment:
         'packages/infrastructure must not depend on apps/* (composition root is downstream of it).',
@@ -44,7 +68,7 @@ export default {
     {
       name: 'web-no-domain-application-infrastructure',
       comment:
-        'apps/web talks only to the HTTP API and packages/contracts — it must not import domain, application or infrastructure directly (docs/architecture.md §2.5).',
+        'apps/web talks to the HTTP API, packages/contracts, packages/plugins and packages/addons only — it must not import domain, application or infrastructure directly (docs/architecture.md §2.5). `plugins` is allowed because the client-side modules (OPDS, bookshop lookup) run in the browser by design and depend on nothing (docs/adr/0007); `addons` because the browser is the only place an addon may run at all (docs/adr/0010).',
       severity: 'error',
       from: { path: '^apps/web/src' },
       to: { path: '^packages/(domain|application|infrastructure)/' },

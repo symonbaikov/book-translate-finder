@@ -1,4 +1,4 @@
-name: book-translate-finder-dev
+name: golden-library-dev
 
 # Development only: Postgres + Redis for `pnpm dev` running api/worker/web on the host.
 # The self-host production compose (all services, `docker/app.Dockerfile`) lands in Phase 1.6 —

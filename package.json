@@ -1,5 +1,5 @@
 {
-  "name": "book-translate-finder",
+  "name": "golden-library",
   "private": true,
   "version": "0.0.0",
   "license": "MIT",
@@ -19,19 +19,22 @@
     "test:contract": "vitest run --project contract",
     "test:integration": "vitest run --project integration",
     "test:coverage": "vitest run --project unit --project contract --coverage --coverage.include=\"packages/domain/src/**/*.ts\" --coverage.include=\"packages/application/src/**/*.ts\" --coverage.exclude=\"**/*.test.ts\" --coverage.exclude=\"**/index.ts\" --coverage.thresholds.statements=90 --coverage.thresholds.branches=90 --coverage.thresholds.functions=90 --coverage.thresholds.lines=90",
-    "test:e2e": "pnpm --filter @btf/web run e2e",
+    "test:e2e": "pnpm --filter @golden/web run e2e",
     "test:watch": "vitest",
     "build": "pnpm -r --filter \"./packages/*\" run build && pnpm -r --filter \"./apps/*\" run build",
-    "db:generate": "pnpm --filter @btf/infrastructure run db:generate",
-    "db:migrate": "pnpm --filter @btf/infrastructure run db:migrate",
-    "db:seed": "pnpm --filter @btf/infrastructure run db:seed",
-    "sync": "pnpm --filter @btf/worker run sync",
+    "db:generate": "pnpm --filter @golden/infrastructure run db:generate",
+    "db:migrate": "pnpm --filter @golden/infrastructure run db:migrate",
+    "db:seed": "pnpm --filter @golden/infrastructure run db:seed",
+    "sync": "pnpm --filter @golden/worker run sync",
     "boundaries": "depcruise --config .dependency-cruiser.mjs packages apps",
     "clean": "pnpm -r run clean && rm -rf node_modules",
-    "db:seed:catalog": "pnpm --filter @btf/worker run seed:catalog"
+    "db:seed:catalog": "pnpm --filter @golden/worker run seed:catalog",
+    "test:sandbox": "pnpm --filter @golden/web run e2e:sandbox",
+    "addon:validate": "node tools/addon-validate.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
+    "@golden/addons": "workspace:*",
     "@types/node": "^20.14.0",
     "@vitest/coverage-v8": "^2.1.4",
     "dependency-cruiser": "^16.4.2",
@@ -39,6 +42,7 @@
     "eslint-config-prettier": "^9.1.0",
     "globals": "^15.11.0",
     "prettier": "^3.3.3",
+    "tsx": "^4.19.1",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.11.0",
     "vitest": "^2.1.4"

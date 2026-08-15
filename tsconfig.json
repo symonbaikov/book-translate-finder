@@ -5,10 +5,12 @@
     { "path": "packages/application" },
     { "path": "packages/infrastructure" },
     { "path": "packages/contracts" },
+    { "path": "packages/plugins" },
+    { "path": "packages/addons" },
     { "path": "apps/api" },
     { "path": "apps/worker" }
   ]
   // apps/web is intentionally excluded: Next.js compiles it with its own toolchain
   // (moduleResolution "bundler", non-composite) and is typechecked independently via
-  // `pnpm --filter @btf/web run typecheck` — see apps/web/tsconfig.json.
+  // `pnpm --filter @golden/web run typecheck` — see apps/web/tsconfig.json.
 }
