@@ -24,13 +24,17 @@ COPY tsconfig.base.json ./
 COPY packages/domain ./packages/domain
 COPY packages/application ./packages/application
 COPY packages/infrastructure ./packages/infrastructure
-RUN pnpm --filter @btf/infrastructure... run build
-RUN pnpm --filter @btf/infrastructure deploy --prod /repo/deploy/migrate
+RUN pnpm --filter @golden/infrastructure... run build
+RUN pnpm --filter @golden/infrastructure deploy --prod /repo/deploy/migrate
 
 FROM node:20-alpine AS runtime
 RUN addgroup -S btf && adduser -S btf -G btf
 WORKDIR /app
 COPY --from=build --chown=btf:btf /repo/deploy/migrate ./
+# Copy the backfill script and dependencies
+COPY --chown=btf:btf scripts ./scripts
+COPY --chown=btf:btf packages/infrastructure/src/db/schema.ts ./packages/infrastructure/src/db/schema.ts
+COPY --chown=btf:btf pnpm-lock.yaml .npmrc package.json pnpm-workspace.yaml ./
 USER btf
 ENV NODE_ENV=production
 # Seeding the language table is idempotent (ON CONFLICT DO UPDATE, docs/plan.md §1.2 findings) —
