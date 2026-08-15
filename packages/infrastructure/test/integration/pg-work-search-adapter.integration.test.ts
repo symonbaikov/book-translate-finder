@@ -1,4 +1,4 @@
-import { Edition, LanguageCode, Work } from '@btf/domain';
+import { Edition, LanguageCode, Work } from '@golden/domain';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { PgEditionRepository } from '../../src/repositories/pg-edition-repository.js';
 import { PgWorkRepository } from '../../src/repositories/pg-work-repository.js';
@@ -121,6 +121,56 @@ describe('PgWorkSearchAdapter (real Postgres, pg_trgm)', () => {
     expect(results[0]?.originalTitle).toBe('Мастер и Маргарита');
   });
 
+  it('ranks the book that matches title and author above one matching the author alone', async () => {
+    // Found live: «Шантарам Грегори Дэвид Робертс» returned *The Mountain Shadow* — a different
+    // novel by the same author. Scoring each arm separately and taking the maximum meant the
+    // author's name scored identically for both books, so the two tied and the order between
+    // them was arbitrary. The reader had named the title too, and that has to count.
+    await seed('work-shantaram', 'Shantaram', 'Gregory David Roberts', 2003);
+    await seed('work-shadow', 'The Mountain Shadow', 'Gregory David Roberts', 2015);
+
+    const results = await search.search('Shantaram Gregory David Roberts', 10);
+
+    expect(results[0]?.id).toBe('work-shantaram');
+    expect(results.map((r) => r.id)).toContain('work-shadow');
+  });
+
+  it('reports how well each hit answered the query, so a weak best match can be questioned', async () => {
+    await seed('work-1', 'War and Peace', 'Leo Tolstoy', 1869);
+
+    const [exact] = await search.search('War and Peace Tolstoy', 10);
+    const [loose] = await search.search('Shantaram Gregory David Roberts', 10);
+
+    expect(exact?.rank).toBeGreaterThan(0.55);
+    expect(loose === undefined || (loose.rank ?? 1) < 0.55).toBe(true);
+  });
+
+  it('does not reach a work through one shared word in an unrelated edition title', async () => {
+    // Found live: «Обитель Прилепин» returned *La chartreuse de Parme* by Stendhal, because its
+    // Russian edition is «Пармская обитель» and that one shared word scored 0.360 — over the
+    // general 0.3 bar — while the work itself scored 0.000 against the query. Reaching a work
+    // through an edition title is weaker evidence than matching its own title or author, so that
+    // arm carries a higher bar; the matches it exists for clear it easily (1.000 and 0.621 on the
+    // two cases either side of this test).
+    await seed('work-1', 'La chartreuse de Parme', 'Stendhal', 1839);
+    const editionRepo = new PgEditionRepository(testDb.db);
+    await editionRepo.save(
+      Edition.create({
+        id: 'edition-ru',
+        workId: 'work-1',
+        title: 'Пармская обитель',
+        language: LanguageCode.create('ru'),
+        publisher: 'Азбука',
+        year: 2019,
+      }),
+    );
+
+    await expect(search.search('Обитель Прилепин', 10)).resolves.toEqual([]);
+    // The same edition still finds the book when the reader actually means it.
+    const own = await search.search('Пармская обитель', 10);
+    expect(own.map((r) => r.id)).toContain('work-1');
+  });
+
   it('finds a romanized-stored work by its Cyrillic query (cross-script fallback)', async () => {
     // Found live in Phase 3: Open Library stores Russian editions romanized ("Voina i mir"), so
     // the Cyrillic query «Война и мир» shares zero trigrams with anything stored — the primary
@@ -141,5 +191,31 @@ describe('PgWorkSearchAdapter (real Postgres, pg_trgm)', () => {
     const results = await search.search('Война и мир', 10);
 
     expect(results.map((r) => r.id)).toContain('work-1');
+  });
+
+  it('merges Cyrillic and Latin-titled works of the same series into one result set', async () => {
+    // Found live: «Метро 2033»/«Метро 2034» are stored in Cyrillic, "Metro 2035" is stored in
+    // Latin (synced later under its own spelling). A query for «Метро» alone already matched the
+    // two Cyrillic works, so the old early-return never even tried the romanized fallback pass —
+    // "Metro 2035" was invisible to a query for the series name.
+    await seed('work-2033', 'Метро 2033', 'Дмитрий Глуховский', 2007);
+    await seed('work-2034', 'Метро 2034', 'Дмитрий Глуховский', 2009);
+    await seed('work-2035', 'Metro 2035', 'Дмитрий Глуховский', 2015);
+
+    const results = await search.search('Метро', 10);
+
+    expect(results.map((r) => r.id)).toEqual(
+      expect.arrayContaining(['work-2033', 'work-2034', 'work-2035']),
+    );
+  });
+
+  it('respects the limit after merging Cyrillic and romanized-fallback results', async () => {
+    await seed('work-2033', 'Метро 2033', 'Дмитрий Глуховский', 2007);
+    await seed('work-2034', 'Метро 2034', 'Дмитрий Глуховский', 2009);
+    await seed('work-2035', 'Metro 2035', 'Дмитрий Глуховский', 2015);
+
+    const results = await search.search('Метро', 2);
+
+    expect(results).toHaveLength(2);
   });
 });

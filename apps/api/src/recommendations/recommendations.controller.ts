@@ -3,8 +3,8 @@ import {
   RecommendationsRequestSchema,
   RecommendationsResponseSchema,
   type RecommendationsResponse,
-} from '@btf/contracts';
-import type { RecommendBooks } from '@btf/application';
+} from '@golden/contracts';
+import type { RecommendBooks } from '@golden/application';
 import { parseOrThrow } from '../common/validation/parse-or-throw.js';
 import { TOKENS } from '../common/tokens.js';
 

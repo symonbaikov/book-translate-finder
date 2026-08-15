@@ -6,7 +6,7 @@ const validEnv = {
   LOG_LEVEL: 'info',
   DATABASE_URL: 'postgres://user:pass@localhost:5432/btf',
   REDIS_URL: 'redis://localhost:6379',
-  CONTACT_URL: 'https://github.com/example/book-translate-finder',
+  CONTACT_URL: 'https://github.com/example/golden-library',
 };
 
 describe('loadEnv', () => {

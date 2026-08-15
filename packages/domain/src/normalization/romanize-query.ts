@@ -4,10 +4,17 @@
  * trigrams with them and silently finds nothing (found live in Phase 3 while verifying
  * any-language input). Romanizing the query as a fallback search arm bridges that.
  *
- * Deliberately NOT part of `normalizeText()` in the domain: that function feeds natural keys,
- * and its doc comment explicitly rules out cross-script transliteration there (same conceptual
- * title in two scripts must NOT collide onto one natural key). A query-side romanization has no
- * such identity implications — it only widens what a search can find.
+ * The same is true — far more starkly — of Open Library's *own* search, which is why this lives
+ * in the domain rather than beside the Postgres adapter that first needed it. Measured live:
+ * «Анна Каренина» returns 2 results, "Anna Karenina" returns 331; «Преступление и наказание»
+ * returns 6 whose top hit is a German edition, "Prestuplenie i nakazanie" returns 136 topped by
+ * the Russian one. A reader typing Cyrillic was being asked a different, much poorer question
+ * than a reader typing Latin, so both the local search and the sync's provider query use this.
+ *
+ * Deliberately NOT part of `normalizeText()`: that function feeds natural keys, and its doc
+ * comment explicitly rules out cross-script transliteration there (the same conceptual title in
+ * two scripts must NOT collide onto one natural key). A query-side romanization has no such
+ * identity implications — it only widens what a search can find.
  *
  * The mapping is a practical BGN/PCGN-flavored one, close to how Open Library romanizes; exact
  * ALA-LC (with diacritics like "ĭ") is unnecessary — trigram similarity absorbs the difference.

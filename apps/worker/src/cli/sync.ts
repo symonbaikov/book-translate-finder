@@ -2,7 +2,7 @@
 // synchronous one-off sync for local debugging, distinct from the BullMQ `sync` queue consumer
 // in main.ts. Runs `SyncWorkFromSource` directly against the already-known work's title+author
 // (same trick `RefreshStaleWorks` uses), prints the result, and exits — no queue involved.
-import { loadEnv } from '@btf/infrastructure';
+import { loadEnv } from '@golden/infrastructure';
 import { buildWorkerContext } from '../composition-root.js';
 import { workerEnvSchema } from '../config/worker-env.schema.js';
 

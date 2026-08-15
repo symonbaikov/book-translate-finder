@@ -1,14 +1,14 @@
-import { count, eq, inArray } from 'drizzle-orm';
+import { and, count, eq, inArray } from 'drizzle-orm';
 import {
   isLinkType,
   isRightsStatus,
   ProviderId,
   SourceLink,
   type SourceLinkRepository,
-} from '@btf/domain';
+} from '@golden/domain';
 import type { Db } from '../db/client.js';
 import { resolveDb } from '../db/transaction-context.js';
-import { sourceLink } from '../db/schema.js';
+import { edition, sourceLink } from '../db/schema.js';
 
 function toDomain(row: typeof sourceLink.$inferSelect): SourceLink {
   if (!isLinkType(row.type)) throw new Error(`Corrupt source_link row: unknown type ${row.type}`);
@@ -50,6 +50,45 @@ export class PgSourceLinkRepository implements SourceLinkRepository {
       .where(inArray(sourceLink.editionId, [...editionIds]))
       .groupBy(sourceLink.editionId);
     return new Map(rows.map((row) => [row.editionId, Number(row.links)]));
+  }
+
+  /** See `SourceLinkRepository.hasFreeCopyByWorkIds` — one query, joined through `edition`
+   * since `source_link` only carries an edition id, not a work id directly. */
+  async hasFreeCopyByWorkIds(workIds: readonly string[]): Promise<Set<string>> {
+    if (workIds.length === 0) return new Set();
+    const rows = await this.q
+      .selectDistinct({ workId: edition.workId })
+      .from(sourceLink)
+      .innerJoin(edition, eq(sourceLink.editionId, edition.id))
+      .where(and(inArray(edition.workId, [...workIds]), eq(sourceLink.isLegalFree, true)));
+    return new Set(rows.map((row) => row.workId));
+  }
+
+  /** See `SourceLinkRepository.findFreeDownloadsByEditionIds` — one query for the whole page of
+   * editions, ordered so the list above it is stable between requests. */
+  async findFreeDownloadsByEditionIds(
+    editionIds: readonly string[],
+  ): Promise<Map<string, SourceLink[]>> {
+    if (editionIds.length === 0) return new Map();
+    const rows = await this.q
+      .select()
+      .from(sourceLink)
+      .where(
+        and(
+          inArray(sourceLink.editionId, [...editionIds]),
+          eq(sourceLink.isLegalFree, true),
+          inArray(sourceLink.type, ['download', 'listen']),
+        ),
+      )
+      .orderBy(sourceLink.type, sourceLink.format, sourceLink.provider);
+
+    const byEdition = new Map<string, SourceLink[]>();
+    for (const row of rows) {
+      const links = byEdition.get(row.editionId) ?? [];
+      links.push(toDomain(row));
+      byEdition.set(row.editionId, links);
+    }
+    return byEdition;
   }
 
   async save(link: SourceLink): Promise<void> {

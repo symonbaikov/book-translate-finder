@@ -7,7 +7,7 @@ import {
   ProviderId,
   SourceLink,
   type Clock,
-} from '@btf/domain';
+} from '@golden/domain';
 import { describe, expect, it } from 'vitest';
 import { CACHE_KEY_VERSION } from '../../src/cache-key-version.js';
 import { InMemoryCache } from '../../../domain/test/fakes/in-memory-cache.js';
@@ -114,6 +114,144 @@ describe('GetEditionLinks', () => {
     const result = await useCase.execute({ editionId: 'e1' });
 
     expect(result.links).toEqual([]);
+  });
+
+  it('falls back to a free copy on a sibling edition of the same work when this edition has none', async () => {
+    // The reader's edition is a modern reprint with no scan of its own; an older print of the
+    // same work does have one — the reader wants to read the text, not this exact typesetting.
+    const { deps, editionRepository, sourceLinkRepository } = makeDeps();
+    await editionRepository.save(
+      Edition.create({
+        id: 'e-modern',
+        workId: 'work-1',
+        title: 'Dracula',
+        language: LanguageCode.create('en'),
+        publisher: 'Penguin Random House',
+        year: 2025,
+      }),
+    );
+    await editionRepository.save(
+      Edition.create({
+        id: 'e-old',
+        workId: 'work-1',
+        title: 'Dracula',
+        language: LanguageCode.create('en'),
+        publisher: 'Grosset & Dunlap',
+        year: 1897,
+      }),
+    );
+    await sourceLinkRepository.save(
+      SourceLink.rehydrateFromStorage({
+        id: 'link-old',
+        editionId: 'e-old',
+        type: 'download',
+        url: 'https://archive.org/details/dracula00stok',
+        urlHash: computeUrlHash('https://archive.org/details/dracula00stok'),
+        provider: ProviderId.create('internet-archive'),
+        rightsStatus: 'public_domain',
+        isLegalFree: true,
+        format: 'pdf',
+        verifiedAt: new Date('2026-01-01T00:00:00Z'),
+      }),
+    );
+
+    const useCase = new GetEditionLinks(deps);
+    const result = await useCase.execute({ editionId: 'e-modern' });
+
+    expect(result.links).toEqual([
+      {
+        type: 'download',
+        provider: 'internet-archive',
+        rightsStatus: 'public_domain',
+        url: 'https://archive.org/details/dracula00stok',
+        format: 'pdf',
+        viaEdition: { id: 'e-old', label: '1897, Grosset & Dunlap' },
+      },
+    ]);
+  });
+
+  it('never falls back to a sibling edition in a different language (docs/legal-policy.md — rights are per edition)', async () => {
+    // A free German scan is not "a free copy" of the English edition, regardless of the
+    // original text's work-level rights status.
+    const { deps, editionRepository, sourceLinkRepository } = makeDeps();
+    await editionRepository.save(
+      Edition.create({
+        id: 'e-en',
+        workId: 'work-1',
+        title: 'Dracula',
+        language: LanguageCode.create('en'),
+        publisher: 'Penguin Random House',
+        year: 2025,
+      }),
+    );
+    await editionRepository.save(
+      Edition.create({
+        id: 'e-de',
+        workId: 'work-1',
+        title: 'Dracula',
+        language: LanguageCode.create('de'),
+        publisher: 'Reclam',
+        year: 1908,
+      }),
+    );
+    await sourceLinkRepository.save(
+      SourceLink.rehydrateFromStorage({
+        id: 'link-de',
+        editionId: 'e-de',
+        type: 'download',
+        url: 'https://archive.org/details/dracula-de',
+        urlHash: computeUrlHash('https://archive.org/details/dracula-de'),
+        provider: ProviderId.create('internet-archive'),
+        rightsStatus: 'public_domain',
+        isLegalFree: true,
+        verifiedAt: new Date('2026-01-01T00:00:00Z'),
+      }),
+    );
+
+    const useCase = new GetEditionLinks(deps);
+    const result = await useCase.execute({ editionId: 'e-en' });
+
+    expect(result.links).toEqual([]);
+  });
+
+  it('does not fall back to a sibling edition when this edition already has a free copy', async () => {
+    const { deps, editionRepository, sourceLinkRepository } = makeDeps();
+    await seedEdition(editionRepository);
+    await editionRepository.save(
+      Edition.create({
+        id: 'e-other',
+        workId: 'work-1',
+        title: 'War and Peace',
+        language: LanguageCode.create('en'),
+      }),
+    );
+    await sourceLinkRepository.save(makeLink('https://gutenberg.org/ebooks/1'));
+    await sourceLinkRepository.save(
+      SourceLink.rehydrateFromStorage({
+        id: 'link-other',
+        editionId: 'e-other',
+        type: 'download',
+        url: 'https://gutenberg.org/ebooks/2',
+        urlHash: computeUrlHash('https://gutenberg.org/ebooks/2'),
+        provider: ProviderId.create('gutenberg'),
+        rightsStatus: 'public_domain',
+        isLegalFree: true,
+        verifiedAt: new Date('2026-01-01T00:00:00Z'),
+      }),
+    );
+
+    const useCase = new GetEditionLinks(deps);
+    const result = await useCase.execute({ editionId: 'e1' });
+
+    expect(result.links).toEqual([
+      {
+        type: 'download',
+        provider: 'gutenberg',
+        rightsStatus: 'public_domain',
+        url: 'https://gutenberg.org/ebooks/1',
+        format: null,
+      },
+    ]);
   });
 
   it('caches under a key prefixed by the owning work id (docs/architecture.md §6)', async () => {

@@ -1,5 +1,5 @@
 {
-  "name": "@btf/infrastructure",
+  "name": "@golden/infrastructure",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -17,11 +17,13 @@
     "db:seed": "tsx --env-file-if-exists=../../.env src/db/seed.ts"
   },
   "dependencies": {
-    "@btf/application": "workspace:*",
-    "@btf/domain": "workspace:*",
+    "@golden/application": "workspace:*",
+    "@golden/domain": "workspace:*",
+    "@golden/plugins": "workspace:*",
     "bullmq": "^5.28.1",
     "cockatiel": "^3.2.1",
     "drizzle-orm": "^0.36.4",
+    "fast-xml-parser": "^5.10.1",
     "ioredis": "^5.4.1",
     "nodemailer": "9.0.5",
     "pino": "^9.5.0",

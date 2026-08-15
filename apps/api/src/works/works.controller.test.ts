@@ -1,10 +1,10 @@
-import { NotFoundError } from '@btf/domain';
+import { NotFoundError } from '@golden/domain';
 import type {
   GetWorkCard,
   GetWorkCardOutput,
   ListEditionsForWork,
   ListEditionsForWorkOutput,
-} from '@btf/application';
+} from '@golden/application';
 import { describe, expect, it, vi } from 'vitest';
 import { WorksController } from './works.controller.js';
 
@@ -23,6 +23,8 @@ const CARD: GetWorkCardOutput = {
   author: 'Leo Tolstoy',
   firstPublishedYear: 1869,
   description: null,
+  descriptionLanguage: null,
+  descriptionSource: null,
   coverUrl: null,
   subjects: ['dystopia'],
   translatedLanguages: ['en'],
@@ -38,7 +40,7 @@ describe('WorksController', () => {
       makeListEditions({ workId: 'w1', editions: [] }),
     );
 
-    const result = await controller.getCard('w1');
+    const result = await controller.getCard('w1', {});
 
     expect(result).toEqual(CARD);
   });
@@ -54,7 +56,31 @@ describe('WorksController', () => {
       makeListEditions({ workId: 'w1', editions: [] }),
     );
 
-    await expect(controller.getCard('missing')).rejects.toThrow(NotFoundError);
+    await expect(controller.getCard('missing', {})).rejects.toThrow(NotFoundError);
+  });
+
+  it("asks the card for a description in the reader's language when one is requested", async () => {
+    const getWorkCard = makeGetWorkCard(CARD);
+    const controller = new WorksController(
+      getWorkCard,
+      makeListEditions({ workId: 'w1', editions: [] }),
+    );
+
+    await controller.getCard('w1', { language: 'ru' });
+
+    expect(getWorkCard.execute).toHaveBeenCalledWith({ workId: 'w1', language: 'ru' });
+  });
+
+  it('omits the language instead of passing undefined (exactOptionalPropertyTypes)', async () => {
+    const getWorkCard = makeGetWorkCard(CARD);
+    const controller = new WorksController(
+      getWorkCard,
+      makeListEditions({ workId: 'w1', editions: [] }),
+    );
+
+    await controller.getCard('w1', {});
+
+    expect(getWorkCard.execute).toHaveBeenCalledWith({ workId: 'w1' });
   });
 
   it('passes language and year filters through when present', async () => {

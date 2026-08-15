@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest';
+import { assertLinkAllowed } from '../../src/policy/link-policy.js';
+import { ProviderId } from '../../src/value-objects/provider-id.js';
 import { FixedClock } from './fixed-clock.js';
 import { InMemoryCache } from './in-memory-cache.js';
 import { InMemoryJobQueue } from './in-memory-job-queue.js';
+import { InMemorySourceLinkRepository } from './in-memory-source-link-repository.js';
 import { SequentialIdGenerator } from './sequential-id-generator.js';
 
 describe('FixedClock', () => {
@@ -68,5 +71,63 @@ describe('InMemoryJobQueue', () => {
 
     expect(queue.enqueued).toHaveLength(1);
     expect(queue.enqueued[0]?.payload).toEqual({ attempt: 1 });
+  });
+});
+
+describe('InMemorySourceLinkRepository', () => {
+  // `hasFreeCopyByWorkIds` isn't part of the shared cross-implementation contract suite
+  // (source-link-repository.contract-suite.ts) — that suite only knows edition ids, never
+  // work ids, since `SourceLink` itself doesn't carry one. Covered here instead, the same way
+  // `deleteByPrefix`/dedup-by-jobId above cover fake-specific behavior the generic port
+  // contract has no notion of.
+  const makeLink = (overrides: Partial<Parameters<typeof assertLinkAllowed>[0]> = {}) =>
+    assertLinkAllowed({
+      id: 'link-1',
+      editionId: 'edition-1',
+      type: 'download',
+      url: 'https://www.gutenberg.org/ebooks/1342',
+      provider: ProviderId.create('gutenberg'),
+      rightsStatus: 'public_domain',
+      verifiedAt: new Date('2026-01-01T00:00:00Z'),
+      ...overrides,
+    });
+
+  it('reports a work id free once its (mapped) edition has an isLegalFree link', async () => {
+    const repo = new InMemorySourceLinkRepository();
+    repo.workIdByEditionId.set('edition-1', 'work-1');
+    await repo.save(makeLink());
+
+    expect(await repo.hasFreeCopyByWorkIds(['work-1'])).toEqual(new Set(['work-1']));
+  });
+
+  it('omits a work id whose only links are not isLegalFree', async () => {
+    const repo = new InMemorySourceLinkRepository();
+    repo.workIdByEditionId.set('edition-1', 'work-1');
+    await repo.save(
+      makeLink({
+        id: 'link-2',
+        type: 'buy',
+        provider: ProviderId.create('amazon'),
+        url: 'https://amazon.com/dp/xyz',
+        rightsStatus: 'copyrighted',
+      }),
+    );
+
+    expect(await repo.hasFreeCopyByWorkIds(['work-1'])).toEqual(new Set());
+  });
+
+  it('ignores a free link whose edition was never mapped to a work id', async () => {
+    const repo = new InMemorySourceLinkRepository();
+    await repo.save(makeLink()); // no workIdByEditionId entry for 'edition-1'
+
+    expect(await repo.hasFreeCopyByWorkIds(['work-1'])).toEqual(new Set());
+  });
+
+  it('only reports the work ids actually asked about', async () => {
+    const repo = new InMemorySourceLinkRepository();
+    repo.workIdByEditionId.set('edition-1', 'work-1');
+    await repo.save(makeLink());
+
+    expect(await repo.hasFreeCopyByWorkIds(['work-2'])).toEqual(new Set());
   });
 });

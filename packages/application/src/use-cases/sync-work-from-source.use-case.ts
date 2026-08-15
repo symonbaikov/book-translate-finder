@@ -11,18 +11,21 @@ import {
   ExternalRef,
   type ExternalRefRepository,
   type IdGenerator,
+  inferLanguageFromIsbn,
   InvalidInputError,
   Isbn,
   LanguageCode,
   ProviderId,
   type ProviderEdition,
+  type ProviderWork,
   resolveFieldConflict,
+  romanizeCyrillicQuery,
   type SourceLinkRepository,
   type SyncLogRepository,
   type UnitOfWork,
   Work,
   type WorkRepository,
-} from '@btf/domain';
+} from '@golden/domain';
 import type { UseCase } from '../use-case.js';
 import { CACHE_KEY_VERSION } from '../cache-key-version.js';
 
@@ -31,11 +34,43 @@ export interface SyncWorkFromSourceInput {
   source: string;
   /** Plain-text query, e.g. "War and Peace Tolstoy" — never field-scoped (docs/research/coverage-phase0.md). */
   query: string;
+  /**
+   * Attach whatever this source finds to an existing work instead of deciding for itself which
+   * work it is.
+   *
+   * Enrichment used to work only by coincidence: a second source's editions land on the first
+   * source's work only if it reproduces the same natural key, i.e. spells the title and author
+   * identically. That holds for Project Gutenberg, whose English titles match Open Library's, and
+   * fails completely for a national library catalogue, whose records are *translations* — the
+   * French catalogue calls «Обитель» "L'archipel des Solovki", which is a different natural key
+   * and would therefore become a second, half-empty book on the site rather than a French edition
+   * of the first. When the caller already knows which work it is asking about, saying so is both
+   * simpler and correct.
+   *
+   * The work's own metadata is never rewritten in this mode — only its editions grow.
+   */
+  attachToWorkId?: string;
+}
+
+/**
+ * What a sync resolved a query to, in the shape a search result needs.
+ *
+ * Carried out of the sync rather than looked up afterwards, because "afterwards" is where the
+ * search used to lose it — see `markSearchResolved` in `search-works.use-case.ts`.
+ */
+export interface SyncedWorkSummary {
+  id: string;
+  originalTitle: string;
+  author: string;
+  firstPublishedYear: number | null;
+  coverUrl: string | null;
 }
 
 export interface SyncWorkFromSourceOutput {
   status: 'synced' | 'not_found' | 'error';
   workId?: string;
+  /** Present exactly when `status` is `synced`. */
+  work?: SyncedWorkSummary;
   editionsSynced?: number;
   linksSynced?: number;
   error?: string;
@@ -97,37 +132,50 @@ export class SyncWorkFromSource implements UseCase<
     }
 
     try {
-      const [topMatch] = await provider.searchWorks({ text: input.query, limit: 1 });
+      const topMatch = await this.findTopMatch(provider, input.query);
       if (!topMatch) {
         await this.recordSyncLog(input.source, null, 'error', `not_found: ${input.query}`);
         return { status: 'not_found' };
       }
 
-      const providerEditions = await provider.fetchEditions(topMatch.externalId);
-      const workDetails = await provider.fetchWorkDetails(topMatch.externalId);
+      // Concurrent, not sequential: the two calls share only the work id, and awaiting them in
+      // turn made every sync pay for the slower one *after* the faster one. Against real Open
+      // Library latency (9–22s per request, docs/research/coverage-phase0.md) that ordering was
+      // worth tens of seconds of a reader watching a spinner, for nothing.
+      const [providerEditions, workDetails] = await Promise.all([
+        provider.fetchEditions(topMatch.externalId),
+        provider.fetchWorkDetails(topMatch.externalId),
+      ]);
 
       const result = await this.deps.unitOfWork.runInTransaction(async () => {
         const author = joinAuthorNames(topMatch.authorNames);
-        const originalLanguage = this.inferOriginalLanguage(providerEditions);
+        const originalLanguage = this.inferOriginalLanguage(providerEditions, topMatch.languages);
 
         const workExternalRef = ExternalRef.create(input.source, topMatch.externalId);
         const existingWorkLink =
           await this.deps.externalRefRepository.findBySourceAndExternalId(workExternalRef);
         const workNaturalKey = computeWorkNaturalKey(topMatch.title, author);
-        const workNaturalKeyMatch = existingWorkLink
-          ? null
-          : await this.deps.workRepository.findByNaturalKey(workNaturalKey);
+        const workNaturalKeyMatch =
+          existingWorkLink || input.attachToWorkId
+            ? null
+            : await this.deps.workRepository.findByNaturalKey(workNaturalKey);
+        // `attachToWorkId` wins over everything: the caller is not asking "which book is this",
+        // it already knows, and is asking this source for that book's editions.
         const workId =
-          existingWorkLink?.entityId ?? workNaturalKeyMatch?.id ?? this.deps.idGenerator.newId();
+          input.attachToWorkId ??
+          existingWorkLink?.entityId ??
+          workNaturalKeyMatch?.id ??
+          this.deps.idGenerator.newId();
 
         // A higher-priority source already owns this work's metadata (docs/architecture.md §5
         // source priority) — keep its fields and only bump syncedAt, rather than overwrite them
         // with this lower-priority source's data. The lookup is not asserted non-null: `workId`
         // can come from an `external_ref` row whose entity no longer exists, and a stale pointer
         // must degrade to "write the work" rather than crash the whole sync.
-        const existingWork = (await this.shouldApplyMetadata(input.source, workId))
-          ? null
-          : await this.deps.workRepository.findById(workId);
+        const existingWork =
+          input.attachToWorkId || !(await this.shouldApplyMetadata(input.source, workId))
+            ? await this.deps.workRepository.findById(workId)
+            : null;
 
         const work =
           existingWork?.withSyncedAt(this.deps.clock.now()) ??
@@ -157,7 +205,18 @@ export class SyncWorkFromSource implements UseCase<
 
         await this.deps.cache.deleteByPrefix(`${CACHE_KEY_VERSION}:work:${work.id}`);
 
-        return { workId: work.id, editionsSynced, linksSynced };
+        return {
+          workId: work.id,
+          work: {
+            id: work.id,
+            originalTitle: work.originalTitle,
+            author: work.author,
+            firstPublishedYear: work.firstPublishedYear,
+            coverUrl: work.coverUrl,
+          },
+          editionsSynced,
+          linksSynced,
+        };
       });
 
       await this.recordSyncLog(input.source, result.workId, 'ok', null);
@@ -170,22 +229,56 @@ export class SyncWorkFromSource implements UseCase<
   }
 
   /**
+   * The source's best answer for this query, asked in Cyrillic and then in Latin.
+   *
+   * A source's own search is not script-neutral, and Open Library's is dramatically not: measured
+   * live, «Анна Каренина» returns 2 results and "Anna Karenina" returns 331; «Преступление и
+   * наказание» returns 6 topped by a German edition, "Prestuplenie i nakazanie" returns 136 topped
+   * by the Russian one. The project already romanized queries — but only when searching its *own*
+   * Postgres, so a Russian reader's question reached the source in the form it answers worst, and
+   * a book the source did have under a romanized title came back "not found" and was never synced
+   * at all. The romanized pass runs only when the first one finds nothing, so a query the source
+   * does answer in Cyrillic keeps that answer.
+   */
+  private async findTopMatch(
+    provider: BookMetadataProvider,
+    query: string,
+  ): Promise<ProviderWork | undefined> {
+    const [direct] = await provider.searchWorks({ text: query, limit: 1 });
+    if (direct) return direct;
+
+    const romanized = romanizeCyrillicQuery(query);
+    if (romanized === null) return undefined;
+
+    const [transliterated] = await provider.searchWorks({ text: romanized, limit: 1 });
+    return transliterated;
+  }
+
+  /**
    * Best-effort per-edition sync: a single edition with an unparseable language or ISBN
    * (docs/research/coverage-phase0.md found Open Library data has plenty of these — codes like
    * `und`/`mul` aren't real single languages) is skipped, not fatal to the rest of the work's
    * sync. Returns `null` when skipped.
+   *
+   * Before giving up on a missing language, the ISBN gets one more say: found live, every one of
+   * "Metro 2035"'s seven Spanish editions has an ISBN but no `languages` field at all on Open
+   * Library, so all seven were dropped and the work showed zero editions despite the source
+   * genuinely listing them. `inferLanguageFromIsbn` is deliberately narrow (see its doc comment)
+   * and never overrides a language the source *did* report — only asked when there is none.
    */
   private async syncEdition(
     source: string,
     workId: string,
     providerEdition: ProviderEdition,
   ): Promise<{ linksSynced: number } | null> {
-    const language = this.tryParseLanguage(providerEdition.language);
+    const isbn =
+      this.tryParseIsbn(providerEdition.isbn13) ?? this.tryParseIsbn(providerEdition.isbn10);
+    const language =
+      this.tryParseLanguage(providerEdition.language) ??
+      this.tryParseLanguage(isbn && inferLanguageFromIsbn(isbn.value));
     if (!language) return null;
 
     const translatedFrom = this.tryParseLanguage(providerEdition.translatedFrom);
-    const isbn =
-      this.tryParseIsbn(providerEdition.isbn13) ?? this.tryParseIsbn(providerEdition.isbn10);
     const title = providerEdition.title || '(untitled)';
     const publisher = providerEdition.publisher;
     const year = providerEdition.year;
@@ -313,10 +406,18 @@ export class SyncWorkFromSource implements UseCase<
    * The original language can't be read directly off a search result — Open Library's `language`
    * field lists every language the work has been published in, not which one came first
    * (docs/research/coverage-phase0.md). Heuristic: the language of the earliest-dated edition
-   * among what was actually fetched, since a translation can't predate its original. Falls back
-   * to English when no edition has a usable year/language — a simplification, not a guarantee.
+   * among what was actually fetched, since a translation can't predate its original.
+   *
+   * When no edition can answer, the source's own declared languages are tried before English.
+   * That matters for a source that knows the answer outright and has no editions to infer it
+   * from: Wikidata records `P407` "language of the work" as a fact, and defaulting «Обитель» to
+   * English because Wikidata happens to list no editions would print a plain falsehood on the
+   * card. English remains the last resort — a simplification, not a guarantee.
    */
-  private inferOriginalLanguage(editions: ProviderEdition[]): LanguageCode {
+  private inferOriginalLanguage(
+    editions: ProviderEdition[],
+    declaredLanguages: readonly string[] = [],
+  ): LanguageCode {
     let best: { year: number; language: LanguageCode } | null = null;
     for (const edition of editions) {
       if (edition.year === null) continue;
@@ -326,7 +427,13 @@ export class SyncWorkFromSource implements UseCase<
         best = { year: edition.year, language };
       }
     }
-    return best?.language ?? LanguageCode.create(FALLBACK_LANGUAGE);
+    if (best) return best.language;
+
+    for (const code of declaredLanguages) {
+      const language = this.tryParseLanguage(code);
+      if (language) return language;
+    }
+    return LanguageCode.create(FALLBACK_LANGUAGE);
   }
 
   private async recordSyncLog(

@@ -204,8 +204,10 @@ function parseIAFormats(files: Array<{ name: string; format?: string }> | undefi
   // Сортируем по приоритету: популярные форматы в начале
   const priorityOrder = ['pdf', 'epub', 'mobi', 'txt', 'html', 'djvu'];
   const sorted = [
-    ...priorityOrder.filter(f => formats.has(f)),
-    ...Array.from(formats).filter(f => !priorityOrder.includes(f)).sort(),
+    ...priorityOrder.filter((f) => formats.has(f)),
+    ...Array.from(formats)
+      .filter((f) => !priorityOrder.includes(f))
+      .sort(),
   ];
 
   return sorted;

@@ -4,8 +4,8 @@ import type {
   ProviderEdition,
   ProviderWork,
   SearchQuery,
-} from '@btf/domain';
-import { ProviderId } from '@btf/domain';
+} from '@golden/domain';
+import { ProviderId } from '@golden/domain';
 import type { ResilientFetcher } from '../http/resilient-fetch.js';
 
 const SEARCH_CACHE_TTL_SECONDS = 60 * 60; // 1h

@@ -1,4 +1,13 @@
-import { Edition, ExternalRef, LanguageCode, NotFoundError, Work } from '@btf/domain';
+import {
+  Edition,
+  ExternalRef,
+  LanguageCode,
+  NotFoundError,
+  Work,
+  type LocalizedDescription,
+  type LocalizedDescriptionPort,
+  type LocalizedDescriptionQuery,
+} from '@golden/domain';
 import { describe, expect, it } from 'vitest';
 import { InMemoryCache } from '../../../domain/test/fakes/in-memory-cache.js';
 import { InMemoryEditionRepository } from '../../../domain/test/fakes/in-memory-edition-repository.js';
@@ -23,6 +32,24 @@ function makeDeps() {
   };
   return { deps, workRepository, editionRepository, externalRefRepository, cache };
 }
+
+class FakeLocalizedDescriptions implements LocalizedDescriptionPort {
+  readonly asked: LocalizedDescriptionQuery[] = [];
+
+  constructor(private readonly byOlid: Record<string, LocalizedDescription>) {}
+
+  async fetchDescription(query: LocalizedDescriptionQuery): Promise<LocalizedDescription | null> {
+    this.asked.push(query);
+    return this.byOlid[`${query.openLibraryWorkId}:${query.language}`] ?? null;
+  }
+}
+
+const RU_DESCRIPTION: LocalizedDescription = {
+  text: 'Роман-эпопея Льва Толстого.',
+  language: 'ru',
+  sourceName: 'wikipedia',
+  sourceUrl: 'https://ru.wikipedia.org/wiki/Война_и_мир',
+};
 
 async function seedWork(workRepository: InMemoryWorkRepository): Promise<Work> {
   const work = Work.create({
@@ -110,5 +137,113 @@ describe('GetWorkCard', () => {
     const result = await cachedUseCase.execute({ workId: 'work-1' });
 
     expect(result.id).toBe('work-1');
+  });
+
+  it('describes the book in the reader’s language when a source has one', async () => {
+    const { deps, workRepository, externalRefRepository } = makeDeps();
+    await seedWork(workRepository);
+    await externalRefRepository.save(
+      ExternalRef.create('open-library', '/works/OL267096W'),
+      'work',
+      'work-1',
+    );
+    const descriptions = new FakeLocalizedDescriptions({
+      '/works/OL267096W:ru': RU_DESCRIPTION,
+    });
+
+    const useCase = new GetWorkCard({ ...deps, localizedDescription: descriptions });
+    const result = await useCase.execute({ workId: 'work-1', language: 'ru' });
+
+    expect(result.description).toBe('Роман-эпопея Льва Толстого.');
+    expect(result.descriptionLanguage).toBe('ru');
+    expect(result.descriptionSource).toEqual({
+      name: 'wikipedia',
+      url: 'https://ru.wikipedia.org/wiki/Война_и_мир',
+    });
+  });
+
+  it('keeps the stored description and claims no language for it when the source has none', async () => {
+    const { deps, workRepository, externalRefRepository } = makeDeps();
+    await workRepository.save(
+      Work.create({
+        id: 'work-1',
+        originalTitle: 'War and Peace',
+        originalLanguage: LanguageCode.create('ru'),
+        author: 'Leo Tolstoy',
+        firstPublishedYear: 1869,
+        description: 'A novel of Russia during the Napoleonic wars.',
+        syncedAt: new Date('2026-01-01T00:00:00Z'),
+      }),
+    );
+    await externalRefRepository.save(
+      ExternalRef.create('open-library', '/works/OL267096W'),
+      'work',
+      'work-1',
+    );
+
+    const useCase = new GetWorkCard({
+      ...deps,
+      localizedDescription: new FakeLocalizedDescriptions({}),
+    });
+    const result = await useCase.execute({ workId: 'work-1', language: 'ru' });
+
+    expect(result.description).toBe('A novel of Russia during the Napoleonic wars.');
+    // Not 'en': Open Library never states the language, and guessing it is how a card starts lying.
+    expect(result.descriptionLanguage).toBeNull();
+    expect(result.descriptionSource).toBeNull();
+  });
+
+  it('does not go looking when the reader asked for no particular language', async () => {
+    const { deps, workRepository, externalRefRepository } = makeDeps();
+    await seedWork(workRepository);
+    await externalRefRepository.save(
+      ExternalRef.create('open-library', '/works/OL267096W'),
+      'work',
+      'work-1',
+    );
+    const descriptions = new FakeLocalizedDescriptions({ '/works/OL267096W:ru': RU_DESCRIPTION });
+
+    await new GetWorkCard({ ...deps, localizedDescription: descriptions }).execute({
+      workId: 'work-1',
+    });
+
+    expect(descriptions.asked).toEqual([]);
+  });
+
+  it('asks nothing for a work no Open Library id points at — an exact id or nothing', async () => {
+    const { deps, workRepository, externalRefRepository } = makeDeps();
+    await seedWork(workRepository);
+    await externalRefRepository.save(ExternalRef.create('google-books', 'gb-1'), 'work', 'work-1');
+    const descriptions = new FakeLocalizedDescriptions({ '/works/OL267096W:ru': RU_DESCRIPTION });
+
+    const result = await new GetWorkCard({
+      ...deps,
+      localizedDescription: descriptions,
+    }).execute({ workId: 'work-1', language: 'ru' });
+
+    expect(descriptions.asked).toEqual([]);
+    expect(result.descriptionLanguage).toBeNull();
+  });
+
+  it('caches per language, so the Russian card never comes back for a German reader', async () => {
+    const { deps, workRepository, externalRefRepository, cache } = makeDeps();
+    await seedWork(workRepository);
+    await externalRefRepository.save(
+      ExternalRef.create('open-library', '/works/OL267096W'),
+      'work',
+      'work-1',
+    );
+    const useCase = new GetWorkCard({
+      ...deps,
+      localizedDescription: new FakeLocalizedDescriptions({
+        '/works/OL267096W:ru': RU_DESCRIPTION,
+      }),
+    });
+
+    await useCase.execute({ workId: 'work-1', language: 'ru' });
+
+    expect(await cache.get(workCacheKey('work-1', 'ru'))).not.toBeNull();
+    expect(await cache.get(workCacheKey('work-1'))).toBeNull();
+    expect(await cache.get(workCacheKey('work-1', 'de'))).toBeNull();
   });
 });

@@ -1,4 +1,4 @@
-import { ConflictError } from '@btf/domain';
+import { ConflictError } from '@golden/domain';
 import { describe, expect, it } from 'vitest';
 import { FixedClock } from '../../../domain/test/fakes/fixed-clock.js';
 import { InMemoryIdempotencyStore } from '../../../domain/test/fakes/in-memory-idempotency-store.js';

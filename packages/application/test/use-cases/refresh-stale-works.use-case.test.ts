@@ -1,4 +1,4 @@
-import { LanguageCode, Work } from '@btf/domain';
+import { LanguageCode, Work } from '@golden/domain';
 import { describe, expect, it } from 'vitest';
 import { FixedClock } from '../../../domain/test/fakes/fixed-clock.js';
 import { InMemoryJobQueue } from '../../../domain/test/fakes/in-memory-job-queue.js';

@@ -109,5 +109,68 @@ export function runSourceLinkRepositoryContractTests(
       await repo.save(makeLink());
       expect((await repo.countByEditionIds([])).size).toBe(0);
     });
+
+    it('findFreeDownloadsByEditionIds() returns the free downloads, keyed by edition', async () => {
+      const repo = createRepository();
+      await options.ensureEditionExists?.('edition-2');
+      await repo.save(makeLink({ id: 'link-1' }));
+      await repo.save(
+        makeLink({
+          id: 'link-2',
+          type: 'listen',
+          provider: ProviderId.create('librivox'),
+          url: 'https://librivox.org/pride-and-prejudice',
+          rightsStatus: 'public_domain',
+        }),
+      );
+
+      const found = await repo.findFreeDownloadsByEditionIds([
+        'edition-1',
+        'edition-2',
+        'edition-missing',
+      ]);
+
+      expect(
+        found
+          .get('edition-1')
+          ?.map((link) => link.type)
+          .sort(),
+      ).toEqual(['download', 'listen']);
+      expect(found.has('edition-2')).toBe(false);
+      expect(found.has('edition-missing')).toBe(false);
+    });
+
+    it('findFreeDownloadsByEditionIds() excludes a borrow link, free or not', async () => {
+      // A public domain scan in a library queue carries `isLegalFree` — the flag is derived from
+      // rights status alone — but borrowing it is not being handed a copy, and the edition list
+      // uses this method to promise exactly that.
+      const repo = createRepository();
+      await repo.save(
+        makeLink({
+          id: 'link-1',
+          type: 'borrow',
+          provider: ProviderId.create('internet-archive'),
+          url: 'https://openlibrary.org/books/OL1M/x/borrow',
+          rightsStatus: 'public_domain',
+        }),
+      );
+      await repo.save(
+        makeLink({
+          id: 'link-2',
+          type: 'buy',
+          provider: ProviderId.create('amazon'),
+          url: 'https://amazon.com/dp/xyz',
+          rightsStatus: 'copyrighted',
+        }),
+      );
+
+      expect((await repo.findFreeDownloadsByEditionIds(['edition-1'])).size).toBe(0);
+    });
+
+    it('findFreeDownloadsByEditionIds() with an empty id list returns an empty map', async () => {
+      const repo = createRepository();
+      await repo.save(makeLink());
+      expect((await repo.findFreeDownloadsByEditionIds([])).size).toBe(0);
+    });
   });
 }

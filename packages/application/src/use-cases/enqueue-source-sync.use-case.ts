@@ -5,7 +5,7 @@ import {
   type Clock,
   type IdempotencyStore,
   type JobQueuePort,
-} from '@btf/domain';
+} from '@golden/domain';
 import type { UseCase } from '../use-case.js';
 
 export interface EnqueueSourceSyncInput {

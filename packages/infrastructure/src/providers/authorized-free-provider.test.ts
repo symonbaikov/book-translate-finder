@@ -1,4 +1,4 @@
-import { AUTHORIZED_FREE_BOOKS } from '@btf/domain';
+import { AUTHORIZED_FREE_BOOKS } from '@golden/domain';
 import { describe, expect, it } from 'vitest';
 import { AuthorizedFreeProvider } from './authorized-free-provider.js';
 

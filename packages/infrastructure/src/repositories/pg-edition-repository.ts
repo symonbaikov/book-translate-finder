@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm';
-import { Edition, type EditionRepository, Isbn, LanguageCode } from '@btf/domain';
+import { Edition, type EditionRepository, Isbn, LanguageCode } from '@golden/domain';
 import type { Db } from '../db/client.js';
 import { resolveDb } from '../db/transaction-context.js';
 import { edition } from '../db/schema.js';

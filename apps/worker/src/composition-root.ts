@@ -9,6 +9,9 @@ import {
   GutenbergProvider,
   LibriVoxProvider,
   OpenLibraryProvider,
+  WikidataProvider,
+  createBnfProvider,
+  createDnbProvider,
   PgEditionRepository,
   PgExternalRefRepository,
   PgSourceLinkRepository,
@@ -19,19 +22,29 @@ import {
   SystemClock,
   Uuid7Generator,
   type DbHandle,
-} from '@btf/infrastructure';
-import { ProcessBackfillJob, RefreshStaleWorks, SyncWorkFromSource } from '@btf/application';
-import type { BookMetadataProvider } from '@btf/domain';
+} from '@golden/infrastructure';
+import { ProcessBackfillJob, RefreshStaleWorks, SyncWorkFromSource } from '@golden/application';
+import type { BookMetadataProvider } from '@golden/domain';
 import type { Redis } from 'ioredis';
 import type { WorkerEnv } from './config/worker-env.schema.js';
 
-/** Every provider apps/worker knows about, in priority order (docs/architecture.md §5 source priority). */
+/**
+ * Sources tried to *discover* a book, in order — the first one that has it wins
+ * (docs/architecture.md §5 source priority).
+ *
+ * Wikidata sits at the end deliberately. It is the only source that reliably knows a
+ * contemporary or non-English book exists at all (measured: seven of seven books this instance
+ * could not find under any spelling, against one for Open Library), but it holds almost no
+ * editions — so it must never beat a source that can describe what a reader could actually hold.
+ * Last place is exactly "use it when nobody else knows this book".
+ */
 export const REGISTERED_SOURCES = [
   'open-library',
   'gutenberg',
   'authorized-free',
   'librivox',
   'google-books',
+  'wikidata',
 ] as const;
 
 export interface WorkerContext {
@@ -66,13 +79,16 @@ export function buildWorkerContext(env: WorkerEnv): WorkerContext {
   const unitOfWork = new PgUnitOfWork(db.db);
 
   const fetcher = createResilientFetcher();
-  const userAgent = `BookTranslateFinder/0.1 (+${env.CONTACT_URL})`;
+  const userAgent = `GoldenLibrary/0.1 (+${env.CONTACT_URL})`;
   const providers = new Map<string, BookMetadataProvider>([
     ['open-library', new OpenLibraryProvider(fetcher, cache, userAgent)],
     ['gutenberg', new GutenbergProvider(fetcher, cache, userAgent)],
     ['authorized-free', new AuthorizedFreeProvider()],
     ['librivox', new LibriVoxProvider(fetcher, cache, userAgent)],
     ['google-books', new GoogleBooksProvider(fetcher, cache, env.GOOGLE_BOOKS_API_KEY)],
+    ['wikidata', new WikidataProvider(fetcher, cache, userAgent)],
+    ['bnf', createBnfProvider(fetcher, cache, userAgent)],
+    ['dnb', createDnbProvider(fetcher, cache, userAgent)],
   ]);
 
   const clock = new SystemClock();
@@ -105,9 +121,12 @@ export function buildWorkerContext(env: WorkerEnv): WorkerContext {
     syncWorkFromSource,
     cache,
     sources: REGISTERED_SOURCES,
-    // Gutenberg is the only source that yields downloadable files, so it runs even when another
-    // source already found the work — see `enrichmentSources`.
-    enrichmentSources: ['gutenberg', 'authorized-free', 'librivox'],
+    // Sources that run even when another one already found the work, because each answers a
+    // question no other can: Gutenberg is the only one that yields downloadable files, and the
+    // two national library catalogues are the only ones that know a contemporary novel came out
+    // in French or German at all — with the publisher, the ISBN and the translator's name, which
+    // is the fact this project promises and open bibliographic data almost never carries.
+    enrichmentSources: ['gutenberg', 'authorized-free', 'librivox', 'bnf', 'dnb'],
   });
 
   return {

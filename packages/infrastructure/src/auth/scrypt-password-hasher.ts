@@ -1,6 +1,6 @@
 import { randomBytes, scrypt, timingSafeEqual, type ScryptOptions } from 'node:crypto';
 import { promisify } from 'node:util';
-import type { PasswordHasher } from '@btf/domain';
+import type { PasswordHasher } from '@golden/domain';
 
 /**
  * `promisify` picks the 3-argument overload of `scrypt`, which drops the options object we need

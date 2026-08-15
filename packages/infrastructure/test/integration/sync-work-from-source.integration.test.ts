@@ -1,10 +1,15 @@
-import type { BookMetadataProvider, ProviderEdition, ProviderWork, SearchQuery } from '@btf/domain';
-import { ProviderId } from '@btf/domain';
+import type {
+  BookMetadataProvider,
+  ProviderEdition,
+  ProviderWork,
+  SearchQuery,
+} from '@golden/domain';
+import { ProviderId } from '@golden/domain';
 import {
   CACHE_KEY_VERSION,
   SyncWorkFromSource,
   type SyncWorkFromSourceDeps,
-} from '@btf/application';
+} from '@golden/application';
 import { RedisContainer, type StartedRedisContainer } from '@testcontainers/redis';
 import { Redis } from 'ioredis';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';

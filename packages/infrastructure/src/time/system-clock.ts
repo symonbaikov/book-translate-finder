@@ -1,4 +1,4 @@
-import type { Clock } from '@btf/domain';
+import type { Clock } from '@golden/domain';
 
 export class SystemClock implements Clock {
   now(): Date {

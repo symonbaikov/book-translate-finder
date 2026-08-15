@@ -5,7 +5,7 @@ describe('HealthResponseSchema', () => {
   it('accepts a minimal valid payload', () => {
     const result = HealthResponseSchema.safeParse({
       status: 'ok',
-      service: '@btf/api',
+      service: '@golden/api',
       version: '0.0.0',
     });
 
@@ -15,7 +15,7 @@ describe('HealthResponseSchema', () => {
   it('rejects an unknown status value', () => {
     const result = HealthResponseSchema.safeParse({
       status: 'sleeping',
-      service: '@btf/api',
+      service: '@golden/api',
       version: '0.0.0',
     });
 

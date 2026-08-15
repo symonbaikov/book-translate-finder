@@ -1,5 +1,5 @@
 import type { ExecutionContext } from '@nestjs/common';
-import { UnauthorizedError } from '@btf/domain';
+import { UnauthorizedError } from '@golden/domain';
 import { describe, expect, it } from 'vitest';
 import type { ApiEnv } from '../../config/api-env.schema.js';
 import { AdminTokenGuard } from './admin-token.guard.js';

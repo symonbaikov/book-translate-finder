@@ -1,4 +1,4 @@
-import type { UnitOfWork } from '@btf/domain';
+import type { UnitOfWork } from '@golden/domain';
 import type { Db } from './client.js';
 import { runWithTransactionContext } from './transaction-context.js';
 

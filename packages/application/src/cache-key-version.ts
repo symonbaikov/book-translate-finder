@@ -9,5 +9,10 @@
  *
  * v2: added `coverUrl` to search hits and edition summaries, `description`/`coverUrl` to the
  * work card.
+ *
+ * v4: dropped the ISBN-derived cover fallback. The shape is unchanged, but the *values* are — a
+ * cached editions list from v3 carries `covers.openlibrary.org/b/isbn/…` URLs that 404 a second
+ * at a time, and would go on doing so for an hour after the deploy on every work anyone had
+ * already opened. Bumping is the cheapest way for that to heal on the first request instead.
  */
-export const CACHE_KEY_VERSION = 'v3';
+export const CACHE_KEY_VERSION = 'v4';

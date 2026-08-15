@@ -5,6 +5,6 @@
     "outDir": "dist",
     "types": ["node"]
   },
-  "references": [{ "path": "../domain" }, { "path": "../application" }],
+  "references": [{ "path": "../domain" }, { "path": "../application" }, { "path": "../plugins" }],
   "include": ["src"]
 }

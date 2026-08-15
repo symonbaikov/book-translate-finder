@@ -6,7 +6,7 @@ import {
   NotFoundError,
   ProviderId,
   Work,
-} from '@btf/domain';
+} from '@golden/domain';
 import { describe, expect, it } from 'vitest';
 import { InMemoryCache } from '../../../domain/test/fakes/in-memory-cache.js';
 import { InMemoryEditionRepository } from '../../../domain/test/fakes/in-memory-edition-repository.js';
@@ -171,6 +171,66 @@ describe('ListEditionsForWork', () => {
     expect(byId.get('e3')).toBe(0);
   });
 
+  it('carries an edition’s free copies on the list itself, so the page need not open a panel to know', async () => {
+    const { deps, workRepository, editionRepository, sourceLinkRepository } = makeDeps();
+    await seed(workRepository, editionRepository);
+    await sourceLinkRepository.save(
+      assertLinkAllowed({
+        id: 'link-1',
+        editionId: 'e1',
+        type: 'download',
+        url: 'https://www.gutenberg.org/ebooks/2600.epub.noimages',
+        provider: ProviderId.create('gutenberg'),
+        rightsStatus: 'public_domain',
+        format: 'epub',
+        verifiedAt: new Date('2026-01-01T00:00:00Z'),
+      }),
+    );
+    const useCase = new ListEditionsForWork(deps);
+
+    const result = await useCase.execute({ workId: 'work-1' });
+
+    const byId = new Map(result.editions.map((e) => [e.id, e.freeDownloads]));
+    expect(byId.get('e1')).toEqual([
+      {
+        url: 'https://www.gutenberg.org/ebooks/2600.epub.noimages',
+        format: 'epub',
+        provider: 'gutenberg',
+        type: 'download',
+        rightsStatus: 'public_domain',
+      },
+    ]);
+    // An edition nobody gives away says so with an empty list, not with a missing field.
+    expect(byId.get('e2')).toEqual([]);
+  });
+
+  it('does not call a public domain borrow link a free copy', async () => {
+    // `isLegalFree` is derived from rights status alone, so a public domain scan behind a library
+    // queue carries it. Putting that edition first under a "free download" badge would promise a
+    // file where there is a waiting list.
+    const { deps, workRepository, editionRepository, sourceLinkRepository } = makeDeps();
+    await seed(workRepository, editionRepository);
+    await sourceLinkRepository.save(
+      assertLinkAllowed({
+        id: 'link-1',
+        editionId: 'e1',
+        type: 'borrow',
+        url: 'https://openlibrary.org/books/OL1M/x/borrow',
+        provider: ProviderId.create('internet-archive'),
+        rightsStatus: 'public_domain',
+        verifiedAt: new Date('2026-01-01T00:00:00Z'),
+      }),
+    );
+    const useCase = new ListEditionsForWork(deps);
+
+    const result = await useCase.execute({ workId: 'work-1' });
+
+    const edition = result.editions.find((e) => e.id === 'e1');
+    expect(edition?.freeDownloads).toEqual([]);
+    // Still a link the page should count — it is just not a free copy.
+    expect(edition?.linkCount).toBe(1);
+  });
+
   it('flags every edition as buyable — a missing ISBN falls back to a title search', async () => {
     // Found live in Phase 3: an edition with no borrow/download link showed no badge at all, even
     // though bookstore lookups were available behind the expand. Since shops fall back to a title
@@ -197,7 +257,7 @@ describe('ListEditionsForWork', () => {
     expect(byId.get('e1')).toBe(true); // seeded without an ISBN — searched by title instead
   });
 
-  it('derives a cover from the ISBN when the source gave none — repairs rows synced before covers existed', async () => {
+  it('offers no cover at all when the source gave none, rather than guessing one from the ISBN', async () => {
     const { deps, workRepository, editionRepository } = makeDeps();
     await seed(workRepository, editionRepository);
     await editionRepository.save(
@@ -215,7 +275,11 @@ describe('ListEditionsForWork', () => {
 
     const result = await useCase.execute({ workId: 'work-1' });
 
-    const derived = result.editions.find((e) => e.id === 'e-isbn');
-    expect(derived?.coverUrl).toContain('9780140447934');
+    // The ISBN-keyed cover endpoint answers 404 for exactly these editions (35 of 35 sampled from
+    // real data — see the use case), so a derived URL was a round trip that bought a placeholder.
+    // The UI's typographic fallback is the same placeholder, arrived at instantly.
+    const uncovered = result.editions.find((e) => e.id === 'e-isbn');
+    expect(uncovered?.isbn).toBe('9780140447934');
+    expect(uncovered?.coverUrl).toBeNull();
   });
 });

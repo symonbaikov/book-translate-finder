@@ -2,6 +2,13 @@
 // land with the API surface in Phase 1.4 — see docs/plan.md.
 export type { UseCase } from './use-case.js';
 export { CACHE_KEY_VERSION } from './cache-key-version.js';
+export {
+  coverCacheKey,
+  GetCoverImage,
+  type GetCoverImageDeps,
+  type GetCoverImageInput,
+  type GetCoverImageOutput,
+} from './use-cases/get-cover-image.use-case.js';
 
 export {
   SyncWorkFromSource,
@@ -14,7 +21,9 @@ export {
   SearchWorks,
   backfillJobId,
   markSearchNotFound,
+  markSearchResolved,
   searchNegativeCacheKey,
+  searchResolutionCacheKey,
   searchResultsCacheKey,
   type SearchWorksDeps,
   type SearchWorksHit,
@@ -33,6 +42,7 @@ export {
 export {
   ListEditionsForWork,
   editionsCacheKey,
+  type EditionFreeDownloadDto,
   type EditionSummaryDto,
   type ListEditionsForWorkDeps,
   type ListEditionsForWorkInput,
@@ -86,9 +96,12 @@ export {
   featuredCacheKey,
   GetFeaturedBooks,
   type FeaturedBookDto,
+  type FeaturedListId,
   type GetFeaturedBooksDeps,
+  type GetFeaturedBooksInput,
   type GetFeaturedBooksOutput,
 } from './use-cases/get-featured-books.use-case.js';
+export { backfillJobId as backfillQueryJobId } from './backfill-job-id.js';
 export {
   BrowseBySubject,
   ListSubjects,
@@ -98,9 +111,37 @@ export {
   type BrowseBySubjectOutput,
 } from './use-cases/browse-by-subject.use-case.js';
 export {
+  FREE_BOOKS_HOME_LIMIT,
+  FREE_BOOKS_PAGE_LIMIT,
+  ListFreeBooks,
+  freeBooksCacheKey,
+  type ListFreeBooksDeps,
+  type ListFreeBooksInput,
+  type ListFreeBooksOutput,
+} from './use-cases/list-free-books.use-case.js';
+export {
   RecommendBooks,
   recommendationsCacheKey,
   type RecommendBooksDeps,
   type RecommendBooksInput,
   type RecommendBooksOutput,
 } from './use-cases/recommend-books.use-case.js';
+
+export { settleProviders, type ProviderOutcome } from './settle-providers.js';
+export {
+  AggregateEditionPrices,
+  DEGRADED_TTL_SECONDS,
+  PRICES_TTL_SECONDS,
+  editionPricesCacheKey,
+  type AggregateEditionPricesDeps,
+  type AggregateEditionPricesInput,
+  type AggregateEditionPricesOutput,
+  type PriceGroupDto,
+  type PriceOfferDto,
+} from './use-cases/aggregate-edition-prices.use-case.js';
+export {
+  FindNearbyStores,
+  type FindNearbyStoresDeps,
+  type FindNearbyStoresInput,
+  type FindNearbyStoresOutput,
+} from './use-cases/find-nearby-stores.use-case.js';

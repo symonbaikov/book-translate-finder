@@ -75,5 +75,32 @@ export function runExternalRefRepositoryContractTests(
 
       expect(await repo.findSourcesForEntity('edition-1')).toEqual(['open-library']);
     });
+
+    it('findExternalIdsForEntity() returns an empty array for an entity that source never saw', async () => {
+      const repo = createRepository();
+      await repo.save(ExternalRef.create('google-books', 'ID-1'), 'work', 'work-1');
+
+      expect(await repo.findExternalIdsForEntity('work-1', 'open-library')).toEqual([]);
+    });
+
+    it('findExternalIdsForEntity() returns only that source’s ids for that entity', async () => {
+      const repo = createRepository();
+      await repo.save(ExternalRef.create('open-library', '/works/OL267096W'), 'work', 'work-1');
+      await repo.save(ExternalRef.create('google-books', 'GB-1'), 'work', 'work-1');
+      await repo.save(ExternalRef.create('open-library', '/works/OL66554W'), 'work', 'work-2');
+
+      expect(await repo.findExternalIdsForEntity('work-1', 'open-library')).toEqual([
+        '/works/OL267096W',
+      ]);
+    });
+
+    it('findExternalIdsForEntity() returns every id when two source records merged into one entity', async () => {
+      const repo = createRepository();
+      await repo.save(ExternalRef.create('open-library', '/works/OL1W'), 'work', 'work-1');
+      await repo.save(ExternalRef.create('open-library', '/works/OL2W'), 'work', 'work-1');
+
+      const ids = await repo.findExternalIdsForEntity('work-1', 'open-library');
+      expect(ids.sort()).toEqual(['/works/OL1W', '/works/OL2W']);
+    });
   });
 }

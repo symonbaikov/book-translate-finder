@@ -1,4 +1,4 @@
-import type { IdGenerator } from '@btf/domain';
+import type { IdGenerator } from '@golden/domain';
 import { v7 as uuidv7 } from 'uuid';
 
 /** Time-sortable without exposing a raw sequence (docs/architecture.md §8). */

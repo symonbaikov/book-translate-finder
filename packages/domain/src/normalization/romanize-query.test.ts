@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { romanizeCyrillicQuery } from './transliterate-query.js';
+import { romanizeCyrillicQuery } from './romanize-query.js';
 
 describe('romanizeCyrillicQuery', () => {
   it('returns null for a query with no Cyrillic (no fallback pass needed)', () => {

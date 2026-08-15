@@ -21,7 +21,7 @@ export interface SourceLinkParams {
 /**
  * Immutable. The constructor is private — a `SourceLink` can only come from one of two factories
  * below, never a bare `new SourceLink(...)`. This makes an illegal state ("a link that skipped
- * the legal policy") unrepresentable in the common case: nothing in `@btf/application` can
+ * the legal policy") unrepresentable in the common case: nothing in `@golden/application` can
  * fabricate one, since `unsafeCreateForPolicyUse` is not meant to be called from there — only
  * `policy/link-policy.ts` calls it. This is a naming/code-review convention, not a hard runtime
  * barrier: TypeScript has no "friend class" mechanism, so anything that imports `SourceLink` as

@@ -1,4 +1,4 @@
-import { createLogger, loadEnv } from '@btf/infrastructure';
+import { createLogger, loadEnv } from '@golden/infrastructure';
 import { Queue, Worker, type Job } from 'bullmq';
 import { buildWorkerContext, REGISTERED_SOURCES } from './composition-root.js';
 import { workerEnvSchema } from './config/worker-env.schema.js';
@@ -11,7 +11,7 @@ const CRON_PATTERN = '0 3 * * *';
 async function main(): Promise<void> {
   const env = loadEnv(workerEnvSchema);
   const logger = createLogger({
-    service: '@btf/worker',
+    service: '@golden/worker',
     level: env.LOG_LEVEL,
     pretty: env.NODE_ENV === 'development',
   });
@@ -33,7 +33,15 @@ async function main(): Promise<void> {
   const backfillWorker = new Worker(
     'backfill',
     async (job: Job<{ query: string }>) => {
-      const result = await ctx.processBackfillJob.execute(job.data);
+      // `attemptsMade` counts the attempts *before* this one (0 on the first run), and BullMQ
+      // retries while `attemptsMade + 1 < attempts` — so this is the run after which there is no
+      // retry left. `ProcessBackfillJob` needs to know, because "throw and let the queue retry" is
+      // only an answer while a retry exists; on the last one it has to answer the reader instead.
+      const attempts = job.opts.attempts ?? 1;
+      const result = await ctx.processBackfillJob.execute({
+        ...job.data,
+        lastAttempt: job.attemptsMade + 1 >= attempts,
+      });
       logger.info({ jobId: job.id, ...result }, 'backfill job processed');
       return result;
     },

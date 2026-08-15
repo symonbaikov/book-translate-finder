@@ -1,4 +1,4 @@
-import type { VerifiedGoogleProfile } from '@btf/domain';
+import type { VerifiedGoogleProfile } from '@golden/domain';
 
 const AUTHORIZE_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
 const TOKEN_URL = 'https://oauth2.googleapis.com/token';

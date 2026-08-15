@@ -13,8 +13,10 @@ import {
   createDb,
   createRedisClient,
   createResilientFetcher,
+  HttpImageFetcher,
   PgEditionRepository,
   PgExternalRefRepository,
+  PgFreeBooksAdapter,
   PgIdempotencyStore,
   PgSourceLinkRepository,
   PgWorkRepository,
@@ -23,21 +25,31 @@ import {
   PgWorkSearchAdapter,
   RedisCache,
   SystemClock,
+  BookstoreCatalogPriceProvider,
+  GoogleBooksPriceProvider,
+  OverpassGeoStoreAdapter,
+  PublicOpdsCatalog,
+  WikipediaDescriptionProvider,
   type DbHandle,
-} from '@btf/infrastructure';
+} from '@golden/infrastructure';
+import { OpdsClient } from '@golden/plugins';
 import {
+  AggregateEditionPrices,
   AuthService,
   BookmarkService,
   EnqueueSourceSync,
+  FindNearbyStores,
   BrowseBySubject,
   GetFeaturedBooks,
+  ListFreeBooks,
   ListSubjects,
   RecommendBooks,
+  GetCoverImage,
   GetEditionLinks,
   GetWorkCard,
   ListEditionsForWork,
   SearchWorks,
-} from '@btf/application';
+} from '@golden/application';
 import type { Redis } from 'ioredis';
 import type { ApiEnv } from './config/api-env.schema.js';
 
@@ -48,9 +60,15 @@ export interface ApiContext {
   searchWorks: SearchWorks;
   getWorkCard: GetWorkCard;
   listEditionsForWork: ListEditionsForWork;
+  getCoverImage: GetCoverImage;
   getEditionLinks: GetEditionLinks;
+  aggregateEditionPrices: AggregateEditionPrices;
+  publicOpdsCatalog: PublicOpdsCatalog;
+  /** Null unless ENABLE_SERVER_GEO_LOOKUP is on — see StoresController and docs/adr/0007. */
+  findNearbyStores: FindNearbyStores | null;
   enqueueSourceSync: EnqueueSourceSync;
   getFeaturedBooks: GetFeaturedBooks;
+  listFreeBooks: ListFreeBooks;
   listSubjects: ListSubjects;
   browseBySubject: BrowseBySubject;
   recommendBooks: RecommendBooks;
@@ -83,17 +101,40 @@ export function buildApiContext(env: ApiEnv): ApiContext {
   const syncQueue = new BullMqQueue('sync', bullConnection);
   const backfillQueue = new BullMqQueue('backfill', bullConnection);
 
-  const searchWorks = new SearchWorks({ workSearch, cache, backfillQueue, clock });
+  const searchWorks = new SearchWorks({
+    workSearch,
+    cache,
+    backfillQueue,
+    clock,
+    sourceLinkRepository,
+  });
+  // One fetcher per source, reused for every call — the circuit breaker only counts failures on a
+  // shared instance (see ResilientFetcher).
+  const userAgent = `GoldenLibrary/0.1 (+${env.CONTACT_URL})`;
   const getWorkCard = new GetWorkCard({
     workRepository,
     editionRepository,
     externalRefRepository,
     cache,
+    // Needs no key and no configuration, which is the point: a self-host with no paid source still
+    // describes a book in the reader's language (docs/architecture.md §5).
+    localizedDescription: new WikipediaDescriptionProvider(
+      createResilientFetcher(),
+      cache,
+      userAgent,
+    ),
   });
   const listEditionsForWork = new ListEditionsForWork({
     workRepository,
     editionRepository,
     sourceLinkRepository,
+    cache,
+  });
+  // Its own fetcher, deliberately: a cover is decoration, and its circuit breaker must not be the
+  // one a metadata source shares — a slow image host should never trip the breaker that answers
+  // "which languages is this book in".
+  const getCoverImage = new GetCoverImage({
+    images: new HttpImageFetcher(createResilientFetcher(), userAgent),
     cache,
   });
   const getEditionLinks = new GetEditionLinks({
@@ -105,6 +146,33 @@ export function buildApiContext(env: ApiEnv): ApiContext {
   });
   const enqueueSourceSync = new EnqueueSourceSync({ idempotencyStore, syncQueue, clock });
 
+  // Module C. Order matters only in that the reader's own market is queried first; the aggregator
+  // groups and sorts the result itself. Google Play is registered even without a key — it answers
+  // with an empty list in that case rather than pretending, and self-hosts commonly have no key
+  // (docs/architecture.md §9.2).
+  const aggregateEditionPrices = new AggregateEditionPrices({
+    editionRepository,
+    workRepository,
+    priceProviders: [
+      new GoogleBooksPriceProvider(createResilientFetcher(), cache, env.GOOGLE_BOOKS_API_KEY),
+      new BookstoreCatalogPriceProvider(),
+    ],
+    cache,
+    clock,
+  });
+
+  // Module A, server half: the built-in catalogs only. A reader's own OPDS server is fetched by
+  // their browser and its URL never reaches this process (docs/adr/0007).
+  const publicOpdsCatalog = new PublicOpdsCatalog(new OpdsClient({ userAgent }), cache);
+
+  // Module B, opt-in half. Off by default so coordinates stay on the reader's device.
+  const findNearbyStores = env.ENABLE_SERVER_GEO_LOOKUP
+    ? new FindNearbyStores({ geoStoreAdapters: [new OverpassGeoStoreAdapter()] })
+    : null;
+
+  const subjectBrowse = new PgSubjectBrowseAdapter(db.db);
+  const subjectSource = new OpenLibrarySubjectSource(createResilientFetcher(), cache, userAgent);
+
   const getFeaturedBooks = new GetFeaturedBooks({
     workRepository,
     workSearch,
@@ -112,18 +180,21 @@ export function buildApiContext(env: ApiEnv): ApiContext {
     sourceLinkRepository,
     cache,
     backfillQueue,
+    // The reader's-language row is a subject query, so it shares the genre pages' adapters rather
+    // than growing a second path to the same data (docs/rules.md §1 ISP).
+    subjectBrowse,
+    subjectSource,
   });
 
-  const subjectBrowse = new PgSubjectBrowseAdapter(db.db);
+  // The free shelf reads the same `is_legal_free` flag the link policy writes — no source to go
+  // out to, so no backfill queue here (see ListFreeBooks).
+  const listFreeBooks = new ListFreeBooks({ freeBooks: new PgFreeBooksAdapter(db.db), cache });
+
   const listSubjects = new ListSubjects({ subjectBrowse, cache });
   const browseBySubject = new BrowseBySubject({
     subjectBrowse,
     cache,
-    subjectSource: new OpenLibrarySubjectSource(
-      createResilientFetcher(),
-      cache,
-      `BookTranslateFinder/0.1 (+${env.CONTACT_URL})`,
-    ),
+    subjectSource,
     backfillQueue,
   });
   const recommendBooks = new RecommendBooks({ subjectBrowse, cache });
@@ -172,9 +243,14 @@ export function buildApiContext(env: ApiEnv): ApiContext {
     searchWorks,
     getWorkCard,
     listEditionsForWork,
+    getCoverImage,
     getEditionLinks,
+    aggregateEditionPrices,
+    publicOpdsCatalog,
+    findNearbyStores,
     enqueueSourceSync,
     getFeaturedBooks,
+    listFreeBooks,
     listSubjects,
     browseBySubject,
     recommendBooks,

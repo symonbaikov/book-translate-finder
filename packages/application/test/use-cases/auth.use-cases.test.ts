@@ -15,7 +15,7 @@ import {
   type TokenGenerator,
   type UserRepository,
   type WelcomeEmail,
-} from '@btf/domain';
+} from '@golden/domain';
 import { describe, expect, it } from 'vitest';
 import { AuthService, BookmarkService } from '../../src/use-cases/auth.use-cases.js';
 

@@ -58,7 +58,7 @@ const DOWNLOAD_ALLOWLIST: ReadonlySet<string> = new Set([
  * against a bug, since only reviewed provider adapters we write ever produce link candidates in
  * the first place. Extending it (new mirror domains) is a legal decision — requires an ADR.
  */
-const DENYLIST_DOMAINS: readonly string[] = [
+export const DENYLIST_DOMAINS: readonly string[] = [
   'libgen.rs',
   'libgen.is',
   'libgen.st',

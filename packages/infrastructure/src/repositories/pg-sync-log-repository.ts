@@ -1,4 +1,4 @@
-import type { SyncLogEntry, SyncLogRepository } from '@btf/domain';
+import type { SyncLogEntry, SyncLogRepository } from '@golden/domain';
 import type { Db } from '../db/client.js';
 import { resolveDb } from '../db/transaction-context.js';
 import { syncLog } from '../db/schema.js';

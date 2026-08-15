@@ -26,7 +26,14 @@ describe('SearchResponseSchema', () => {
     const result = SearchResponseSchema.safeParse({
       status: 'found',
       results: [
-        { id: 'w1', originalTitle: 'x', author: 'y', firstPublishedYear: 1900, coverUrl: null },
+        {
+          id: 'w1',
+          originalTitle: 'x',
+          author: 'y',
+          firstPublishedYear: 1900,
+          coverUrl: null,
+          hasFreeCopy: false,
+        },
       ],
     });
     expect(result.success).toBe(true);

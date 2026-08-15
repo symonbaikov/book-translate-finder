@@ -14,9 +14,9 @@ import {
   SyncRequestBodySchema,
   SyncResponseSchema,
   type SyncResponse,
-} from '@btf/contracts';
-import { InvalidInputError } from '@btf/domain';
-import type { EnqueueSourceSync } from '@btf/application';
+} from '@golden/contracts';
+import { InvalidInputError } from '@golden/domain';
+import type { EnqueueSourceSync } from '@golden/application';
 import { AdminTokenGuard } from '../common/guards/admin-token.guard.js';
 import { parseOrThrow } from '../common/validation/parse-or-throw.js';
 import { TOKENS } from '../common/tokens.js';

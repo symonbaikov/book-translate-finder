@@ -1,4 +1,4 @@
-import { LanguageCode, Work } from '@btf/domain';
+import { LanguageCode, Work } from '@golden/domain';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { PgUnitOfWork } from '../../src/db/pg-unit-of-work.js';
 import { PgSyncLogRepository } from '../../src/repositories/pg-sync-log-repository.js';

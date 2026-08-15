@@ -1,7 +1,7 @@
 import { and, eq } from 'drizzle-orm';
 import { randomUUID } from 'node:crypto';
-import type { ExternalRefEntityType, ExternalRefRepository } from '@btf/domain';
-import type { ExternalRef } from '@btf/domain';
+import type { ExternalRefEntityType, ExternalRefRepository } from '@golden/domain';
+import type { ExternalRef } from '@golden/domain';
 import type { Db } from '../db/client.js';
 import { resolveDb } from '../db/transaction-context.js';
 import { externalRef } from '../db/schema.js';
@@ -41,6 +41,14 @@ export class PgExternalRefRepository implements ExternalRefRepository {
       .from(externalRef)
       .where(eq(externalRef.entityId, entityId));
     return rows.map((row) => row.sourceName);
+  }
+
+  async findExternalIdsForEntity(entityId: string, sourceName: string): Promise<string[]> {
+    const rows = await this.q
+      .select({ externalId: externalRef.externalId })
+      .from(externalRef)
+      .where(and(eq(externalRef.entityId, entityId), eq(externalRef.sourceName, sourceName)));
+    return rows.map((row) => row.externalId);
   }
 
   async save(ref: ExternalRef, entityType: ExternalRefEntityType, entityId: string): Promise<void> {

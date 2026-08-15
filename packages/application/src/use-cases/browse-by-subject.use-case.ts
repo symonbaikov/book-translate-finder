@@ -4,9 +4,10 @@ import type {
   SubjectBrowsePort,
   SubjectSourcePort,
   WorkSearchHit,
-} from '@btf/domain';
+} from '@golden/domain';
 import type { UseCase } from '../use-case.js';
 import { CACHE_KEY_VERSION } from '../cache-key-version.js';
+import { backfillJobId } from '../backfill-job-id.js';
 
 const BROWSE_TTL_SECONDS = 15 * 60;
 const MAX_RESULTS = 60;
@@ -95,20 +96,20 @@ export class BrowseBySubject implements UseCase<BrowseBySubjectInput, BrowseBySu
         const query = `${work.title} ${work.author}`;
         // The same deterministic job-id shape the rest of the backfill uses, so a genre visited
         // twice in a minute enqueues each book once rather than twice.
-        await backfillQueue.enqueue(`backfill-subject-${naturalise(query)}`, { query });
+        //
+        // `deferred`, and this is the burst the priority exists for: one thin genre page queues
+        // twenty books in a single breath, and the reader who opened it is already looking at the
+        // page. A search typed a second later must not wait behind all twenty.
+        await backfillQueue.enqueue(
+          backfillJobId('backfill-subject', query),
+          { query },
+          { priority: 'deferred' },
+        );
       }
     } catch {
       // Intentionally ignored — see the doc comment.
     }
   }
-}
-
-function naturalise(query: string): string {
-  return query
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-    .slice(0, 80);
 }
 
 export interface ListSubjectsDeps {

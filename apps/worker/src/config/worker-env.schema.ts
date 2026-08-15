@@ -1,4 +1,4 @@
-import { baseEnvSchema } from '@btf/infrastructure';
+import { baseEnvSchema } from '@golden/infrastructure';
 import { z } from 'zod';
 
 export const workerEnvSchema = baseEnvSchema.extend({

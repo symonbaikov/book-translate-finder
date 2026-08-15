@@ -6,10 +6,10 @@ import {
   LoginRequestSchema,
   RegisterRequestSchema,
   type CurrentUserResponse,
-} from '@btf/contracts';
-import type { AuthService } from '@btf/application';
-import { InvalidInputError } from '@btf/domain';
-import type { GoogleOAuthClient } from '@btf/infrastructure';
+} from '@golden/contracts';
+import type { AuthService } from '@golden/application';
+import { InvalidInputError } from '@golden/domain';
+import type { GoogleOAuthClient } from '@golden/infrastructure';
 import { parseOrThrow } from '../common/validation/parse-or-throw.js';
 import { TOKENS } from '../common/tokens.js';
 import { clearSessionCookie, readSessionToken, setSessionCookie } from './cookies.js';
