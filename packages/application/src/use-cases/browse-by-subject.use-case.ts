@@ -117,12 +117,53 @@ export interface ListSubjectsDeps {
   cache: CachePort;
 }
 
+/**
+ * Tags Open Library carries that describe a *copy*, not a book: whether a scan exists, whether a
+ * library lends it, which accessibility format it was produced in. They are among the most common
+ * tags in the data — an unfiltered "popular tags" list is mostly these — and none of them answers
+ * "what is this book about", which is the only question a genre chip is asked.
+ */
+const NON_GENRE_TAGS = new Set([
+  'accessible book',
+  'in library',
+  'internet archive wishlist',
+  'lending library',
+  'overdrive',
+  'popular print disabled books',
+  'protected daisy',
+  'large type books',
+  'reading level',
+]);
+
+/** Chips are one line of text, so a tag that cannot be one is unusable however popular it is. */
+const MAX_TAG_LENGTH = 40;
+
+/**
+ * Whether a contributor-written tag is a genre a reader would choose to browse.
+ *
+ * Deliberately a rejection list rather than a taxonomy: the tags are free text and this project
+ * does not invent categories for them (see the note in the Open Library adapter). What is thrown
+ * out is only what is demonstrably *not* subject matter — machine tags (`nyt:bestseller=…`), the
+ * cataloguing states above, LCSH subdivision strings (`United States -- History -- 1945-`), and
+ * anything too long to render as a chip.
+ */
+export function isGenreTag(tag: string): boolean {
+  const normalized = tag.trim().toLowerCase();
+  if (normalized.length === 0 || normalized.length > MAX_TAG_LENGTH) return false;
+  if (normalized.includes(':') || normalized.includes('=') || normalized.includes('--')) {
+    return false;
+  }
+  return !NON_GENRE_TAGS.has(normalized);
+}
+
 /** The tag cloud: only tags that actually have works behind them. */
 export class ListSubjects implements UseCase<
   void,
   { subjects: { subject: string; workCount: number }[] }
 > {
   private static readonly LIMIT = 40;
+  /** Over-fetched because the rejects above are common enough to eat a whole page of tags. */
+  private static readonly CANDIDATE_LIMIT = ListSubjects.LIMIT * 4;
 
   constructor(private readonly deps: ListSubjectsDeps) {}
 
@@ -133,7 +174,10 @@ export class ListSubjects implements UseCase<
     }>(key);
     if (cached) return cached;
 
-    const subjects = await this.deps.subjectBrowse.popularSubjects(ListSubjects.LIMIT);
+    const candidates = await this.deps.subjectBrowse.popularSubjects(ListSubjects.CANDIDATE_LIMIT);
+    const subjects = candidates
+      .filter((entry) => isGenreTag(entry.subject))
+      .slice(0, ListSubjects.LIMIT);
     const output = { subjects };
     await this.deps.cache.set(key, output, BROWSE_TTL_SECONDS);
     return output;

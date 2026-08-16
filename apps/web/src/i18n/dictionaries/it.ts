@@ -118,6 +118,7 @@ export const it: Dictionary = {
   'compare.rowPublisher': 'Editore',
   'compare.rowTranslator': 'Traduttore',
   'compare.rowTranslatedFrom': 'Tradotto dal',
+  'compare.rowEditionStatement': 'Edizione',
   'compare.rowBinding': 'Rilegatura',
   'compare.rowPages': 'Pagine',
   'compare.rowIsbn': 'ISBN',
@@ -167,6 +168,8 @@ export const it: Dictionary = {
   'search.noFreeResults':
     'Nessuno di questi ha ancora una copia gratuita — prova a disattivare il filtro.',
   'home.tagline': 'Trova il tuo prossimo magnum opus',
+  'home.genres': 'Generi popolari',
+  'home.genresBlurb': 'Le etichette con più libri dietro. Ognuna apre il suo catalogo.',
   'subject.allLanguages': 'Tutte le lingue.',
   'subject.filteredByLanguage': 'Solo libri con un’edizione in {language}.',
   'subject.dropLanguageFilter': 'mostra tutte le lingue',

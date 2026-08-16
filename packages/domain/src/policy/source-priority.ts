@@ -8,9 +8,11 @@
 export type FieldCategory = 'metadata' | 'cover';
 
 /**
- * The national library catalogues (`bnf`, `dnb`) are absent on purpose rather than ranked last:
- * they only ever contribute editions to a work another source identified, so they never hold an
- * opinion about a work's metadata for this to arbitrate. Wikidata is ranked below the two
+ * The library catalogues (`bnf`, `dnb`, `k10plus`, `loc`, `libris`, `bn-poland`) are absent on
+ * purpose rather than ranked last: they only ever contribute editions to a work another source
+ * identified, so they never hold an opinion about a work's metadata for this to arbitrate. Adding
+ * one is therefore not a change here — which is the point of registering them as enrichment
+ * sources in the first place. Wikidata is ranked below the two
  * bibliographic sources for both categories — it is the source that knows a book *exists*, not
  * the one that describes it best, and its `P18` image is as often a portrait of the author or a
  * photograph of a monument as it is a jacket.

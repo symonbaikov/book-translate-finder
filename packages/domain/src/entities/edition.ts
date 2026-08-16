@@ -29,6 +29,17 @@ export interface CreateEditionParams {
    * Kept verbatim rather than mapped to an enum — sources use dozens of spellings, and inventing
    * a taxonomy would mean guessing which bucket an unfamiliar one belongs in. */
   binding?: string | null;
+  /**
+   * How this printing differs from the others, as the catalogue states it: "First edition",
+   * "Limited ed., signed", "Izd. 2-e, ispr. i dop.".
+   *
+   * Deliberately *not* part of the natural key. Two catalogues describing the same printing will
+   * word this differently or leave it out entirely — the DNB records "Erstveröffentlichung" where
+   * the Library of Congress records nothing — and keying on it would split one edition into
+   * several. Publisher, year, language and title already identify the printing; this only says
+   * what kind of printing it is.
+   */
+  editionStatement?: string | null;
 }
 
 /** Immutable, same rationale as `Work` (docs/rules.md §3). */
@@ -46,6 +57,7 @@ export class Edition {
     readonly coverUrl: string | null,
     readonly pages: number | null,
     readonly binding: string | null,
+    readonly editionStatement: string | null,
     readonly naturalKey: string,
   ) {}
 
@@ -84,6 +96,7 @@ export class Edition {
       params.coverUrl?.trim() || null,
       params.pages ?? null,
       params.binding?.trim() || null,
+      params.editionStatement?.trim() || null,
       naturalKey,
     );
   }

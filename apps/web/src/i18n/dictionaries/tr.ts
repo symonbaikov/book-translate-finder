@@ -116,6 +116,7 @@ export const tr: Dictionary = {
   'compare.rowPublisher': 'Yayınevi',
   'compare.rowTranslator': 'Çevirmen',
   'compare.rowTranslatedFrom': 'Çevrildiği dil',
+  'compare.rowEditionStatement': 'Baskı',
   'compare.rowBinding': 'Cilt',
   'compare.rowPages': 'Sayfa',
   'compare.rowIsbn': 'ISBN',
@@ -165,6 +166,8 @@ export const tr: Dictionary = {
   'search.noFreeResults':
     'Bunların hiçbirinde henüz ücretsiz indirme yok — filtreyi kapatmayı deneyin.',
   'home.tagline': 'Sıradaki başyapıtınızı bulun',
+  'home.genres': 'Popüler türler',
+  'home.genresBlurb': 'Arkasında en çok kitap olan etiketler. Her biri kendi kataloğunu açar.',
   'subject.allLanguages': 'Tüm diller.',
   'subject.filteredByLanguage': 'Yalnızca {language} baskısı olan kitaplar.',
   'subject.dropLanguageFilter': 'tüm dilleri göster',

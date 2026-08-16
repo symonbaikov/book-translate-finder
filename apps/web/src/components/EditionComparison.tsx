@@ -149,6 +149,10 @@ function buildRows(editions: EditionSummary[], t: Translate): ComparisonRow[] {
       label: t('compare.rowTranslatedFrom'),
       values: editions.map((e) => (e.translatedFrom ? languageName(e.translatedFrom) : '—')),
     },
+    {
+      label: t('compare.rowEditionStatement'),
+      values: editions.map((e) => e.editionStatement ?? '—'),
+    },
     { label: t('compare.rowBinding'), values: editions.map((e) => e.binding ?? '—') },
     {
       label: t('compare.rowPages'),

@@ -77,6 +77,10 @@ export const EditionSummarySchema = z.object({
   pages: z.number().int().positive().nullable().default(null),
   /** Physical format as the source words it ("Paperback", "Hardcover"). */
   binding: z.string().nullable().default(null),
+  /** How this printing differs from the others, in the catalogue's words: "First edition",
+   * "Limited ed., signed", "Izd. 2-e, ispr. i dop.". Only MARC-speaking library catalogues carry
+   * it. Defaulted so a response cached before this field existed still parses. */
+  editionStatement: z.string().nullable().default(null),
   /** Legal source links this edition has — lets the client surface availability on the list itself. */
   linkCount: z.number().int().nonnegative(),
   /** Whether bookstore lookups are offered for this edition. Always true now that a missing ISBN

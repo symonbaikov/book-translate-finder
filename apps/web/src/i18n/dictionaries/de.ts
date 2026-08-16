@@ -128,6 +128,7 @@ export const de: Dictionary = {
   'compare.rowPublisher': 'Verlag',
   'compare.rowTranslator': 'Übersetzung',
   'compare.rowTranslatedFrom': 'Übersetzt aus',
+  'compare.rowEditionStatement': 'Ausgabe',
   'compare.rowBinding': 'Einband',
   'compare.rowPages': 'Seiten',
   'compare.rowIsbn': 'ISBN',
@@ -180,6 +181,9 @@ export const de: Dictionary = {
   'search.noFreeResults':
     'Keiner dieser Titel ist bisher kostenlos verfügbar — versuchen Sie, den Filter zu deaktivieren.',
   'home.tagline': 'Finden Sie Ihr nächstes Opus magnum',
+  'home.genres': 'Beliebte Genres',
+  'home.genresBlurb':
+    'Die Schlagwörter mit den meisten Büchern dahinter. Jedes öffnet seinen Katalog.',
   'subject.allLanguages': 'Alle Sprachen.',
   'subject.filteredByLanguage': 'Nur Bücher mit einer Ausgabe auf {language}.',
   'subject.dropLanguageFilter': 'alle Sprachen anzeigen',

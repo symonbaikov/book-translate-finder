@@ -16,6 +16,33 @@ const ENTITY_SEARCH_URL = 'https://www.wikidata.org/w/api.php';
 const SPARQL_URL = 'https://query.wikidata.org/sparql';
 
 /**
+ * Wikisource site keys that name no single language and are therefore skipped.
+ *
+ * `wikisource` is the old undifferentiated wiki and `mulwikisource` the multilingual one; a page
+ * on either is not "this book in language X", which is the only thing an edition can be here.
+ */
+const NON_LANGUAGE_WIKISOURCES: ReadonlySet<string> = new Set(['wikisource', 'mulwikisource']);
+
+/**
+ * Wikisource namespace prefixes that are cataloguing apparatus rather than part of a title.
+ *
+ * Italian Wikisource files a work at `Opera:Le avventure di Alice nel Paese delle Meraviglie`, and
+ * printed unstripped that is the name of a book on the page (seen live). A closed list rather than
+ * "everything before the first colon", because a colon is perfectly ordinary inside a real title —
+ * "Faust: Part One" must survive untouched.
+ */
+const WIKISOURCE_NAMESPACES: readonly string[] = [
+  'Opera', // it
+  'Translation', // en — a translation made by Wikisource contributors
+  'Traduzione', // it
+  'Índice', // pt/es
+  'Portal',
+  'Author',
+  'Index',
+  'Page',
+];
+
+/**
  * Candidates pulled from the label search before the book filter is applied.
  *
  * Wide on purpose. Wikidata's label search ranks by nothing this project cares about, and a famous
@@ -56,6 +83,32 @@ const BOOK_CLASSES = [
   'Q1667921', // novel series
   'Q25379', // play
 ] as const;
+
+/** One Wikisource page for the work, in one language. */
+interface WikisourceText {
+  /** The sitelink key, e.g. `ruwikisource` — kept because it is what makes the id unique. */
+  site: string;
+  language: string;
+  title: string;
+  url: string;
+}
+
+interface SitelinksResponse {
+  entities?: Record<string, { sitelinks?: Record<string, { title?: string; url?: string }> }>;
+}
+
+/** Wikidata returns sitelink URLs protocol-relative (`//ru.wikisource.org/...`). */
+function absoluteUrl(url: string): string {
+  return url.startsWith('//') ? `https:${url}` : url;
+}
+
+/** `"Opera:Le avventure di Alice"` → `"Le avventure di Alice"`; a real colon is left alone. */
+export function stripWikisourceNamespace(title: string): string {
+  for (const namespace of WIKISOURCE_NAMESPACES) {
+    if (title.startsWith(`${namespace}:`)) return title.slice(namespace.length + 1).trim();
+  }
+  return title;
+}
 
 interface EntitySearchResponse {
   search?: { id?: string }[];
@@ -307,9 +360,119 @@ export class WikidataProvider implements BookMetadataProvider {
       }
     }
 
-    const editions = [...byId.values()];
+    const editions = await this.withWikisourceTexts(externalWorkId, [...byId.values()]);
     await this.cache.set(cacheKey, editions, EDITIONS_CACHE_TTL_SECONDS);
     return editions;
+  }
+
+  /**
+   * Adds the free full texts Wikisource holds for this work, one per language.
+   *
+   * **Why this lives in the Wikidata adapter rather than a `WikisourceProvider`.** Finding the
+   * right Wikisource page means first knowing which Wikidata item the book is — and that is not a
+   * lookup, it is this class's hardest problem: the label search answers "Crime and Punishment"
+   * with a 1984 video game before the novel, which is what `BOOK_CLASSES` and the author ranking
+   * exist to sort out. A separate provider would have to repeat all of it, and would drift from
+   * it. Wikidata already holds the sitelinks, so this is one more request on an item already
+   * identified.
+   *
+   * The link is still attributed to **`wikisource`**, not to `wikidata` — the documented pattern
+   * for a provider that discovers a link somebody else hosts (see `ProviderEdition.links`, and
+   * Open Library attributing its availability links to `internet-archive`). It matters more than
+   * bookkeeping here: `wikisource` is on `DOWNLOAD_ALLOWLIST` and `wikidata` is not, so a link
+   * mislabelled as Wikidata's would be refused by `LinkPolicy` — correctly, since Wikidata hosts
+   * no texts at all.
+   *
+   * A language Wikidata has no edition item for still gets an edition, because that is the common
+   * case and the whole value: «Преступление и наказание» has Wikisource texts in Russian,
+   * Ukrainian, Serbian, Estonian, Hebrew, Spanish and English, and Wikidata edition items for
+   * almost none of them. Without this the reader is told the book is free in English (Gutenberg)
+   * and nothing about the six other languages they could read it in for nothing.
+   *
+   * Failure is swallowed: the editions already built are worth returning without it.
+   */
+  private async withWikisourceTexts(
+    qid: string,
+    editions: ProviderEdition[],
+  ): Promise<ProviderEdition[]> {
+    let texts: WikisourceText[];
+    try {
+      texts = await this.fetchWikisourceTexts(qid);
+    } catch {
+      return editions;
+    }
+
+    for (const text of texts) {
+      const link = {
+        type: 'download' as const,
+        url: text.url,
+        provider: 'wikisource',
+        // The page *is* the full text, so this is the same kind of link as Project Gutenberg's
+        // own HTML one. The EPUB exporter was considered and rejected: rendering a novel through
+        // it did not finish inside thirty seconds (measured), and a download link that hangs is
+        // worse than one that opens.
+        format: 'HTML',
+      };
+
+      // Always its own edition, never a link bolted onto one that already exists in the same
+      // language — even though that would look tidier on the page.
+      //
+      // Two texts in one language are routinely two *different* translations: Wikisource carries
+      // the old one whose copyright has lapsed, while the edition Wikidata knows about may be a
+      // translation published last decade and firmly in copyright. Hanging a
+      // `public_domain` download off that edition would be this project stating that a
+      // copyrighted translation is free to take — the exact claim docs/legal-policy.md exists to
+      // prevent. Kept separate, each record says only what is true of itself.
+      const edition: ProviderEdition = {
+        externalId: `wikisource:${text.site}:${text.title}`,
+        title: text.title,
+        language: text.language,
+        coverUrl: null,
+        translator: null,
+        translatedFrom: null,
+        publisher: null,
+        // A wiki page is not a printed edition and has no imprint. Inventing one would put a
+        // fabricated publisher and year on a card.
+        year: null,
+        isbn13: null,
+        isbn10: null,
+        pages: null,
+        binding: null,
+        editionStatement: null,
+        rightsSignal: 'public_domain',
+        links: [link],
+      };
+      editions.push(edition);
+    }
+
+    return editions;
+  }
+
+  /** The work item's Wikisource sitelinks — every language in one request. */
+  private async fetchWikisourceTexts(qid: string): Promise<WikisourceText[]> {
+    const url = `${ENTITY_SEARCH_URL}?${new URLSearchParams({
+      action: 'wbgetentities',
+      ids: qid,
+      props: 'sitelinks/urls',
+      format: 'json',
+    })}`;
+
+    const res = await this.fetcher.fetch(url, { headers: { 'User-Agent': this.userAgent } });
+    if (!res.ok) throw new Error(`Wikidata sitelinks lookup failed with status ${res.status}`);
+
+    const data = (await res.json()) as SitelinksResponse;
+    const sitelinks = data.entities?.[qid]?.sitelinks ?? {};
+
+    const texts: WikisourceText[] = [];
+    for (const [site, entry] of Object.entries(sitelinks)) {
+      if (!site.endsWith('wikisource') || NON_LANGUAGE_WIKISOURCES.has(site)) continue;
+      const language = site.slice(0, -'wikisource'.length);
+      const title = stripWikisourceNamespace(entry.title?.trim() ?? '');
+      const pageUrl = entry.url;
+      if (!language || !title || !pageUrl) continue;
+      texts.push({ site, language, title, url: absoluteUrl(pageUrl) });
+    }
+    return texts;
   }
 
   async fetchWorkDetails(externalWorkId: string): Promise<ProviderWorkDetails> {

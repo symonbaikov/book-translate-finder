@@ -125,6 +125,7 @@ export const ru: Dictionary = {
   'compare.rowPublisher': 'Издательство',
   'compare.rowTranslator': 'Переводчик',
   'compare.rowTranslatedFrom': 'Перевод с языка',
+  'compare.rowEditionStatement': 'Издание',
   'compare.rowBinding': 'Переплёт',
   'compare.rowPages': 'Страниц',
   'compare.rowIsbn': 'ISBN',
@@ -176,6 +177,8 @@ export const ru: Dictionary = {
   'search.noFreeResults':
     'Среди этих результатов пока нет бесплатных — попробуйте отключить фильтр.',
   'home.tagline': 'Найдите свой следующий magnum opus',
+  'home.genres': 'Популярные жанры',
+  'home.genresBlurb': 'Теги, за которыми стоит больше всего книг. Каждый открывает свой каталог.',
   'subject.allLanguages': 'Все языки.',
   'subject.filteredByLanguage': 'Только книги с изданием на языке: {language}.',
   'subject.dropLanguageFilter': 'показать все языки',

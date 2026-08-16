@@ -18,6 +18,7 @@ function toDomain(row: typeof edition.$inferSelect): Edition {
     coverUrl: row.coverUrl,
     pages: row.pages,
     binding: row.binding,
+    editionStatement: row.editionStatement,
   });
 }
 
@@ -48,7 +49,44 @@ export class PgEditionRepository implements EditionRepository {
     return rows.map(toDomain);
   }
 
+  /**
+   * Insert or update, keyed on the natural key — **except** when this row already exists under
+   * this id, in which case it is updated in place.
+   *
+   * That exception is the whole point. The natural key is derived from the title, publisher, year,
+   * language and ISBN, so a source *correcting* any of them gives the same edition a different
+   * natural key. `SyncWorkFromSource` still resolves the row by `external_ref` and hands back the
+   * original id, and a plain insert-on-conflict-natural-key then finds no conflict, inserts, and
+   * dies on the primary key — permanently, for that book, with the message `duplicate key value
+   * violates unique constraint "edition_pkey"`. Found exactly that way, when a parser fix turned
+   * `Alices &#xE4;ventyr i underlandet` into `Alices äventyr i underlandet`; an upstream cataloguer
+   * fixing a typo would have done the same.
+   *
+   * The insert path keeps the old behaviour untouched, so a *new* id carrying a natural key that
+   * already exists still merges onto the existing row rather than duplicating it.
+   */
   async save(entity: Edition): Promise<void> {
+    const [updated] = await this.q
+      .update(edition)
+      .set({
+        workId: entity.workId,
+        title: entity.title,
+        language: entity.language.value,
+        translator: entity.translator,
+        translatedFrom: entity.translatedFrom?.value ?? null,
+        publisher: entity.publisher,
+        year: entity.year,
+        isbn13: entity.isbn?.value ?? null,
+        coverUrl: entity.coverUrl,
+        pages: entity.pages,
+        binding: entity.binding,
+        editionStatement: entity.editionStatement,
+        naturalKey: entity.naturalKey,
+      })
+      .where(eq(edition.id, entity.id))
+      .returning({ id: edition.id });
+    if (updated) return;
+
     await this.q
       .insert(edition)
       .values({
@@ -64,6 +102,7 @@ export class PgEditionRepository implements EditionRepository {
         coverUrl: entity.coverUrl,
         pages: entity.pages,
         binding: entity.binding,
+        editionStatement: entity.editionStatement,
         naturalKey: entity.naturalKey,
       })
       .onConflictDoUpdate({
@@ -81,6 +120,7 @@ export class PgEditionRepository implements EditionRepository {
           coverUrl: entity.coverUrl,
           pages: entity.pages,
           binding: entity.binding,
+          editionStatement: entity.editionStatement,
         },
       });
   }

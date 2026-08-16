@@ -14,8 +14,22 @@ export interface RefreshStaleWorksDeps {
   workRepository: WorkRepository;
   syncQueue: JobQueuePort;
   clock: Clock;
-  /** Registered provider names (e.g. `['open-library', 'google-books']`) — refresh checks all of them. */
+  /**
+   * Discovery provider names (e.g. `['open-library', 'google-books']`). Asked without a work id,
+   * so a re-run can also correct the work's own metadata — which is how a book whose original
+   * language was wrongly recorded ever gets it fixed.
+   */
   sources: readonly string[];
+  /**
+   * Enrichment provider names — the library catalogues and the free-copy sources. Always asked
+   * *about a known work* (`attachToWorkId`), never allowed to decide which book they answered.
+   *
+   * Each stale work therefore costs `sources.length + enrichmentSources.length` jobs rather than
+   * `sources.length`, which is roughly two and a half times the nightly volume at the time of
+   * writing. `batchSize` remains the lever: an instance that finds the new figure too heavy turns
+   * it down, and the pass simply takes more nights to walk the catalog.
+   */
+  enrichmentSources: readonly string[];
 }
 
 function dateStamp(now: Date): string {
@@ -33,6 +47,13 @@ export function refreshJobId(source: string, workId: string, now: Date): string 
  * `olderThanDays`, capped at `batchSize` per run to bound load on a self-hosted instance. Only
  * enqueues into the same `sync` BullMQ queue the regular sync consumer already processes —
  * refresh doesn't duplicate `SyncWorkFromSource`'s logic, it just decides *when* to re-run it.
+ *
+ * **It re-runs enrichment too, and that is the only way a new source ever reaches an old book.**
+ * Enrichment otherwise happens exactly once, inside `ProcessBackfillJob`, at the moment a book is
+ * first discovered — so a catalogue added afterwards is asked about every book found from then on
+ * and about none of the books already in the database. Adding six library catalogues left a
+ * shelf's worth of books that would never see any of them: «Метро 2034» sat at zero editions with
+ * seven catalogues holding it, because it had been discovered before they existed.
  */
 export class RefreshStaleWorks implements UseCase<RefreshStaleWorksInput, RefreshStaleWorksOutput> {
   constructor(private readonly deps: RefreshStaleWorksDeps) {}
@@ -51,6 +72,19 @@ export class RefreshStaleWorks implements UseCase<RefreshStaleWorksInput, Refres
         await this.deps.syncQueue.enqueue(
           refreshJobId(source, work.id, now),
           { source, query },
+          { priority: 'deferred' },
+        );
+        enqueued += 1;
+      }
+
+      for (const source of this.deps.enrichmentSources) {
+        // `attachToWorkId` is what makes this safe, and its absence is why enrichment was left out
+        // of the nightly pass to begin with. A catalogue's records are *translations*: asked
+        // without it, the BnF would answer «Обитель» with "L'archipel des Solovki", fail to match
+        // the work's natural key, and create a second, half-empty book — every night.
+        await this.deps.syncQueue.enqueue(
+          refreshJobId(source, work.id, now),
+          { source, query, attachToWorkId: work.id },
           { priority: 'deferred' },
         );
         enqueued += 1;
