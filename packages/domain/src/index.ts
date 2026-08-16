@@ -82,7 +82,17 @@ export {
 } from './ports/book-metadata-provider.port.js';
 export { type CachePort } from './ports/cache.port.js';
 export { type Clock } from './ports/clock.port.js';
+export {
+  type EditionRatingProvider,
+  type EditionRatingResult,
+  type RatingQuery,
+} from './ports/edition-rating.port.js';
 export { type EditionRepository } from './ports/edition-repository.port.js';
+export {
+  type EditionReviewLink,
+  type EditionReviewsProvider,
+  type ReviewLinkQuery,
+} from './ports/edition-reviews.port.js';
 export {
   type ExternalRefEntityType,
   type ExternalRefRepository,
@@ -121,6 +131,7 @@ export { LanguageCode } from './value-objects/language-code.js';
 export { LANGUAGE_NAMES, type LanguageNames } from './value-objects/language-names.js';
 export { isLinkType, LINK_TYPES, type LinkType } from './value-objects/link-type.js';
 export { ProviderId } from './value-objects/provider-id.js';
+export { MIN_VOTES_FOR_COMPARISON, RATING_SCALE, Rating } from './value-objects/rating.js';
 export {
   isRightsStatus,
   RIGHTS_STATUSES,

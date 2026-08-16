@@ -233,6 +233,23 @@ export const it: Dictionary = {
   'prices.format.ebook': 'Ebook',
   'prices.format.audiobook': 'Audiolibro',
   'prices.format.unknown': 'Formato non indicato',
+
+  'ratings.edition': '{average} su {outOf}, {votes} giudizi di lettori su {source}',
+  'ratings.lowConfidence': 'troppi pochi giudizi per confrontare',
+  'ratings.reviews': 'Recensioni',
+  'ratings.reviewsOn': 'Recensioni di questa edizione su {source}',
+  'ratings.noteNoRatings':
+    'Nessuna fonte aperta valuta una traduzione, e per queste edizioni qui non ci sono giudizi dei lettori.',
+  'ratings.noteReviews':
+    'Se un’edizione è nota su {sources}, il link porta alle recensioni proprio di quella tiratura — la maggior parte non lo è.',
+  'ratings.translator':
+    'Edizioni tradotte da {name}: {average} su {outOf} su {editions} edizioni con giudizi, {votes} giudizi in tutto.',
+  'ratings.note':
+    'Sono giudizi di lettori su una singola edizione, presi da {sources}, non una valutazione della traduzione: quella non la pubblica nessuno. Servono per il confronto: stesso libro, stessa lingua, traduttori diversi — e sempre con il numero di voti sott’occhio.',
+  'ratings.gapWithoutIsbn':
+    '{count} edizioni non hanno un ISBN, quindi non è stato possibile associarvi un giudizio.',
+  'ratings.gapNotLookedUp':
+    'Altre {count} edizioni non sono state interrogate in questa richiesta.',
   'recommend.hideGenre': 'nascondi «{genre}»',
   'recommend.hiddenList': 'Generi nascosti (clicca per ripristinarne uno):',
 

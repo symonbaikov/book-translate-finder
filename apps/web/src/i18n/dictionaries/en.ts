@@ -254,6 +254,25 @@ export const en = {
   'prices.format.ebook': 'Ebook',
   'prices.format.audiobook': 'Audiobook',
   'prices.format.unknown': 'Format not stated',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx. Every one
+  // of these strings has to keep saying so; a shorter phrasing that drops "readers" or the source
+  // name turns a crowd's opinion into this project's verdict.
+  'ratings.edition': '{average} of {outOf} from {votes} readers on {source}',
+  'ratings.lowConfidence': 'too few votes to compare',
+  'ratings.reviews': 'Reviews',
+  'ratings.reviewsOn': 'Reviews of this edition on {source}',
+  'ratings.noteNoRatings':
+    'No open source rates a translation, and none of these printings has a reader rating here.',
+  'ratings.noteReviews':
+    'Where an edition is known on {sources}, the link goes to the reviews of that exact printing — most editions are not.',
+  'ratings.translator':
+    'Editions translated by {name}: {average} of {outOf} across {editions} rated editions, {votes} readers in total.',
+  'ratings.note':
+    'These are readers’ ratings of a specific edition on {sources}, not an assessment of the translation itself — nobody publishes that. They are worth reading side by side: same book, same language, different translators, and always with the number of votes in view.',
+  'ratings.gapWithoutIsbn':
+    '{count} editions here carry no ISBN, so no rating could be matched to them.',
+  'ratings.gapNotLookedUp': '{count} further editions were not looked up in this request.',
   'recommend.hideGenre': 'hide “{genre}”',
   'recommend.hiddenList': 'Hidden genres (click to bring one back):',
 

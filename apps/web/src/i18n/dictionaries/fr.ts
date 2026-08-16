@@ -246,6 +246,22 @@ export const fr: Dictionary = {
   'prices.format.ebook': 'Livre numérique',
   'prices.format.audiobook': 'Livre audio',
   'prices.format.unknown': 'Format non précisé',
+
+  'ratings.edition': '{average} sur {outOf}, {votes} avis de lecteurs sur {source}',
+  'ratings.lowConfidence': 'trop peu d’avis pour comparer',
+  'ratings.reviews': 'Critiques',
+  'ratings.reviewsOn': 'Critiques de cette édition sur {source}',
+  'ratings.noteNoRatings':
+    'Aucune source ouverte n’évalue une traduction, et aucune de ces éditions n’a ici de note de lecteurs.',
+  'ratings.noteReviews':
+    'Quand une édition est connue sur {sources}, le lien mène aux critiques de ce tirage précis — la plupart ne le sont pas.',
+  'ratings.translator':
+    'Éditions traduites par {name} : {average} sur {outOf} pour {editions} éditions notées, {votes} avis au total.',
+  'ratings.note':
+    'Ce sont des notes de lecteurs portant sur une édition précise, sur {sources}, et non une évaluation de la traduction elle-même — personne ne publie cela. Leur intérêt est la comparaison : même livre, même langue, traducteurs différents — toujours avec le nombre d’avis sous les yeux.',
+  'ratings.gapWithoutIsbn':
+    '{count} éditions n’ont pas d’ISBN : aucune note n’a pu leur être associée.',
+  'ratings.gapNotLookedUp': '{count} autres éditions n’ont pas été interrogées dans cette requête.',
   'recommend.hideGenre': 'masquer « {genre} »',
   'recommend.hiddenList': 'Genres masqués (cliquez pour en rétablir un) :',
 

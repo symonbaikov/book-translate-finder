@@ -232,6 +232,22 @@ export const nl: Dictionary = {
   'prices.format.ebook': 'E-boek',
   'prices.format.audiobook': 'Luisterboek',
   'prices.format.unknown': 'Formaat niet vermeld',
+
+  'ratings.edition': '{average} van {outOf}, {votes} lezersoordelen op {source}',
+  'ratings.lowConfidence': 'te weinig stemmen om te vergelijken',
+  'ratings.reviews': 'Recensies',
+  'ratings.reviewsOn': 'Recensies van deze editie op {source}',
+  'ratings.noteNoRatings':
+    'Geen enkele open bron beoordeelt een vertaling, en voor deze edities zijn hier geen lezersoordelen.',
+  'ratings.noteReviews':
+    'Is een editie bekend op {sources}, dan gaat de link naar de recensies van precies die druk — de meeste zijn dat niet.',
+  'ratings.translator':
+    'Edities in de vertaling van {name}: {average} van {outOf} over {editions} beoordeelde edities, {votes} stemmen in totaal.',
+  'ratings.note':
+    'Dit zijn lezersoordelen over één specifieke editie op {sources}, geen oordeel over de vertaling zelf — dat publiceert niemand. Ze zijn iets waard in vergelijking: hetzelfde boek, dezelfde taal, andere vertalers — en altijd met het aantal stemmen erbij.',
+  'ratings.gapWithoutIsbn':
+    '{count} edities hebben geen ISBN, dus daar kon geen oordeel aan gekoppeld worden.',
+  'ratings.gapNotLookedUp': 'Nog eens {count} edities zijn in deze aanvraag niet opgevraagd.',
   'recommend.hideGenre': '‘{genre}’ verbergen',
   'recommend.hiddenList': 'Verborgen genres (klik om er een terug te halen):',
 

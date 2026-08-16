@@ -231,6 +231,21 @@ export const tr: Dictionary = {
   'prices.format.ebook': 'E-kitap',
   'prices.format.audiobook': 'Sesli kitap',
   'prices.format.unknown': 'Biçim belirtilmemiş',
+
+  'ratings.edition': '{outOf} üzerinden {average}, {source} üzerinde {votes} okur oyu',
+  'ratings.lowConfidence': 'karşılaştırmak için oy sayısı çok az',
+  'ratings.reviews': 'Değerlendirmeler',
+  'ratings.reviewsOn': 'Bu baskının {source} üzerindeki değerlendirmeleri',
+  'ratings.noteNoRatings':
+    'Hiçbir açık kaynak çeviriyi puanlamıyor ve bu baskıların burada okur puanı yok.',
+  'ratings.noteReviews':
+    'Bir baskı {sources} üzerinde biliniyorsa bağlantı tam o baskının değerlendirmelerine gider — çoğu bilinmiyor.',
+  'ratings.translator':
+    '{name} çevirisiyle çıkan baskılar: {editions} puanlanmış baskıda {outOf} üzerinden {average}, toplam {votes} oy.',
+  'ratings.note':
+    'Bunlar {sources} üzerinde belirli bir baskıya verilen okur puanlarıdır; çevirinin kendisine verilmiş bir not değildir — onu kimse yayımlamıyor. Değeri karşılaştırmada: aynı kitap, aynı dil, farklı çevirmenler — ve her zaman oy sayısı görünürken.',
+  'ratings.gapWithoutIsbn': '{count} baskının ISBN’i yok, bu yüzden onlara puan eşleştirilemedi.',
+  'ratings.gapNotLookedUp': 'Bu istekte {count} baskı daha sorgulanmadı.',
   'recommend.hideGenre': '“{genre}” türünü gizle',
   'recommend.hiddenList': 'Gizlenen türler (geri getirmek için tıklayın):',
 

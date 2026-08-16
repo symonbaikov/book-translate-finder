@@ -1,5 +1,7 @@
 import { NotFoundError } from '@golden/domain';
 import type {
+  AggregateTranslationRatings,
+  AggregateTranslationRatingsOutput,
   GetWorkCard,
   GetWorkCardOutput,
   ListEditionsForWork,
@@ -14,6 +16,31 @@ function makeGetWorkCard(output: GetWorkCardOutput): GetWorkCard {
 
 function makeListEditions(output: ListEditionsForWorkOutput): ListEditionsForWork {
   return { execute: vi.fn(async () => output) } as unknown as ListEditionsForWork;
+}
+
+const RATINGS: AggregateTranslationRatingsOutput = {
+  workId: 'w1',
+  editions: [],
+  reviewLinks: [],
+  translators: [],
+  withoutIsbn: 0,
+  notLookedUp: 0,
+  degraded: [],
+  retrievedAt: '2026-08-16T10:00:00.000Z',
+};
+
+function makeRatings(
+  output: AggregateTranslationRatingsOutput = RATINGS,
+): AggregateTranslationRatings {
+  return { execute: vi.fn(async () => output) } as unknown as AggregateTranslationRatings;
+}
+
+function makeController(
+  getWorkCard: GetWorkCard,
+  listEditions: ListEditionsForWork,
+  ratings: AggregateTranslationRatings = makeRatings(),
+): WorksController {
+  return new WorksController(getWorkCard, listEditions, ratings);
 }
 
 const CARD: GetWorkCardOutput = {
@@ -35,7 +62,7 @@ const CARD: GetWorkCardOutput = {
 describe('WorksController', () => {
   it('returns the card for a known work', async () => {
     const getWorkCard = makeGetWorkCard(CARD);
-    const controller = new WorksController(
+    const controller = makeController(
       getWorkCard,
       makeListEditions({ workId: 'w1', editions: [] }),
     );
@@ -51,7 +78,7 @@ describe('WorksController', () => {
         throw new NotFoundError('Work not found: missing');
       }),
     } as unknown as GetWorkCard;
-    const controller = new WorksController(
+    const controller = makeController(
       getWorkCard,
       makeListEditions({ workId: 'w1', editions: [] }),
     );
@@ -61,7 +88,7 @@ describe('WorksController', () => {
 
   it("asks the card for a description in the reader's language when one is requested", async () => {
     const getWorkCard = makeGetWorkCard(CARD);
-    const controller = new WorksController(
+    const controller = makeController(
       getWorkCard,
       makeListEditions({ workId: 'w1', editions: [] }),
     );
@@ -73,7 +100,7 @@ describe('WorksController', () => {
 
   it('omits the language instead of passing undefined (exactOptionalPropertyTypes)', async () => {
     const getWorkCard = makeGetWorkCard(CARD);
-    const controller = new WorksController(
+    const controller = makeController(
       getWorkCard,
       makeListEditions({ workId: 'w1', editions: [] }),
     );
@@ -85,7 +112,7 @@ describe('WorksController', () => {
 
   it('passes language and year filters through when present', async () => {
     const listEditions = makeListEditions({ workId: 'w1', editions: [] });
-    const controller = new WorksController(makeGetWorkCard(CARD), listEditions);
+    const controller = makeController(makeGetWorkCard(CARD), listEditions);
 
     await controller.listEditions('w1', { language: 'en', year: '2005' });
 
@@ -94,10 +121,76 @@ describe('WorksController', () => {
 
   it('omits absent filters instead of passing undefined (exactOptionalPropertyTypes)', async () => {
     const listEditions = makeListEditions({ workId: 'w1', editions: [] });
-    const controller = new WorksController(makeGetWorkCard(CARD), listEditions);
+    const controller = makeController(makeGetWorkCard(CARD), listEditions);
 
     await controller.listEditions('w1', {});
 
     expect(listEditions.execute).toHaveBeenCalledWith({ workId: 'w1' });
+  });
+
+  it('passes a language filter through to the ratings, so the two lists agree', async () => {
+    const ratings = makeRatings();
+    const controller = makeController(
+      makeGetWorkCard(CARD),
+      makeListEditions({ workId: 'w1', editions: [] }),
+      ratings,
+    );
+
+    await controller.ratings('w1', { language: 'ru' });
+
+    expect(ratings.execute).toHaveBeenCalledWith({ workId: 'w1', language: 'ru' });
+  });
+
+  it('omits an absent language instead of passing undefined (exactOptionalPropertyTypes)', async () => {
+    const ratings = makeRatings();
+    const controller = makeController(
+      makeGetWorkCard(CARD),
+      makeListEditions({ workId: 'w1', editions: [] }),
+      ratings,
+    );
+
+    await controller.ratings('w1', {});
+
+    expect(ratings.execute).toHaveBeenCalledWith({ workId: 'w1' });
+  });
+
+  it('returns the gaps in the answer, not only the ratings it found', async () => {
+    const controller = makeController(
+      makeGetWorkCard(CARD),
+      makeListEditions({ workId: 'w1', editions: [] }),
+      makeRatings({
+        ...RATINGS,
+        editions: [
+          {
+            editionId: 'e1',
+            providerId: 'google-books',
+            providerName: 'Google Books',
+            average: 4.3,
+            outOf: 5,
+            votes: 212,
+            lowConfidence: false,
+            url: null,
+          },
+        ],
+        reviewLinks: [
+          {
+            editionId: 'e2',
+            providerId: 'goodreads',
+            providerName: 'Goodreads',
+            url: 'https://www.goodreads.com/book/show/1560198',
+          },
+        ],
+        withoutIsbn: 4,
+        notLookedUp: 2,
+      }),
+    );
+
+    const result = await controller.ratings('w1', {});
+
+    expect(result.editions).toHaveLength(1);
+    // A link for an edition with no rating survives the contract parse — the keyless normal case.
+    expect(result.reviewLinks).toHaveLength(1);
+    expect(result.withoutIsbn).toBe(4);
+    expect(result.notLookedUp).toBe(2);
   });
 });

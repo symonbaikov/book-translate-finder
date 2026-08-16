@@ -241,6 +241,21 @@ export const uk: Dictionary = {
   'prices.format.ebook': 'Електронна книга',
   'prices.format.audiobook': 'Аудіокнига',
   'prices.format.unknown': 'Формат не вказано',
+
+  'ratings.edition': '{average} з {outOf}, оцінок читачів: {votes} ({source})',
+  'ratings.lowConfidence': 'замало оцінок для порівняння',
+  'ratings.reviews': 'Рецензії',
+  'ratings.reviewsOn': 'Рецензії на це видання на {source}',
+  'ratings.noteNoRatings':
+    'Оцінок перекладу не публікує жодне відкрите джерело, а читацьких оцінок у цих видань тут немає.',
+  'ratings.noteReviews':
+    'Якщо видання відоме на {sources}, посилання веде до рецензій саме на цей наклад — але відомі далеко не всі.',
+  'ratings.translator':
+    'Видання в перекладі {name}: {average} з {outOf} за {editions} виданнями з оцінками, усього оцінок: {votes}.',
+  'ratings.note':
+    'Це оцінки конкретного видання читачами {sources}, а не оцінка самого перекладу — такої ніхто не публікує. Сенс у порівнянні: одна книжка, одна мова, різні перекладачі — і завжди з кількістю голосів перед очима.',
+  'ratings.gapWithoutIsbn': 'У {count} видань немає ISBN, тож зіставити їм оцінку не вдалося.',
+  'ratings.gapNotLookedUp': 'Ще {count} видань у цьому запиті не перевірялися.',
   'recommend.hideGenre': 'сховати «{genre}»',
   'recommend.hiddenList': 'Приховані жанри (натисніть, щоб повернути):',
 

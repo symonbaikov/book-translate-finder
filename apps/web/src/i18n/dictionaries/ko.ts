@@ -228,6 +228,21 @@ export const ko: Dictionary = {
   'prices.format.ebook': '전자책',
   'prices.format.audiobook': '오디오북',
   'prices.format.unknown': '형태 미표기',
+
+  'ratings.edition': '{outOf}점 만점에 {average}점 · {source} 독자 {votes}명의 평가',
+  'ratings.lowConfidence': '비교하기에는 평가 수가 너무 적음',
+  'ratings.reviews': '리뷰',
+  'ratings.reviewsOn': '{source}의 이 판본 리뷰',
+  'ratings.noteNoRatings':
+    '번역 자체를 평가하는 공개 자료는 없고, 이 판본들에는 독자 평가도 없습니다.',
+  'ratings.noteReviews':
+    '{sources}에 등록된 판본은 링크가 바로 그 판본의 리뷰로 이어집니다. 대부분은 등록되어 있지 않습니다.',
+  'ratings.translator':
+    '{name} 번역본: 평가가 있는 {editions}개 판본에서 {outOf}점 만점에 {average}점, 평가 총 {votes}건.',
+  'ratings.note':
+    '{sources}에서 특정 판본에 매겨진 독자 평가이며, 번역 자체에 대한 평가는 아닙니다. 그런 평가를 공개하는 곳은 없습니다. 같은 책, 같은 언어, 다른 번역자를 평가 수와 함께 나란히 놓고 볼 때 의미가 있습니다.',
+  'ratings.gapWithoutIsbn': '{count}개 판본에는 ISBN이 없어 평가를 연결할 수 없었습니다.',
+  'ratings.gapNotLookedUp': '이 요청에서는 {count}개 판본을 추가로 조회하지 않았습니다.',
   'recommend.hideGenre': '‘{genre}’ 숨기기',
   'recommend.hiddenList': '숨긴 장르 (클릭하면 되돌립니다):',
 

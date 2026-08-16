@@ -79,4 +79,6 @@ export { WikipediaDescriptionProvider } from './providers/wikipedia-description-
 export { OverpassGeoStoreAdapter } from './geo/overpass-geo-store.adapter.js';
 export { GoogleBooksPriceProvider } from './pricing/google-books-price.provider.js';
 export { BookstoreCatalogPriceProvider } from './pricing/bookstore-catalog-price.provider.js';
+export { GoogleBooksRatingProvider } from './ratings/google-books-rating.provider.js';
+export { OpenLibraryReviewLinkProvider } from './ratings/open-library-review-link.provider.js';
 export { PublicOpdsCatalog } from './opds/public-opds-catalog.service.js';
