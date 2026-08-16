@@ -20,44 +20,36 @@
  * can find their way back to it. The **file** is kept only when they ask (ADR-0013 §4): helping
  * yourself to somebody's disk is not a default anyone chose.
  */
-import type { BookOrigin } from './acquisition.js';
+import type { AcquiredBook } from './acquisition.js';
+import { isReadingRecord, newReadingRecord, type ReadingRecord } from './progress.js';
 
 const DB_NAME = 'golden-reader';
 const DB_VERSION = 1;
 const BOOKS = 'books';
 const FILES = 'files';
 
-export interface LibraryEntry {
-  /** `contentHashOf(file)` — the key here, in `files`, and in the progress record (identity.ts). */
-  readonly hash: string;
-  readonly format: string;
-  readonly title: string | null;
-  readonly byteLength: number;
-  /** Whether the bytes are in `files`. Kept here so a list does not have to look. */
-  readonly keepFile: boolean;
-  /**
-   * Where it came from, for the reader's own recognition — "from your device", the host it was
-   * fetched from. Never sent anywhere; see ADR-0013 §1 for why that includes the URL.
-   */
-  readonly origin: BookOrigin;
-  readonly openedAt: number;
-}
+/**
+ * A book this browser knows about: what it is, where the reader got to, and what they marked.
+ *
+ * One record rather than two — see `progress.ts` for why the split this file briefly had did not
+ * survive contact with a second write.
+ */
+export type LibraryEntry = ReadingRecord;
 
 /** What a freshly opened book looks like in the list. Pure, so the shape has a test. */
 export function libraryEntryOf(
-  book: { hash: string; format: string; bytes: ArrayBuffer; origin: BookOrigin },
+  book: AcquiredBook,
   title: string | null,
   now: number,
 ): LibraryEntry {
-  return {
+  return newReadingRecord({
     hash: book.hash,
     format: book.format,
     title,
     byteLength: book.bytes.byteLength,
-    keepFile: false,
     origin: book.origin,
-    openedAt: now,
-  };
+    now,
+  });
 }
 
 /** Most recently opened first — the order a reader looks for a book they just had. */
@@ -124,15 +116,61 @@ async function read<T>(
   }
 }
 
-/** Every book this browser knows about, newest first. An unreadable database is an empty one. */
-export async function listLibrary(): Promise<LibraryEntry[]> {
-  const entries = await read<LibraryEntry[]>(BOOKS, (store) => store.getAll());
-  return sortLibrary(entries ?? []);
+/**
+ * Make sense of a record this browser wrote at some point in the past.
+ *
+ * Storage here is the reader's own device and outlives every deployment: a record written before
+ * `position` and `bookmarks` existed is still somebody's library, and dropping it because a field
+ * was added would be the tidier-schema-for-your-shelf trade this project already refused once
+ * (plan.md 7.8). So a recognisable older shape is filled in, and only genuine junk is discarded.
+ *
+ * It was not hypothetical for long: the version that introduced positions read back the version
+ * that did not, and threw on `position.cfi` for every book already in the library.
+ */
+export function reviveEntry(value: unknown): LibraryEntry | null {
+  if (isReadingRecord(value)) return value;
+  if (typeof value !== 'object' || value === null) return null;
+
+  const older = value as Partial<LibraryEntry>;
+  if (typeof older.hash !== 'string' || typeof older.format !== 'string') return null;
+
+  const upgraded: LibraryEntry = {
+    ...newReadingRecord({
+      hash: older.hash,
+      format: older.format,
+      title: older.title ?? null,
+      byteLength: older.byteLength ?? 0,
+      origin: older.origin ?? { kind: 'stored' },
+      now: older.openedAt ?? 0,
+    }),
+    keepFile: older.keepFile === true,
+  };
+  return isReadingRecord(upgraded) ? upgraded : null;
 }
 
-/** Record that this book was opened. Called on every open, so it is an upsert by hash. */
+/** Every book this browser knows about, newest first. An unreadable database is an empty one. */
+export async function listLibrary(): Promise<LibraryEntry[]> {
+  const entries = await read<unknown[]>(BOOKS, (store) => store.getAll());
+  const revived = (entries ?? [])
+    .map(reviveEntry)
+    .filter((entry): entry is LibraryEntry => !!entry);
+  return sortLibrary(revived);
+}
+
+/**
+ * Write the record: opened, moved, bookmarked, kept.
+ *
+ * One function for all of them, because they are one record and IndexedDB has no partial update.
+ * An upsert by hash, so re-opening a book keeps its position rather than resetting it — the caller
+ * merges (`progress.ts`) and this stores.
+ */
 export async function rememberBook(entry: LibraryEntry): Promise<boolean> {
   return write(BOOKS, (store) => void store.put(entry));
+}
+
+/** What this browser remembers about one book, or `null` if it has never seen it. */
+export async function readBook(hash: string): Promise<LibraryEntry | null> {
+  return reviveEntry(await read<unknown>(BOOKS, (store) => store.get(hash)));
 }
 
 /**

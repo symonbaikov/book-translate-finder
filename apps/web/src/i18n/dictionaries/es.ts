@@ -428,4 +428,24 @@ export const es: Dictionary = {
     'El archivo de «{title}» se borró de este navegador. La entrada sigue ahí: puede abrirlo otra vez desde su fuente.',
   'settings.reader.removed':
     '«{title}» se quitó por completo de este navegador: el archivo y la entrada.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Abierto donde lo dejó: al {percent}%.',
+  'reader.bookmarks': 'Marcadores',
+  'reader.bookmarkAdd': 'Marcar esta página',
+  'reader.bookmarkNone': 'Todavía no hay marcadores en este libro.',
+  'reader.bookmarkGo': 'Ir',
+  'reader.bookmarkRemove': 'Quitar marcador',
+  'reader.bookmarkNote': 'Nota',
+  'reader.bookmarkNotePlaceholder': 'Sus propias palabras sobre esta página',
+  'reader.bookmarkAt': 'al {percent}%',
+  'settings.reader.bookmarkTitle': 'Marcadores en este navegador',
+  'settings.reader.bookmarkAdded':
+    'Marcador al {percent}% de «{title}». Los marcadores se quedan en este dispositivo junto al libro.',
+  'settings.reader.bookmarkRemoved': 'Ese marcador de «{title}» se quitó de este navegador.',
+  'settings.reader.noteSaved':
+    'Su nota sobre esta página de «{title}» se guardó en este dispositivo.',
+  'settings.reader.positionTitle': 'Posición de lectura',
+  'settings.reader.positionUnstored':
+    'Este navegador no quiso guardar por dónde va en «{title}», así que la próxima vez el libro se abrirá desde el principio. El modo privado y un disco lleno hacen lo mismo.',
 };

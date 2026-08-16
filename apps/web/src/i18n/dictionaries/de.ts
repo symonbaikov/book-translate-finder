@@ -432,4 +432,25 @@ export const de: Dictionary = {
     'Die Datei zu „{title}“ wurde aus diesem Browser gelöscht. Der Eintrag bleibt, Sie können das Buch erneut aus seiner Quelle öffnen.',
   'settings.reader.removed':
     '„{title}“ wurde vollständig aus diesem Browser entfernt — Datei und Eintrag.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Dort geöffnet, wo Sie aufgehört haben — bei {percent}%.',
+  'reader.bookmarks': 'Lesezeichen',
+  'reader.bookmarkAdd': 'Diese Seite mit einem Lesezeichen versehen',
+  'reader.bookmarkNone': 'In diesem Buch gibt es noch keine Lesezeichen.',
+  'reader.bookmarkGo': 'Hingehen',
+  'reader.bookmarkRemove': 'Lesezeichen entfernen',
+  'reader.bookmarkNote': 'Notiz',
+  'reader.bookmarkNotePlaceholder': 'Ihre eigenen Worte zu dieser Seite',
+  'reader.bookmarkAt': 'bei {percent}%',
+  'settings.reader.bookmarkTitle': 'Lesezeichen in diesem Browser',
+  'settings.reader.bookmarkAdded':
+    'Lesezeichen bei {percent}% von „{title}“. Lesezeichen bleiben mit dem Buch auf diesem Gerät.',
+  'settings.reader.bookmarkRemoved':
+    'Dieses Lesezeichen in „{title}“ wurde aus diesem Browser entfernt.',
+  'settings.reader.noteSaved':
+    'Ihre Notiz zu dieser Seite von „{title}“ wurde auf diesem Gerät gespeichert.',
+  'settings.reader.positionTitle': 'Leseposition',
+  'settings.reader.positionUnstored':
+    'Dieser Browser wollte nicht speichern, wo Sie in „{title}“ sind — beim nächsten Mal beginnt das Buch von vorn. Privater Modus und eine volle Festplatte tun beides.',
 };

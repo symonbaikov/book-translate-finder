@@ -1119,6 +1119,35 @@ faithful simulation is `route.abort()`, for the same reason the message does not
 so it flips a few milliseconds later — which is exactly the property that makes a refused write
 visible.
 
+### What 11.5 settled about remembering
+
+- **One record, after briefly being two.** 11.2 wrote `ReadingRecord` before there was anywhere to
+  put it and 11.4 wrote `LibraryEntry` when the storage arrived — two shapes for one thing,
+  overlapping in four fields. They are one type again, and the bytes stay in their own store because
+  a list must not deserialize a 40 MB EPUB per row.
+- **Only a refused write says anything.** A position that stored correctly is not news: nobody asked
+  for it and there is nothing to confirm. A position that did _not_ store is a book that opens at
+  page one tomorrow, so that one gets a popup — once per book rather than once per page turn, since
+  the reason does not change and a popup on every turn is wallpaper.
+- **A stored locator is tried and not trusted.** `renderFirstPage` falls back to the beginning if a
+  CFI no longer resolves. Landing on page one is a small disappointment; an exception there would
+  mean the book does not open at all.
+- **Notes save on blur, not on keystroke.** Each save is a write and a popup.
+
+Three things found by running it. Reading a record written by the **previous build** threw on
+`position.cfi` for every book already in the library — storage outlives deployments, so
+`reviveEntry` now upgrades an older shape instead of dropping somebody's shelf (the trade 7.8
+already refused once). `goTo` at open time emits no `relocate`, so after resuming, "bookmark this
+page" stayed disabled until the reader turned one — the current position is now seeded from the
+record. And the button read a ref, which cannot re-render anything; the locator is held twice on
+purpose, once for the listener and once for the button.
+
+**Highlights over selected text are not in this phase, and the reason is 11.1b.** A highlight needs
+to know what the reader selected, which needs `selectionchange` inside the book's frame — and that
+is the frame WebKit delivers no events to. Building it would mean a feature that works in two engines
+and silently does nothing in Safari, or moving selection handling somewhere it does not belong. A
+bookmark with a note does what most of the need is, works everywhere, and does not pretend.
+
 ### Decided rather than assumed
 
 - **No `rightsStatus` on an addon result, and no field to hold one.** The instance's own links carry
@@ -1550,7 +1579,7 @@ Two consequences that are easy to get wrong and are therefore written down now:
 | 11.2 | `packages/reader` — a fifth leaf package                                         | ✅    | Sniffing, acquisition, progress, hashing, content-frame policy; foliate vendored, pinned, patched, with a test that fails when the patch lapses             |
 | 11.3 | The `/read` route's CSP and the content-frame policy                             | ✅    | Nonce-based `script-src 'self'` from middleware, the engine probe wired in, and four tests that open a hostile book on the real route (`pnpm test:sandbox`) |
 | 11.4 | Acquisition: fetch, file picker, drag-and-drop, IndexedDB                        | ✅    | Four ways in, one path out; the CORS dead end offers the download and nothing else; kept files live in IndexedDB and are the reader's own opt-in            |
-| 11.5 | Progress, bookmarks and annotations                                              | ⬜    | IndexedDB in the host origin, keyed by content hash; reached from the sandbox only through the RPC surface                                                  |
+| 11.5 | Progress, bookmarks and notes                                                    | ✅    | Position and bookmarks in the one record, keyed by content hash; resume through `renderFirstPage`; only a _refused_ write says anything                     |
 | 11.6 | Display: themes incl. E-Ink, type, layout                                        | ⬜    | Tokens are read in the host and passed in as values (ADR-0008 stays true); E-Ink is monochrome, motionless and paged                                        |
 | 11.7 | Surfaces: where "Read in browser" appears                                        | ⬜    | Work page, free shelf, addon sources, `/read`. Shown only where there is a file to open — see below                                                         |
 | 11.8 | Settings popups and 15 dictionaries                                              | ⬜    | Every reader preference announces itself through `useSettingChangeToast()` with `outcomeOfWrite` (CLAUDE.md)                                                |

@@ -22,7 +22,7 @@ import { defineConfig } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './e2e',
-  testMatch: /(addon-(sandbox|privacy)|reader-(csp|acquisition))\.spec\.ts/,
+  testMatch: /(addon-(sandbox|privacy)|reader-(csp|acquisition|progress))\.spec\.ts/,
   timeout: 60_000,
   fullyParallel: false,
   retries: 0,

@@ -380,4 +380,23 @@ export const zh: Dictionary = {
   'settings.reader.kept': '《{title}》已留在这台设备上，无需重新下载即可打开。不会上传到任何地方。',
   'settings.reader.forgotten': '《{title}》的文件已从此浏览器删除。条目仍在，你可以再从来源打开。',
   'settings.reader.removed': '《{title}》已从此浏览器完全移除——文件和条目都删除了。',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': '从你上次停下的地方打开——{percent}%。',
+  'reader.bookmarks': '书签',
+  'reader.bookmarkAdd': '为此页加书签',
+  'reader.bookmarkNone': '这本书还没有书签。',
+  'reader.bookmarkGo': '前往',
+  'reader.bookmarkRemove': '移除书签',
+  'reader.bookmarkNote': '笔记',
+  'reader.bookmarkNotePlaceholder': '你对这一页的话',
+  'reader.bookmarkAt': '{percent}%',
+  'settings.reader.bookmarkTitle': '此浏览器中的书签',
+  'settings.reader.bookmarkAdded':
+    '已在《{title}》的 {percent}% 处加书签。书签和书一起留在这台设备上。',
+  'settings.reader.bookmarkRemoved': '《{title}》中的那个书签已从此浏览器移除。',
+  'settings.reader.noteSaved': '你对《{title}》这一页的笔记已保存在这台设备上。',
+  'settings.reader.positionTitle': '阅读位置',
+  'settings.reader.positionUnstored':
+    '此浏览器没有保存你在《{title}》中的位置，下次会从头打开。无痕模式和磁盘写满都会这样。',
 };

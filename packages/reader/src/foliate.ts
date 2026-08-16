@@ -101,16 +101,26 @@ export function asFoliateFile(book: { bytes: ArrayBuffer; format: string }): Fil
 }
 
 /**
- * Paint the opening page.
+ * Paint the first page the reader should see — where they left off, or the beginning.
  *
- * `open()` prepares the book and renders nothing — upstream's own reader calls `renderer.next()`
+ * `open()` prepares the book and renders nothing: upstream's own reader calls `renderer.next()`
  * afterwards, and without an equivalent the view sits there, correctly loaded and entirely blank.
  * That is a confusing failure to read backwards from, so it is a named function rather than a line
  * in a component.
  *
- * When stored positions arrive (11.5) this is where resuming happens: the saved locator if there is
- * one, the first page if there is not.
+ * A stored locator is tried and **not trusted**. A CFI is a path into a document, and the file
+ * behind a hash cannot change — but a locator written by an older version of the renderer, or by a
+ * format whose loader has since changed, can still fail to resolve. Landing on page one is a small
+ * disappointment; an exception here would mean the book does not open at all.
  */
-export async function renderFirstPage(view: FoliateView): Promise<void> {
+export async function renderFirstPage(view: FoliateView, resumeAt?: string | null): Promise<void> {
+  if (resumeAt) {
+    try {
+      await view.goTo(resumeAt);
+      return;
+    } catch {
+      // Fall through to the beginning, which is always resolvable.
+    }
+  }
   await view.goTo(0);
 }

@@ -443,4 +443,23 @@ export const en = {
     'The file for “{title}” was deleted from this browser. It stays in the list, so you can open it again from its source.',
   'settings.reader.removed':
     '“{title}” was removed from this browser entirely — the file and the entry.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Opened where you left off — {percent}% in.',
+  'reader.bookmarks': 'Bookmarks',
+  'reader.bookmarkAdd': 'Bookmark this page',
+  'reader.bookmarkNone': 'No bookmarks in this book yet.',
+  'reader.bookmarkGo': 'Go to',
+  'reader.bookmarkRemove': 'Remove bookmark',
+  'reader.bookmarkNote': 'Note',
+  'reader.bookmarkNotePlaceholder': 'Your own words about this page',
+  'reader.bookmarkAt': '{percent}% in',
+  'settings.reader.bookmarkTitle': 'Bookmarks in this browser',
+  'settings.reader.bookmarkAdded':
+    'Bookmarked {percent}% into “{title}”. Bookmarks stay on this device with the book.',
+  'settings.reader.bookmarkRemoved': 'That bookmark in “{title}” was removed from this browser.',
+  'settings.reader.noteSaved': 'Your note on this page of “{title}” was saved on this device.',
+  'settings.reader.positionTitle': 'Reading position',
+  'settings.reader.positionUnstored':
+    'This browser would not store where you are in “{title}”, so it will open at the beginning next time. Private mode and a full disk both do this.',
 } as const;

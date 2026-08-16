@@ -3,6 +3,7 @@ import {
   isReadingRecord,
   newReadingRecord,
   withBookmark,
+  withBookmarkNote,
   withKeepFile,
   withPosition,
   withoutBookmark,
@@ -43,7 +44,7 @@ describe('withBookmark', () => {
   it('adds a bookmark', () => {
     const marked = withBookmark(record(), { cfi: 'epubcfi(/6/4)', label: 'Chapter 2' }, 2000);
     expect(marked.bookmarks).toEqual([
-      { cfi: 'epubcfi(/6/4)', label: 'Chapter 2', createdAt: 2000 },
+      { cfi: 'epubcfi(/6/4)', label: 'Chapter 2', note: '', createdAt: 2000 },
     ]);
   });
 
@@ -58,6 +59,42 @@ describe('withBookmark', () => {
     const marked = withBookmark(record(), { cfi: 'here', label: 'a' }, 2000);
     expect(withoutBookmark(marked, 'here').bookmarks).toEqual([]);
     expect(withoutBookmark(marked, 'elsewhere')).toBe(marked);
+  });
+});
+
+describe('withBookmarkNote', () => {
+  it('edits a note without touching the rest of the bookmark', () => {
+    const marked = withBookmark(record(), { cfi: 'here', label: 'Chapter 2' }, 2000);
+    const noted = withBookmarkNote(marked, 'here', 'the bit about the boats');
+
+    expect(noted.bookmarks[0]).toEqual({
+      cfi: 'here',
+      label: 'Chapter 2',
+      note: 'the bit about the boats',
+      createdAt: 2000,
+    });
+  });
+
+  it('leaves the record alone when the note is unchanged or the bookmark is gone', () => {
+    // The first half is what stops every keystroke in a note field from being a database write.
+    const noted = withBookmarkNote(
+      withBookmark(record(), { cfi: 'here', label: 'a', note: 'same' }, 2000),
+      'here',
+      'same',
+    );
+    expect(noted.bookmarks[0]?.note).toBe('same');
+    expect(withBookmarkNote(record(), 'nowhere', 'anything')).toEqual(record());
+  });
+
+  it('does not overwrite a note by re-adding the same spot', () => {
+    // Adding is keyed on the locator, so a double-clicked button must not silently replace what the
+    // reader wrote the first time.
+    const noted = withBookmarkNote(
+      withBookmark(record(), { cfi: 'same', label: 'a' }, 2000),
+      'same',
+      'my note',
+    );
+    expect(withBookmark(noted, { cfi: 'same', label: 'b', note: 'overwrite?' }, 3000)).toBe(noted);
   });
 });
 

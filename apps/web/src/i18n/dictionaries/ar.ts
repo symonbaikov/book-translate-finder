@@ -393,4 +393,23 @@ export const ar: Dictionary = {
   'settings.reader.forgotten':
     'حُذف ملف «{title}» من هذا المتصفّح. بقي السجل، فيمكنك فتحه من مصدره مرة أخرى.',
   'settings.reader.removed': 'أُزيل «{title}» من هذا المتصفّح تمامًا — الملف والسجل معًا.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'فُتح من حيث توقّفت — عند {percent}%.',
+  'reader.bookmarks': 'العلامات',
+  'reader.bookmarkAdd': 'ضع علامة على هذه الصفحة',
+  'reader.bookmarkNone': 'لا علامات في هذا الكتاب بعد.',
+  'reader.bookmarkGo': 'انتقل',
+  'reader.bookmarkRemove': 'أزل العلامة',
+  'reader.bookmarkNote': 'ملاحظة',
+  'reader.bookmarkNotePlaceholder': 'كلماتك عن هذه الصفحة',
+  'reader.bookmarkAt': 'عند {percent}%',
+  'settings.reader.bookmarkTitle': 'العلامات في هذا المتصفّح',
+  'settings.reader.bookmarkAdded':
+    'وُضعت علامة عند {percent}% من «{title}». تبقى العلامات على هذا الجهاز مع الكتاب.',
+  'settings.reader.bookmarkRemoved': 'أُزيلت تلك العلامة في «{title}» من هذا المتصفّح.',
+  'settings.reader.noteSaved': 'حُفظت ملاحظتك على هذه الصفحة من «{title}» على هذا الجهاز.',
+  'settings.reader.positionTitle': 'موضع القراءة',
+  'settings.reader.positionUnstored':
+    'لم يحفظ هذا المتصفّح موضعك في «{title}»، لذا سيُفتح الكتاب من البداية في المرة القادمة. يحدث هذا في الوضع الخاص وعند امتلاء القرص.',
 };

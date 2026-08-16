@@ -412,4 +412,24 @@ export const pl: Dictionary = {
     'Plik „{title}” został usunięty z tej przeglądarki. Wpis pozostaje — możesz otworzyć książkę ponownie ze źródła.',
   'settings.reader.removed':
     '„{title}” została usunięta z tej przeglądarki całkowicie — plik i wpis.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Otwarto tam, gdzie skończyłeś — na {percent}%.',
+  'reader.bookmarks': 'Zakładki',
+  'reader.bookmarkAdd': 'Dodaj zakładkę na tej stronie',
+  'reader.bookmarkNone': 'W tej książce nie ma jeszcze zakładek.',
+  'reader.bookmarkGo': 'Przejdź',
+  'reader.bookmarkRemove': 'Usuń zakładkę',
+  'reader.bookmarkNote': 'Notatka',
+  'reader.bookmarkNotePlaceholder': 'Twoje słowa o tej stronie',
+  'reader.bookmarkAt': 'na {percent}%',
+  'settings.reader.bookmarkTitle': 'Zakładki w tej przeglądarce',
+  'settings.reader.bookmarkAdded':
+    'Zakładka na {percent}% książki „{title}”. Zakładki zostają na tym urządzeniu razem z książką.',
+  'settings.reader.bookmarkRemoved': 'Ta zakładka w „{title}” została usunięta z tej przeglądarki.',
+  'settings.reader.noteSaved':
+    'Twoja notatka do tej strony „{title}” została zapisana na tym urządzeniu.',
+  'settings.reader.positionTitle': 'Miejsce czytania',
+  'settings.reader.positionUnstored':
+    'Ta przeglądarka nie zapisała, gdzie jesteś w „{title}”, więc następnym razem książka otworzy się od początku. Tak działa tryb prywatny i pełny dysk.',
 };

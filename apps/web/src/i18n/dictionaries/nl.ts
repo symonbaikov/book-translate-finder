@@ -412,4 +412,24 @@ export const nl: Dictionary = {
     'Het bestand van “{title}” is uit deze browser verwijderd. De vermelding blijft: je kunt het opnieuw vanaf de bron openen.',
   'settings.reader.removed':
     '“{title}” is volledig uit deze browser verwijderd — het bestand en de vermelding.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Geopend waar je gebleven was — op {percent}%.',
+  'reader.bookmarks': 'Bladwijzers',
+  'reader.bookmarkAdd': 'Deze pagina markeren',
+  'reader.bookmarkNone': 'Nog geen bladwijzers in dit boek.',
+  'reader.bookmarkGo': 'Ga erheen',
+  'reader.bookmarkRemove': 'Bladwijzer verwijderen',
+  'reader.bookmarkNote': 'Notitie',
+  'reader.bookmarkNotePlaceholder': 'Je eigen woorden over deze pagina',
+  'reader.bookmarkAt': 'op {percent}%',
+  'settings.reader.bookmarkTitle': 'Bladwijzers in deze browser',
+  'settings.reader.bookmarkAdded':
+    'Bladwijzer op {percent}% van “{title}”. Bladwijzers blijven met het boek op dit apparaat.',
+  'settings.reader.bookmarkRemoved': 'Die bladwijzer in “{title}” is uit deze browser verwijderd.',
+  'settings.reader.noteSaved':
+    'Je notitie bij deze pagina van “{title}” is op dit apparaat opgeslagen.',
+  'settings.reader.positionTitle': 'Leespositie',
+  'settings.reader.positionUnstored':
+    'Deze browser wilde niet bewaren waar je bent in “{title}”, dus het boek begint de volgende keer vooraan. Privémodus en een volle schijf doen dit allebei.',
 };

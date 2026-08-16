@@ -1,7 +1,7 @@
 /**
- * What the reader accumulates while reading, as a value rather than a place.
+ * What the reader accumulates about a book, as a value rather than a place.
  *
- * Every function here is pure and returns a new record: the storage layer decides where this lives
+ * Every function here is pure and returns a new record: `library.ts` decides where this lives
  * (IndexedDB, in the reader's own browser — ADR-0013 §4), and this module decides only what a valid
  * record is and how one changes. That split is what makes the rules testable without a browser.
  *
@@ -9,7 +9,17 @@
  * decoration here: a reader turning pages produces a `relocate` event per layout pass, several of
  * which carry the position they already had, and a bookmark button is a thing people double-click.
  * Every operation below is therefore idempotent, and the tests say so out loud.
+ *
+ * ## One record, after briefly being two
+ *
+ * 11.2 wrote `ReadingRecord` before there was anywhere to put it, and 11.4 wrote `LibraryEntry` when
+ * the storage arrived — two shapes for one thing, overlapping in four fields and guaranteed to drift
+ * on the first change to either. They are one type again. What is *not* in it is the file itself:
+ * bytes live in their own object store, because a list of books must not deserialize a 40 MB EPUB
+ * per row.
  */
+
+import type { BookOrigin } from './acquisition.js';
 
 /** Where the reader is. `cfi` is foliate's own locator; `fraction` is for the progress bar. */
 export interface ReadingPosition {
@@ -24,6 +34,8 @@ export interface Bookmark {
   /** The locator is the identity: bookmarking the same spot twice is one bookmark. */
   readonly cfi: string;
   readonly label: string;
+  /** The reader's own words, if they wrote any. Never leaves this browser. */
+  readonly note: string;
   readonly createdAt: number;
 }
 
@@ -41,6 +53,13 @@ export interface ReadingRecord {
    * anyone chose (ADR-0013 §4).
    */
   readonly keepFile: boolean;
+  /** How large the file was, for the list. The bytes themselves are in the other store. */
+  readonly byteLength: number;
+  /**
+   * Where it came from, for the reader's own recognition. Never sent anywhere — ADR-0013 §1 covers
+   * the URL as much as the bytes.
+   */
+  readonly origin: BookOrigin;
   readonly openedAt: number;
 }
 
@@ -51,12 +70,16 @@ export function newReadingRecord(input: {
   hash: string;
   format: string;
   title?: string | null;
+  byteLength?: number;
+  origin?: BookOrigin;
   now: number;
 }): ReadingRecord {
   return {
     hash: input.hash,
     format: input.format,
     title: input.title ?? null,
+    byteLength: input.byteLength ?? 0,
+    origin: input.origin ?? { kind: 'stored' },
     position: { cfi: null, fraction: 0, updatedAt: input.now },
     bookmarks: [],
     keepFile: false,
@@ -85,12 +108,34 @@ export function withPosition(
 /** Add a bookmark, or leave the record alone if that spot is already bookmarked. */
 export function withBookmark(
   record: ReadingRecord,
-  bookmark: { cfi: string; label: string },
+  bookmark: { cfi: string; label: string; note?: string },
   now: number,
 ): ReadingRecord {
   if (record.bookmarks.some((existing) => existing.cfi === bookmark.cfi)) return record;
-  const added: Bookmark = { cfi: bookmark.cfi, label: bookmark.label, createdAt: now };
+  const added: Bookmark = {
+    cfi: bookmark.cfi,
+    label: bookmark.label,
+    note: bookmark.note ?? '',
+    createdAt: now,
+  };
   return { ...record, bookmarks: [...record.bookmarks, added] };
+}
+
+/**
+ * Change what a bookmark says.
+ *
+ * Separate from adding one because the identity is the locator: re-adding the same spot with a new
+ * note must not be how a note gets edited, or a double-click would silently overwrite one.
+ */
+export function withBookmarkNote(record: ReadingRecord, cfi: string, note: string): ReadingRecord {
+  const existing = record.bookmarks.find((bookmark) => bookmark.cfi === cfi);
+  if (!existing || existing.note === note) return record;
+  return {
+    ...record,
+    bookmarks: record.bookmarks.map((bookmark) =>
+      bookmark.cfi === cfi ? { ...bookmark, note } : bookmark,
+    ),
+  };
 }
 
 /** Remove a bookmark. Removing one that is not there is not an error — the end state is the same. */
@@ -129,6 +174,7 @@ export function isReadingRecord(value: unknown): value is ReadingRecord {
       (bookmark) =>
         typeof bookmark?.cfi === 'string' &&
         typeof bookmark.label === 'string' &&
+        typeof bookmark.note === 'string' &&
         typeof bookmark.createdAt === 'number',
     )
   );

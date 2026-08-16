@@ -410,4 +410,23 @@ export const ja: Dictionary = {
     '「{title}」のファイルをこのブラウザーから削除しました。記録は残るので、元の場所から開き直せます。',
   'settings.reader.removed':
     '「{title}」をこのブラウザーから完全に削除しました — ファイルも記録も。',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': '前回の続きから開きました — {percent}% の位置です。',
+  'reader.bookmarks': 'しおり',
+  'reader.bookmarkAdd': 'このページにしおりを挟む',
+  'reader.bookmarkNone': 'この本にはまだしおりがありません。',
+  'reader.bookmarkGo': '移動',
+  'reader.bookmarkRemove': 'しおりを外す',
+  'reader.bookmarkNote': 'メモ',
+  'reader.bookmarkNotePlaceholder': 'このページについてのあなたの言葉',
+  'reader.bookmarkAt': '{percent}%',
+  'settings.reader.bookmarkTitle': 'このブラウザーのしおり',
+  'settings.reader.bookmarkAdded':
+    '「{title}」の {percent}% にしおりを挟みました。しおりは本と一緒にこの端末に残ります。',
+  'settings.reader.bookmarkRemoved': '「{title}」のそのしおりをこのブラウザーから外しました。',
+  'settings.reader.noteSaved': '「{title}」のこのページへのメモをこの端末に保存しました。',
+  'settings.reader.positionTitle': '読書位置',
+  'settings.reader.positionUnstored':
+    'このブラウザーは「{title}」のどこまで読んだかを保存しませんでした。次回は最初から開きます。プライベートモードや空き容量不足で起こります。',
 };

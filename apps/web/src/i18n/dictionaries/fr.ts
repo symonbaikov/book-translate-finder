@@ -429,4 +429,24 @@ export const fr: Dictionary = {
     'Le fichier de « {title} » a été supprimé de ce navigateur. L’entrée reste : vous pouvez le rouvrir depuis sa source.',
   'settings.reader.removed':
     '« {title} » a été entièrement retiré de ce navigateur — le fichier et l’entrée.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Ouvert là où vous vous étiez arrêté — à {percent}%.',
+  'reader.bookmarks': 'Signets',
+  'reader.bookmarkAdd': 'Poser un signet ici',
+  'reader.bookmarkNone': 'Aucun signet dans ce livre pour l’instant.',
+  'reader.bookmarkGo': 'Y aller',
+  'reader.bookmarkRemove': 'Retirer le signet',
+  'reader.bookmarkNote': 'Note',
+  'reader.bookmarkNotePlaceholder': 'Vos propres mots sur cette page',
+  'reader.bookmarkAt': 'à {percent}%',
+  'settings.reader.bookmarkTitle': 'Signets dans ce navigateur',
+  'settings.reader.bookmarkAdded':
+    'Signet à {percent}% de « {title} ». Les signets restent sur cet appareil avec le livre.',
+  'settings.reader.bookmarkRemoved': 'Ce signet de « {title} » a été retiré de ce navigateur.',
+  'settings.reader.noteSaved':
+    'Votre note sur cette page de « {title} » a été enregistrée sur cet appareil.',
+  'settings.reader.positionTitle': 'Position de lecture',
+  'settings.reader.positionUnstored':
+    'Ce navigateur n’a pas voulu retenir où vous en êtes dans « {title} » : la prochaine fois, le livre s’ouvrira au début. La navigation privée et un disque plein font cela.',
 };

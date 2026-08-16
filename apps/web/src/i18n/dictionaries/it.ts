@@ -415,4 +415,25 @@ export const it: Dictionary = {
     'Il file di «{title}» è stato cancellato da questo browser. La voce resta: puoi riaprirlo dalla sua fonte.',
   'settings.reader.removed':
     '«{title}» è stato rimosso del tutto da questo browser — il file e la voce.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Aperto dove avevi lasciato — al {percent}%.',
+  'reader.bookmarks': 'Segnalibri',
+  'reader.bookmarkAdd': 'Metti un segnalibro qui',
+  'reader.bookmarkNone': 'In questo libro non ci sono ancora segnalibri.',
+  'reader.bookmarkGo': 'Vai',
+  'reader.bookmarkRemove': 'Togli il segnalibro',
+  'reader.bookmarkNote': 'Nota',
+  'reader.bookmarkNotePlaceholder': 'Le tue parole su questa pagina',
+  'reader.bookmarkAt': 'al {percent}%',
+  'settings.reader.bookmarkTitle': 'Segnalibri in questo browser',
+  'settings.reader.bookmarkAdded':
+    'Segnalibro al {percent}% di «{title}». I segnalibri restano su questo dispositivo insieme al libro.',
+  'settings.reader.bookmarkRemoved':
+    'Quel segnalibro in «{title}» è stato tolto da questo browser.',
+  'settings.reader.noteSaved':
+    'La tua nota su questa pagina di «{title}» è stata salvata su questo dispositivo.',
+  'settings.reader.positionTitle': 'Punto di lettura',
+  'settings.reader.positionUnstored':
+    'Questo browser non ha voluto salvare a che punto sei di «{title}»: la prossima volta il libro si aprirà dall’inizio. Succede in navigazione privata e con il disco pieno.',
 };

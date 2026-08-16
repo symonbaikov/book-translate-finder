@@ -410,4 +410,24 @@ export const tr: Dictionary = {
   'settings.reader.forgotten':
     '“{title}” dosyası bu tarayıcıdan silindi. Kayıt duruyor: kitabı kaynağından yeniden açabilirsiniz.',
   'settings.reader.removed': '“{title}” bu tarayıcıdan tamamen kaldırıldı — dosya da kayıt da.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Bıraktığınız yerden açıldı — %{percent}.',
+  'reader.bookmarks': 'Yer imleri',
+  'reader.bookmarkAdd': 'Bu sayfaya yer imi koy',
+  'reader.bookmarkNone': 'Bu kitapta henüz yer imi yok.',
+  'reader.bookmarkGo': 'Git',
+  'reader.bookmarkRemove': 'Yer imini kaldır',
+  'reader.bookmarkNote': 'Not',
+  'reader.bookmarkNotePlaceholder': 'Bu sayfa hakkında kendi sözleriniz',
+  'reader.bookmarkAt': '%{percent}',
+  'settings.reader.bookmarkTitle': 'Bu tarayıcıdaki yer imleri',
+  'settings.reader.bookmarkAdded':
+    '“{title}” kitabının %{percent} kısmına yer imi konuldu. Yer imleri kitapla birlikte bu cihazda kalır.',
+  'settings.reader.bookmarkRemoved': '“{title}” içindeki o yer imi bu tarayıcıdan kaldırıldı.',
+  'settings.reader.noteSaved':
+    '“{title}” kitabının bu sayfasına dair notunuz bu cihaza kaydedildi.',
+  'settings.reader.positionTitle': 'Okuma yeri',
+  'settings.reader.positionUnstored':
+    'Bu tarayıcı “{title}” içinde nerede kaldığınızı saklamadı; kitap bir dahaki sefere baştan açılacak. Gizli mod ve dolu disk bunu yapar.',
 };

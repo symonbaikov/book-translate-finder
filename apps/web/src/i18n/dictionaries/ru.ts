@@ -423,4 +423,24 @@ export const ru: Dictionary = {
   'settings.reader.forgotten':
     'Файл «{title}» удалён из этого браузера. Запись осталась — книгу можно открыть из источника заново.',
   'settings.reader.removed': '«{title}» удалена из этого браузера полностью — и файл, и запись.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Открыто с того места, где вы остановились, — {percent}%.',
+  'reader.bookmarks': 'Закладки',
+  'reader.bookmarkAdd': 'Заложить эту страницу',
+  'reader.bookmarkNone': 'В этой книге пока нет закладок.',
+  'reader.bookmarkGo': 'Перейти',
+  'reader.bookmarkRemove': 'Убрать закладку',
+  'reader.bookmarkNote': 'Заметка',
+  'reader.bookmarkNotePlaceholder': 'Ваши слова об этой странице',
+  'reader.bookmarkAt': '{percent}%',
+  'settings.reader.bookmarkTitle': 'Закладки в этом браузере',
+  'settings.reader.bookmarkAdded':
+    'Закладка на {percent}% книги «{title}». Закладки остаются на этом устройстве вместе с книгой.',
+  'settings.reader.bookmarkRemoved': 'Закладка в «{title}» удалена из этого браузера.',
+  'settings.reader.noteSaved':
+    'Ваша заметка к этой странице «{title}» сохранена на этом устройстве.',
+  'settings.reader.positionTitle': 'Позиция чтения',
+  'settings.reader.positionUnstored':
+    'Браузер не сохранил, где вы остановились в «{title}», — в следующий раз книга откроется с начала. Так бывает в приватном режиме и при заполненном диске.',
 };

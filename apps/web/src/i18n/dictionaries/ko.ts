@@ -405,4 +405,23 @@ export const ko: Dictionary = {
     '「{title}」의 파일을 이 브라우저에서 지웠습니다. 목록은 남아 있으니 원본에서 다시 열 수 있습니다.',
   'settings.reader.removed':
     '「{title}」을(를) 이 브라우저에서 완전히 지웠습니다 — 파일과 기록 모두.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': '읽던 곳에서 열었습니다 — {percent}% 지점.',
+  'reader.bookmarks': '책갈피',
+  'reader.bookmarkAdd': '이 쪽에 책갈피',
+  'reader.bookmarkNone': '이 책에는 아직 책갈피가 없습니다.',
+  'reader.bookmarkGo': '이동',
+  'reader.bookmarkRemove': '책갈피 삭제',
+  'reader.bookmarkNote': '메모',
+  'reader.bookmarkNotePlaceholder': '이 쪽에 대한 당신의 말',
+  'reader.bookmarkAt': '{percent}% 지점',
+  'settings.reader.bookmarkTitle': '이 브라우저의 책갈피',
+  'settings.reader.bookmarkAdded':
+    '「{title}」의 {percent}% 지점에 책갈피를 두었습니다. 책갈피는 책과 함께 이 기기에 남습니다.',
+  'settings.reader.bookmarkRemoved': '「{title}」의 그 책갈피를 이 브라우저에서 지웠습니다.',
+  'settings.reader.noteSaved': '「{title}」의 이 쪽에 대한 메모를 이 기기에 저장했습니다.',
+  'settings.reader.positionTitle': '읽던 위치',
+  'settings.reader.positionUnstored':
+    '이 브라우저가 「{title}」에서 어디까지 읽었는지를 저장하지 않았습니다. 다음에는 처음부터 열립니다. 시크릿 모드나 디스크가 가득 찬 경우에 그렇습니다.',
 };

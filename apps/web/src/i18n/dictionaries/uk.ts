@@ -422,4 +422,24 @@ export const uk: Dictionary = {
   'settings.reader.forgotten':
     'Файл «{title}» видалено з цього браузера. Запис лишився — книжку можна відкрити з джерела знову.',
   'settings.reader.removed': '«{title}» видалено з цього браузера повністю — і файл, і запис.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Відкрито з того місця, де ви спинилися, — {percent}%.',
+  'reader.bookmarks': 'Закладки',
+  'reader.bookmarkAdd': 'Закласти цю сторінку',
+  'reader.bookmarkNone': 'У цій книжці поки немає закладок.',
+  'reader.bookmarkGo': 'Перейти',
+  'reader.bookmarkRemove': 'Прибрати закладку',
+  'reader.bookmarkNote': 'Нотатка',
+  'reader.bookmarkNotePlaceholder': 'Ваші слова про цю сторінку',
+  'reader.bookmarkAt': '{percent}%',
+  'settings.reader.bookmarkTitle': 'Закладки в цьому браузері',
+  'settings.reader.bookmarkAdded':
+    'Закладка на {percent}% книжки «{title}». Закладки залишаються на цьому пристрої разом із книжкою.',
+  'settings.reader.bookmarkRemoved': 'Закладку в «{title}» видалено з цього браузера.',
+  'settings.reader.noteSaved':
+    'Вашу нотатку до цієї сторінки «{title}» збережено на цьому пристрої.',
+  'settings.reader.positionTitle': 'Позиція читання',
+  'settings.reader.positionUnstored':
+    'Браузер не зберіг, де ви спинилися в «{title}», — наступного разу книжка відкриється спочатку. Так буває в приватному режимі та при заповненому диску.',
 };
