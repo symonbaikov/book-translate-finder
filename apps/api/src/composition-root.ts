@@ -27,6 +27,8 @@ import {
   SystemClock,
   BookstoreCatalogPriceProvider,
   GoogleBooksPriceProvider,
+  GoogleBooksRatingProvider,
+  OpenLibraryReviewLinkProvider,
   OverpassGeoStoreAdapter,
   PublicOpdsCatalog,
   WikipediaDescriptionProvider,
@@ -35,6 +37,7 @@ import {
 import { OpdsClient } from '@golden/plugins';
 import {
   AggregateEditionPrices,
+  AggregateTranslationRatings,
   AuthService,
   BookmarkService,
   EnqueueSourceSync,
@@ -63,6 +66,7 @@ export interface ApiContext {
   getCoverImage: GetCoverImage;
   getEditionLinks: GetEditionLinks;
   aggregateEditionPrices: AggregateEditionPrices;
+  aggregateTranslationRatings: AggregateTranslationRatings;
   publicOpdsCatalog: PublicOpdsCatalog;
   /** Null unless ENABLE_SERVER_GEO_LOOKUP is on — see StoresController and docs/adr/0007. */
   findNearbyStores: FindNearbyStores | null;
@@ -161,6 +165,26 @@ export function buildApiContext(env: ApiEnv): ApiContext {
     clock,
   });
 
+  // Reader ratings per edition. Registered with or without a key for symmetry with the price
+  // provider, but unlike prices it is dark without one: the keyless Google quota is a single
+  // shared project and permanently exhausted (docs/plan.md 4.10), so an instance with no
+  // GOOGLE_BOOKS_API_KEY simply shows no ratings rather than a fabricated or stale number.
+  const aggregateTranslationRatings = new AggregateTranslationRatings({
+    editionRepository,
+    workRepository,
+    ratingProviders: [
+      new GoogleBooksRatingProvider(createResilientFetcher(), cache, env.GOOGLE_BOOKS_API_KEY),
+    ],
+    // The keyless half, and on an instance with no Google key the only half that answers: Open
+    // Library's identifiers say where a printing lives on Goodreads, and a link built from an id
+    // costs no key and no scraping.
+    reviewProviders: [
+      new OpenLibraryReviewLinkProvider(createResilientFetcher(), cache, userAgent),
+    ],
+    cache,
+    clock,
+  });
+
   // Module A, server half: the built-in catalogs only. A reader's own OPDS server is fetched by
   // their browser and its URL never reaches this process (docs/adr/0007).
   const publicOpdsCatalog = new PublicOpdsCatalog(new OpdsClient({ userAgent }), cache);
@@ -246,6 +270,7 @@ export function buildApiContext(env: ApiEnv): ApiContext {
     getCoverImage,
     getEditionLinks,
     aggregateEditionPrices,
+    aggregateTranslationRatings,
     publicOpdsCatalog,
     findNearbyStores,
     enqueueSourceSync,

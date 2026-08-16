@@ -153,6 +153,24 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* What readers made of this printing. Sits between the metadata and the free copies: it is a fact
+   about the edition, not an action, so it must not compete with the buttons below it. */
+.editionRating {
+  margin-block: 0 var(--space-4);
+  font-size: var(--step--1);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The one place the page says what those numbers are and are not. Once, above the list — repeated
+   under thirty cards it would be wallpaper. */
+.ratingsNote {
+  margin-block: 0 var(--space-4);
+  font-size: var(--step--2);
+  color: var(--text-faint);
+  max-width: 68ch;
+}
+
 /* The free copies of an edition, above the links panel rather than inside it — this is the answer
    the page exists to give, and it should not need a click to appear. */
 .freeDownloads {

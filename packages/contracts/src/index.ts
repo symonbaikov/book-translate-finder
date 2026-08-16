@@ -65,6 +65,19 @@ export {
 } from './prices.contract.js';
 
 export {
+  EditionRatingSchema,
+  EditionReviewLinkSchema,
+  TranslatorRatingSchema,
+  WorkRatingsQuerySchema,
+  WorkRatingsResponseSchema,
+  type EditionRating,
+  type EditionReviewLink,
+  type TranslatorRating,
+  type WorkRatingsQuery,
+  type WorkRatingsResponse,
+} from './ratings.contract.js';
+
+export {
   OpdsAcquisitionSchema,
   OpdsEntrySchema,
   OpdsFeedListResponseSchema,

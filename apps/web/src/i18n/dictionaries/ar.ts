@@ -222,6 +222,21 @@ export const ar: Dictionary = {
   'prices.format.ebook': 'كتاب إلكتروني',
   'prices.format.audiobook': 'كتاب صوتي',
   'prices.format.unknown': 'الصيغة غير مذكورة',
+
+  'ratings.edition': '{average} من {outOf}، بحسب {votes} من تقييمات القرّاء على {source}',
+  'ratings.lowConfidence': 'التقييمات أقل من أن تُقارَن',
+  'ratings.reviews': 'المراجعات',
+  'ratings.reviewsOn': 'مراجعات هذه الطبعة على {source}',
+  'ratings.noteNoRatings':
+    'لا يقيّم أي مصدر مفتوح الترجمة نفسها، ولا تتوفر هنا تقييمات قرّاء لهذه الطبعات.',
+  'ratings.noteReviews':
+    'إذا كانت الطبعة معروفة على {sources}، فالرابط يقود إلى مراجعات تلك الطبعة بالذات — ومعظم الطبعات ليست كذلك.',
+  'ratings.translator':
+    'الطبعات بترجمة {name}: {average} من {outOf} عبر {editions} طبعات مُقيَّمة، و{votes} تقييمًا في المجموع.',
+  'ratings.note':
+    'هذه تقييمات قرّاء لطبعة بعينها على {sources}، وليست حكمًا على الترجمة نفسها — فلا أحد ينشر ذلك. قيمتها في المقارنة: الكتاب نفسه واللغة نفسها ومترجمون مختلفون، مع إبقاء عدد التقييمات أمام العين دائمًا.',
+  'ratings.gapWithoutIsbn': '{count} من الطبعات بلا ردمك، فتعذّر ربط أي تقييم بها.',
+  'ratings.gapNotLookedUp': 'ولم يُستعلم عن {count} طبعة أخرى في هذا الطلب.',
   'recommend.hideGenre': 'إخفاء «{genre}»',
   'recommend.hiddenList': 'الأنواع المخفية (اضغط لاستعادة واحد):',
 

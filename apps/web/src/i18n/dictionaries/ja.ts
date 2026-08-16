@@ -230,6 +230,21 @@ export const ja: Dictionary = {
   'prices.format.ebook': '電子書籍',
   'prices.format.audiobook': 'オーディオブック',
   'prices.format.unknown': '形態の記載なし',
+
+  'ratings.edition': '{outOf} 点中 {average} 点／{source} の読者 {votes} 人の評価',
+  'ratings.lowConfidence': '比較するには評価数が少なすぎます',
+  'ratings.reviews': 'レビュー',
+  'ratings.reviewsOn': 'この版のレビュー（{source}）',
+  'ratings.noteNoRatings':
+    '翻訳そのものを評価する公開情報はなく、これらの版には読者評価もありません。',
+  'ratings.noteReviews':
+    '{sources} に登録のある版は、リンク先がその版自体のレビューです（登録のない版がほとんどです）。',
+  'ratings.translator':
+    '{name} 訳の版：評価のある {editions} 版で {outOf} 点中 {average} 点、評価数は合計 {votes} 件。',
+  'ratings.note':
+    'これは {sources} で特定の版に付けられた読者の評価であり、翻訳そのものの評価ではありません（それを公開している所はありません）。同じ本、同じ言語、別の訳者どうしを、評価数と一緒に見比べるための数字です。',
+  'ratings.gapWithoutIsbn': '{count} 版には ISBN がないため、評価を結び付けられませんでした。',
+  'ratings.gapNotLookedUp': 'さらに {count} 版は、この要求では照会していません。',
   'recommend.hideGenre': '「{genre}」を非表示にする',
   'recommend.hiddenList': '非表示のジャンル（クリックで戻せます）:',
 

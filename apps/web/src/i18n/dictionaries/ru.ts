@@ -242,6 +242,21 @@ export const ru: Dictionary = {
   'prices.format.ebook': 'Электронная книга',
   'prices.format.audiobook': 'Аудиокнига',
   'prices.format.unknown': 'Формат не указан',
+
+  'ratings.edition': '{average} из {outOf}, оценок читателей: {votes} ({source})',
+  'ratings.lowConfidence': 'слишком мало оценок для сравнения',
+  'ratings.reviews': 'Рецензии',
+  'ratings.reviewsOn': 'Рецензии на это издание на {source}',
+  'ratings.noteNoRatings':
+    'Оценок перевода не публикует ни один открытый источник, а читательских оценок у этих изданий здесь нет.',
+  'ratings.noteReviews':
+    'Если издание известно на {sources}, ссылка ведёт к рецензиям именно на этот тираж — но известны далеко не все.',
+  'ratings.translator':
+    'Издания в переводе {name}: {average} из {outOf} по {editions} изданиям с оценками, всего оценок: {votes}.',
+  'ratings.note':
+    'Это оценки конкретного издания читателями {sources}, а не оценка самого перевода — такую никто не публикует. Смысл в сравнении: одна книга, один язык, разные переводчики — и всегда с числом голосов перед глазами.',
+  'ratings.gapWithoutIsbn': 'У {count} изданий нет ISBN, поэтому сопоставить им оценку не удалось.',
+  'ratings.gapNotLookedUp': 'Ещё {count} изданий в этом запросе не проверялись.',
   'recommend.hideGenre': 'скрыть «{genre}»',
   'recommend.hiddenList': 'Скрытые жанры (нажмите, чтобы вернуть):',
 

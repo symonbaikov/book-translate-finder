@@ -23,6 +23,10 @@ export class InfrastructureModule {
         { provide: TOKENS.GET_COVER_IMAGE, useValue: ctx.getCoverImage },
         { provide: TOKENS.GET_EDITION_LINKS, useValue: ctx.getEditionLinks },
         { provide: TOKENS.AGGREGATE_EDITION_PRICES, useValue: ctx.aggregateEditionPrices },
+        {
+          provide: TOKENS.AGGREGATE_TRANSLATION_RATINGS,
+          useValue: ctx.aggregateTranslationRatings,
+        },
         { provide: TOKENS.PUBLIC_OPDS_CATALOG, useValue: ctx.publicOpdsCatalog },
         { provide: TOKENS.FIND_NEARBY_STORES, useValue: ctx.findNearbyStores },
         { provide: TOKENS.ENQUEUE_SOURCE_SYNC, useValue: ctx.enqueueSourceSync },

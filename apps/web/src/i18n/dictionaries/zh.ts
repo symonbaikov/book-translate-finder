@@ -214,6 +214,20 @@ export const zh: Dictionary = {
   'prices.format.ebook': '电子书',
   'prices.format.audiobook': '有声书',
   'prices.format.unknown': '未注明形态',
+
+  'ratings.edition': '{outOf} 分中的 {average} 分 · {source} 上 {votes} 位读者的评分',
+  'ratings.lowConfidence': '评分人数太少，不足以比较',
+  'ratings.reviews': '书评',
+  'ratings.reviewsOn': '{source} 上这一版本的书评',
+  'ratings.noteNoRatings': '没有任何开放来源评价译文本身，这些版本在这里也没有读者评分。',
+  'ratings.noteReviews':
+    '若某个版本在 {sources} 上有记录，链接就指向该版本自身的书评——多数版本并无记录。',
+  'ratings.translator':
+    '{name} 译本：在 {editions} 个有评分的版本上为 {outOf} 分中的 {average} 分，共 {votes} 次评分。',
+  'ratings.note':
+    '这是 {sources} 上读者对某一具体版本的评分，并非对译文本身的评价——那样的数据没有人公布。它的意义在于对照：同一本书、同一种语言、不同译者，并且始终把评分人数放在眼前。',
+  'ratings.gapWithoutIsbn': '其中 {count} 个版本没有 ISBN，因此无法为它们匹配评分。',
+  'ratings.gapNotLookedUp': '本次请求还有 {count} 个版本未查询。',
   'recommend.hideGenre': '隐藏“{genre}”',
   'recommend.hiddenList': '已隐藏的体裁（点击可恢复）：',
 

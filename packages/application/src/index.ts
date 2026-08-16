@@ -140,6 +140,18 @@ export {
   type PriceOfferDto,
 } from './use-cases/aggregate-edition-prices.use-case.js';
 export {
+  AggregateTranslationRatings,
+  MAX_LOOKUPS_PER_WORK,
+  RATINGS_DEGRADED_TTL_SECONDS,
+  RATINGS_TTL_SECONDS,
+  translationRatingsCacheKey,
+  type AggregateTranslationRatingsDeps,
+  type AggregateTranslationRatingsInput,
+  type AggregateTranslationRatingsOutput,
+  type EditionRatingDto,
+  type TranslatorRatingDto,
+} from './use-cases/aggregate-translation-ratings.use-case.js';
+export {
   FindNearbyStores,
   type FindNearbyStoresDeps,
   type FindNearbyStoresInput,
