@@ -495,4 +495,55 @@ export const cy: Dictionary = {
   'home.genres': 'Genres poblogaidd',
   'home.genresBlurb':
     'Y tagiau sydd â’r mwyaf o lyfrau y tu ôl iddynt. Mae pob un yn agor ei gatalog.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Nesaf',
+  'tour.back': 'Yn ôl',
+  'tour.skip': 'Nid nawr',
+  'tour.finish': 'Gorffen',
+  'tour.close': 'Cau’r daith',
+  'tour.welcome.title': 'Croeso i Golden Library',
+  'tour.welcome.text':
+    'Munud, a byddwch yn gwybod ble mae popeth. Mae’r wefan hon yn darganfod ym mha ieithoedd y mae llyfr yn bodoli a ble i’w gael yn gyfreithlon — ac mae’n gwneud hynny’n well po fwyaf y dywedwch wrthi ble i chwilio. Dyna lle rydym yn dechrau.',
+  'tour.customSourcesNav.title': 'Dechreuwch gyda’ch ffynonellau eich hun',
+  'tour.customSourcesNav.text':
+    'Agorwch <strong>Ffynonellau eich hun</strong> — y dudalen lle rydych yn penderfynu pa gatalogau a chwilir ochr yn ochr â’r rhai adeiledig.',
+  'tour.presets.title': 'Does dim rhaid dechrau o’r dechrau',
+  'tour.presets.text':
+    'Cyhoeddir templedi parod yno. Eiddo’r rhai a’u hysgrifennodd ydynt: nid yw’r wefan hon yn gwirio dim ar y sianel honno, ac mae ffynhonnell a ychwanegwch yn chwilio o’ch porwr chi, nid o’r gweinydd hwn. Agorwch mewn tab newydd, cymerwch yr hyn sydd ei angen, a dewch yn ôl.',
+  'tour.sourceForm.title': 'Dau faes a dyna ni',
+  'tour.sourceForm.text':
+    'Enw y byddwch yn ei adnabod, a chyfeiriad chwiliad gyda <strong>{query}</strong> yn sefyll lle mae eich geiriau chi. Ychwanegwch un nawr, neu pwyswch «Nesaf» a dychwelyd ato.',
+  'tour.sourceList.title': 'Mae popeth a ychwanegwch yn aros yma',
+  'tour.sourceList.text':
+    'Mae eich ffynonellau isod, a gellir diffodd neu dynnu pob un. Maent yn byw yn y porwr hwn ac nid ydynt byth yn mynd at y gweinydd: nid oes neb yma yn eu gweld, ac ni fyddant ar ddyfais arall.',
+  'tour.addonsNav.title': 'Mae ychwanegion yn mynd ymhellach',
+  'tour.addonsNav.text':
+    'Agorwch <strong>Ychwanegion</strong>. Un cyfeiriad a ysgrifennwyd gennych chi yw ffynhonnell eich hun; rhaglen fach gan rywun arall yw ychwanegyn, un sy’n gallu chwilio catalog o ddifrif.',
+  'tour.addons.title': 'Nid oes dim yn cael ei osod cyn i chi ei weld',
+  'tour.addons.text':
+    'Gludwch gyfeiriad ychwanegyn ac mae’r ffurflen hon yn dangos beth ydyw a pha westeiwyr y bydd yn siarad â hwy; dim ond wedyn y caiff ei osod. Mae ei ganlyniadau bob amser yn dwyn enw’r ychwanegyn a’u cynhyrchodd.',
+  'tour.shelfNav.title': 'Y silff',
+  'tour.shelfNav.text':
+    'Agorwch <strong>Silff</strong> i weld y catalogau y gallwch ddarllen ohonynt yn uniongyrchol.',
+  'tour.shelf.title': 'Catalogau agored, a’ch rhai chi',
+  'tour.shelf.text':
+    'Mae Project Gutenberg a’i debyg yma o’r cychwyn. Oddi tanynt gallwch ychwanegu unrhyw gatalog OPDS — gweinydd Calibre ar eich rhwydwaith eich hun, dyweder, y mae eich porwr yn ei gyrraedd ac nad yw’r wefan hon byth yn ei gyrraedd.',
+  'tour.language.title': 'Iaith y rhyngwyneb',
+  'tour.language.text':
+    'Newidiwch hi yma pryd bynnag y mynnoch. Fel pob gosodiad ar y wefan hon, caiff ei hysgrifennu i’ch porwr ac mae ar waith ar unwaith — ac mae’n dweud hynny mewn neges, gan gynnwys pan fo’r porwr yn gwrthod ei chadw.',
+  'tour.done.title': 'Dyna’r daith',
+  'tour.done.text':
+    'Chwiliwch o’r dudalen gartref, a mewngofnodwch os ydych am gadw’r llyfrau a ganfyddwch. Mae’r ddolen ar waelod unrhyw dudalen yn ailgychwyn y daith hon.',
+  'settings.tour.title': 'Y daith dywysedig',
+  'settings.tour.finished':
+    'Rydych wedi bod ar y daith, felly ni fydd yn agor ohoni ei hun eto. Mae’r ddolen ar waelod y dudalen yn ei chychwyn pryd bynnag y mynnoch.',
+  'settings.tour.skipped':
+    'Mae’r daith ar gau ac ni fydd yn agor ohoni ei hun eto. Mae’r ddolen ar waelod y dudalen yn ei chychwyn pryd bynnag y mynnoch.',
+  'settings.tour.restarted':
+    'Yn dechrau eto o’r cam cyntaf, ac mae’r porwr hwn wedi anghofio eich bod eisoes wedi ei gweld.',
+  'customSources.presets': 'Templedi parod',
+  'customSources.presetsCaption':
+    'Templedi y mae darllenwyr eraill yn eu rhannu, ar sianel yr enghraifft hon. Nid oes neb yma yn eu gwirio: darllenwch un cyn ei ychwanegu, a chofiwch y bydd yn chwilio o’ch porwr chi.',
+  'footer.takeTheTour': 'Ewch ar y daith',
 };

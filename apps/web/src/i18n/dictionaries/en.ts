@@ -519,4 +519,55 @@ export const en = {
   'settings.status.session': 'Not remembered',
   'settings.notRemembered':
     'This browser would not remember it, so it will be back to how it was next time you open a book.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Next',
+  'tour.back': 'Back',
+  'tour.skip': 'Not now',
+  'tour.finish': 'Done',
+  'tour.close': 'Close the tour',
+  'tour.welcome.title': 'Welcome to Golden Library',
+  'tour.welcome.text':
+    'A minute, and you will know where everything is. This site finds which languages a book exists in and where to get it legally — and it does that better once you have told it where to look. So that is where we start.',
+  'tour.customSourcesNav.title': 'Start with your own sources',
+  'tour.customSourcesNav.text':
+    'Open <strong>Custom sources</strong>: the page where you decide which catalogues are searched alongside the built-in ones.',
+  'tour.presets.title': 'You need not write one from scratch',
+  'tour.presets.text':
+    'Ready-made templates are published here. They belong to whoever wrote them — nothing on that channel is checked by this site, and a source you add searches from your browser rather than from this server. Open it in a new tab, take what you need, then come back.',
+  'tour.sourceForm.title': 'Two fields and it is done',
+  'tour.sourceForm.text':
+    'A name you will recognise, and the address of a search with <strong>{query}</strong> standing where your words go. Add one now, or press Next and come back to it.',
+  'tour.sourceList.title': 'Everything you add stays here',
+  'tour.sourceList.text':
+    'Your sources are listed below, and each one can be switched off or removed. They live in this browser and are never sent to the server — so nobody here can see them, and another device will not have them.',
+  'tour.addonsNav.title': 'Addons go further',
+  'tour.addonsNav.text':
+    'Open <strong>Addons</strong>. Where a custom source is one URL you wrote, an addon is a small program someone else wrote that can search a catalogue properly.',
+  'tour.addons.title': 'Nothing is installed before you have seen it',
+  'tour.addons.text':
+    'Paste an addon’s address and this form shows you what it is and which hosts it will talk to; only then is it installed. Its results are always labelled with the addon that produced them.',
+  'tour.shelfNav.title': 'The shelf',
+  'tour.shelfNav.text':
+    'Open <strong>Shelf</strong> to see the catalogues you can read from directly.',
+  'tour.shelf.title': 'Open catalogues, and your own',
+  'tour.shelf.text':
+    'Project Gutenberg and its kind are here from the start. Underneath them you can add any OPDS catalogue — a Calibre server on your own network, for instance, which your browser reaches and this site never does.',
+  'tour.language.title': 'Fifteen languages',
+  'tour.language.text':
+    'Change the interface language here whenever you like. Like every setting on this site it is written into your browser and takes effect at once — and says so in a popup, including when the browser refuses to keep it.',
+  'tour.done.title': 'That is the tour',
+  'tour.done.text':
+    'Search from the home page, and sign in if you want the books you find kept for later. The link at the foot of any page starts this tour again.',
+  'settings.tour.title': 'The guided tour',
+  'settings.tour.finished':
+    'You have been through the tour, so it will not open by itself again. The link at the foot of the page starts it whenever you want it.',
+  'settings.tour.skipped':
+    'The tour is closed and will not open by itself again. The link at the foot of the page starts it whenever you want it.',
+  'settings.tour.restarted':
+    'Starting again from the first step, and this browser has forgotten that you had already seen it.',
+  'customSources.presets': 'Ready-made templates',
+  'customSources.presetsCaption':
+    'Templates other readers share, on this instance’s own channel. Nobody here checks them: read one before you add it, and remember that it will search from your browser.',
+  'footer.takeTheTour': 'Take the tour',
 } as const;

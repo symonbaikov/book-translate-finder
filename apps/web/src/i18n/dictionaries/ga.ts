@@ -501,4 +501,55 @@ export const ga: Dictionary = {
   'home.genres': 'Seánraí coitianta',
   'home.genresBlurb':
     'Na clibeanna a bhfuil an líon is mó leabhar taobh thiar díobh. Osclaíonn gach ceann a chatalóg féin.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Ar aghaidh',
+  'tour.back': 'Siar',
+  'tour.skip': 'Ní anois',
+  'tour.finish': 'Déanta',
+  'tour.close': 'Dún an turas',
+  'tour.welcome.title': 'Fáilte go Golden Library',
+  'tour.welcome.text':
+    'Nóiméad amháin, agus beidh a fhios agat cá bhfuil gach rud. Aimsíonn an suíomh seo na teangacha ina bhfuil leabhar ann agus cá bhfaighidh tú go dleathach é — agus déanann sé níos fearr é dá shoiléire a insíonn tú dó cá gcuardódh sé. Sin an áit a dtosaímid.',
+  'tour.customSourcesNav.title': 'Tosaigh le do fhoinsí féin',
+  'tour.customSourcesNav.text':
+    'Oscail <strong>Foinsí féin</strong> — an leathanach ina socraíonn tú cé na catalóg a chuardaítear taobh leis na cinn ionsuite.',
+  'tour.presets.title': 'Ní gá tosú ón tús',
+  'tour.presets.text':
+    'Foilsítear teimpléid réamhdhéanta ansin. Is leis na daoine a scríobh iad iad: ní sheiceálann an suíomh seo aon rud ar an gcainéal sin, agus déanann foinse a chuireann tú leis cuardach ó do bhrabhsálaí féin, ní ón bhfreastalaí seo. Oscail i gcluaisín nua, tóg a bhfuil uait, agus fill.',
+  'tour.sourceForm.title': 'Dhá réimse agus tá sé déanta',
+  'tour.sourceForm.text':
+    'Ainm a aithneoidh tú, agus seoladh cuardaigh ina bhfuil <strong>{query}</strong> in áit do chuid focal. Cuir ceann leis anois, nó brúigh «Ar aghaidh» agus fill air.',
+  'tour.sourceList.title': 'Fanann gach a gcuireann tú leis anseo',
+  'tour.sourceList.text':
+    'Tá do chuid foinsí thíos agus is féidir gach ceann a mhúchadh nó a bhaint. Maireann siad sa bhrabhsálaí seo agus ní théann siad chuig an bhfreastalaí riamh: ní fheiceann aon duine anseo iad, agus ní bheidh siad ar ghléas eile.',
+  'tour.addonsNav.title': 'Téann breiseáin níos faide',
+  'tour.addonsNav.text':
+    'Oscail <strong>Breiseáin</strong>. Is seoladh amháin a scríobh tú féin foinse féin; is clár beag ó dhuine eile breiseán, ceann atá in ann catalóg a chuardach i gceart.',
+  'tour.addons.title': 'Ní shuitear aon rud sula bhfeiceann tú é',
+  'tour.addons.text':
+    'Greamaigh seoladh breiseáin agus taispeánann an fhoirm seo duit cad é agus cé na hóstaigh lena labhróidh sé; ansin amháin a shuitear é. Bíonn ainm an bhreiseáin a tháirg iad ar a chuid torthaí i gcónaí.',
+  'tour.shelfNav.title': 'An tseilf',
+  'tour.shelfNav.text':
+    'Oscail <strong>Seilf</strong> chun na catalóg ar féidir leat léamh díreach uathu a fheiceáil.',
+  'tour.shelf.title': 'Catalóga oscailte, agus do chinn féin',
+  'tour.shelf.text':
+    'Tá Project Gutenberg agus a leithéidí anseo ón tús. Fúthu is féidir leat aon chatalóg OPDS a chur leis — freastalaí Calibre ar do líonra féin, cuir i gcás, a shroicheann do bhrabhsálaí agus nach sroicheann an suíomh seo riamh.',
+  'tour.language.title': 'Teanga an chomhéadain',
+  'tour.language.text':
+    'Athraigh anseo í uair ar bith. Mar gach socrú anseo, scríobhtar isteach i do bhrabhsálaí í agus tagann sí i bhfeidhm láithreach — agus deirtear é sin i bhfógra, fiú nuair a dhiúltaigh an brabhsálaí í a choinneáil.',
+  'tour.done.title': 'Sin é an turas',
+  'tour.done.text':
+    'Cuardaigh ón leathanach baile, agus sínigh isteach más mian leat na leabhair a aimsíonn tú a choinneáil. Tosaíonn an nasc ag bun aon leathanaigh an turas seo arís.',
+  'settings.tour.title': 'An turas treoraithe',
+  'settings.tour.finished':
+    'Chuaigh tú tríd an turas, mar sin ní osclóidh sé é féin arís. Tosaíonn an nasc ag bun an leathanaigh é nuair is mian leat.',
+  'settings.tour.skipped':
+    'Tá an turas dúnta agus ní osclóidh sé é féin arís. Tosaíonn an nasc ag bun an leathanaigh é nuair is mian leat.',
+  'settings.tour.restarted':
+    'Ag tosú arís ón gcéad chéim, agus rinne an brabhsálaí seo dearmad go bhfaca tú cheana é.',
+  'customSources.presets': 'Teimpléid réamhdhéanta',
+  'customSources.presetsCaption':
+    'Teimpléid a roinneann léitheoirí eile, ar chainéal an ásc seo. Ní sheiceálann aon duine anseo iad: léigh ceann sula gcuireann tú leis é, agus cuimhnigh go ndéanfaidh sé cuardach ó do bhrabhsálaí féin.',
+  'footer.takeTheTour': 'Déan an turas',
 };

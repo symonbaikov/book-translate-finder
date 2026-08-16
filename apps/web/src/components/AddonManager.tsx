@@ -15,6 +15,7 @@ import {
 } from '../lib/installed-addons';
 import { outcomeOfWrite } from '../lib/setting-change';
 import { useSettingChangeToast } from '../lib/settings-toast';
+import { tourTarget } from '../lib/tour-targets';
 import { Badge, Button, ButtonLink, Card, Field, Stack, TextInput } from '../ui';
 import styles from './AddonManager.module.css';
 
@@ -164,6 +165,7 @@ export function AddonManager() {
       <h2>{t('addons.fromServer')}</h2>
       <form
         className={styles.form}
+        {...tourTarget('addonInstall')}
         onSubmit={(event) => {
           event.preventDefault();
           const url = address.trim();

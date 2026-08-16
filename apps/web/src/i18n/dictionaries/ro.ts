@@ -492,4 +492,55 @@ export const ro: Dictionary = {
   'home.genres': 'Genuri populare',
   'home.genresBlurb':
     'Etichetele cu cele mai multe cărți în spate. Fiecare își deschide catalogul.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Înainte',
+  'tour.back': 'Înapoi',
+  'tour.skip': 'Nu acum',
+  'tour.finish': 'Gata',
+  'tour.close': 'Închide turul',
+  'tour.welcome.title': 'Bine ați venit la Golden Library',
+  'tour.welcome.text':
+    'Un minut și veți ști unde se află fiecare lucru. Acest site află în ce limbi există o carte și de unde o puteți obține legal — și o face cu atât mai bine cu cât îi spuneți mai exact unde să caute. De acolo începem.',
+  'tour.customSourcesNav.title': 'Începeți cu sursele dumneavoastră',
+  'tour.customSourcesNav.text':
+    'Deschideți <strong>Surse proprii</strong> — pagina unde decideți ce cataloage sunt căutate pe lângă cele incluse.',
+  'tour.presets.title': 'Nu trebuie să scrieți de la zero',
+  'tour.presets.text':
+    'Acolo se publică șabloane gata făcute. Aparțin celor care le-au scris: acest site nu verifică nimic pe acel canal, iar o sursă pe care o adăugați caută din browserul dumneavoastră, nu de pe acest server. Deschideți într-o filă nouă, luați ce vă trebuie și reveniți.',
+  'tour.sourceForm.title': 'Două câmpuri și gata',
+  'tour.sourceForm.text':
+    'Un nume pe care îl recunoașteți și adresa unei căutări în care <strong>{query}</strong> stă în locul cuvintelor dumneavoastră. Adăugați una acum sau apăsați «Înainte» și reveniți mai târziu.',
+  'tour.sourceList.title': 'Tot ce adăugați rămâne aici',
+  'tour.sourceList.text':
+    'Sursele dumneavoastră sunt mai jos și fiecare poate fi oprită sau ștearsă. Trăiesc în acest browser și nu ajung niciodată pe server: aici nu le vede nimeni, iar pe alt dispozitiv nu vor exista.',
+  'tour.addonsNav.title': 'Suplimentele merg mai departe',
+  'tour.addonsNav.text':
+    'Deschideți <strong>Suplimente</strong>. O sursă proprie este o adresă scrisă de dumneavoastră; un supliment este un program mic scris de altcineva, care știe să caute cu adevărat într-un catalog.',
+  'tour.addons.title': 'Nimic nu se instalează înainte să vedeți',
+  'tour.addons.text':
+    'Lipiți adresa unui supliment, iar formularul vă arată ce este și cu ce gazde va vorbi; abia apoi se instalează. Rezultatele lui poartă întotdeauna numele suplimentului care le-a dat.',
+  'tour.shelfNav.title': 'Raftul',
+  'tour.shelfNav.text':
+    'Deschideți <strong>Raft</strong> pentru a vedea cataloagele din care puteți citi direct.',
+  'tour.shelf.title': 'Cataloage deschise și ale dumneavoastră',
+  'tour.shelf.text':
+    'Proiectul Gutenberg și cele asemenea sunt aici de la început. Dedesubt puteți adăuga orice catalog OPDS — de exemplu un server Calibre din rețeaua dumneavoastră, la care ajunge browserul și la care acest site nu ajunge niciodată.',
+  'tour.language.title': 'Limba interfeței',
+  'tour.language.text':
+    'Schimbați-o de aici oricând. Ca orice setare de aici, se scrie în browserul dumneavoastră și are efect imediat — iar acest lucru este spus într-o notificare, inclusiv atunci când browserul a refuzat să o rețină.',
+  'tour.done.title': 'Acesta a fost turul',
+  'tour.done.text':
+    'Căutați din pagina principală și autentificați-vă dacă vreți ca ce găsiți să rămână salvat. Legătura din josul oricărei pagini pornește din nou acest tur.',
+  'settings.tour.title': 'Turul ghidat',
+  'settings.tour.finished':
+    'Ați parcurs turul, așa că nu se va mai deschide singur. Legătura din josul paginii îl pornește oricând doriți.',
+  'settings.tour.skipped':
+    'Turul este închis și nu se va mai deschide singur. Legătura din josul paginii îl pornește oricând doriți.',
+  'settings.tour.restarted':
+    'Începem din nou de la primul pas, iar acest browser a uitat că îl văzuserăți deja.',
+  'customSources.presets': 'Șabloane gata făcute',
+  'customSources.presetsCaption':
+    'Șabloane pe care le împart alți cititori, pe canalul acestei instanțe. Aici nu le verifică nimeni: citiți un șablon înainte de a-l adăuga și rețineți că va căuta din browserul dumneavoastră.',
+  'footer.takeTheTour': 'Parcurgeți turul',
 };

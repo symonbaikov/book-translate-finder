@@ -1,0 +1,206 @@
+/* The onboarding tour, dressed in this application's tokens.
+ *
+ * Shepherd ships a stylesheet with a blue button, a grey title bar and 5px corners — a perfectly
+ * good default that belongs to no product in particular. Everything below is the same rule the
+ * `ui/` primitives follow: a colour, a radius or a duration is decided in `styles/tokens.css` and
+ * only spent here. The popup should look like a card this app drew, because for the length of the
+ * walkthrough it is the interface.
+ *
+ * Selectors are global rather than a CSS module because Shepherd renders into `document.body`,
+ * outside React's tree, so there is no element here to hand a hashed class name to. `.golden-tour`
+ * is the class the tour puts on every step (`defaultStepOptions.classes`) — it keeps these rules
+ * off any other Shepherd instance a future page might mount.
+ */
+
+.shepherd-element.golden-tour {
+  z-index: var(--z-tour);
+  inline-size: 100%;
+  max-inline-size: 22.5rem;
+  padding: 0;
+  background: var(--surface-1);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-lg);
+  box-shadow: var(--elev-3);
+  font-family: var(--font-ui);
+  color: var(--text);
+  transition:
+    opacity var(--dur-base) var(--ease-standard),
+    visibility var(--dur-base) var(--ease-standard);
+}
+
+/* The arrow is the same card seen edge-on: same fill, same hairline, and only the two sides facing
+   the popup's outside are drawn — a full border would put a diagonal rule across the card. */
+.shepherd-element.golden-tour > .shepherd-arrow::before {
+  background: var(--surface-1);
+  border: 1px solid var(--hairline);
+}
+
+.shepherd-element.golden-tour[data-popper-placement^='top'] > .shepherd-arrow::before {
+  border-block-start: 0;
+  border-inline-start: 0;
+}
+
+.shepherd-element.golden-tour[data-popper-placement^='bottom'] > .shepherd-arrow::before {
+  border-block-end: 0;
+  border-inline-end: 0;
+}
+
+.shepherd-element.golden-tour[data-popper-placement^='left'] > .shepherd-arrow::before {
+  border-block-start: 0;
+  border-inline-end: 0;
+}
+
+.shepherd-element.golden-tour[data-popper-placement^='right'] > .shepherd-arrow::before {
+  border-block-end: 0;
+  border-inline-start: 0;
+}
+
+.golden-tour .shepherd-content {
+  border-radius: inherit;
+}
+
+/* No filled title bar: the heading and the body are one piece of writing, and a grey band between
+   them makes the popup read as a system dialog rather than as someone explaining something. */
+.golden-tour .shepherd-header,
+.golden-tour.shepherd-has-title .shepherd-content .shepherd-header {
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-5) 0;
+  background: transparent;
+  line-height: inherit;
+}
+
+/* `flex: 1 1 auto` and `min-inline-size: 0` together, and both are needed: Shepherd's own rule is
+   `flex: 1 0 auto`, so a title longer than the popup grew the row instead of wrapping and spilled
+   out of the card — which is what a two-line heading actually did on the first pass. */
+.golden-tour .shepherd-title {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-snug);
+  color: var(--text);
+}
+
+.golden-tour .shepherd-text {
+  padding: var(--space-3) var(--space-5) 0;
+  font-size: var(--step-0);
+  line-height: var(--leading-normal);
+  color: var(--text-muted);
+}
+
+.golden-tour .shepherd-text strong {
+  color: var(--text);
+  font-weight: var(--weight-semibold);
+}
+
+.golden-tour .shepherd-footer {
+  gap: var(--space-2);
+  padding: var(--space-5);
+}
+
+/* The buttons are `ui/Button` by hand: Shepherd builds its own `<button>` elements, so the pill,
+   the 36px box and the brass fill are restated here rather than imported. If the button system
+   changes shape, this is the second place to change — the price of a library that renders its own
+   chrome, and cheaper than the alternative of a tour that no longer looks like the app. */
+.golden-tour .shepherd-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--control-h-sm);
+  margin: 0;
+  padding-inline: var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: var(--text-on-accent);
+  font-family: inherit;
+  font-size: var(--step-0);
+  font-weight: var(--weight-medium);
+  transition:
+    background-color var(--dur-fast) var(--ease-standard),
+    color var(--dur-fast) var(--ease-standard);
+}
+
+.golden-tour .shepherd-button:not(:disabled):hover {
+  background: var(--accent-hover);
+  color: var(--text-on-accent);
+}
+
+.golden-tour .shepherd-button.shepherd-button-secondary {
+  background: transparent;
+  border-color: var(--hairline-strong);
+  color: var(--text-muted);
+}
+
+.golden-tour .shepherd-button.shepherd-button-secondary:not(:disabled):hover {
+  background: var(--surface-inset);
+  color: var(--text);
+}
+
+.golden-tour .shepherd-button:focus-visible,
+.golden-tour .shepherd-cancel-icon:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.golden-tour .shepherd-cancel-icon,
+.golden-tour.shepherd-has-title .shepherd-content .shepherd-cancel-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 28px, the same as the toast's close button and for the same reason: it rides in the corner of
+     the card, and a 44px disc there would sit on the heading. Still clear of the 24px floor. */
+  inline-size: 28px;
+  block-size: 28px;
+  border-radius: var(--r-pill);
+  font-size: var(--step-3);
+  line-height: 1;
+  color: var(--text-faint);
+  transition: color var(--dur-fast) var(--ease-standard);
+}
+
+.golden-tour .shepherd-cancel-icon:hover,
+.golden-tour.shepherd-has-title .shepherd-content .shepherd-cancel-icon:hover {
+  background: var(--surface-inset);
+  color: var(--text);
+}
+
+/* The dim. Shepherd's own rule fades a black rectangle to 50%; this uses the scrim token instead,
+   so the tour dims the page by exactly as much as a sheet does — and in the dark theme, where a
+   50% black wash over near-black leaves nothing to see, by the amount that theme decided on. */
+.shepherd-modal-overlay-container {
+  z-index: var(--z-tour-overlay);
+}
+
+.shepherd-modal-overlay-container.shepherd-modal-is-visible {
+  opacity: 1;
+}
+
+.shepherd-modal-overlay-container path {
+  fill: var(--surface-scrim);
+}
+
+/* The element being talked about is lifted out of the dim by the hole Shepherd cuts in the
+   overlay; the ring is what says it is the *subject* rather than merely the one lit thing. It
+   deliberately sets no radius of its own — a `box-shadow` follows the element's real corners, and
+   a pill-shaped navigation link ringed in a 12px rectangle looks like a mistake.
+
+   `:not(body)` is load-bearing: a step with no `attachTo` — the first and the last — is centred,
+   and Shepherd marks `<body>` as its target, which without this would draw a brass ring around the
+   entire window. */
+.shepherd-enabled.shepherd-target:not(body) {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shepherd-element.golden-tour,
+  .golden-tour .shepherd-button,
+  .golden-tour .shepherd-cancel-icon,
+  .shepherd-modal-overlay-container {
+    transition: none;
+  }
+}

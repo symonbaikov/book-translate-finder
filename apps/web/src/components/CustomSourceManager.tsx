@@ -11,8 +11,11 @@ import {
 } from '../lib/custom-source-providers';
 import { outcomeOfWrite } from '../lib/setting-change';
 import { useSettingChangeToast } from '../lib/settings-toast';
+import { tourTarget } from '../lib/tour-targets';
 import { useT } from '../i18n/I18nProvider';
+import { webEnv } from '../config/web-env';
 import { Badge, Button, Card, Field, Stack, TextInput } from '../ui';
+import { CommunityPresets } from './CommunityPresets';
 import styles from './CustomSourceManager.module.css';
 
 /**
@@ -96,7 +99,13 @@ export function CustomSourceManager() {
     <>
       <p className={styles.intro}>{t('customSources.intro')}</p>
 
-      <form className={styles.form} onSubmit={submit}>
+      {/* Rendered only where an operator configured somewhere to send readers — see
+          CommunityPresets and config/web-env.ts. */}
+      {webEnv.NEXT_PUBLIC_COMMUNITY_PRESETS_URL ? (
+        <CommunityPresets url={webEnv.NEXT_PUBLIC_COMMUNITY_PRESETS_URL} />
+      ) : null}
+
+      <form className={styles.form} onSubmit={submit} {...tourTarget('customSourceForm')}>
         <Field
           className={styles.nameField}
           label={t('customSources.nameLabel')}
@@ -132,7 +141,7 @@ export function CustomSourceManager() {
 
       {error ? <p className={styles.failure}>{error}</p> : null}
 
-      <Stack>
+      <Stack {...tourTarget('customSourceList')}>
         <h2>{t('customSources.listHeading')}</h2>
         {sources.length === 0 ? (
           <p className={styles.empty}>{t('customSources.none')}</p>

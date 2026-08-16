@@ -492,4 +492,55 @@ export const it: Dictionary = {
   'settings.status.session': 'Non ricordato',
   'settings.notRemembered':
     'Questo browser non ha voluto ricordarlo: alla prossima apertura di un libro sarà di nuovo com’era.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Avanti',
+  'tour.back': 'Indietro',
+  'tour.skip': 'Non ora',
+  'tour.finish': 'Fatto',
+  'tour.close': 'Chiudi il tour',
+  'tour.welcome.title': 'Benvenuto in Golden Library',
+  'tour.welcome.text':
+    'Un minuto e saprà dov’è ogni cosa. Questo sito trova in quante lingue esiste un libro e dove procurarselo legalmente, e lo fa tanto meglio quanto più gli dice dove cercare. Cominciamo da lì.',
+  'tour.customSourcesNav.title': 'Cominci dalle sue fonti',
+  'tour.customSourcesNav.text':
+    'Apra <strong>Fonti personali</strong>: la pagina in cui decide quali cataloghi interrogare oltre a quelli inclusi.',
+  'tour.presets.title': 'Non deve scriverla da zero',
+  'tour.presets.text':
+    'Lì vengono pubblicati modelli già pronti. Appartengono a chi li ha scritti: questo sito non verifica nulla su quel canale, e una fonte che aggiunge cerca dal suo browser, non da questo server. Lo apra in una nuova scheda, prenda ciò che le serve e torni qui.',
+  'tour.sourceForm.title': 'Due campi ed è fatta',
+  'tour.sourceForm.text':
+    'Un nome che riconoscerà e l’indirizzo di una ricerca con <strong>{query}</strong> al posto delle sue parole. Ne aggiunga una adesso, oppure prema Avanti e ci torni dopo.',
+  'tour.sourceList.title': 'Tutto ciò che aggiunge resta qui',
+  'tour.sourceList.text':
+    'Le sue fonti sono elencate sotto e ognuna si può spegnere o togliere. Stanno in questo browser e non vanno mai al server: qui nessuno le vede, e su un altro dispositivo non ci saranno.',
+  'tour.addonsNav.title': 'I componenti aggiuntivi vanno oltre',
+  'tour.addonsNav.text':
+    'Apra <strong>Componenti aggiuntivi</strong>. Una fonte personale è un indirizzo che ha scritto lei; un componente è un piccolo programma scritto da altri, capace di interrogare davvero un catalogo.',
+  'tour.addons.title': 'Nulla viene installato prima che lei l’abbia visto',
+  'tour.addons.text':
+    'Incolli l’indirizzo di un componente e questo modulo le mostra che cos’è e con quali host parlerà; solo dopo viene installato. I suoi risultati portano sempre il nome del componente che li ha prodotti.',
+  'tour.shelfNav.title': 'Lo scaffale',
+  'tour.shelfNav.text':
+    'Apra <strong>Scaffale</strong> per vedere i cataloghi da cui può leggere direttamente.',
+  'tour.shelf.title': 'Cataloghi aperti, e i suoi',
+  'tour.shelf.text':
+    'Il Progetto Gutenberg e i suoi simili ci sono fin dall’inizio. Sotto può aggiungere qualsiasi catalogo OPDS — per esempio un server Calibre nella sua rete, che il suo browser raggiunge e questo sito mai.',
+  'tour.language.title': 'Quindici lingue',
+  'tour.language.text':
+    'La lingua dell’interfaccia si cambia qui quando vuole. Come ogni impostazione del sito viene scritta nel suo browser e vale subito — e lo dice in un avviso, anche quando il browser si rifiuta di conservarla.',
+  'tour.done.title': 'Il tour finisce qui',
+  'tour.done.text':
+    'Cerchi dalla pagina iniziale e acceda se vuole conservare i libri che trova. Il collegamento in fondo a ogni pagina riavvia questo tour.',
+  'settings.tour.title': 'Il tour guidato',
+  'settings.tour.finished':
+    'Ha completato il tour, quindi non si aprirà più da solo. Il collegamento in fondo alla pagina lo riavvia quando vuole.',
+  'settings.tour.skipped':
+    'Il tour è chiuso e non si aprirà più da solo. Il collegamento in fondo alla pagina lo riavvia quando vuole.',
+  'settings.tour.restarted':
+    'Si riparte dal primo passo, e questo browser ha dimenticato che l’aveva già visto.',
+  'customSources.presets': 'Modelli già pronti',
+  'customSources.presetsCaption':
+    'Modelli che altri lettori condividono, sul canale di questa istanza. Qui nessuno li controlla: ne legga uno prima di aggiungerlo e ricordi che cercherà dal suo browser.',
+  'footer.takeTheTour': 'Fai il tour',
 };

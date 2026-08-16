@@ -503,4 +503,55 @@ export const es: Dictionary = {
   'settings.status.session': 'No recordado',
   'settings.notRemembered':
     'Este navegador no quiso recordarlo: la próxima vez que abra un libro volverá a estar como antes.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Siguiente',
+  'tour.back': 'Atrás',
+  'tour.skip': 'Ahora no',
+  'tour.finish': 'Listo',
+  'tour.close': 'Cerrar el recorrido',
+  'tour.welcome.title': 'Bienvenido a Golden Library',
+  'tour.welcome.text':
+    'Un minuto y sabrá dónde está cada cosa. Este sitio averigua en qué idiomas existe un libro y dónde conseguirlo legalmente, y lo hace mejor cuanto más claro le diga dónde buscar. Por ahí empezamos.',
+  'tour.customSourcesNav.title': 'Empiece por sus propias fuentes',
+  'tour.customSourcesNav.text':
+    'Abra <strong>Fuentes propias</strong>: la página donde usted decide qué catálogos se consultan además de los de serie.',
+  'tour.presets.title': 'No hace falta escribirla desde cero',
+  'tour.presets.text':
+    'Allí se publican plantillas ya hechas. Son de quien las escribió: este sitio no comprueba nada de ese canal, y una fuente que usted añada busca desde su navegador, no desde este servidor. Ábralo en otra pestaña, tome lo que necesite y vuelva.',
+  'tour.sourceForm.title': 'Dos campos y listo',
+  'tour.sourceForm.text':
+    'Un nombre que reconozca y la dirección de una búsqueda con <strong>{query}</strong> en el lugar de sus palabras. Añada una ahora o pulse Siguiente y vuelva luego.',
+  'tour.sourceList.title': 'Todo lo que añada se queda aquí',
+  'tour.sourceList.text':
+    'Sus fuentes aparecen abajo y cada una puede apagarse o borrarse. Viven en este navegador y nunca se envían al servidor: aquí nadie las ve, y otro dispositivo no las tendrá.',
+  'tour.addonsNav.title': 'Los complementos llegan más lejos',
+  'tour.addonsNav.text':
+    'Abra <strong>Complementos</strong>. Una fuente propia es una dirección que usted escribió; un complemento es un pequeño programa escrito por otra persona que sabe consultar un catálogo de verdad.',
+  'tour.addons.title': 'Nada se instala antes de que usted lo vea',
+  'tour.addons.text':
+    'Pegue la dirección de un complemento y este formulario le muestra qué es y con qué servidores hablará; solo después se instala. Sus resultados siempre llevan el nombre del complemento que los produjo.',
+  'tour.shelfNav.title': 'La estantería',
+  'tour.shelfNav.text':
+    'Abra <strong>Estantería</strong> para ver los catálogos desde los que puede leer directamente.',
+  'tour.shelf.title': 'Catálogos abiertos, y los suyos',
+  'tour.shelf.text':
+    'El Proyecto Gutenberg y los suyos están desde el principio. Debajo puede añadir cualquier catálogo OPDS: por ejemplo un servidor Calibre en su propia red, al que llega su navegador y este sitio nunca.',
+  'tour.language.title': 'Quince idiomas',
+  'tour.language.text':
+    'Cambie aquí el idioma de la interfaz cuando quiera. Como todos los ajustes del sitio, se escribe en su navegador y surte efecto al momento, y lo dice en un aviso, también cuando el navegador se niega a guardarlo.',
+  'tour.done.title': 'Eso es todo el recorrido',
+  'tour.done.text':
+    'Busque desde la portada e inicie sesión si quiere guardar los libros que encuentre. El enlace al pie de cualquier página vuelve a lanzar este recorrido.',
+  'settings.tour.title': 'El recorrido guiado',
+  'settings.tour.finished':
+    'Ha hecho el recorrido, así que no volverá a abrirse solo. El enlace al pie de la página lo lanza cuando quiera.',
+  'settings.tour.skipped':
+    'El recorrido está cerrado y no volverá a abrirse solo. El enlace al pie de la página lo lanza cuando quiera.',
+  'settings.tour.restarted':
+    'Empezamos otra vez por el primer paso; este navegador ha olvidado que ya lo había visto.',
+  'customSources.presets': 'Plantillas ya hechas',
+  'customSources.presetsCaption':
+    'Plantillas que comparten otros lectores, en el canal de esta instancia. Aquí nadie las revisa: lea una antes de añadirla y recuerde que buscará desde su navegador.',
+  'footer.takeTheTour': 'Hacer el recorrido',
 };

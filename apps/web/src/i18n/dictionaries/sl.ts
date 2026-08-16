@@ -491,4 +491,55 @@ export const sl: Dictionary = {
   'compare.rowEditionStatement': 'Izdaja',
   'home.genres': 'Priljubljeni žanri',
   'home.genresBlurb': 'Oznake, za katerimi stoji največ knjig. Vsaka odpre svoj katalog.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Naprej',
+  'tour.back': 'Nazaj',
+  'tour.skip': 'Ne zdaj',
+  'tour.finish': 'Končano',
+  'tour.close': 'Zapri ogled',
+  'tour.welcome.title': 'Dobrodošli v Golden Library',
+  'tour.welcome.text':
+    'Minuta in vedeli boste, kje je kaj. Ta stran ugotovi, v katerih jezikih knjiga obstaja in kje jo dobiti zakonito — in to tem bolje, čim natančneje ji poveste, kje naj išče. S tem tudi začnemo.',
+  'tour.customSourcesNav.title': 'Začnite pri svojih virih',
+  'tour.customSourcesNav.text':
+    'Odprite <strong>Lastni viri</strong> — stran, kjer odločate, kateri katalogi se preiskujejo poleg vgrajenih.',
+  'tour.presets.title': 'Ni treba pisati od začetka',
+  'tour.presets.text':
+    'Tam objavljajo že pripravljene predloge. Pripadajo tistim, ki so jih napisali: ta stran na tem kanalu ničesar ne preverja, vir, ki ga dodate, pa išče iz vašega brskalnika, ne s tega strežnika. Odprite v novem zavihku, vzemite, kar potrebujete, in se vrnite.',
+  'tour.sourceForm.title': 'Dve polji in je narejeno',
+  'tour.sourceForm.text':
+    'Ime, ki ga boste prepoznali, in naslov iskanja, kjer <strong>{query}</strong> stoji na mestu vaših besed. Dodajte enega zdaj ali pritisnite «Naprej» in se vrnite k temu pozneje.',
+  'tour.sourceList.title': 'Vse dodano ostane tu',
+  'tour.sourceList.text':
+    'Vaši viri so spodaj in vsakega je mogoče izklopiti ali odstraniti. Živijo v tem brskalniku in nikoli ne odidejo na strežnik: tu jih nihče ne vidi, na drugi napravi pa jih ne bo.',
+  'tour.addonsNav.title': 'Dodatki gredo dlje',
+  'tour.addonsNav.text':
+    'Odprite <strong>Dodatki</strong>. Lastni vir je en naslov, ki ste ga napisali; dodatek je majhen program nekoga drugega, ki zna po katalogu res iskati.',
+  'tour.addons.title': 'Nič se ne namesti, dokler tega ne vidite',
+  'tour.addons.text':
+    'Prilepite naslov dodatka in obrazec pokaže, kaj je in s katerimi gostitelji se bo pogovarjal; šele nato se namesti. Njegovi zadetki vedno nosijo ime dodatka, ki jih je dal.',
+  'tour.shelfNav.title': 'Polica',
+  'tour.shelfNav.text':
+    'Odprite <strong>Polico</strong>, da vidite kataloge, iz katerih lahko berete neposredno.',
+  'tour.shelf.title': 'Odprti katalogi in vaši lastni',
+  'tour.shelf.text':
+    'Projekt Gutenberg in njemu podobni so tu od začetka. Pod njimi lahko dodate katerikoli katalog OPDS — na primer strežnik Calibre v vašem omrežju: do njega seže vaš brskalnik, ta stran pa nikoli.',
+  'tour.language.title': 'Jezik vmesnika',
+  'tour.language.text':
+    'Spremenite ga tu, kadar želite. Kot vsaka nastavitev tu se zapiše v vaš brskalnik in velja takoj — in to pove v obvestilu, tudi takrat, ko si ga brskalnik ni hotel zapomniti.',
+  'tour.done.title': 'To je bil ogled',
+  'tour.done.text':
+    'Iščite z domače strani in se prijavite, če želite, da se najdene knjige ohranijo. Povezava na dnu katerekoli strani ta ogled znova zažene.',
+  'settings.tour.title': 'Vodeni ogled',
+  'settings.tour.finished':
+    'Ogled ste opravili, zato se sam ne bo več odprl. Povezava na dnu strani ga zažene, kadar želite.',
+  'settings.tour.skipped':
+    'Ogled je zaprt in se sam ne bo več odprl. Povezava na dnu strani ga zažene, kadar želite.',
+  'settings.tour.restarted':
+    'Začenjamo znova pri prvem koraku, ta brskalnik pa je pozabil, da ste ga že videli.',
+  'customSources.presets': 'Pripravljene predloge',
+  'customSources.presetsCaption':
+    'Predloge, ki jih delijo drugi bralci, na kanalu te namestitve. Tu jih nihče ne preverja: preberite predlogo, preden jo dodate, in pomnite, da bo iskala iz vašega brskalnika.',
+  'footer.takeTheTour': 'Opravite ogled',
 };

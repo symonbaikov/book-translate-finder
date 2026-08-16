@@ -495,4 +495,55 @@ export const lb: Dictionary = {
   'home.genres': 'Populär Genren',
   'home.genresBlurb':
     'D’Tags mat de meeschte Bicher hannendrun. All eenzelen mécht säi Katalog op.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Weider',
+  'tour.back': 'Zréck',
+  'tour.skip': 'Elo net',
+  'tour.finish': 'Fäerdeg',
+  'tour.close': 'Tour zoumaachen',
+  'tour.welcome.title': 'Wëllkomm bei Golden Library',
+  'tour.welcome.text':
+    'Eng Minutt, an du weess, wou wat ass. Dëse Site fënnt eraus, a wéi enge Sproochen e Buch existéiert a wou een et legal kritt — a mécht dat ëmsou besser, wat méi genee s du him seess, wou hie sichen soll. Dofir fänke mer domat un.',
+  'tour.customSourcesNav.title': 'Fänk mat dengen eegene Quelle un',
+  'tour.customSourcesNav.text':
+    'Maach <strong>Eege Quellen</strong> op — d’Säit, wou s du entscheeds, a wéi enge Kataloge nieft den agebauten gesicht gëtt.',
+  'tour.presets.title': 'Vun null unzefänken ass net néideg',
+  'tour.presets.text':
+    'Do gi fäerdeg Virlage publizéiert. Si gehéieren deenen, déi se geschriwwen hunn: dëse Site iwwerpréift op deem Kanal näischt, an eng Quell, déi s du derbäisetz, sicht vun dengem Browser aus, net vun dësem Server. Maach an engem neien Tab op, huel wat s du brauchs, a komm zréck.',
+  'tour.sourceForm.title': 'Zwee Felder, an et ass gemaach',
+  'tour.sourceForm.text':
+    'En Numm, deen s du erkenns, an d’Adress vun enger Sich, wou <strong>{query}</strong> op der Plaz vun dengen Wierder steet. Setz elo eng derbäi, oder dréck «Weider» a komm méi spéit drop zréck.',
+  'tour.sourceList.title': 'Alles wat s du derbäisetz bleift hei',
+  'tour.sourceList.text':
+    'Deng Quelle stinn hei ënnen a jidderee kann ausgeschalt oder ewechgeholl ginn. Si liewen an dësem Browser a ginn ni op de Server: hei gesäit se keen, an op engem anere Gerät ginn et se net.',
+  'tour.addonsNav.title': 'Add-ons ginn méi wäit',
+  'tour.addonsNav.text':
+    'Maach <strong>Add-ons</strong> op. Eng eege Quell ass eng Adress, déi s du geschriwwen hues; en Add-on ass e klengt Programm vun engem aneren, dat e Katalog richteg duerchsiche kann.',
+  'tour.addons.title': 'Näischt gëtt installéiert, ier s du et gesinn hues',
+  'tour.addons.text':
+    'Setz d’Adress vun engem Add-on an, an dëst Formulaire weist der, wat et ass a mat wéi enge Serveren et schwätze wäert; eréischt duerno gëtt installéiert. Seng Resultater droen ëmmer den Numm vum Add-on, dat se geliwwert huet.',
+  'tour.shelfNav.title': 'De Regal',
+  'tour.shelfNav.text':
+    'Maach <strong>Regal</strong> op, fir d’Kataloge ze gesinn, aus deenen s du direkt liese kanns.',
+  'tour.shelf.title': 'Offe Kataloge, an deng eegen',
+  'tour.shelf.text':
+    'De Project Gutenberg a seng Gläichen sinn hei vun Ufank un. Dorënner kanns du all OPDS-Katalog derbäisetzen — zum Beispill e Calibre-Server an dengem eegene Reseau, deen däi Browser erreecht an dëse Site ni.',
+  'tour.language.title': 'D’Sprooch vun der Uewerfläch',
+  'tour.language.text':
+    'Änner se hei, wéini s du wëlls. Wéi all Astellung hei gëtt se an däi Browser geschriwwen a gëllt direkt — a gesot gëtt et an enger Meldung, och wann de Browser refuséiert huet, se ze behalen.',
+  'tour.done.title': 'Dat war den Tour',
+  'tour.done.text':
+    'Sich vun der Startsäit aus, a mell dech un, wann s du wëlls, datt déi fonnte Bicher bleiwen. De Link ënnen op all Säit start dësen Tour nach eng Kéier.',
+  'settings.tour.title': 'De gefouerten Tour',
+  'settings.tour.finished':
+    'Du hues den Tour gemaach, also geet en net méi vu selwer op. De Link ënnen op der Säit start en, wéini s du wëlls.',
+  'settings.tour.skipped':
+    'Den Tour ass zou a geet net méi vu selwer op. De Link ënnen op der Säit start en, wéini s du wëlls.',
+  'settings.tour.restarted':
+    'Mir fänken nees beim éischte Schrëtt un, an dëse Browser huet vergiess, datt s du en scho gesinn hues.',
+  'customSources.presets': 'Fäerdeg Virlagen',
+  'customSources.presetsCaption':
+    'Virlagen, déi aner Lieser deelen, um Kanal vun dëser Instanz. Hei kontrolléiert se keen: lies eng Virlag, ier s du se derbäisetz, an denk drun, datt se vun dengem Browser aus sicht.',
+  'footer.takeTheTour': 'Den Tour maachen',
 };

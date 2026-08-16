@@ -492,4 +492,55 @@ export const gl: Dictionary = {
   'compare.rowEditionStatement': 'Edición',
   'home.genres': 'Xéneros populares',
   'home.genresBlurb': 'As etiquetas con máis libros detrás. Cada unha abre o seu catálogo.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Seguinte',
+  'tour.back': 'Atrás',
+  'tour.skip': 'Agora non',
+  'tour.finish': 'Feito',
+  'tour.close': 'Pechar a visita',
+  'tour.welcome.title': 'Benvido a Golden Library',
+  'tour.welcome.text':
+    'Un minuto e saberás onde está cada cousa. Este sitio descobre en que linguas existe un libro e onde conseguilo legalmente — e faino mellor canto máis claro lle digas onde buscar. Por aí comezamos.',
+  'tour.customSourcesNav.title': 'Comeza polas túas propias fontes',
+  'tour.customSourcesNav.text':
+    'Abre <strong>Fontes propias</strong>: a páxina na que decides que catálogos se consultan ademais dos incluídos.',
+  'tour.presets.title': 'Non fai falla escribila desde cero',
+  'tour.presets.text':
+    'Alí publícanse modelos xa feitos. Son de quen os escribiu: este sitio non comproba nada nesa canle, e unha fonte que engadas busca desde o teu navegador, non desde este servidor. Ábrea noutra lapela, colle o que precises e volve.',
+  'tour.sourceForm.title': 'Dous campos e listo',
+  'tour.sourceForm.text':
+    'Un nome que recoñezas e mais o enderezo dunha busca con <strong>{query}</strong> no lugar das túas palabras. Engade unha agora ou preme «Seguinte» e volve máis tarde.',
+  'tour.sourceList.title': 'Todo o que engadas queda aquí',
+  'tour.sourceList.text':
+    'As túas fontes están abaixo e cada unha pode apagarse ou eliminarse. Viven neste navegador e nunca van ao servidor: aquí ninguén as ve, e noutro dispositivo non estarán.',
+  'tour.addonsNav.title': 'Os complementos van máis alá',
+  'tour.addonsNav.text':
+    'Abre <strong>Complementos</strong>. Unha fonte propia é un enderezo que escribiches; un complemento é un pequeno programa doutra persoa que sabe consultar un catálogo de verdade.',
+  'tour.addons.title': 'Nada se instala antes de que o vexas',
+  'tour.addons.text':
+    'Pega o enderezo dun complemento e este formulario amosa que é e con que servidores vai falar; só despois se instala. Os seus resultados levan sempre o nome do complemento que os produciu.',
+  'tour.shelfNav.title': 'O andel',
+  'tour.shelfNav.text':
+    'Abre <strong>Andel</strong> para ver os catálogos dos que podes ler directamente.',
+  'tour.shelf.title': 'Catálogos abertos, e mais os teus',
+  'tour.shelf.text':
+    'O Proxecto Gutenberg e semellantes están aquí desde o principio. Debaixo podes engadir calquera catálogo OPDS — por exemplo un servidor Calibre na túa rede, ao que chega o teu navegador e este sitio nunca.',
+  'tour.language.title': 'A lingua da interface',
+  'tour.language.text':
+    'Cámbiaa aquí cando queiras. Coma todos os axustes deste sitio, escríbese no teu navegador e ten efecto ao momento — e dío nun aviso, tamén cando o navegador se nega a gardala.',
+  'tour.done.title': 'Isto foi a visita',
+  'tour.done.text':
+    'Busca desde a portada e inicia sesión se queres conservar os libros que atopes. A ligazón do pé de calquera páxina volve iniciar esta visita.',
+  'settings.tour.title': 'A visita guiada',
+  'settings.tour.finished':
+    'Xa fixeches a visita, así que non se abrirá soa outra vez. A ligazón do pé da páxina iníciaa cando queiras.',
+  'settings.tour.skipped':
+    'A visita está pechada e non se abrirá soa outra vez. A ligazón do pé da páxina iníciaa cando queiras.',
+  'settings.tour.restarted':
+    'Comezamos de novo polo primeiro paso, e este navegador esqueceu que xa a viras.',
+  'customSources.presets': 'Modelos xa feitos',
+  'customSources.presetsCaption':
+    'Modelos que comparten outros lectores, na canle desta instancia. Aquí ninguén os revisa: le un antes de engadilo e lembra que buscará desde o teu navegador.',
+  'footer.takeTheTour': 'Facer a visita',
 };

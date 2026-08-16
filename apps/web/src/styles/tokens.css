@@ -161,6 +161,11 @@
 
   --z-header: 100;
   --z-sheet: 200;
+  /* The onboarding tour dims the page and lifts one element out of it, so it sits above the
+     header and the sheets it talks about — and below the popups, because a preference the reader
+     changes *during* the tour still has to be able to say whether it was stored. */
+  --z-tour-overlay: 250;
+  --z-tour: 251;
   --z-toast: 300;
 
   /* ===== Semantics — light ================================================ */

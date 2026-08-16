@@ -486,4 +486,55 @@ export const nl: Dictionary = {
   'settings.status.session': 'Niet onthouden',
   'settings.notRemembered':
     'Deze browser wilde het niet onthouden: de volgende keer dat je een boek opent is alles weer als voorheen.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Verder',
+  'tour.back': 'Terug',
+  'tour.skip': 'Nu niet',
+  'tour.finish': 'Klaar',
+  'tour.close': 'Rondleiding sluiten',
+  'tour.welcome.title': 'Welkom bij Golden Library',
+  'tour.welcome.text':
+    'Eén minuut en u weet waar alles staat. Deze site zoekt uit in welke talen een boek bestaat en waar u het legaal krijgt — en dat gaat beter naarmate u beter vertelt waar er gezocht moet worden. Daar beginnen we dus.',
+  'tour.customSourcesNav.title': 'Begin met uw eigen bronnen',
+  'tour.customSourcesNav.text':
+    'Open <strong>Eigen bronnen</strong>: de pagina waar u bepaalt welke catalogi naast de ingebouwde worden doorzocht.',
+  'tour.presets.title': 'U hoeft niet vanaf nul te beginnen',
+  'tour.presets.text':
+    'Daar worden kant-en-klare sjablonen gepubliceerd. Ze zijn van wie ze schreef: deze site controleert niets in dat kanaal, en een bron die u toevoegt zoekt vanuit uw browser, niet vanaf deze server. Open het in een nieuw tabblad, neem mee wat u nodig hebt en kom terug.',
+  'tour.sourceForm.title': 'Twee velden en het staat',
+  'tour.sourceForm.text':
+    'Een naam die u herkent, en het adres van een zoekopdracht met <strong>{query}</strong> op de plaats van uw woorden. Voeg er nu een toe, of klik op Verder en kom er later op terug.',
+  'tour.sourceList.title': 'Alles wat u toevoegt blijft hier',
+  'tour.sourceList.text':
+    'Uw bronnen staan hieronder en elke bron kan uit of weg. Ze wonen in deze browser en gaan nooit naar de server: hier ziet niemand ze, en op een ander apparaat staan ze niet.',
+  'tour.addonsNav.title': 'Add-ons gaan verder',
+  'tour.addonsNav.text':
+    'Open <strong>Add-ons</strong>. Een eigen bron is één adres dat u zelf schreef; een add-on is een klein programma van iemand anders dat een catalogus echt kan doorzoeken.',
+  'tour.addons.title': 'Er wordt niets geïnstalleerd voordat u het gezien hebt',
+  'tour.addons.text':
+    'Plak het adres van een add-on en dit formulier laat zien wat het is en met welke hosts het gaat praten; pas daarna wordt het geïnstalleerd. De resultaten dragen altijd de naam van de add-on die ze leverde.',
+  'tour.shelfNav.title': 'De plank',
+  'tour.shelfNav.text':
+    'Open <strong>Plank</strong> om te zien uit welke catalogi u direct kunt lezen.',
+  'tour.shelf.title': 'Open catalogi, en die van uzelf',
+  'tour.shelf.text':
+    'Project Gutenberg en soortgenoten staan er vanaf het begin. Daaronder kunt u elke OPDS-catalogus toevoegen — bijvoorbeeld een Calibre-server in uw eigen netwerk, die uw browser bereikt en deze site nooit.',
+  'tour.language.title': 'Vijftien talen',
+  'tour.language.text':
+    'De taal van de interface verandert u hier wanneer u wilt. Zoals elke instelling hier wordt hij in uw browser geschreven en geldt hij meteen — en dat wordt in een melding gezegd, ook als de browser weigert hem te bewaren.',
+  'tour.done.title': 'Dat was de rondleiding',
+  'tour.done.text':
+    'Zoek vanaf de startpagina, en meld u aan als u gevonden boeken wilt bewaren. De link onderaan elke pagina start deze rondleiding opnieuw.',
+  'settings.tour.title': 'De rondleiding',
+  'settings.tour.finished':
+    'U hebt de rondleiding gehad, dus hij gaat niet meer vanzelf open. De link onderaan de pagina start hem wanneer u wilt.',
+  'settings.tour.skipped':
+    'De rondleiding is gesloten en gaat niet meer vanzelf open. De link onderaan de pagina start hem wanneer u wilt.',
+  'settings.tour.restarted':
+    'We beginnen weer bij de eerste stap, en deze browser is vergeten dat u hem al gezien had.',
+  'customSources.presets': 'Kant-en-klare sjablonen',
+  'customSources.presetsCaption':
+    'Sjablonen die andere lezers delen, in het kanaal van deze instantie. Hier controleert niemand ze: lees er een voordat u hem toevoegt, en bedenk dat hij vanuit uw browser zoekt.',
+  'footer.takeTheTour': 'Rondleiding volgen',
 };

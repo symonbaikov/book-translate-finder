@@ -498,4 +498,55 @@ export const eu: Dictionary = {
   'home.genres': 'Genero ezagunak',
   'home.genresBlurb':
     'Atzean liburu gehien dituzten etiketak. Bakoitzak bere katalogoa irekitzen du.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Hurrengoa',
+  'tour.back': 'Atzera',
+  'tour.skip': 'Orain ez',
+  'tour.finish': 'Eginda',
+  'tour.close': 'Itxi bisita',
+  'tour.welcome.title': 'Ongi etorri Golden Library-ra',
+  'tour.welcome.text':
+    'Minutu bat, eta jakingo duzu zer non dagoen. Gune honek liburu bat zein hizkuntzatan dagoen eta legez non lor daitekeen aurkitzen du — eta hobeto egiten du non bilatu argiago esaten diozun heinean. Hortik hasiko gara.',
+  'tour.customSourcesNav.title': 'Hasi zeure iturriekin',
+  'tour.customSourcesNav.text':
+    'Ireki <strong>Iturri propioak</strong>: barneko katalogoez gain zein katalogo arakatuko diren erabakitzen duzun orria.',
+  'tour.presets.title': 'Ez duzu hutsetik idatzi behar',
+  'tour.presets.text':
+    'Han txantiloi eginak argitaratzen dira. Idatzi dituenarenak dira: gune honek ez du ezer egiaztatzen kanal horretan, eta gehitzen duzun iturriak zure nabigatzailetik bilatzen du, ez zerbitzari honetatik. Ireki fitxa berri batean, hartu behar duzuna eta itzuli.',
+  'tour.sourceForm.title': 'Bi eremu eta kito',
+  'tour.sourceForm.text':
+    'Ezagutuko duzun izen bat eta bilaketa baten helbidea, <strong>{query}</strong> zure hitzen lekuan duela. Gehitu bat orain, edo sakatu «Hurrengoa» eta itzuli geroago.',
+  'tour.sourceList.title': 'Gehitzen duzun guztia hemen geratzen da',
+  'tour.sourceList.text':
+    'Zure iturriak behean daude eta bakoitza itzali edo kendu daiteke. Nabigatzaile honetan bizi dira eta ez dira inoiz zerbitzarira bidaltzen: hemen inork ez ditu ikusten, eta beste gailu batean ez dira egongo.',
+  'tour.addonsNav.title': 'Gehigarriek urrunago jotzen dute',
+  'tour.addonsNav.text':
+    'Ireki <strong>Gehigarriak</strong>. Iturri propioa zuk idatzitako helbide bat da; gehigarria beste norbaitek idatzitako programa txiki bat da, katalogo bat benetan arakatzeko gai dena.',
+  'tour.addons.title': 'Ez da ezer instalatzen ikusi aurretik',
+  'tour.addons.text':
+    'Itsatsi gehigarri baten helbidea eta inprimaki honek zer den eta zein ostalarirekin hitz egingo duen erakusten dizu; ondoren bakarrik instalatzen da. Bere emaitzek beti daramate sortu dituen gehigarriaren izena.',
+  'tour.shelfNav.title': 'Apala',
+  'tour.shelfNav.text':
+    'Ireki <strong>Apala</strong> zuzenean irakur ditzakezun katalogoak ikusteko.',
+  'tour.shelf.title': 'Katalogo irekiak, eta zureak',
+  'tour.shelf.text':
+    'Gutenberg Proiektua eta haren antzekoak hasieratik daude hemen. Azpian edozein OPDS katalogo gehi dezakezu — adibidez zure sareko Calibre zerbitzari bat, zure nabigatzaileak iristen duena eta gune honek inoiz ez.',
+  'tour.language.title': 'Interfazearen hizkuntza',
+  'tour.language.text':
+    'Aldatu hemen nahi duzunean. Gune honetako ezarpen guztiak bezala, zure nabigatzailean idazten da eta berehala aplikatzen da — eta jakinarazpen batean esaten du, nabigatzaileak gordetzeari uko egiten dionean ere.',
+  'tour.done.title': 'Hori izan da bisita',
+  'tour.done.text':
+    'Bilatu hasierako orritik, eta hasi saioa aurkitutako liburuak gorde nahi badituzu. Edozein orriren oineko estekak bisita hau berriro abiarazten du.',
+  'settings.tour.title': 'Bisita gidatua',
+  'settings.tour.finished':
+    'Bisita egin duzu, beraz ez da berez berriro irekiko. Orriaren oineko estekak abiarazten du nahi duzunean.',
+  'settings.tour.skipped':
+    'Bisita itxita dago eta ez da berez berriro irekiko. Orriaren oineko estekak abiarazten du nahi duzunean.',
+  'settings.tour.restarted':
+    'Lehen urratsetik hasiko gara berriro, eta nabigatzaile honek ahaztu du dagoeneko ikusi zenuela.',
+  'customSources.presets': 'Txantiloi eginak',
+  'customSources.presetsCaption':
+    'Beste irakurle batzuek partekatzen dituzten txantiloiak, instantzia honen kanalean. Hemen inork ez ditu berrikusten: irakurri bat gehitu aurretik, eta gogoratu zure nabigatzailetik bilatuko duela.',
+  'footer.takeTheTour': 'Egin bisita',
 };

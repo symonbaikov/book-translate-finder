@@ -494,4 +494,55 @@ export const ca: Dictionary = {
   'compare.rowEditionStatement': 'Edició',
   'home.genres': 'Gèneres populars',
   'home.genresBlurb': 'Les etiquetes amb més llibres al darrere. Cadascuna obre el seu catàleg.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Següent',
+  'tour.back': 'Enrere',
+  'tour.skip': 'Ara no',
+  'tour.finish': 'Fet',
+  'tour.close': 'Tanca la visita',
+  'tour.welcome.title': 'Us donem la benvinguda a Golden Library',
+  'tour.welcome.text':
+    'Un minut i sabreu on és cada cosa. Aquest lloc troba en quines llengües existeix un llibre i on obtenir-lo legalment — i ho fa millor com més clar li digueu on ha de buscar. Per això comencem per aquí.',
+  'tour.customSourcesNav.title': 'Comenceu per les vostres fonts',
+  'tour.customSourcesNav.text':
+    'Obriu <strong>Fonts pròpies</strong>: la pàgina on decidiu quins catàlegs es consulten a més dels integrats.',
+  'tour.presets.title': 'No cal escriure-la de zero',
+  'tour.presets.text':
+    'Allà es publiquen plantilles ja fetes. Són de qui les ha escrit: aquest lloc no comprova res en aquell canal, i una font que hi afegiu cerca des del vostre navegador, no des d’aquest servidor. Obriu-lo en una pestanya nova, agafeu el que us calgui i torneu.',
+  'tour.sourceForm.title': 'Dos camps i ja està',
+  'tour.sourceForm.text':
+    'Un nom que reconegueu i l’adreça d’una cerca amb <strong>{query}</strong> al lloc de les vostres paraules. Afegiu-ne una ara o premeu «Següent» i torneu-hi més tard.',
+  'tour.sourceList.title': 'Tot el que afegiu es queda aquí',
+  'tour.sourceList.text':
+    'Les vostres fonts són a sota i cadascuna es pot desactivar o esborrar. Viuen en aquest navegador i no s’envien mai al servidor: aquí ningú no les veu i en un altre dispositiu no hi seran.',
+  'tour.addonsNav.title': 'Els complements van més enllà',
+  'tour.addonsNav.text':
+    'Obriu <strong>Complements</strong>. Una font pròpia és una adreça que heu escrit; un complement és un petit programa escrit per algú altre que sap consultar un catàleg de debò.',
+  'tour.addons.title': 'No s’instal·la res abans que ho hàgiu vist',
+  'tour.addons.text':
+    'Enganxeu l’adreça d’un complement i aquest formulari us mostra què és i amb quins amfitrions parlarà; només després s’instal·la. Els seus resultats sempre porten el nom del complement que els ha produït.',
+  'tour.shelfNav.title': 'El prestatge',
+  'tour.shelfNav.text':
+    'Obriu <strong>Prestatge</strong> per veure els catàlegs des dels quals podeu llegir directament.',
+  'tour.shelf.title': 'Catàlegs oberts, i els vostres',
+  'tour.shelf.text':
+    'El Projecte Gutenberg i els seus són aquí des del principi. A sota podeu afegir qualsevol catàleg OPDS — per exemple un servidor Calibre a la vostra xarxa, al qual arriba el vostre navegador i aquest lloc mai.',
+  'tour.language.title': 'La llengua de la interfície',
+  'tour.language.text':
+    'Canvieu-la aquí quan vulgueu. Com tots els paràmetres d’aquest lloc, s’escriu al vostre navegador i té efecte immediat — i ho diu en un avís, també quan el navegador es nega a desar-la.',
+  'tour.done.title': 'Això és tot',
+  'tour.done.text':
+    'Cerqueu des de la portada i inicieu la sessió si voleu conservar els llibres que trobeu. L’enllaç del peu de qualsevol pàgina torna a engegar aquesta visita.',
+  'settings.tour.title': 'La visita guiada',
+  'settings.tour.finished':
+    'Heu fet la visita, així que no es tornarà a obrir sola. L’enllaç del peu de pàgina la engega quan vulgueu.',
+  'settings.tour.skipped':
+    'La visita s’ha tancat i no es tornarà a obrir sola. L’enllaç del peu de pàgina la engega quan vulgueu.',
+  'settings.tour.restarted':
+    'Tornem a començar pel primer pas, i aquest navegador ha oblidat que ja l’havíeu vista.',
+  'customSources.presets': 'Plantilles ja fetes',
+  'customSources.presetsCaption':
+    'Plantilles que altres lectors comparteixen, al canal d’aquesta instància. Aquí ningú no les revisa: llegiu-ne una abans d’afegir-la i recordeu que cercarà des del vostre navegador.',
+  'footer.takeTheTour': 'Fes la visita',
 };

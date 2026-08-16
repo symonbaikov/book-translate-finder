@@ -486,4 +486,55 @@ export const is: Dictionary = {
   'compare.rowEditionStatement': 'Útgáfa',
   'home.genres': 'Vinsælar tegundir',
   'home.genresBlurb': 'Þau merki sem hafa flestar bækur að baki. Hvert um sig opnar sína skrá.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Áfram',
+  'tour.back': 'Til baka',
+  'tour.skip': 'Ekki núna',
+  'tour.finish': 'Lokið',
+  'tour.close': 'Loka kynningunni',
+  'tour.welcome.title': 'Velkomin í Golden Library',
+  'tour.welcome.text':
+    'Ein mínúta og þú veist hvar allt er. Þessi vefur finnur á hvaða tungumálum bók er til og hvar má nálgast hana með löglegum hætti — og gerir það því betur sem þú segir honum nákvæmar hvar hann á að leita. Þar byrjum við.',
+  'tour.customSourcesNav.title': 'Byrjaðu á þínum eigin veitum',
+  'tour.customSourcesNav.text':
+    'Opnaðu <strong>Eigin veitur</strong> — síðuna þar sem þú ræður hvaða skrár er leitað í samhliða þeim innbyggðu.',
+  'tour.presets.title': 'Þú þarft ekki að byrja frá grunni',
+  'tour.presets.text':
+    'Þar eru birt tilbúin sniðmát. Þau tilheyra þeim sem skrifuðu þau: þessi vefur athugar ekkert á þeirri rás, og veita sem þú bætir við leitar úr þínum vafra, ekki úr þessum þjóni. Opnaðu í nýjum flipa, taktu það sem þú þarft og komdu aftur.',
+  'tour.sourceForm.title': 'Tveir reitir og þá er það komið',
+  'tour.sourceForm.text':
+    'Nafn sem þú þekkir aftur og slóð leitar þar sem <strong>{query}</strong> stendur þar sem orðin þín eiga að koma. Bættu einni við núna, eða ýttu á «Áfram» og komdu aftur að þessu.',
+  'tour.sourceList.title': 'Allt sem þú bætir við verður hér',
+  'tour.sourceList.text':
+    'Veiturnar þínar eru hér fyrir neðan og hverja má slökkva á eða fjarlægja. Þær búa í þessum vafra og fara aldrei til þjónsins: enginn hér sér þær og á öðru tæki verða þær ekki.',
+  'tour.addonsNav.title': 'Viðbætur fara lengra',
+  'tour.addonsNav.text':
+    'Opnaðu <strong>Viðbætur</strong>. Eigin veita er ein slóð sem þú skrifaðir; viðbót er lítið forrit frá einhverjum öðrum sem kann að leita í skrá í alvöru.',
+  'tour.addons.title': 'Ekkert er sett upp fyrr en þú hefur séð það',
+  'tour.addons.text':
+    'Límdu inn slóð viðbótar og þetta form sýnir þér hvað hún er og við hvaða þjóna hún talar; fyrst þá er hún sett upp. Niðurstöður hennar bera alltaf nafn viðbótarinnar sem skilaði þeim.',
+  'tour.shelfNav.title': 'Hillan',
+  'tour.shelfNav.text':
+    'Opnaðu <strong>Hilluna</strong> til að sjá skrárnar sem þú getur lesið beint úr.',
+  'tour.shelf.title': 'Opnar skrár og þínar eigin',
+  'tour.shelf.text':
+    'Project Gutenberg og hans líkar eru hér frá upphafi. Fyrir neðan má bæta við hvaða OPDS-skrá sem er — til dæmis Calibre-þjóni á þínu eigin neti, sem vafrinn þinn nær í og þessi vefur aldrei.',
+  'tour.language.title': 'Tungumál viðmótsins',
+  'tour.language.text':
+    'Breyttu því hér hvenær sem er. Eins og allar stillingar hér er það skrifað í vafrann þinn og tekur gildi strax — og það er sagt í tilkynningu, líka þegar vafrinn neitar að muna það.',
+  'tour.done.title': 'Þá er kynningunni lokið',
+  'tour.done.text':
+    'Leitaðu af forsíðunni og skráðu þig inn ef þú vilt að bækurnar sem þú finnur geymist. Tengillinn neðst á hverri síðu ræsir þessa kynningu aftur.',
+  'settings.tour.title': 'Leiðsögnin',
+  'settings.tour.finished':
+    'Þú hefur farið í gegnum kynninguna, svo hún opnast ekki sjálf aftur. Tengillinn neðst á síðunni ræsir hana þegar þú vilt.',
+  'settings.tour.skipped':
+    'Kynningunni er lokað og hún opnast ekki sjálf aftur. Tengillinn neðst á síðunni ræsir hana þegar þú vilt.',
+  'settings.tour.restarted':
+    'Byrjum aftur á fyrsta skrefi, og þessi vafri gleymdi því að þú hefðir þegar séð hana.',
+  'customSources.presets': 'Tilbúin sniðmát',
+  'customSources.presetsCaption':
+    'Sniðmát sem aðrir lesendur deila, á rás þessarar uppsetningar. Enginn hér yfirfer þau: lestu sniðmát áður en þú bætir því við og mundu að það leitar úr þínum vafra.',
+  'footer.takeTheTour': 'Fara í kynninguna',
 };

@@ -478,4 +478,54 @@ export const ko: Dictionary = {
   'settings.status.session': '기억되지 않음',
   'settings.notRemembered':
     '이 브라우저가 기억하지 않았습니다. 다음에 책을 열면 원래대로 돌아갑니다.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': '다음',
+  'tour.back': '뒤로',
+  'tour.skip': '나중에',
+  'tour.finish': '완료',
+  'tour.close': '둘러보기 닫기',
+  'tour.welcome.title': 'Golden Library에 오신 것을 환영합니다',
+  'tour.welcome.text':
+    '일 분이면 무엇이 어디에 있는지 알게 됩니다. 이 사이트는 어떤 언어로 그 책이 존재하는지, 어디서 합법적으로 구할 수 있는지 찾아 줍니다. 어디를 뒤질지 알려 줄수록 잘 찾으니, 거기서부터 시작하죠.',
+  'tour.customSourcesNav.title': '자기 출처부터 시작하세요',
+  'tour.customSourcesNav.text':
+    '<strong>사용자 출처</strong>를 여세요. 기본 목록과 함께 어떤 카탈로그를 검색할지 여기서 정합니다.',
+  'tour.presets.title': '처음부터 쓸 필요는 없습니다',
+  'tour.presets.text':
+    '거기에는 이미 만들어진 서식이 올라옵니다. 서식은 그것을 쓴 사람의 것입니다. 이 사이트는 그 채널의 내용을 확인하지 않으며, 추가한 출처는 이 서버가 아니라 당신의 브라우저에서 검색합니다. 새 탭에서 열어 필요한 것을 가져온 뒤 돌아오세요.',
+  'tour.sourceForm.title': '칸 두 개면 끝입니다',
+  'tour.sourceForm.text':
+    '알아볼 이름과 검색 주소, 그리고 입력한 말이 들어갈 자리에 <strong>{query}</strong>. 지금 하나 추가하거나, 다음을 눌러 나중에 돌아와도 됩니다.',
+  'tour.sourceList.title': '추가한 것은 모두 여기 남습니다',
+  'tour.sourceList.text':
+    '출처는 아래에 나열되고 각각 끄거나 지울 수 있습니다. 이 브라우저 안에만 있고 서버로 보내지지 않습니다. 여기서는 아무도 볼 수 없고, 다른 기기에는 없습니다.',
+  'tour.addonsNav.title': '애드온은 한 걸음 더 나갑니다',
+  'tour.addonsNav.text':
+    '<strong>애드온</strong>을 여세요. 사용자 출처가 당신이 쓴 주소 하나라면, 애드온은 다른 사람이 만든 작은 프로그램으로 카탈로그를 제대로 검색할 수 있습니다.',
+  'tour.addons.title': '보기 전에는 아무것도 설치되지 않습니다',
+  'tour.addons.text':
+    '애드온 주소를 붙여 넣으면 그것이 무엇이고 어떤 호스트와 통신할지 이 양식이 보여 줍니다. 설치는 그다음입니다. 결과에는 언제나 그것을 내놓은 애드온의 이름이 붙습니다.',
+  'tour.shelfNav.title': '책장',
+  'tour.shelfNav.text': '바로 읽을 수 있는 카탈로그를 보려면 <strong>책장</strong>을 여세요.',
+  'tour.shelf.title': '공개 카탈로그, 그리고 당신의 카탈로그',
+  'tour.shelf.text':
+    '구텐베르크 프로젝트 같은 곳은 처음부터 들어 있습니다. 그 아래에는 어떤 OPDS 카탈로그든 추가할 수 있습니다. 이를테면 집 안 네트워크의 Calibre 서버 — 당신의 브라우저는 닿지만 이 사이트는 결코 닿지 않습니다.',
+  'tour.language.title': '열다섯 개 언어',
+  'tour.language.text':
+    '화면 언어는 언제든 여기서 바꿉니다. 이 사이트의 다른 설정과 마찬가지로 브라우저에 기록되어 즉시 적용되며, 그 사실을 알림으로 말해 줍니다. 브라우저가 저장을 거부한 경우에도 그렇습니다.',
+  'tour.done.title': '둘러보기는 여기까지입니다',
+  'tour.done.text':
+    '첫 화면에서 검색하세요. 찾은 책을 남겨 두고 싶다면 로그인하시고요. 어느 페이지든 맨 아래 링크로 이 둘러보기를 다시 시작할 수 있습니다.',
+  'settings.tour.title': '안내 둘러보기',
+  'settings.tour.finished':
+    '둘러보기를 마쳤으므로 저절로 다시 열리지 않습니다. 페이지 맨 아래 링크로 언제든 시작할 수 있습니다.',
+  'settings.tour.skipped':
+    '둘러보기를 닫았고 저절로 다시 열리지 않습니다. 페이지 맨 아래 링크로 언제든 시작할 수 있습니다.',
+  'settings.tour.restarted':
+    '첫 단계부터 다시 시작합니다. 이 브라우저는 당신이 이미 봤다는 사실을 잊었습니다.',
+  'customSources.presets': '이미 만들어진 서식',
+  'customSources.presetsCaption':
+    '이 인스턴스의 채널에서 다른 독자들이 공유하는 서식입니다. 여기서는 아무도 확인하지 않습니다. 추가하기 전에 읽어 보시고, 검색은 당신의 브라우저에서 이루어진다는 점을 기억하세요.',
+  'footer.takeTheTour': '둘러보기',
 };
