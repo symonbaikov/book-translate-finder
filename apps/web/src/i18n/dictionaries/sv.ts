@@ -490,4 +490,55 @@ export const sv: Dictionary = {
   'compare.rowEditionStatement': 'Utgåva',
   'home.genres': 'Populära genrer',
   'home.genresBlurb': 'De etiketter som har flest böcker bakom sig. Var och en öppnar sin katalog.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Vidare',
+  'tour.back': 'Tillbaka',
+  'tour.skip': 'Inte nu',
+  'tour.finish': 'Klart',
+  'tour.close': 'Stäng rundturen',
+  'tour.welcome.title': 'Välkommen till Golden Library',
+  'tour.welcome.text':
+    'En minut, så vet du var allt finns. Den här webbplatsen tar reda på vilka språk en bok finns på och var du får tag i den lagligt — och gör det desto bättre ju noggrannare du talar om var den ska leta. Så där börjar vi.',
+  'tour.customSourcesNav.title': 'Börja med dina egna källor',
+  'tour.customSourcesNav.text':
+    'Öppna <strong>Egna källor</strong> — sidan där du bestämmer vilka kataloger som genomsöks vid sidan av de inbyggda.',
+  'tour.presets.title': 'Du behöver inte börja från noll',
+  'tour.presets.text':
+    'Där publiceras färdiga mallar. De tillhör dem som skrev dem: den här webbplatsen kontrollerar ingenting i den kanalen, och en källa du lägger till söker från din webbläsare, inte från den här servern. Öppna i en ny flik, ta det du behöver och kom tillbaka.',
+  'tour.sourceForm.title': 'Två fält, sedan är det gjort',
+  'tour.sourceForm.text':
+    'Ett namn du känner igen och adressen till en sökning där <strong>{query}</strong> står där dina ord ska in. Lägg till en nu, eller tryck «Vidare» och återkom till det.',
+  'tour.sourceList.title': 'Allt du lägger till stannar här',
+  'tour.sourceList.text':
+    'Dina källor står nedan och var och en kan stängas av eller tas bort. De bor i den här webbläsaren och skickas aldrig till servern: ingen här ser dem, och på en annan enhet finns de inte.',
+  'tour.addonsNav.title': 'Tillägg går längre',
+  'tour.addonsNav.text':
+    'Öppna <strong>Tillägg</strong>. En egen källa är en adress du själv skrivit; ett tillägg är ett litet program skrivet av någon annan, som kan söka igenom en katalog på riktigt.',
+  'tour.addons.title': 'Ingenting installeras innan du har sett det',
+  'tour.addons.text':
+    'Klistra in adressen till ett tillägg, så visar formuläret vad det är och vilka värdar det kommer att prata med; först därefter installeras det. Dess resultat bär alltid namnet på tillägget som gav dem.',
+  'tour.shelfNav.title': 'Hyllan',
+  'tour.shelfNav.text':
+    'Öppna <strong>Hylla</strong> för att se katalogerna du kan läsa direkt ur.',
+  'tour.shelf.title': 'Öppna kataloger — och dina egna',
+  'tour.shelf.text':
+    'Project Gutenberg och dess likar finns här från början. Under dem kan du lägga till vilken OPDS-katalog som helst — till exempel en Calibre-server i ditt eget nät, som din webbläsare når och den här webbplatsen aldrig.',
+  'tour.language.title': 'Gränssnittets språk',
+  'tour.language.text':
+    'Byt det här när du vill. Som alla inställningar här skrivs det in i din webbläsare och gäller genast — och det sägs i en avisering, även när webbläsaren vägrade minnas det.',
+  'tour.done.title': 'Det var rundturen',
+  'tour.done.text':
+    'Sök från startsidan, och logga in om böckerna du hittar ska sparas. Länken längst ned på varje sida startar rundturen igen.',
+  'settings.tour.title': 'Den guidade rundturen',
+  'settings.tour.finished':
+    'Du har gått igenom rundturen, så den öppnas inte av sig själv igen. Länken längst ned på sidan startar den när du vill.',
+  'settings.tour.skipped':
+    'Rundturen är stängd och öppnas inte av sig själv igen. Länken längst ned på sidan startar den när du vill.',
+  'settings.tour.restarted':
+    'Vi börjar om från första steget, och den här webbläsaren har glömt att du redan sett den.',
+  'customSources.presets': 'Färdiga mallar',
+  'customSources.presetsCaption':
+    'Mallar som andra läsare delar, på den här instansens egen kanal. Ingen här granskar dem: läs en mall innan du lägger till den, och kom ihåg att den söker från din webbläsare.',
+  'footer.takeTheTour': 'Ta rundturen',
 };

@@ -493,4 +493,55 @@ export const fi: Dictionary = {
   'home.genres': 'Suositut lajityypit',
   'home.genresBlurb':
     'Ne tunnisteet, joiden takana on eniten kirjoja. Kukin avaa oman luettelonsa.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Seuraava',
+  'tour.back': 'Takaisin',
+  'tour.skip': 'Ei nyt',
+  'tour.finish': 'Valmis',
+  'tour.close': 'Sulje esittely',
+  'tour.welcome.title': 'Tervetuloa Golden Libraryyn',
+  'tour.welcome.text':
+    'Minuutti, ja tiedät missä mikin on. Tämä sivusto selvittää, millä kielillä kirja on olemassa ja mistä sen saa laillisesti — ja tekee sen sitä paremmin, mitä tarkemmin kerrot mistä etsiä. Siitä siis aloitamme.',
+  'tour.customSourcesNav.title': 'Aloita omista lähteistäsi',
+  'tour.customSourcesNav.text':
+    'Avaa <strong>Omat lähteet</strong> — sivu, jolla päätät mitä luetteloita haetaan sisäänrakennettujen rinnalla.',
+  'tour.presets.title': 'Tyhjästä ei tarvitse aloittaa',
+  'tour.presets.text':
+    'Siellä julkaistaan valmiita malleja. Ne kuuluvat niiden kirjoittajille: tämä sivusto ei tarkista kanavalla mitään, ja lisäämäsi lähde hakee sinun selaimestasi, ei tältä palvelimelta. Avaa uuteen välilehteen, ota tarvitsemasi ja palaa.',
+  'tour.sourceForm.title': 'Kaksi kenttää ja valmista',
+  'tour.sourceForm.text':
+    'Nimi, jonka tunnistat, ja haun osoite, jossa <strong>{query}</strong> on sanojesi paikalla. Lisää yksi nyt tai paina «Seuraava» ja palaa asiaan myöhemmin.',
+  'tour.sourceList.title': 'Kaikki lisäämäsi jää tänne',
+  'tour.sourceList.text':
+    'Lähteesi ovat alla ja jokaisen voi sammuttaa tai poistaa. Ne asuvat tässä selaimessa eivätkä koskaan lähde palvelimelle: kukaan täällä ei näe niitä, eikä toisella laitteella niitä ole.',
+  'tour.addonsNav.title': 'Lisäosat menevät pidemmälle',
+  'tour.addonsNav.text':
+    'Avaa <strong>Lisäosat</strong>. Oma lähde on yksi itse kirjoittamasi osoite; lisäosa on jonkun toisen kirjoittama pieni ohjelma, joka osaa hakea luettelosta kunnolla.',
+  'tour.addons.title': 'Mitään ei asenneta ennen kuin olet nähnyt sen',
+  'tour.addons.text':
+    'Liitä lisäosan osoite, ja lomake näyttää mikä se on ja mille palvelimille se puhuu; vasta sitten se asennetaan. Sen tulokset kantavat aina ne tuottaneen lisäosan nimeä.',
+  'tour.shelfNav.title': 'Hylly',
+  'tour.shelfNav.text':
+    'Avaa <strong>Hylly</strong> nähdäksesi luettelot, joista voit lukea suoraan.',
+  'tour.shelf.title': 'Avoimet luettelot ja omasi',
+  'tour.shelf.text':
+    'Project Gutenberg ja sen kaltaiset ovat täällä alusta asti. Niiden alle voit lisätä minkä tahansa OPDS-luettelon — vaikkapa Calibre-palvelimen omassa verkossasi, johon selaimesi yltää ja tämä sivusto ei koskaan.',
+  'tour.language.title': 'Käyttöliittymän kieli',
+  'tour.language.text':
+    'Vaihda se täältä milloin haluat. Kuten kaikki asetukset täällä, se kirjoitetaan selaimeesi ja astuu voimaan heti — ja se kerrotaan ilmoituksessa, myös silloin kun selain kieltäytyi muistamasta sitä.',
+  'tour.done.title': 'Siinä oli esittely',
+  'tour.done.text':
+    'Hae etusivulta, ja kirjaudu sisään jos haluat löytämiesi kirjojen säilyvän. Minkä tahansa sivun alalaidan linkki käynnistää tämän esittelyn uudelleen.',
+  'settings.tour.title': 'Opastettu esittely',
+  'settings.tour.finished':
+    'Olet käynyt esittelyn läpi, joten se ei avaudu enää itsestään. Sivun alalaidan linkki käynnistää sen milloin haluat.',
+  'settings.tour.skipped':
+    'Esittely on suljettu eikä avaudu enää itsestään. Sivun alalaidan linkki käynnistää sen milloin haluat.',
+  'settings.tour.restarted':
+    'Aloitetaan uudelleen ensimmäisestä vaiheesta, ja tämä selain unohti että olit jo nähnyt sen.',
+  'customSources.presets': 'Valmiit mallit',
+  'customSources.presetsCaption':
+    'Muiden lukijoiden jakamia malleja tämän instanssin omalla kanavalla. Kukaan täällä ei tarkista niitä: lue malli ennen lisäämistä ja muista, että se hakee sinun selaimestasi.',
+  'footer.takeTheTour': 'Katso esittely',
 };

@@ -489,4 +489,55 @@ export const lv: Dictionary = {
   'compare.rowEditionStatement': 'Izdevums',
   'home.genres': 'Populāri žanri',
   'home.genresBlurb': 'Birkas, aiz kurām ir visvairāk grāmatu. Katra atver savu katalogu.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Tālāk',
+  'tour.back': 'Atpakaļ',
+  'tour.skip': 'Ne tagad',
+  'tour.finish': 'Gatavs',
+  'tour.close': 'Aizvērt apskatu',
+  'tour.welcome.title': 'Laipni lūdzam Golden Library',
+  'tour.welcome.text':
+    'Minūte — un jūs zināsiet, kur kas atrodas. Šī vietne noskaidro, kādās valodās grāmata pastāv un kur to iegūt likumīgi, un dara to jo labāk, jo precīzāk pateiksiet, kur meklēt. Ar to arī sākam.',
+  'tour.customSourcesNav.title': 'Sāciet ar saviem avotiem',
+  'tour.customSourcesNav.text':
+    'Atveriet <strong>Savi avoti</strong> — lapu, kurā izlemjat, kuros katalogos meklēt līdzās iebūvētajiem.',
+  'tour.presets.title': 'No nulles rakstīt nav obligāti',
+  'tour.presets.text':
+    'Tur tiek publicētas gatavas veidnes. Tās pieder tiem, kas tās uzrakstījuši: šī vietne tajā kanālā neko nepārbauda, un pievienotais avots meklē no jūsu pārlūka, nevis no šī servera. Atveriet jaunā cilnē, paņemiet vajadzīgo un atgriezieties.',
+  'tour.sourceForm.title': 'Divi lauki — un viss',
+  'tour.sourceForm.text':
+    'Jums atpazīstams nosaukums un meklēšanas adrese, kurā <strong>{query}</strong> stāv jūsu vārdu vietā. Pievienojiet tagad vai nospiediet «Tālāk» un atgriezieties pie tā vēlāk.',
+  'tour.sourceList.title': 'Viss pievienotais paliek šeit',
+  'tour.sourceList.text':
+    'Jūsu avoti ir uzskaitīti zemāk, katru var izslēgt vai izdzēst. Tie mīt šajā pārlūkā un nekad neaizceļo uz serveri: šeit tos neviens neredz, bet citā ierīcē to nebūs.',
+  'tour.addonsNav.title': 'Papildinājumi iet tālāk',
+  'tour.addonsNav.text':
+    'Atveriet <strong>Papildinājumi</strong>. Savs avots ir viena jūsu uzrakstīta adrese; papildinājums ir cita cilvēka rakstīta neliela programma, kas prot katalogā meklēt pa īstam.',
+  'tour.addons.title': 'Nekas netiek instalēts, kamēr neesat to redzējis',
+  'tour.addons.text':
+    'Ielīmējiet papildinājuma adresi, un šī forma parādīs, kas tas ir un ar kuriem serveriem tas runās; tikai pēc tam tas tiek instalēts. Tā rezultāti vienmēr nes tā papildinājuma vārdu, kurš tos devis.',
+  'tour.shelfNav.title': 'Plaukts',
+  'tour.shelfNav.text':
+    'Atveriet <strong>Plauktu</strong>, lai redzētu katalogus, no kuriem varat lasīt tieši.',
+  'tour.shelf.title': 'Atvērtie katalogi un jūsu paša',
+  'tour.shelf.text':
+    'Gūtenberga projekts un tam līdzīgie šeit ir jau no paša sākuma. Zemāk varat pievienot jebkuru OPDS katalogu — piemēram, Calibre serveri savā tīklā: līdz tam aizsniedzas jūsu pārlūks, bet šī vietne — nekad.',
+  'tour.language.title': 'Saskarnes valoda',
+  'tour.language.text':
+    'Mainiet to šeit jebkurā brīdī. Tāpat kā visi šīs vietnes iestatījumi, tā tiek ierakstīta jūsu pārlūkā un stājas spēkā uzreiz — un par to pasaka paziņojumā, arī tad, kad pārlūks atteicās to atcerēties.',
+  'tour.done.title': 'Tas arī bija viss apskats',
+  'tour.done.text':
+    'Meklējiet no sākumlapas, un pieteicieties, ja vēlaties, lai atrastās grāmatas saglabātos. Saite jebkuras lapas apakšā palaiž šo apskatu no jauna.',
+  'settings.tour.title': 'Apskats ar gidu',
+  'settings.tour.finished':
+    'Apskatu esat izgājis, tāpēc pats tas vairs neatvērsies. Saite lapas apakšā to palaiž, kad vien vēlaties.',
+  'settings.tour.skipped':
+    'Apskats ir aizvērts un pats vairs neatvērsies. Saite lapas apakšā to palaiž, kad vien vēlaties.',
+  'settings.tour.restarted':
+    'Sākam no pirmā soļa, un šis pārlūks aizmirsa, ka jūs to jau bijāt redzējis.',
+  'customSources.presets': 'Gatavas veidnes',
+  'customSources.presetsCaption':
+    'Veidnes, ar kurām dalās citi lasītāji, šīs vietnes kanālā. Šeit tās neviens nepārbauda: izlasiet veidni pirms pievienošanas un atcerieties, ka meklēs tā no jūsu pārlūka.',
+  'footer.takeTheTour': 'Iziet apskatu',
 };

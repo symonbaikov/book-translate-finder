@@ -487,4 +487,55 @@ export const pl: Dictionary = {
   'settings.status.session': 'Niezapamiętane',
   'settings.notRemembered':
     'Ta przeglądarka nie zapamiętała tego — przy następnej książce wszystko wróci do poprzedniego stanu.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Dalej',
+  'tour.back': 'Wstecz',
+  'tour.skip': 'Nie teraz',
+  'tour.finish': 'Gotowe',
+  'tour.close': 'Zamknij przewodnik',
+  'tour.welcome.title': 'Witamy w Golden Library',
+  'tour.welcome.text':
+    'Minuta i będziesz wiedzieć, co gdzie jest. Ta strona sprawdza, w jakich językach istnieje książka i gdzie zdobyć ją legalnie — a robi to tym lepiej, im dokładniej powiesz jej, gdzie szukać. Od tego zaczynamy.',
+  'tour.customSourcesNav.title': 'Zacznij od własnych źródeł',
+  'tour.customSourcesNav.text':
+    'Otwórz <strong>Własne źródła</strong> — stronę, na której decydujesz, jakie katalogi są przeszukiwane obok wbudowanych.',
+  'tour.presets.title': 'Nie musisz pisać od zera',
+  'tour.presets.text':
+    'Publikowane są tam gotowe szablony. Należą do tych, którzy je napisali: ta strona niczego w tym kanale nie sprawdza, a dodane źródło szuka z twojej przeglądarki, nie z tego serwera. Otwórz w nowej karcie, weź, co potrzebne, i wróć.',
+  'tour.sourceForm.title': 'Dwa pola i gotowe',
+  'tour.sourceForm.text':
+    'Nazwa, którą rozpoznasz, i adres wyszukiwania, w którym <strong>{query}</strong> stoi w miejscu twoich słów. Dodaj źródło teraz albo naciśnij „Dalej” i wróć do tego później.',
+  'tour.sourceList.title': 'Wszystko, co dodasz, zostaje tutaj',
+  'tour.sourceList.text':
+    'Twoje źródła są niżej i każde można wyłączyć albo usunąć. Mieszkają w tej przeglądarce i nigdy nie trafiają na serwer: nikt ich tu nie widzi, a na innym urządzeniu ich nie będzie.',
+  'tour.addonsNav.title': 'Dodatki idą dalej',
+  'tour.addonsNav.text':
+    'Otwórz <strong>Dodatki</strong>. Własne źródło to jeden adres, który sam napisałeś; dodatek to mały program napisany przez kogoś innego, który potrafi naprawdę przeszukać katalog.',
+  'tour.addons.title': 'Nic nie instaluje się, zanim tego nie zobaczysz',
+  'tour.addons.text':
+    'Wklej adres dodatku, a ten formularz pokaże, czym jest i z jakimi hostami będzie rozmawiał; dopiero potem następuje instalacja. Jego wyniki zawsze są podpisane nazwą dodatku, który je zwrócił.',
+  'tour.shelfNav.title': 'Półka',
+  'tour.shelfNav.text':
+    'Otwórz <strong>Półkę</strong>, by zobaczyć katalogi, z których można czytać bezpośrednio.',
+  'tour.shelf.title': 'Otwarte katalogi i twoje własne',
+  'tour.shelf.text':
+    'Projekt Gutenberg i jemu podobne są tu od początku. Poniżej możesz dodać dowolny katalog OPDS — na przykład serwer Calibre w twojej sieci, do którego sięga twoja przeglądarka, a ta strona nigdy.',
+  'tour.language.title': 'Piętnaście języków',
+  'tour.language.text':
+    'Język interfejsu zmienisz tutaj w każdej chwili. Jak każde ustawienie na tej stronie zapisuje się w twojej przeglądarce i działa od razu — i mówi o tym w powiadomieniu, także wtedy, gdy przeglądarka odmówiła zapamiętania.',
+  'tour.done.title': 'To cały przewodnik',
+  'tour.done.text':
+    'Szukaj ze strony głównej, a jeśli chcesz zachowywać znalezione książki — zaloguj się. Odnośnik na dole każdej strony uruchamia ten przewodnik od nowa.',
+  'settings.tour.title': 'Przewodnik po stronie',
+  'settings.tour.finished':
+    'Przeszedłeś przewodnik, więc sam się już nie otworzy. Odnośnik na dole strony uruchamia go, kiedy zechcesz.',
+  'settings.tour.skipped':
+    'Przewodnik został zamknięty i sam się już nie otworzy. Odnośnik na dole strony uruchamia go, kiedy zechcesz.',
+  'settings.tour.restarted':
+    'Zaczynamy od pierwszego kroku, a ta przeglądarka zapomniała, że już go widziałeś.',
+  'customSources.presets': 'Gotowe szablony',
+  'customSources.presetsCaption':
+    'Szablony, którymi dzielą się inni czytelnicy, w kanale tej instancji. Nikt ich tu nie sprawdza: przeczytaj szablon, zanim go dodasz, i pamiętaj, że szukać będzie z twojej przeglądarki.',
+  'footer.takeTheTour': 'Zobacz przewodnik',
 };

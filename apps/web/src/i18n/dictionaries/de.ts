@@ -509,4 +509,55 @@ export const de: Dictionary = {
   'settings.status.session': 'Nicht gemerkt',
   'settings.notRemembered':
     'Dieser Browser wollte es sich nicht merken — beim nächsten Buch ist wieder alles wie vorher.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Weiter',
+  'tour.back': 'Zurück',
+  'tour.skip': 'Jetzt nicht',
+  'tour.finish': 'Fertig',
+  'tour.close': 'Tour schließen',
+  'tour.welcome.title': 'Willkommen in der Golden Library',
+  'tour.welcome.text':
+    'Eine Minute, und Sie wissen, wo hier was steht. Die Seite findet, in welchen Sprachen ein Buch existiert und wo es legal zu bekommen ist — und das umso besser, je genauer Sie ihr sagen, wo sie suchen soll. Damit fangen wir an.',
+  'tour.customSourcesNav.title': 'Beginnen Sie mit eigenen Quellen',
+  'tour.customSourcesNav.text':
+    'Öffnen Sie <strong>Eigene Quellen</strong>: die Seite, auf der Sie entscheiden, welche Kataloge zusätzlich zu den eingebauten durchsucht werden.',
+  'tour.presets.title': 'Sie müssen nichts bei null anfangen',
+  'tour.presets.text':
+    'Dort werden fertige Vorlagen veröffentlicht. Sie gehören denen, die sie geschrieben haben: Diese Seite prüft in diesem Kanal nichts, und eine Quelle, die Sie hinzufügen, sucht von Ihrem Browser aus, nicht von diesem Server. In einem neuen Tab öffnen, mitnehmen, was Sie brauchen, und zurückkommen.',
+  'tour.sourceForm.title': 'Zwei Felder, und es steht',
+  'tour.sourceForm.text':
+    'Ein Name, den Sie wiedererkennen, und die Adresse einer Suche, in der <strong>{query}</strong> dort steht, wo Ihre Wörter hingehören. Fügen Sie jetzt eine hinzu oder klicken Sie auf „Weiter“ und kommen später darauf zurück.',
+  'tour.sourceList.title': 'Alles Hinzugefügte bleibt hier',
+  'tour.sourceList.text':
+    'Ihre Quellen stehen unten, jede lässt sich abschalten oder entfernen. Sie liegen in diesem Browser und gehen nie an den Server: Hier sieht sie niemand, und auf einem anderen Gerät sind sie nicht vorhanden.',
+  'tour.addonsNav.title': 'Add-ons gehen weiter',
+  'tour.addonsNav.text':
+    'Öffnen Sie <strong>Add-ons</strong>. Eine eigene Quelle ist eine URL, die Sie geschrieben haben; ein Add-on ist ein kleines Programm von jemand anderem, das einen Katalog richtig durchsuchen kann.',
+  'tour.addons.title': 'Nichts wird installiert, bevor Sie es gesehen haben',
+  'tour.addons.text':
+    'Fügen Sie die Adresse eines Add-ons ein, und dieses Formular zeigt Ihnen, was es ist und mit welchen Hosts es sprechen wird; erst danach wird installiert. Seine Ergebnisse tragen immer den Namen des Add-ons, das sie geliefert hat.',
+  'tour.shelfNav.title': 'Das Regal',
+  'tour.shelfNav.text':
+    'Öffnen Sie <strong>Regal</strong>, um die Kataloge zu sehen, aus denen Sie direkt lesen können.',
+  'tour.shelf.title': 'Offene Kataloge und Ihre eigenen',
+  'tour.shelf.text':
+    'Das Projekt Gutenberg und seinesgleichen sind von Anfang an da. Darunter können Sie jeden OPDS-Katalog eintragen — etwa einen Calibre-Server in Ihrem Netz, den Ihr Browser erreicht und diese Seite nie.',
+  'tour.language.title': 'Fünfzehn Sprachen',
+  'tour.language.text':
+    'Die Sprache der Oberfläche ändern Sie hier jederzeit. Wie jede Einstellung hier wird sie in Ihren Browser geschrieben und gilt sofort — und sagt es in einer Meldung, auch dann, wenn der Browser sich weigert, sie zu behalten.',
+  'tour.done.title': 'Das war die Tour',
+  'tour.done.text':
+    'Suchen Sie von der Startseite aus, und melden Sie sich an, wenn gefundene Bücher aufgehoben werden sollen. Der Link am Fuß jeder Seite startet diese Tour erneut.',
+  'settings.tour.title': 'Die geführte Tour',
+  'settings.tour.finished':
+    'Sie haben die Tour durchlaufen, von allein öffnet sie sich nicht wieder. Der Link am Fuß der Seite startet sie, wann immer Sie wollen.',
+  'settings.tour.skipped':
+    'Die Tour ist geschlossen und öffnet sich nicht von allein wieder. Der Link am Fuß der Seite startet sie, wann immer Sie wollen.',
+  'settings.tour.restarted':
+    'Wir beginnen wieder beim ersten Schritt; dieser Browser hat vergessen, dass Sie die Tour schon gesehen hatten.',
+  'customSources.presets': 'Fertige Vorlagen',
+  'customSources.presetsCaption':
+    'Vorlagen, die andere Lesende teilen, im Kanal dieser Instanz. Hier prüft sie niemand: Lesen Sie eine Vorlage, bevor Sie sie übernehmen, und denken Sie daran, dass sie von Ihrem Browser aus sucht.',
+  'footer.takeTheTour': 'Tour ansehen',
 };

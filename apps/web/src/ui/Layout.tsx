@@ -116,11 +116,18 @@ export function PosterRow({
 export function Stack({
   className,
   children,
+  ...rest
 }: {
   className?: string | undefined;
   children: ReactNode;
+  /** For the onboarding tour to point at a block of the page — see lib/tour-targets.ts. */
+  'data-tour'?: string;
 }) {
-  return <div className={cx(styles.stack, className)}>{children}</div>;
+  return (
+    <div {...rest} className={cx(styles.stack, className)}>
+      {children}
+    </div>
+  );
 }
 
 /** A wrapping horizontal group: chips, badges, a pair of buttons. */

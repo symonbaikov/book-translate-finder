@@ -491,4 +491,55 @@ export const cs: Dictionary = {
   'compare.rowEditionStatement': 'Vydání',
   'home.genres': 'Oblíbené žánry',
   'home.genresBlurb': 'Štítky, za nimiž stojí nejvíc knih. Každý z nich otevře svůj katalog.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Dál',
+  'tour.back': 'Zpět',
+  'tour.skip': 'Teď ne',
+  'tour.finish': 'Hotovo',
+  'tour.close': 'Zavřít prohlídku',
+  'tour.welcome.title': 'Vítejte v Golden Library',
+  'tour.welcome.text':
+    'Minuta a budete vědět, kde co je. Tenhle web zjišťuje, v jakých jazycích kniha existuje a kde ji získat legálně — a dělá to tím lépe, čím přesněji mu řeknete, kde má hledat. Tím tedy začneme.',
+  'tour.customSourcesNav.title': 'Začněte vlastními zdroji',
+  'tour.customSourcesNav.text':
+    'Otevřete <strong>Vlastní zdroje</strong> — stránku, kde rozhodujete, které katalogy se prohledávají vedle vestavěných.',
+  'tour.presets.title': 'Psát od nuly není nutné',
+  'tour.presets.text':
+    'Zveřejňují se tam hotové šablony. Patří těm, kdo je napsali: tento web na onom kanálu nic nekontroluje a zdroj, který přidáte, hledá z vašeho prohlížeče, ne z tohoto serveru. Otevřete na nové kartě, vezměte si, co potřebujete, a vraťte se.',
+  'tour.sourceForm.title': 'Dvě pole a je to',
+  'tour.sourceForm.text':
+    'Název, který poznáte, a adresa hledání, kde <strong>{query}</strong> stojí na místě vašich slov. Přidejte jeden hned, nebo stiskněte «Dál» a vraťte se k tomu později.',
+  'tour.sourceList.title': 'Všechno přidané zůstává tady',
+  'tour.sourceList.text':
+    'Vaše zdroje jsou níže a každý se dá vypnout nebo smazat. Žijí v tomto prohlížeči a nikdy neodcházejí na server: tady je nikdo nevidí a na jiném zařízení nebudou.',
+  'tour.addonsNav.title': 'Doplňky jdou dál',
+  'tour.addonsNav.text':
+    'Otevřete <strong>Doplňky</strong>. Vlastní zdroj je jedna adresa, kterou jste napsali; doplněk je malý program od někoho jiného, který umí katalog opravdu prohledat.',
+  'tour.addons.title': 'Nic se neinstaluje, dokud si to neprohlédnete',
+  'tour.addons.text':
+    'Vložte adresu doplňku a formulář ukáže, co to je a s jakými hosty bude mluvit; teprve pak se instaluje. Jeho výsledky vždy nesou jméno doplňku, který je dodal.',
+  'tour.shelfNav.title': 'Police',
+  'tour.shelfNav.text':
+    'Otevřete <strong>Polici</strong> a uvidíte katalogy, ze kterých lze číst přímo.',
+  'tour.shelf.title': 'Otevřené katalogy i ty vaše',
+  'tour.shelf.text':
+    'Projekt Gutenberg a jemu podobné tu jsou od začátku. Pod nimi můžete přidat libovolný katalog OPDS — třeba server Calibre ve vaší síti: dosáhne na něj váš prohlížeč, tento web nikdy.',
+  'tour.language.title': 'Jazyk rozhraní',
+  'tour.language.text':
+    'Měňte ho tady, kdykoli chcete. Jako každé nastavení na tomto webu se zapíše do vašeho prohlížeče a platí okamžitě — a řekne to v hlášce, i když prohlížeč odmítne si ho zapamatovat.',
+  'tour.done.title': 'A to je celá prohlídka',
+  'tour.done.text':
+    'Hledejte z úvodní stránky a přihlaste se, pokud chcete nalezené knihy uchovat. Odkaz v patičce kterékoli stránky prohlídku spustí znovu.',
+  'settings.tour.title': 'Prohlídka s průvodcem',
+  'settings.tour.finished':
+    'Prohlídku máte za sebou, sama se už neotevře. Odkaz v patičce ji spustí, kdykoli budete chtít.',
+  'settings.tour.skipped':
+    'Prohlídka je zavřená a sama se už neotevře. Odkaz v patičce ji spustí, kdykoli budete chtít.',
+  'settings.tour.restarted':
+    'Začínáme znovu od prvního kroku a tento prohlížeč zapomněl, že jste ji už viděli.',
+  'customSources.presets': 'Hotové šablony',
+  'customSources.presetsCaption':
+    'Šablony, které sdílejí ostatní čtenáři, na kanálu této instance. Nikdo je tu nekontroluje: přečtěte si šablonu, než ji přidáte, a mějte na paměti, že hledat bude z vašeho prohlížeče.',
+  'footer.takeTheTour': 'Projít prohlídku',
 };

@@ -495,4 +495,55 @@ export const hu: Dictionary = {
   'home.genres': 'Népszerű műfajok',
   'home.genresBlurb':
     'Azok a címkék, amelyek mögött a legtöbb könyv áll. Mindegyik megnyitja a saját katalógusát.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Tovább',
+  'tour.back': 'Vissza',
+  'tour.skip': 'Most nem',
+  'tour.finish': 'Kész',
+  'tour.close': 'Bemutató bezárása',
+  'tour.welcome.title': 'Üdvözöljük a Golden Library-ben',
+  'tour.welcome.text':
+    'Egy perc, és tudni fogja, mi hol van. Ez az oldal megkeresi, milyen nyelveken létezik egy könyv és hol szerezhető be legálisan — és annál jobban teszi ezt, minél pontosabban megmondja neki, hol keressen. Ezzel is kezdjük.',
+  'tour.customSourcesNav.title': 'Kezdje a saját forrásaival',
+  'tour.customSourcesNav.text':
+    'Nyissa meg a <strong>Saját források</strong> oldalt — itt dönti el, mely katalógusokban keressen a beépítettek mellett.',
+  'tour.presets.title': 'Nem kell nulláról írni',
+  'tour.presets.text':
+    'Ott kész sablonokat tesznek közzé. Azoké, akik írták őket: ez az oldal semmit nem ellenőriz azon a csatornán, a hozzáadott forrás pedig az Ön böngészőjéből keres, nem erről a kiszolgálóról. Nyissa meg új lapon, vigye el, amire szüksége van, és jöjjön vissza.',
+  'tour.sourceForm.title': 'Két mező, és kész',
+  'tour.sourceForm.text':
+    'Egy név, amit felismer, és egy keresés címe, amelyben a <strong>{query}</strong> áll az Ön szavai helyén. Adjon hozzá egyet most, vagy nyomja meg a «Tovább» gombot, és térjen vissza rá.',
+  'tour.sourceList.title': 'Minden hozzáadott itt marad',
+  'tour.sourceList.text':
+    'A forrásai lent sorakoznak, mindegyik kikapcsolható vagy törölhető. Ebben a böngészőben élnek, és soha nem kerülnek a kiszolgálóra: itt senki nem látja őket, másik eszközön pedig nem lesznek ott.',
+  'tour.addonsNav.title': 'A kiegészítők tovább mennek',
+  'tour.addonsNav.text':
+    'Nyissa meg a <strong>Kiegészítők</strong> oldalt. A saját forrás egyetlen cím, amit Ön írt; a kiegészítő egy más által írt kis program, amely rendesen tud keresni egy katalógusban.',
+  'tour.addons.title': 'Semmi nem települ, amíg meg nem nézte',
+  'tour.addons.text':
+    'Illessze be egy kiegészítő címét, és az űrlap megmutatja, mi az és mely kiszolgálókkal fog beszélni; a telepítés csak ezután jön. Az eredményei mindig annak a kiegészítőnek a nevét viselik, amelyik adta őket.',
+  'tour.shelfNav.title': 'A polc',
+  'tour.shelfNav.text':
+    'Nyissa meg a <strong>Polc</strong> oldalt, hogy lássa, mely katalógusokból olvashat közvetlenül.',
+  'tour.shelf.title': 'Nyílt katalógusok és a sajátjai',
+  'tour.shelf.text':
+    'A Gutenberg projekt és társai a kezdetektől itt vannak. Alattuk bármilyen OPDS-katalógust hozzáadhat — például egy Calibre kiszolgálót a saját hálózatán, amelyet az Ön böngészője elér, ez az oldal pedig soha.',
+  'tour.language.title': 'A felület nyelve',
+  'tour.language.text':
+    'Itt változtathatja meg, amikor csak akarja. Mint minden beállítás itt, ez is a böngészőjébe íródik és azonnal érvényes — és ezt egy értesítés meg is mondja, akkor is, ha a böngésző nem volt hajlandó megjegyezni.',
+  'tour.done.title': 'Ennyi volt a bemutató',
+  'tour.done.text':
+    'Keressen a kezdőlapról, és jelentkezzen be, ha meg szeretné őrizni a megtalált könyveket. Bármelyik oldal alján lévő hivatkozás újraindítja ezt a bemutatót.',
+  'settings.tour.title': 'A vezetett bemutató',
+  'settings.tour.finished':
+    'Végignézte a bemutatót, így magától többé nem nyílik meg. Az oldal alján lévő hivatkozás elindítja, amikor csak szeretné.',
+  'settings.tour.skipped':
+    'A bemutató bezárult, és magától többé nem nyílik meg. Az oldal alján lévő hivatkozás elindítja, amikor csak szeretné.',
+  'settings.tour.restarted':
+    'Az első lépéstől kezdjük újra, és ez a böngésző elfelejtette, hogy már látta.',
+  'customSources.presets': 'Kész sablonok',
+  'customSources.presetsCaption':
+    'Más olvasók által megosztott sablonok, ennek a példánynak a saját csatornáján. Itt senki nem ellenőrzi őket: olvassa el a sablont, mielőtt hozzáadja, és ne feledje, hogy az Ön böngészőjéből fog keresni.',
+  'footer.takeTheTour': 'Nézze meg a bemutatót',
 };

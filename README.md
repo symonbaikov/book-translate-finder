@@ -40,7 +40,7 @@ Golden Library acts as an open, universal front-end for global digital archives,
 
 - **No Paywalls or Walled Gardens:** Bring your own custom search templates or domain mirrors using simple URL placeholders ({title}, {isbn}) to query your preferred digital catalogs.
 - **Uncensored Search Engine:** You control where the search queries go. Bypasses restricted regional catalog views by letting you use your preferred domain mirrors.
-- **Community Presets Available:** Don't want to configure sources manually? Grab ready-to-use search templates directly from our [Telegram Channel](https://t.me/YOUR_CHANNEL).
+- **Community Presets Available:** Don't want to configure sources manually? Grab ready-to-use search templates directly from our [Telegram Channel](https://t.me/YOUR_CHANNEL). An instance links to a channel only if its operator sets `NEXT_PUBLIC_COMMUNITY_PRESETS_URL` (see [apps/web/.env.example](apps/web/.env.example)); with the variable unset, the custom sources page shows no such link and the first-run tour skips that step — this repository ships no catalogue of sources and links to none ([legal policy](docs/legal-policy.md) §I-3).
 
 ## Legal policy
 

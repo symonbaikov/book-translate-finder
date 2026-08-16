@@ -489,4 +489,55 @@ export const pt: Dictionary = {
   'settings.status.session': 'Não memorizado',
   'settings.notRemembered':
     'Este navegador não quis memorizá-lo: da próxima vez que abrir um livro estará como antes.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Seguinte',
+  'tour.back': 'Voltar',
+  'tour.skip': 'Agora não',
+  'tour.finish': 'Pronto',
+  'tour.close': 'Fechar a visita',
+  'tour.welcome.title': 'Bem-vindo à Golden Library',
+  'tour.welcome.text':
+    'Um minuto e saberá onde está cada coisa. Este site descobre em que línguas um livro existe e onde obtê-lo legalmente — e fá-lo tanto melhor quanto mais lhe disser onde procurar. É por aí que começamos.',
+  'tour.customSourcesNav.title': 'Comece pelas suas fontes',
+  'tour.customSourcesNav.text':
+    'Abra <strong>Fontes próprias</strong>: a página onde decide que catálogos são consultados além dos de origem.',
+  'tour.presets.title': 'Não precisa de escrever do zero',
+  'tour.presets.text':
+    'Aí publicam-se modelos já feitos. Pertencem a quem os escreveu: este site não verifica nada nesse canal, e uma fonte que acrescente pesquisa a partir do seu navegador, não deste servidor. Abra-o noutro separador, leve o que precisar e volte.',
+  'tour.sourceForm.title': 'Dois campos e está feito',
+  'tour.sourceForm.text':
+    'Um nome que reconheça e o endereço de uma pesquisa com <strong>{query}</strong> no lugar das suas palavras. Acrescente uma agora ou carregue em Seguinte e volte a isto depois.',
+  'tour.sourceList.title': 'Tudo o que acrescentar fica aqui',
+  'tour.sourceList.text':
+    'As suas fontes estão listadas abaixo e cada uma pode ser desligada ou removida. Vivem neste navegador e nunca vão para o servidor: aqui ninguém as vê, e outro dispositivo não as terá.',
+  'tour.addonsNav.title': 'As extensões vão mais longe',
+  'tour.addonsNav.text':
+    'Abra <strong>Extensões</strong>. Uma fonte própria é um endereço que escreveu; uma extensão é um pequeno programa escrito por outra pessoa, capaz de consultar um catálogo a sério.',
+  'tour.addons.title': 'Nada é instalado antes de o ter visto',
+  'tour.addons.text':
+    'Cole o endereço de uma extensão e este formulário mostra-lhe o que é e com que servidores vai falar; só depois é instalada. Os resultados dela trazem sempre o nome da extensão que os produziu.',
+  'tour.shelfNav.title': 'A estante',
+  'tour.shelfNav.text':
+    'Abra <strong>Estante</strong> para ver os catálogos a partir dos quais pode ler diretamente.',
+  'tour.shelf.title': 'Catálogos abertos, e os seus',
+  'tour.shelf.text':
+    'O Projeto Gutenberg e afins estão cá desde o início. Por baixo pode acrescentar qualquer catálogo OPDS — por exemplo um servidor Calibre na sua rede, ao qual o seu navegador chega e este site nunca.',
+  'tour.language.title': 'Quinze línguas',
+  'tour.language.text':
+    'Mude aqui a língua da interface quando quiser. Como todas as definições deste site, é escrita no seu navegador e vale de imediato — e di-lo num aviso, mesmo quando o navegador se recusa a guardá-la.',
+  'tour.done.title': 'A visita acaba aqui',
+  'tour.done.text':
+    'Pesquise a partir da página inicial e inicie sessão se quiser guardar os livros que encontrar. A ligação no fim de qualquer página recomeça esta visita.',
+  'settings.tour.title': 'A visita guiada',
+  'settings.tour.finished':
+    'Já fez a visita, por isso não voltará a abrir-se sozinha. A ligação no fim da página recomeça-a quando quiser.',
+  'settings.tour.skipped':
+    'A visita está fechada e não voltará a abrir-se sozinha. A ligação no fim da página recomeça-a quando quiser.',
+  'settings.tour.restarted':
+    'Recomeçamos do primeiro passo, e este navegador esqueceu que já a tinha visto.',
+  'customSources.presets': 'Modelos já feitos',
+  'customSources.presetsCaption':
+    'Modelos que outros leitores partilham, no canal desta instância. Aqui ninguém os verifica: leia um antes de o acrescentar e lembre-se de que vai pesquisar a partir do seu navegador.',
+  'footer.takeTheTour': 'Fazer a visita',
 };

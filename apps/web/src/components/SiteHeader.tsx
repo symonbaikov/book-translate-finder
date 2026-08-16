@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { logout } from '../lib/auth-client';
 import { useSession } from './SessionProvider';
 import { useT } from '../i18n/I18nProvider';
+import { tourTarget } from '../lib/tour-targets';
 import { LanguageSelector } from './LanguageSelector';
 import { Logo } from './Logo';
 import { Button, Container } from '../ui';
@@ -33,13 +34,16 @@ export function SiteHeader() {
         <nav className={styles.nav}>
           {/* The language selector is not gated on the session check — it must be usable while
               the account state is still unknown, which is most of the first paint. */}
-          <Link href="/shelf" className={styles.link}>
+          {/* The `data-tour` attributes are the onboarding walkthrough's only hold on this file:
+              it finds these three links by name rather than by position or class, so reordering
+              the navigation cannot silently point the tour at the wrong one (lib/tour-targets.ts). */}
+          <Link href="/shelf" className={styles.link} {...tourTarget('navShelf')}>
             {t('nav.shelf')}
           </Link>
-          <Link href="/addons" className={styles.link}>
+          <Link href="/addons" className={styles.link} {...tourTarget('navAddons')}>
             {t('nav.addons')}
           </Link>
-          <Link href="/custom-sources" className={styles.link}>
+          <Link href="/custom-sources" className={styles.link} {...tourTarget('navCustomSources')}>
             {t('nav.customSources')}
           </Link>
           <LanguageSelector />

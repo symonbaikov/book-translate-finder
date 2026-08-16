@@ -482,4 +482,54 @@ export const ja: Dictionary = {
   'settings.status.session': '次回は戻ります',
   'settings.notRemembered':
     'このブラウザーは記憶しませんでした。次に本を開くときは元の状態に戻ります。',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': '次へ',
+  'tour.back': '戻る',
+  'tour.skip': '今はしない',
+  'tour.finish': '完了',
+  'tour.close': 'ツアーを閉じる',
+  'tour.welcome.title': 'Golden Library へようこそ',
+  'tour.welcome.text':
+    '一分あれば、どこに何があるか分かります。このサイトは、本がどの言語で存在し、どこで合法的に手に入るかを調べます。どこを探すか教えるほど精度は上がるので、まずはそこから始めましょう。',
+  'tour.customSourcesNav.title': 'まずは自分の情報源から',
+  'tour.customSourcesNav.text':
+    '<strong>カスタム情報源</strong>を開いてください。標準のカタログに加えてどのカタログを検索するかを、ここで決めます。',
+  'tour.presets.title': '一から書く必要はありません',
+  'tour.presets.text':
+    'そこには出来合いのテンプレートが公開されています。テンプレートは書いた人のものです。このサイトはそのチャンネルの中身を一切検査せず、追加した情報源はこのサーバーではなくあなたのブラウザーから検索します。新しいタブで開き、必要なものを持ち帰ってください。',
+  'tour.sourceForm.title': '欄は二つだけ',
+  'tour.sourceForm.text':
+    '自分で分かる名前と、検索用のアドレス。入力した語が入る位置に <strong>{query}</strong> を置きます。今すぐ追加しても、「次へ」を押して後で戻っても構いません。',
+  'tour.sourceList.title': '追加したものはここに残ります',
+  'tour.sourceList.text':
+    '情報源は下に並び、どれも個別に停止・削除できます。このブラウザーの中だけに保存され、サーバーへ送られることはありません。こちらからは誰にも見えず、別の端末にも現れません。',
+  'tour.addonsNav.title': 'アドオンはもう一歩先へ',
+  'tour.addonsNav.text':
+    '<strong>アドオン</strong>を開いてください。カスタム情報源が自分で書いた一つのURLなのに対し、アドオンは他人が書いた小さなプログラムで、カタログをきちんと検索できます。',
+  'tour.addons.title': '中身を見るまで何もインストールしません',
+  'tour.addons.text':
+    'アドオンのアドレスを貼ると、それが何であり、どのホストと通信するかをこのフォームが示します。インストールはその後です。結果には常に、それを返したアドオンの名前が付きます。',
+  'tour.shelfNav.title': '本棚',
+  'tour.shelfNav.text': '直接読めるカタログを見るには<strong>本棚</strong>を開いてください。',
+  'tour.shelf.title': '公開カタログと、あなた自身のカタログ',
+  'tour.shelf.text':
+    'プロジェクト・グーテンベルクなどは最初から入っています。その下には任意の OPDS カタログを追加できます。たとえば自宅ネットワークの Calibre サーバー——あなたのブラウザーは届きますが、このサイトは決して届きません。',
+  'tour.language.title': '十五の言語',
+  'tour.language.text':
+    '表示言語はいつでもここで変えられます。このサイトのどの設定とも同じく、ブラウザーに書き込まれてすぐ有効になり、そのことをポップアップが伝えます。ブラウザーが保存を拒んだ場合も同じです。',
+  'tour.done.title': 'ツアーは以上です',
+  'tour.done.text':
+    'ホームから検索してください。見つけた本を後で読み返したいならサインインを。どのページでも最下部のリンクからこのツアーをやり直せます。',
+  'settings.tour.title': 'ガイドツアー',
+  'settings.tour.finished':
+    'ツアーを最後まで見たので、もう自動では開きません。ページ下部のリンクからいつでも始められます。',
+  'settings.tour.skipped':
+    'ツアーを閉じました。もう自動では開きません。ページ下部のリンクからいつでも始められます。',
+  'settings.tour.restarted':
+    '最初の手順からやり直します。このブラウザーは、あなたがすでに見たことを忘れました。',
+  'customSources.presets': '出来合いのテンプレート',
+  'customSources.presetsCaption':
+    'この運営者のチャンネルで、ほかの読者が共有しているテンプレートです。ここでは誰も検査していません。追加する前に中身を読み、検索があなたのブラウザーから行われることを忘れずに。',
+  'footer.takeTheTour': 'ツアーを見る',
 };

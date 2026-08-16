@@ -10,6 +10,7 @@ import { I18nProvider } from '../i18n/I18nProvider';
 import { getDictionary } from '../i18n/server';
 import { isRtl } from '../i18n/locales';
 import { makeTranslate } from '../i18n/dictionary';
+import { OnboardingTour } from '../components/OnboardingTour';
 import { SessionProvider } from '../components/SessionProvider';
 import { SettingsToaster } from '../components/SettingsToaster';
 import { SiteFooter } from '../components/SiteFooter';
@@ -67,12 +68,19 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <SessionProvider>
             <SiteHeader />
             {children}
+            {/* The footer is inside the provider rather than after it because it now holds a
+                client control — the link back into the walkthrough — and a client component
+                outside falls back to the English dictionary, which would leave one English
+                sentence at the bottom of a Japanese page. */}
+            <SiteFooter />
             {/* Inside the provider: every popup is written by the same dictionary as the page
                 that triggered it. */}
             <SettingsToaster dir={isRtl(locale) ? 'rtl' : 'ltr'} />
+            {/* Last, and mounted once for the whole application: the walkthrough crosses four
+                routes, and this is the only place that survives all of them. */}
+            <OnboardingTour />
           </SessionProvider>
         </I18nProvider>
-        <SiteFooter />
       </body>
     </html>
   );

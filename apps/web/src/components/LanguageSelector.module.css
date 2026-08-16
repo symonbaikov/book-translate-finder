@@ -4,3 +4,9 @@
 .selector {
   max-inline-size: 11rem;
 }
+
+/* The tour's handle on this control. `inline-flex` and nothing else: it must take exactly the
+   selector's own box, or the ring the tour draws around it would enclose empty space. */
+.anchor {
+  display: inline-flex;
+}

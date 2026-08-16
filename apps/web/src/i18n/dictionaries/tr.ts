@@ -484,4 +484,54 @@ export const tr: Dictionary = {
   'settings.status.session': 'Hatırlanmadı',
   'settings.notRemembered':
     'Bu tarayıcı bunu hatırlamak istemedi: bir sonraki kitabı açtığınızda her şey eskisi gibi olacak.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'İleri',
+  'tour.back': 'Geri',
+  'tour.skip': 'Şimdi değil',
+  'tour.finish': 'Bitti',
+  'tour.close': 'Turu kapat',
+  'tour.welcome.title': 'Golden Library’ye hoş geldiniz',
+  'tour.welcome.text':
+    'Bir dakika, ve neyin nerede olduğunu bileceksiniz. Bu site bir kitabın hangi dillerde bulunduğunu ve yasal olarak nereden edinileceğini bulur — nerede arayacağını siz söyledikçe de bunu daha iyi yapar. O yüzden oradan başlıyoruz.',
+  'tour.customSourcesNav.title': 'Kendi kaynaklarınızla başlayın',
+  'tour.customSourcesNav.text':
+    '<strong>Kendi kaynaklarım</strong> sayfasını açın: yerleşik kataloglara ek olarak hangi katalogların aranacağına burada siz karar verirsiniz.',
+  'tour.presets.title': 'Sıfırdan yazmanız gerekmez',
+  'tour.presets.text':
+    'Orada hazır şablonlar yayımlanıyor. Şablonlar onları yazanlara aittir: bu site o kanalda hiçbir şeyi denetlemez ve eklediğiniz bir kaynak bu sunucudan değil, sizin tarayıcınızdan arar. Yeni sekmede açın, işinize yarayanı alın ve geri dönün.',
+  'tour.sourceForm.title': 'İki alan, hepsi bu',
+  'tour.sourceForm.text':
+    'Tanıyacağınız bir ad ve bir aramanın adresi — sözcüklerinizin gireceği yerde <strong>{query}</strong> duracak. Şimdi bir tane ekleyin ya da İleri’ye basıp sonra dönün.',
+  'tour.sourceList.title': 'Eklediğiniz her şey burada kalır',
+  'tour.sourceList.text':
+    'Kaynaklarınız aşağıda listelenir; her biri kapatılabilir ya da silinebilir. Bu tarayıcıda dururlar ve hiçbir zaman sunucuya gitmezler: buradan kimse göremez, başka bir cihazda da bulunmazlar.',
+  'tour.addonsNav.title': 'Eklentiler daha ileri gider',
+  'tour.addonsNav.text':
+    '<strong>Eklentiler</strong>i açın. Kendi kaynağınız sizin yazdığınız bir adrestir; eklenti ise başkasının yazdığı, bir kataloğu gerçekten arayabilen küçük bir programdır.',
+  'tour.addons.title': 'Siz görmeden hiçbir şey kurulmaz',
+  'tour.addons.text':
+    'Bir eklentinin adresini yapıştırın; bu form size onun ne olduğunu ve hangi sunucularla konuşacağını gösterir, kurulum ancak ondan sonra olur. Sonuçları her zaman onları getiren eklentinin adıyla etiketlenir.',
+  'tour.shelfNav.title': 'Raf',
+  'tour.shelfNav.text':
+    'Doğrudan okuyabileceğiniz katalogları görmek için <strong>Raf</strong>ı açın.',
+  'tour.shelf.title': 'Açık kataloglar ve sizinkiler',
+  'tour.shelf.text':
+    'Gutenberg Projesi ve benzerleri en baştan buradadır. Altına istediğiniz OPDS kataloğunu ekleyebilirsiniz — örneğin kendi ağınızdaki bir Calibre sunucusu: ona tarayıcınız ulaşır, bu site asla.',
+  'tour.language.title': 'On beş dil',
+  'tour.language.text':
+    'Arayüz dilini istediğiniz zaman buradan değiştirin. Buradaki her ayar gibi tarayıcınıza yazılır ve hemen geçerli olur — ve bunu bir bildirimle söyler, tarayıcı saklamayı reddettiğinde de.',
+  'tour.done.title': 'Tur bu kadar',
+  'tour.done.text':
+    'Ana sayfadan arayın; bulduğunuz kitapların saklanmasını istiyorsanız oturum açın. Her sayfanın altındaki bağlantı bu turu yeniden başlatır.',
+  'settings.tour.title': 'Rehberli tur',
+  'settings.tour.finished':
+    'Turu tamamladınız, artık kendiliğinden açılmayacak. Sayfanın altındaki bağlantı istediğinizde onu başlatır.',
+  'settings.tour.skipped':
+    'Tur kapatıldı ve artık kendiliğinden açılmayacak. Sayfanın altındaki bağlantı istediğinizde onu başlatır.',
+  'settings.tour.restarted': 'İlk adımdan yeniden başlıyoruz; bu tarayıcı turu gördüğünüzü unuttu.',
+  'customSources.presets': 'Hazır şablonlar',
+  'customSources.presetsCaption':
+    'Bu kopyanın kendi kanalında, başka okurların paylaştığı şablonlar. Burada kimse onları denetlemiyor: eklemeden önce okuyun ve aramanın sizin tarayıcınızdan yapılacağını unutmayın.',
+  'footer.takeTheTour': 'Turu izle',
 };

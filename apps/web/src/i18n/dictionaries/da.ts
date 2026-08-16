@@ -485,4 +485,55 @@ export const da: Dictionary = {
   'compare.rowEditionStatement': 'Udgave',
   'home.genres': 'Populære genrer',
   'home.genresBlurb': 'De tags med flest bøger bag sig. Hvert af dem åbner sit katalog.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Videre',
+  'tour.back': 'Tilbage',
+  'tour.skip': 'Ikke nu',
+  'tour.finish': 'Færdig',
+  'tour.close': 'Luk rundvisningen',
+  'tour.welcome.title': 'Velkommen til Golden Library',
+  'tour.welcome.text':
+    'Et minut, så ved du, hvor tingene er. Siden finder ud af, hvilke sprog en bog findes på, og hvor du får fat i den lovligt — og den gør det bedre, jo mere præcist du fortæller den, hvor den skal lede. Så det er der, vi begynder.',
+  'tour.customSourcesNav.title': 'Begynd med dine egne kilder',
+  'tour.customSourcesNav.text':
+    'Åbn <strong>Egne kilder</strong> — siden, hvor du bestemmer, hvilke kataloger der søges i ved siden af de indbyggede.',
+  'tour.presets.title': 'Du behøver ikke starte forfra',
+  'tour.presets.text':
+    'Der offentliggøres færdige skabeloner. De tilhører dem, der har skrevet dem: denne side kontrollerer intet på den kanal, og en kilde, du tilføjer, søger fra din browser, ikke fra denne server. Åbn i en ny fane, tag det, du skal bruge, og kom tilbage.',
+  'tour.sourceForm.title': 'To felter, så er det gjort',
+  'tour.sourceForm.text':
+    'Et navn, du kan genkende, og adressen på en søgning, hvor <strong>{query}</strong> står, hvor dine ord skal ind. Tilføj en nu, eller tryk «Videre» og vend tilbage til det.',
+  'tour.sourceList.title': 'Alt, du tilføjer, bliver her',
+  'tour.sourceList.text':
+    'Dine kilder står nedenfor, og hver enkelt kan slås fra eller fjernes. De bor i denne browser og sendes aldrig til serveren: ingen her kan se dem, og på en anden enhed findes de ikke.',
+  'tour.addonsNav.title': 'Tilføjelser går videre',
+  'tour.addonsNav.text':
+    'Åbn <strong>Tilføjelser</strong>. En egen kilde er én adresse, du selv har skrevet; en tilføjelse er et lille program skrevet af en anden, som kan søge et katalog ordentligt igennem.',
+  'tour.addons.title': 'Intet installeres, før du har set det',
+  'tour.addons.text':
+    'Indsæt adressen på en tilføjelse, og formularen viser dig, hvad den er, og hvilke værter den vil tale med; først derefter installeres den. Dens resultater bærer altid navnet på den tilføjelse, der leverede dem.',
+  'tour.shelfNav.title': 'Reolen',
+  'tour.shelfNav.text':
+    'Åbn <strong>Reol</strong> for at se de kataloger, du kan læse direkte fra.',
+  'tour.shelf.title': 'Åbne kataloger — og dine egne',
+  'tour.shelf.text':
+    'Project Gutenberg og dets lige er her fra begyndelsen. Nedenunder kan du tilføje et hvilket som helst OPDS-katalog — for eksempel en Calibre-server på dit eget netværk, som din browser når, og som denne side aldrig når.',
+  'tour.language.title': 'Grænsefladens sprog',
+  'tour.language.text':
+    'Skift det her, når du vil. Som alle indstillinger her skrives det ind i din browser og gælder med det samme — og det siges i en besked, også når browseren nægter at huske det.',
+  'tour.done.title': 'Det var rundvisningen',
+  'tour.done.text':
+    'Søg fra forsiden, og log ind, hvis de bøger, du finder, skal gemmes. Linket nederst på enhver side starter rundvisningen igen.',
+  'settings.tour.title': 'Den guidede rundvisning',
+  'settings.tour.finished':
+    'Du har været rundvisningen igennem, så den åbner ikke af sig selv igen. Linket nederst på siden starter den, når du vil.',
+  'settings.tour.skipped':
+    'Rundvisningen er lukket og åbner ikke af sig selv igen. Linket nederst på siden starter den, når du vil.',
+  'settings.tour.restarted':
+    'Vi begynder forfra ved første trin, og denne browser har glemt, at du havde set den.',
+  'customSources.presets': 'Færdige skabeloner',
+  'customSources.presetsCaption':
+    'Skabeloner, som andre læsere deler, på denne instans’ egen kanal. Ingen her kontrollerer dem: læs en skabelon, før du tilføjer den, og husk, at den søger fra din browser.',
+  'footer.takeTheTour': 'Tag rundvisningen',
 };

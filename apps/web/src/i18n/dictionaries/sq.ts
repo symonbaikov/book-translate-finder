@@ -490,4 +490,55 @@ export const sq: Dictionary = {
   'compare.rowEditionStatement': 'Botim',
   'home.genres': 'Zhanre të njohura',
   'home.genresBlurb': 'Etiketat me më shumë libra pas tyre. Secila hap katalogun e vet.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Më tej',
+  'tour.back': 'Mbrapa',
+  'tour.skip': 'Jo tani',
+  'tour.finish': 'Gati',
+  'tour.close': 'Mbyll turin',
+  'tour.welcome.title': 'Mirë se vini në Golden Library',
+  'tour.welcome.text':
+    'Një minutë dhe do ta dini se ku është çfarë. Kjo faqe gjen se në cilat gjuhë ekziston një libër dhe ku mund ta merrni ligjërisht — dhe e bën këtë aq më mirë sa më saktë t’i thoni ku të kërkojë. Prandaj nisim që andej.',
+  'tour.customSourcesNav.title': 'Nisni nga burimet tuaja',
+  'tour.customSourcesNav.text':
+    'Hapni <strong>Burimet e mia</strong> — faqen ku vendosni cilat katalogë kërkohen krahas atyre të integruar.',
+  'tour.presets.title': 'Nuk ju duhet të shkruani nga e para',
+  'tour.presets.text':
+    'Atje botohen shabllone të gatshme. U përkasin atyre që i shkruan: kjo faqe nuk kontrollon asgjë në atë kanal, ndërsa një burim që shtoni kërkon nga shfletuesi juaj, jo nga ky server. Hapeni në një skedë të re, merrni çfarë ju duhet dhe kthehuni.',
+  'tour.sourceForm.title': 'Dy fusha dhe kaq',
+  'tour.sourceForm.text':
+    'Një emër që do ta njihni dhe adresa e një kërkimi ku <strong>{query}</strong> qëndron në vend të fjalëve tuaja. Shtoni një tani, ose shtypni «Më tej» dhe kthehuni më vonë.',
+  'tour.sourceList.title': 'Gjithçka që shtoni mbetet këtu',
+  'tour.sourceList.text':
+    'Burimet tuaja janë më poshtë dhe secili mund të fiket ose të hiqet. Rrojnë në këtë shfletues dhe nuk shkojnë kurrë te serveri: këtu nuk i sheh askush dhe në një pajisje tjetër nuk do të jenë.',
+  'tour.addonsNav.title': 'Shtesat shkojnë më larg',
+  'tour.addonsNav.text':
+    'Hapni <strong>Shtesat</strong>. Burimi juaj është një adresë që e shkruat vetë; shtesa është një program i vogël i dikujt tjetër, që di ta kërkojë vërtet një katalog.',
+  'tour.addons.title': 'Asgjë nuk instalohet para se ta shihni',
+  'tour.addons.text':
+    'Ngjitni adresën e një shtese dhe kjo formë ju tregon çfarë është dhe me cilët serverë do të flasë; vetëm pastaj instalohet. Rezultatet e saj mbajnë gjithmonë emrin e shtesës që i dha.',
+  'tour.shelfNav.title': 'Rafti',
+  'tour.shelfNav.text':
+    'Hapni <strong>Raftin</strong> për të parë katalogët nga të cilët mund të lexoni drejtpërdrejt.',
+  'tour.shelf.title': 'Katalogë të hapur dhe tuajt',
+  'tour.shelf.text':
+    'Projekti Gutenberg dhe të ngjashmit janë këtu që në fillim. Poshtë tyre mund të shtoni çdo katalog OPDS — për shembull një server Calibre në rrjetin tuaj: tek ai arrin shfletuesi juaj, kurse kjo faqe kurrë.',
+  'tour.language.title': 'Gjuha e ndërfaqes',
+  'tour.language.text':
+    'Ndryshojeni këtu kurdo që doni. Si çdo cilësim këtu, shkruhet në shfletuesin tuaj dhe vlen menjëherë — dhe kjo thuhet në një njoftim, edhe kur shfletuesi nuk pranoi ta mbante mend.',
+  'tour.done.title': 'Ky ishte turi',
+  'tour.done.text':
+    'Kërkoni nga faqja kryesore dhe hyni në llogari nëse doni që librat e gjetur të ruhen. Lidhja në fund të çdo faqeje e nis këtë tur nga e para.',
+  'settings.tour.title': 'Turi me udhërrëfyes',
+  'settings.tour.finished':
+    'E keni kaluar turin, prandaj nuk do të hapet më vetë. Lidhja në fund të faqes e nis kurdo që doni.',
+  'settings.tour.skipped':
+    'Turi u mbyll dhe nuk do të hapet më vetë. Lidhja në fund të faqes e nis kurdo që doni.',
+  'settings.tour.restarted':
+    'Po nisim nga hapi i parë, dhe ky shfletues harroi se e kishit parë tashmë.',
+  'customSources.presets': 'Shabllone të gatshme',
+  'customSources.presetsCaption':
+    'Shabllone që i ndajnë lexues të tjerë, në kanalin e kësaj instance. Këtu nuk i kontrollon askush: lexojeni një shabllon para se ta shtoni dhe mbani mend se do të kërkojë nga shfletuesi juaj.',
+  'footer.takeTheTour': 'Bëni turin',
 };

@@ -1,5 +1,6 @@
 import { getT } from '../i18n/server';
 import { Container } from '../ui';
+import { TourRestartLink } from './TourRestartLink';
 import styles from './SiteFooter.module.css';
 
 const REPOSITORY_URL = 'https://github.com/symonbaikov/golden-library';
@@ -39,12 +40,17 @@ export async function SiteFooter() {
           works; copyrighted books — purchase or library lending. Every link carries an explicit
           rights status.
         </p>
-        <a className={styles.repo} href={REPOSITORY_URL} rel="noopener noreferrer">
-          <GitHubMark />
-          <span>
-            <strong>{t('footer.openSource')}</strong> {t('footer.openSourceRest')}
-          </span>
-        </a>
+        <div className={styles.links}>
+          <a className={styles.repo} href={REPOSITORY_URL} rel="noopener noreferrer">
+            <GitHubMark />
+            <span>
+              <strong>{t('footer.openSource')}</strong> {t('footer.openSourceRest')}
+            </span>
+          </a>
+          {/* The only way back into the first-run walkthrough once it has been dismissed — it is
+              remembered in the reader's browser, so no account screen could offer it instead. */}
+          <TourRestartLink />
+        </div>
       </Container>
     </footer>
   );

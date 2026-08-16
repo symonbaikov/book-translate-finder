@@ -487,4 +487,54 @@ export const no: Dictionary = {
   'compare.rowEditionStatement': 'Utgave',
   'home.genres': 'Populære sjangre',
   'home.genresBlurb': 'Merkelappene med flest bøker bak seg. Hver av dem åpner katalogen sin.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Videre',
+  'tour.back': 'Tilbake',
+  'tour.skip': 'Ikke nå',
+  'tour.finish': 'Ferdig',
+  'tour.close': 'Lukk omvisningen',
+  'tour.welcome.title': 'Velkommen til Golden Library',
+  'tour.welcome.text':
+    'Ett minutt, så vet du hvor ting er. Nettstedet finner ut hvilke språk en bok finnes på og hvor du får tak i den lovlig — og gjør det desto bedre jo mer presist du sier hvor det skal lete. Så der begynner vi.',
+  'tour.customSourcesNav.title': 'Begynn med dine egne kilder',
+  'tour.customSourcesNav.text':
+    'Åpne <strong>Egne kilder</strong> — siden der du bestemmer hvilke kataloger som søkes i ved siden av de innebygde.',
+  'tour.presets.title': 'Du trenger ikke begynne fra bunnen',
+  'tour.presets.text':
+    'Der publiseres ferdige maler. De tilhører dem som skrev dem: dette nettstedet kontrollerer ingenting på den kanalen, og en kilde du legger til søker fra din nettleser, ikke fra denne tjeneren. Åpne i en ny fane, ta det du trenger, og kom tilbake.',
+  'tour.sourceForm.title': 'To felt, så er det gjort',
+  'tour.sourceForm.text':
+    'Et navn du kjenner igjen, og adressen til et søk der <strong>{query}</strong> står der ordene dine skal inn. Legg til én nå, eller trykk «Videre» og kom tilbake til det.',
+  'tour.sourceList.title': 'Alt du legger til blir her',
+  'tour.sourceList.text':
+    'Kildene dine står nedenfor, og hver enkelt kan slås av eller fjernes. De bor i denne nettleseren og sendes aldri til tjeneren: ingen her ser dem, og på en annen enhet finnes de ikke.',
+  'tour.addonsNav.title': 'Tillegg går lenger',
+  'tour.addonsNav.text':
+    'Åpne <strong>Tillegg</strong>. En egen kilde er én adresse du har skrevet; et tillegg er et lite program skrevet av noen andre, som kan søke gjennom en katalog ordentlig.',
+  'tour.addons.title': 'Ingenting installeres før du har sett det',
+  'tour.addons.text':
+    'Lim inn adressen til et tillegg, og skjemaet viser deg hva det er og hvilke verter det vil snakke med; først da installeres det. Resultatene bærer alltid navnet på tillegget som ga dem.',
+  'tour.shelfNav.title': 'Hyllen',
+  'tour.shelfNav.text': 'Åpne <strong>Hylle</strong> for å se katalogene du kan lese direkte fra.',
+  'tour.shelf.title': 'Åpne kataloger — og dine egne',
+  'tour.shelf.text':
+    'Project Gutenberg og dets like er her fra starten. Under dem kan du legge til hvilken som helst OPDS-katalog — for eksempel en Calibre-tjener på ditt eget nett, som nettleseren din når og dette nettstedet aldri.',
+  'tour.language.title': 'Grensesnittets språk',
+  'tour.language.text':
+    'Bytt det her når du vil. Som alle innstillinger her skrives det inn i nettleseren din og gjelder straks — og det sies i en melding, også når nettleseren nektet å huske det.',
+  'tour.done.title': 'Det var omvisningen',
+  'tour.done.text':
+    'Søk fra forsiden, og logg inn hvis bøkene du finner skal tas vare på. Lenken nederst på enhver side starter omvisningen på nytt.',
+  'settings.tour.title': 'Den guidede omvisningen',
+  'settings.tour.finished':
+    'Du har vært gjennom omvisningen, så den åpner seg ikke av seg selv igjen. Lenken nederst på siden starter den når du vil.',
+  'settings.tour.skipped':
+    'Omvisningen er lukket og åpner seg ikke av seg selv igjen. Lenken nederst på siden starter den når du vil.',
+  'settings.tour.restarted':
+    'Vi begynner på nytt fra første steg, og denne nettleseren har glemt at du hadde sett den.',
+  'customSources.presets': 'Ferdige maler',
+  'customSources.presetsCaption':
+    'Maler som andre lesere deler, på kanalen til denne instansen. Ingen her kontrollerer dem: les en mal før du legger den til, og husk at den søker fra din nettleser.',
+  'footer.takeTheTour': 'Ta omvisningen',
 };

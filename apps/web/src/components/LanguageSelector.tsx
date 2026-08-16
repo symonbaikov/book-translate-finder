@@ -7,6 +7,7 @@ import { useLocale, useT } from '../i18n/I18nProvider';
 import { writeCookie } from '../lib/cookies';
 import { outcomeOfWrite } from '../lib/setting-change';
 import { useSettingChangeToast } from '../lib/settings-toast';
+import { tourTarget } from '../lib/tour-targets';
 import { Select } from '../ui';
 import styles from './LanguageSelector.module.css';
 
@@ -47,16 +48,20 @@ export function LanguageSelector() {
   }
 
   return (
-    <Select
-      size="compact"
-      bare
-      align="end"
-      value={locale}
-      onChange={change}
-      disabled={pending}
-      aria-label={t('nav.language')}
-      className={styles.selector}
-      options={LOCALES.map((code) => ({ value: code, label: LOCALE_NAMES[code] }))}
-    />
+    // The wrapper exists only so the onboarding tour has an element to highlight: `Select` takes a
+    // fixed set of props and is not going to grow a pass-through for one caller's data attribute.
+    <div {...tourTarget('navLanguage')} className={styles.anchor}>
+      <Select
+        size="compact"
+        bare
+        align="end"
+        value={locale}
+        onChange={change}
+        disabled={pending}
+        aria-label={t('nav.language')}
+        className={styles.selector}
+        options={LOCALES.map((code) => ({ value: code, label: LOCALE_NAMES[code] }))}
+      />
+    </div>
   );
 }

@@ -15,6 +15,7 @@ import { useT } from '../i18n/I18nProvider';
 import type { Translate } from '../i18n/dictionary';
 import { outcomeOfWrite } from '../lib/setting-change';
 import { useSettingChangeToast, type AnnounceSettingChange } from '../lib/settings-toast';
+import { tourTarget } from '../lib/tour-targets';
 
 /**
  * Module A in the page.
@@ -104,7 +105,7 @@ export function OpdsShelf() {
     <div>
       <p className="muted">{t('shelf.intro')}</p>
 
-      <section style={{ marginTop: '1rem' }}>
+      <section style={{ marginTop: '1rem' }} {...tourTarget('shelfCatalogs')}>
         <h2>{t('shelf.openCatalogs')}</h2>
         <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
           {builtIn.map((feed) => (

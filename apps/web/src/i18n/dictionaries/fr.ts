@@ -504,4 +504,55 @@ export const fr: Dictionary = {
   'settings.status.session': 'Non mémorisé',
   'settings.notRemembered':
     'Ce navigateur n’a pas voulu s’en souvenir : à la prochaine ouverture d’un livre, tout sera comme avant.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Suivant',
+  'tour.back': 'Retour',
+  'tour.skip': 'Pas maintenant',
+  'tour.finish': 'Terminé',
+  'tour.close': 'Fermer la visite',
+  'tour.welcome.title': 'Bienvenue dans Golden Library',
+  'tour.welcome.text':
+    'Une minute, et vous saurez où se trouve quoi. Ce site cherche dans quelles langues un livre existe et où l’obtenir légalement — et il le fait d’autant mieux que vous lui dites où chercher. C’est donc par là que nous commençons.',
+  'tour.customSourcesNav.title': 'Commencez par vos propres sources',
+  'tour.customSourcesNav.text':
+    'Ouvrez <strong>Sources personnalisées</strong> : la page où vous décidez quels catalogues sont interrogés en plus de ceux d’origine.',
+  'tour.presets.title': 'Inutile de partir de zéro',
+  'tour.presets.text':
+    'Des modèles tout prêts y sont publiés. Ils appartiennent à ceux qui les ont écrits : ce site ne vérifie rien sur ce canal, et une source que vous ajoutez cherche depuis votre navigateur, pas depuis ce serveur. Ouvrez-le dans un nouvel onglet, prenez ce qu’il vous faut, puis revenez.',
+  'tour.sourceForm.title': 'Deux champs et c’est fait',
+  'tour.sourceForm.text':
+    'Un nom que vous reconnaîtrez, et l’adresse d’une recherche où <strong>{query}</strong> tient la place de vos mots. Ajoutez-en une maintenant, ou passez au suivant et revenez-y.',
+  'tour.sourceList.title': 'Tout ce que vous ajoutez reste ici',
+  'tour.sourceList.text':
+    'Vos sources sont listées ci-dessous et chacune peut être désactivée ou supprimée. Elles vivent dans ce navigateur et ne partent jamais vers le serveur : personne ici ne les voit, et un autre appareil ne les aura pas.',
+  'tour.addonsNav.title': 'Les extensions vont plus loin',
+  'tour.addonsNav.text':
+    'Ouvrez <strong>Extensions</strong>. Une source personnalisée est une URL que vous avez écrite ; une extension est un petit programme écrit par quelqu’un d’autre, capable d’interroger un catalogue pour de bon.',
+  'tour.addons.title': 'Rien n’est installé avant que vous l’ayez vu',
+  'tour.addons.text':
+    'Collez l’adresse d’une extension : ce formulaire vous montre ce qu’elle est et à quels hôtes elle parlera, et l’installation ne vient qu’ensuite. Ses résultats portent toujours le nom de l’extension qui les a produits.',
+  'tour.shelfNav.title': 'L’étagère',
+  'tour.shelfNav.text':
+    'Ouvrez <strong>Étagère</strong> pour voir les catalogues dont vous pouvez lire directement.',
+  'tour.shelf.title': 'Catalogues ouverts, et les vôtres',
+  'tour.shelf.text':
+    'Le projet Gutenberg et ses semblables sont là dès le départ. En dessous, vous pouvez ajouter n’importe quel catalogue OPDS — par exemple un serveur Calibre sur votre propre réseau, que votre navigateur atteint et que ce site n’atteint jamais.',
+  'tour.language.title': 'Quinze langues',
+  'tour.language.text':
+    'Changez ici la langue de l’interface quand vous voulez. Comme chaque réglage de ce site, elle s’écrit dans votre navigateur et s’applique aussitôt — et le dit dans une bulle, y compris lorsque le navigateur refuse de la retenir.',
+  'tour.done.title': 'Voilà pour la visite',
+  'tour.done.text':
+    'Cherchez depuis la page d’accueil, et connectez-vous si vous voulez garder les livres trouvés. Le lien en bas de page relance cette visite.',
+  'settings.tour.title': 'La visite guidée',
+  'settings.tour.finished':
+    'Vous avez fait la visite : elle ne s’ouvrira plus d’elle-même. Le lien en bas de page la relance quand vous le souhaitez.',
+  'settings.tour.skipped':
+    'La visite est fermée et ne s’ouvrira plus d’elle-même. Le lien en bas de page la relance quand vous le souhaitez.',
+  'settings.tour.restarted':
+    'On repart de la première étape, et ce navigateur a oublié que vous l’aviez déjà vue.',
+  'customSources.presets': 'Modèles tout prêts',
+  'customSources.presetsCaption':
+    'Des modèles que d’autres lecteurs partagent, sur le canal de cette instance. Personne ici ne les vérifie : lisez-en un avant de l’ajouter, et rappelez-vous qu’il cherchera depuis votre navigateur.',
+  'footer.takeTheTour': 'Faire la visite',
 };

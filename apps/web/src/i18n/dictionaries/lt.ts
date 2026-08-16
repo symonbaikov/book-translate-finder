@@ -491,4 +491,55 @@ export const lt: Dictionary = {
   'compare.rowEditionStatement': 'Leidimas',
   'home.genres': 'Populiarūs žanrai',
   'home.genresBlurb': 'Žymos, už kurių yra daugiausia knygų. Kiekviena atveria savo katalogą.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Toliau',
+  'tour.back': 'Atgal',
+  'tour.skip': 'Ne dabar',
+  'tour.finish': 'Baigta',
+  'tour.close': 'Uždaryti apžvalgą',
+  'tour.welcome.title': 'Sveiki atvykę į Golden Library',
+  'tour.welcome.text':
+    'Minutė — ir žinosite, kas kur yra. Ši svetainė suranda, kokiomis kalbomis knyga egzistuoja ir kur ją gauti teisėtai, o daro tai tuo geriau, kuo tiksliau pasakysite, kur ieškoti. Nuo to ir pradedame.',
+  'tour.customSourcesNav.title': 'Pradėkite nuo savo šaltinių',
+  'tour.customSourcesNav.text':
+    'Atverkite <strong>Savi šaltiniai</strong> — puslapį, kuriame nusprendžiate, kuriuose kataloguose ieškoma greta įtaisytųjų.',
+  'tour.presets.title': 'Rašyti nuo nulio nebūtina',
+  'tour.presets.text':
+    'Ten skelbiami paruošti šablonai. Jie priklauso tiems, kurie juos parašė: ši svetainė tame kanale nieko netikrina, o pridėtas šaltinis ieško iš jūsų naršyklės, ne iš šio serverio. Atverkite naujoje kortelėje, pasiimkite, ko reikia, ir grįžkite.',
+  'tour.sourceForm.title': 'Du laukai — ir viskas',
+  'tour.sourceForm.text':
+    'Jums atpažįstamas pavadinimas ir paieškos adresas, kuriame <strong>{query}</strong> stovi jūsų žodžių vietoje. Pridėkite dabar arba spauskite «Toliau» ir grįžkite prie to vėliau.',
+  'tour.sourceList.title': 'Visa, ką pridedate, lieka čia',
+  'tour.sourceList.text':
+    'Jūsų šaltiniai išvardyti žemiau, kiekvieną galima išjungti arba pašalinti. Jie gyvena šioje naršyklėje ir niekada nekeliauja į serverį: čia jų niekas nemato, o kitame įrenginyje jų nebus.',
+  'tour.addonsNav.title': 'Priedai eina toliau',
+  'tour.addonsNav.text':
+    'Atverkite <strong>Priedai</strong>. Savas šaltinis — vienas jūsų parašytas adresas; priedas — kito žmogaus parašyta maža programa, mokanti kataloge ieškoti iš tikrųjų.',
+  'tour.addons.title': 'Niekas neįdiegiama, kol nepamatėte',
+  'tour.addons.text':
+    'Įklijuokite priedo adresą ir ši forma parodys, kas tai yra ir su kuriais serveriais jis kalbėsis; tik tada jis įdiegiamas. Jo rezultatai visada pažymėti juos pateikusio priedo vardu.',
+  'tour.shelfNav.title': 'Lentyna',
+  'tour.shelfNav.text':
+    'Atverkite <strong>Lentyną</strong>, kad pamatytumėte katalogus, iš kurių galima skaityti tiesiogiai.',
+  'tour.shelf.title': 'Atviri katalogai ir jūsų pačių',
+  'tour.shelf.text':
+    'Gutenbergo projektas ir jam panašūs čia yra nuo pat pradžių. Žemiau galite pridėti bet kurį OPDS katalogą — pavyzdžiui, Calibre serverį savo tinkle: jį pasiekia jūsų naršyklė, o ši svetainė — niekada.',
+  'tour.language.title': 'Sąsajos kalba',
+  'tour.language.text':
+    'Keiskite ją čia bet kada. Kaip ir kiekvienas nustatymas čia, ji įrašoma į jūsų naršyklę ir galioja iškart — ir apie tai pasakoma pranešime, taip pat tada, kai naršyklė atsisakė ją prisiminti.',
+  'tour.done.title': 'Štai ir visa apžvalga',
+  'tour.done.text':
+    'Ieškokite iš pradžios puslapio, o jei norite, kad rastos knygos išliktų, prisijunkite. Nuoroda bet kurio puslapio apačioje šią apžvalgą paleidžia iš naujo.',
+  'settings.tour.title': 'Apžvalga su vedliu',
+  'settings.tour.finished':
+    'Apžvalgą perėjote, tad ji pati daugiau neatsivers. Nuoroda puslapio apačioje paleidžia ją, kada panorėsite.',
+  'settings.tour.skipped':
+    'Apžvalga uždaryta ir pati daugiau neatsivers. Nuoroda puslapio apačioje paleidžia ją, kada panorėsite.',
+  'settings.tour.restarted':
+    'Pradedame nuo pirmo žingsnio, o ši naršyklė pamiršo, kad ją jau matėte.',
+  'customSources.presets': 'Paruošti šablonai',
+  'customSources.presetsCaption':
+    'Šablonai, kuriais dalijasi kiti skaitytojai, šios svetainės kanale. Čia jų niekas netikrina: perskaitykite šabloną prieš pridėdami ir atminkite, kad ieškos jis iš jūsų naršyklės.',
+  'footer.takeTheTour': 'Peržiūrėti apžvalgą',
 };

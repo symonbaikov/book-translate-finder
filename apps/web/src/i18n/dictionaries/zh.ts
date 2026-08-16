@@ -448,4 +448,51 @@ export const zh: Dictionary = {
     '这个链接指向的是页面而不是书：下载页、同意页，或是在确认你不是机器人。你自己打开它，文件就在那里。',
   'settings.status.session': '未记住',
   'settings.notRemembered': '此浏览器没有记住它，下次打开书时会恢复原样。',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': '下一步',
+  'tour.back': '上一步',
+  'tour.skip': '暂时不用',
+  'tour.finish': '完成',
+  'tour.close': '关闭导览',
+  'tour.welcome.title': '欢迎来到 Golden Library',
+  'tour.welcome.text':
+    '一分钟，你就知道什么在哪里。本站会查出一本书有哪些语言的版本、在哪里合法获取——你告诉它去哪里找，它就找得越好。所以我们从这里开始。',
+  'tour.customSourcesNav.title': '先从你自己的来源开始',
+  'tour.customSourcesNav.text':
+    '打开<strong>自定义来源</strong>：在这一页，你决定除了内置目录之外还要搜索哪些目录。',
+  'tour.presets.title': '不必从零写起',
+  'tour.presets.text':
+    '那里发布现成的模板。模板属于写它们的人：本站不检查那个频道里的任何内容，而你添加的来源是从你的浏览器发起搜索，不是从这台服务器。在新标签页打开，取走需要的，再回来。',
+  'tour.sourceForm.title': '两个字段就够了',
+  'tour.sourceForm.text':
+    '一个你认得出的名称，以及一条搜索地址——把 <strong>{query}</strong> 放在你输入的词该出现的位置。现在就加一个，或者点“下一步”，稍后再回来。',
+  'tour.sourceList.title': '你添加的一切都留在这里',
+  'tour.sourceList.text':
+    '你的来源列在下面，每一条都可以关闭或删除。它们存在这个浏览器里，从不发往服务器：这边没人看得见，换一台设备也不会有。',
+  'tour.addonsNav.title': '插件走得更远',
+  'tour.addonsNav.text':
+    '打开<strong>插件</strong>。自定义来源是你自己写的一条网址；插件则是别人写的小程序，能够真正地检索一个目录。',
+  'tour.addons.title': '你没看过之前，什么都不会安装',
+  'tour.addons.text':
+    '粘贴插件地址，这个表单会告诉你它是什么、会与哪些主机通信，之后才谈安装。它给出的结果始终标注着产生它们的插件。',
+  'tour.shelfNav.title': '书架',
+  'tour.shelfNav.text': '打开<strong>书架</strong>，看看哪些目录可以直接阅读。',
+  'tour.shelf.title': '公开目录，以及你自己的目录',
+  'tour.shelf.text':
+    '古腾堡计划这类目录一开始就在。下面你可以添加任意 OPDS 目录——比如你自己网络里的 Calibre 服务器：你的浏览器够得到它，本站永远够不到。',
+  'tour.language.title': '十五种语言',
+  'tour.language.text':
+    '界面语言随时在这里更改。和本站每一项设置一样，它写进你的浏览器并立即生效，并会用提示告诉你——浏览器拒绝保存时也一样。',
+  'tour.done.title': '导览到此结束',
+  'tour.done.text':
+    '从首页开始搜索；想把找到的书留着，就登录。任意页面底部的链接可以重新开始这次导览。',
+  'settings.tour.title': '新手导览',
+  'settings.tour.finished': '你已经走完导览，它不会再自己出现。页面底部的链接随时可以再次开始。',
+  'settings.tour.skipped': '导览已关闭，不会再自己出现。页面底部的链接随时可以再次开始。',
+  'settings.tour.restarted': '从第一步重新开始，这个浏览器已经忘记你看过它了。',
+  'customSources.presets': '现成的模板',
+  'customSources.presetsCaption':
+    '在本站点的频道里，其他读者分享的模板。这里没有人审核它们：添加之前先读一遍，并记住它将从你的浏览器发起搜索。',
+  'footer.takeTheTour': '查看导览',
 };

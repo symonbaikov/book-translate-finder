@@ -490,4 +490,54 @@ export const et: Dictionary = {
   'compare.rowEditionStatement': 'Väljaanne',
   'home.genres': 'Populaarsed žanrid',
   'home.genresBlurb': 'Sildid, mille taga on kõige rohkem raamatuid. Igaüks avab oma kataloogi.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Edasi',
+  'tour.back': 'Tagasi',
+  'tour.skip': 'Mitte praegu',
+  'tour.finish': 'Valmis',
+  'tour.close': 'Sulge tutvustus',
+  'tour.welcome.title': 'Tere tulemast Golden Library’sse',
+  'tour.welcome.text':
+    'Üks minut ja tead, kus mis asub. See sait leiab, mis keeltes raamat olemas on ja kust selle seaduslikult saab — ning teeb seda seda paremini, mida täpsemini ütled, kust otsida. Sellest me alustamegi.',
+  'tour.customSourcesNav.title': 'Alusta oma allikatest',
+  'tour.customSourcesNav.text':
+    'Ava <strong>Oma allikad</strong> — leht, kus otsustad, milliseid katalooge sisseehitatute kõrval otsitakse.',
+  'tour.presets.title': 'Nullist kirjutama ei pea',
+  'tour.presets.text':
+    'Seal avaldatakse valmis malle. Need kuuluvad nende kirjutajatele: see sait ei kontrolli selles kanalis midagi ja lisatud allikas otsib sinu brauserist, mitte sellest serverist. Ava uuel kaardil, võta vajalik ja tule tagasi.',
+  'tour.sourceForm.title': 'Kaks välja ja valmis',
+  'tour.sourceForm.text':
+    'Nimi, mille ära tunned, ja otsingu aadress, kus <strong>{query}</strong> seisab sinu sõnade kohal. Lisa üks kohe või vajuta «Edasi» ja tule selle juurde hiljem tagasi.',
+  'tour.sourceList.title': 'Kõik lisatu jääb siia',
+  'tour.sourceList.text':
+    'Sinu allikad on all ja igaühe saab välja lülitada või eemaldada. Need elavad selles brauseris ega lähe kunagi serverisse: keegi siin neid ei näe ja teises seadmes neid pole.',
+  'tour.addonsNav.title': 'Lisad lähevad kaugemale',
+  'tour.addonsNav.text':
+    'Ava <strong>Lisad</strong>. Oma allikas on üks aadress, mille ise kirjutasid; lisa on kellegi teise kirjutatud väike programm, mis oskab kataloogist päriselt otsida.',
+  'tour.addons.title': 'Midagi ei paigaldata enne, kui oled seda näinud',
+  'tour.addons.text':
+    'Kleebi lisa aadress ja vorm näitab, mis see on ja milliste hostidega see räägib; alles siis paigaldatakse. Selle tulemused kannavad alati lisa nime, kes need andis.',
+  'tour.shelfNav.title': 'Riiul',
+  'tour.shelfNav.text': 'Ava <strong>Riiul</strong>, et näha katalooge, millest saab otse lugeda.',
+  'tour.shelf.title': 'Avatud kataloogid ja sinu omad',
+  'tour.shelf.text':
+    'Projekt Gutenberg ja temataolised on siin algusest peale. Nende all saad lisada mis tahes OPDS-kataloogi — näiteks Calibre serveri oma võrgus, milleni sinu brauser ulatub ja see sait mitte kunagi.',
+  'tour.language.title': 'Liidese keel',
+  'tour.language.text':
+    'Muuda seda siin millal tahes. Nagu iga siinne säte, kirjutatakse see sinu brauserisse ja kehtib kohe — ja ütleb seda teates, ka siis, kui brauser keeldus seda meeles pidamast.',
+  'tour.done.title': 'See oligi tutvustus',
+  'tour.done.text':
+    'Otsi avalehelt ja logi sisse, kui tahad, et leitud raamatud alles jääksid. Iga lehe jaluses olev link käivitab selle tutvustuse uuesti.',
+  'settings.tour.title': 'Juhendatud tutvustus',
+  'settings.tour.finished':
+    'Oled tutvustuse läbinud, nii et see ise enam ei avane. Lehe jaluses olev link käivitab selle, kui soovid.',
+  'settings.tour.skipped':
+    'Tutvustus on suletud ega avane ise enam. Lehe jaluses olev link käivitab selle, kui soovid.',
+  'settings.tour.restarted':
+    'Alustame uuesti esimesest sammust ja see brauser unustas, et olid seda juba näinud.',
+  'customSources.presets': 'Valmis mallid',
+  'customSources.presetsCaption':
+    'Mallid, mida teised lugejad jagavad, selle instantsi enda kanalis. Keegi siin neid ei kontrolli: loe mall enne lisamist läbi ja pea meeles, et otsima hakkab see sinu brauserist.',
+  'footer.takeTheTour': 'Tee tutvustus läbi',
 };

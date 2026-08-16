@@ -491,4 +491,55 @@ export const mt: Dictionary = {
   'home.genres': 'Ġeneri popolari',
   'home.genresBlurb':
     'It-tikketti bl-akbar għadd ta’ kotba warajhom. Kull waħda tiftaħ il-katalgu tagħha.',
+
+  // --- The first-run walkthrough (components/OnboardingTour.tsx) -----------
+  'tour.next': 'Kompli',
+  'tour.back': 'Lura',
+  'tour.skip': 'Mhux issa',
+  'tour.finish': 'Lest',
+  'tour.close': 'Agħlaq il-mawra',
+  'tour.welcome.title': 'Merħba f’Golden Library',
+  'tour.welcome.text':
+    'Minuta, u tkun taf fejn hu kollox. Dan is-sit isib f’liema lingwi jeżisti ktieb u minn fejn tista’ tiksbu legalment — u jagħmel dan aħjar aktar ma tgħidlu bl-eżatt fejn ifittex. Minn hemm nibdew.',
+  'tour.customSourcesNav.title': 'Ibda mis-sorsi tiegħek',
+  'tour.customSourcesNav.text':
+    'Iftaħ <strong>Sorsi tiegħek</strong> — il-paġna fejn tiddeċiedi liema katalogi jitfittxu ħdejn dawk inklużi.',
+  'tour.presets.title': 'M’hemmx għalfejn tibda mix-xejn',
+  'tour.presets.text':
+    'Hemmhekk jiġu ppubblikati mudelli lesti. Huma ta’ min kitibhom: dan is-sit ma jiċċekkja xejn f’dak il-kanal, u sors li żżid ifittex mill-browser tiegħek, mhux minn dan is-server. Iftaħ f’tab ġdid, ħu dak li teħtieġ, u erġa’ lura.',
+  'tour.sourceForm.title': 'Żewġ kaxxi u lest',
+  'tour.sourceForm.text':
+    'Isem li tagħraf u l-indirizz ta’ tfittxija fejn <strong>{query}</strong> jieħu post il-kliem tiegħek. Żid wieħed issa, jew agħfas «Kompli» u erġa’ lura għalih.',
+  'tour.sourceList.title': 'Kull ma żżid jibqa’ hawn',
+  'tour.sourceList.text':
+    'Is-sorsi tiegħek huma hawn taħt u kull wieħed jista’ jintefa jew jitneħħa. Jgħixu f’dan il-browser u qatt ma jmorru għand is-server: hawn ħadd ma jarahom, u fuq apparat ieħor ma jkunux hemm.',
+  'tour.addonsNav.title': 'L-addons imorru aktar fil-bogħod',
+  'tour.addonsNav.text':
+    'Iftaħ <strong>Addons</strong>. Sors tiegħek huwa indirizz wieħed li ktibt int; addon huwa programm żgħir ta’ ħaddieħor li kapaċi jfittex katalgu tassew.',
+  'tour.addons.title': 'Xejn ma jiġi installat qabel ma tarah',
+  'tour.addons.text':
+    'Waħħal l-indirizz ta’ addon u din il-formola turik x’inhu u ma’ liema servers se jitkellem; wara biss jiġi installat. Ir-riżultati tiegħu dejjem iġorru l-isem tal-addon li tahom.',
+  'tour.shelfNav.title': 'L-ixkaffa',
+  'tour.shelfNav.text':
+    'Iftaħ <strong>Xkaffa</strong> biex tara l-katalogi li minnhom tista’ taqra direttament.',
+  'tour.shelf.title': 'Katalogi miftuħa, u tiegħek',
+  'tour.shelf.text':
+    'Project Gutenberg u sħabu huma hawn mill-bidu. Taħthom tista’ żżid kwalunkwe katalgu OPDS — pereżempju server Calibre fin-network tiegħek, li l-browser tiegħek jilħaq u dan is-sit qatt.',
+  'tour.language.title': 'Il-lingwa tal-interfaċċa',
+  'tour.language.text':
+    'Ibdilha hawn meta trid. Bħal kull impostazzjoni hawn, tinkiteb fil-browser tiegħek u tidħol fis-seħħ mill-ewwel — u dan jingħad f’avviż, anke meta l-browser jirrifjuta li jżommha.',
+  'tour.done.title': 'Dik kienet il-mawra',
+  'tour.done.text':
+    'Fittex mill-paġna ewlenija, u idħol fil-kont jekk trid li l-kotba li ssib jinżammu. Il-link fil-qiegħ ta’ kull paġna terġa’ tibda din il-mawra.',
+  'settings.tour.title': 'Il-mawra mmexxija',
+  'settings.tour.finished':
+    'Għaddejt mill-mawra, għalhekk ma terġax tinfetaħ waħidha. Il-link fil-qiegħ tal-paġna tibdiha meta trid.',
+  'settings.tour.skipped':
+    'Il-mawra ngħalqet u ma terġax tinfetaħ waħidha. Il-link fil-qiegħ tal-paġna tibdiha meta trid.',
+  'settings.tour.restarted':
+    'Nerġgħu nibdew mill-ewwel pass, u dan il-browser insa li kont diġà rajtha.',
+  'customSources.presets': 'Mudelli lesti',
+  'customSources.presetsCaption':
+    'Mudelli li jaqsmu qarrejja oħra, fuq il-kanal ta’ din l-istanza. Hawn ħadd ma jiċċekkjahom: aqra mudell qabel iżżidu, u ftakar li se jfittex mill-browser tiegħek.',
+  'footer.takeTheTour': 'Agħmel il-mawra',
 };
