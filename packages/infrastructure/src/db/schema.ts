@@ -81,6 +81,7 @@ export const edition = pgTable(
     coverUrl: text('cover_url'),
     pages: integer('pages'),
     binding: text('binding'),
+    editionStatement: text('edition_statement'),
     naturalKey: varchar('natural_key', { length: 64 }).notNull(),
   },
   (table) => [

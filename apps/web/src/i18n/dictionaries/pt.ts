@@ -118,6 +118,7 @@ export const pt: Dictionary = {
   'compare.rowPublisher': 'Editora',
   'compare.rowTranslator': 'Tradutor',
   'compare.rowTranslatedFrom': 'Traduzido de',
+  'compare.rowEditionStatement': 'Edição',
   'compare.rowBinding': 'Encadernação',
   'compare.rowPages': 'Páginas',
   'compare.rowIsbn': 'ISBN',

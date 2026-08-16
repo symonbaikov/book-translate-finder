@@ -44,6 +44,16 @@ export interface ProviderEdition {
   pages?: number | null;
   /** Physical format as the source words it ("Paperback", "Hardcover"). */
   binding?: string | null;
+  /**
+   * How this printing differs from the others, in the cataloguer's own words: "First edition",
+   * "Limited ed., signed", "Izd. 2-e, ispr. i dop.", "Erstveröffentlichung".
+   *
+   * Only a MARC-speaking catalogue supplies it — Dublin Core has no element for it, so through DC
+   * a numbered collector's printing and the twelfth reprint are the same record. Kept verbatim for
+   * the same reason `binding` is: every catalogue words it differently, in its own language, and
+   * bucketing it into an enum would mean guessing what an unfamiliar phrase means.
+   */
+  editionStatement?: string | null;
   translator: string | null;
   /** The language this edition was translated from, when the source states it — see Edition.translatedFrom. */
   translatedFrom: string | null;

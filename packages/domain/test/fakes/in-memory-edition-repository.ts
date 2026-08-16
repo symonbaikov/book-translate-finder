@@ -32,11 +32,24 @@ export class InMemoryEditionRepository implements EditionRepository {
         publisher: edition.publisher,
         year: edition.year,
         isbn: edition.isbn,
+        // Kept in step with the Pg adapter deliberately: dropping them here would let the shared
+        // contract suite pass while the real repository lost a field on every merge.
+        coverUrl: edition.coverUrl,
+        pages: edition.pages,
+        binding: edition.binding,
+        editionStatement: edition.editionStatement,
       });
       this.byId.set(existingId, merged);
       return;
     }
 
+    // A source correcting a title gives the same edition a new natural key, so the old mapping
+    // has to go — otherwise this fake keeps answering `findByNaturalKey` with the stale key and
+    // stops modelling what Postgres, with its unique constraint, actually does.
+    const previous = this.byId.get(edition.id);
+    if (previous && previous.naturalKey !== edition.naturalKey) {
+      this.idByNaturalKey.delete(previous.naturalKey);
+    }
     this.byId.set(edition.id, edition);
     this.idByNaturalKey.set(edition.naturalKey, edition.id);
   }

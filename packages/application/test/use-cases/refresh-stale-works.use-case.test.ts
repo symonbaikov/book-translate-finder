@@ -11,11 +11,20 @@ import {
 
 const NOW = new Date('2026-08-13T00:00:00Z');
 
-function makeDeps(sources: string[] = ['open-library', 'google-books']) {
+function makeDeps(
+  sources: string[] = ['open-library', 'google-books'],
+  enrichmentSources: string[] = [],
+) {
   const workRepository = new InMemoryWorkRepository();
   const syncQueue = new InMemoryJobQueue();
   const clock = new FixedClock(NOW);
-  const deps: RefreshStaleWorksDeps = { workRepository, syncQueue, clock, sources };
+  const deps: RefreshStaleWorksDeps = {
+    workRepository,
+    syncQueue,
+    clock,
+    sources,
+    enrichmentSources,
+  };
   return { deps, workRepository, syncQueue };
 }
 
@@ -88,5 +97,56 @@ describe('RefreshStaleWorks', () => {
       source: 'open-library',
       query: 'Book work-1 Some Author',
     });
+  });
+});
+
+describe('RefreshStaleWorks and the enrichment sources', () => {
+  it('re-runs enrichment, which is the only way a new catalogue reaches an old book', async () => {
+    // Enrichment otherwise happens once, when a book is first discovered. A catalogue added
+    // afterwards is asked about every book found from then on and about none of the books already
+    // in the database — «Метро 2034» sat at zero editions with seven catalogues holding it.
+    const { deps, workRepository, syncQueue } = makeDeps(['open-library'], ['k10plus', 'bnf']);
+    await seedWork(workRepository, 'work-1', new Date('2026-01-01T00:00:00Z'));
+
+    const result = await new RefreshStaleWorks(deps).execute({ olderThanDays: 7, batchSize: 50 });
+
+    expect(result.enqueued).toBe(3);
+    expect(syncQueue.enqueued.map((job) => job.jobId).sort()).toEqual(
+      [
+        refreshJobId('open-library', 'work-1', NOW),
+        refreshJobId('k10plus', 'work-1', NOW),
+        refreshJobId('bnf', 'work-1', NOW),
+      ].sort(),
+    );
+  });
+
+  it('asks a catalogue only about the work it already knows', async () => {
+    // Without `attachToWorkId` the BnF answers «Обитель» with "L'archipel des Solovki", misses the
+    // work's natural key, and creates a second half-empty book — every night. This is precisely
+    // why enrichment was left out of the nightly pass until the payload could carry the work id.
+    const { deps, workRepository, syncQueue } = makeDeps(['open-library'], ['bnf']);
+    await seedWork(workRepository, 'work-1', new Date('2026-01-01T00:00:00Z'));
+
+    await new RefreshStaleWorks(deps).execute({ olderThanDays: 7, batchSize: 50 });
+
+    const byId = new Map(syncQueue.enqueued.map((job) => [job.jobId, job.payload]));
+    expect(byId.get(refreshJobId('bnf', 'work-1', NOW))).toMatchObject({
+      source: 'bnf',
+      attachToWorkId: 'work-1',
+    });
+    // The discovery half keeps deciding for itself, so a re-run can still correct the work's own
+    // metadata — how a wrongly recorded original language ever gets fixed.
+    expect(byId.get(refreshJobId('open-library', 'work-1', NOW))).not.toHaveProperty(
+      'attachToWorkId',
+    );
+  });
+
+  it('leaves the queue alone when there is nothing stale, enrichment included', async () => {
+    const { deps, workRepository, syncQueue } = makeDeps(['open-library'], ['k10plus']);
+    await seedWork(workRepository, 'work-1', new Date('2026-08-12T00:00:00Z'));
+
+    await new RefreshStaleWorks(deps).execute({ olderThanDays: 7, batchSize: 50 });
+
+    expect(syncQueue.enqueued).toHaveLength(0);
   });
 });

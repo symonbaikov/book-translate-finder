@@ -50,6 +50,38 @@ export function runEditionRepositoryContractTests(
       expect(await repo.findByWorkId('work-1')).toHaveLength(1);
     });
 
+    it('keeps the descriptive fields a library catalogue contributes', async () => {
+      // The edition statement is the whole reason a rare printing is distinguishable from an
+      // ordinary one, and it is stored in a column of its own — a mapping that silently drops it
+      // would leave the sync working and the card wrong.
+      const repo = createRepository();
+      await repo.save(
+        makeEdition({ editionStatement: 'Limited ed., signed', binding: 'Hardcover', pages: 414 }),
+      );
+
+      expect(await repo.findById('edition-1')).toMatchObject({
+        editionStatement: 'Limited ed., signed',
+        binding: 'Hardcover',
+        pages: 414,
+      });
+    });
+
+    it('a source correcting a title updates the row rather than failing', async () => {
+      // The natural key is derived from the title, so a corrected title is a *new* natural key for
+      // the same row. The sync still resolves that row by `external_ref` and hands back its id —
+      // and an insert keyed only on the natural key then finds no conflict, inserts, and dies on
+      // the primary key. Permanently, for that book. An upstream cataloguer fixing a typo is all
+      // it takes; here it was a parser fix turning `Alices &#xE4;ventyr` into `Alices äventyr`.
+      const repo = createRepository();
+      await repo.save(makeEdition({ title: 'Alices &#xE4;ventyr i underlandet' }));
+      await repo.save(makeEdition({ title: 'Alices äventyr i underlandet' }));
+
+      const rows = await repo.findByWorkId('work-1');
+      expect(rows).toHaveLength(1);
+      expect(rows[0]?.id).toBe('edition-1');
+      expect(rows[0]?.title).toBe('Alices äventyr i underlandet');
+    });
+
     it('re-syncing the same edition under a fresh id upserts onto the original id', async () => {
       const repo = createRepository();
       await repo.save(makeEdition({ id: 'edition-1' }));

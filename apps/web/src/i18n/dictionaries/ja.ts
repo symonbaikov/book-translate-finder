@@ -115,6 +115,7 @@ export const ja: Dictionary = {
   'compare.rowPublisher': '出版社',
   'compare.rowTranslator': '訳者',
   'compare.rowTranslatedFrom': '原語',
+  'compare.rowEditionStatement': '版',
   'compare.rowBinding': '装丁',
   'compare.rowPages': 'ページ数',
   'compare.rowIsbn': 'ISBN',

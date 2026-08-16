@@ -128,6 +128,7 @@ export const de: Dictionary = {
   'compare.rowPublisher': 'Verlag',
   'compare.rowTranslator': 'Übersetzung',
   'compare.rowTranslatedFrom': 'Übersetzt aus',
+  'compare.rowEditionStatement': 'Ausgabe',
   'compare.rowBinding': 'Einband',
   'compare.rowPages': 'Seiten',
   'compare.rowIsbn': 'ISBN',
