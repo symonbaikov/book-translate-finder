@@ -71,3 +71,46 @@ export function titleOf(metadata: FoliateBookMetadata | undefined): string | nul
   }
   return null;
 }
+
+/**
+ * How each format must be spelled for the renderer's own dispatch.
+ *
+ * `makeBook` re-detects the format from the `name` and `type` of what it is handed — a ZIP is an
+ * EPUB, a comic or a compressed FB2 depending on those two fields alone. So we hand it the answer
+ * *we* reached by reading the bytes (`sniffFormat`), rather than passing the reader's filename
+ * through and letting two detectors disagree. A MOBI named `.epub` then opens as a MOBI, which is
+ * the whole reason our sniffing believes bytes over names.
+ */
+const FOLIATE_NAMING: Record<string, { extension: string; type: string }> = {
+  epub: { extension: '.epub', type: 'application/epub+zip' },
+  fb2: { extension: '.fb2', type: 'application/x-fictionbook+xml' },
+  fbz: { extension: '.fb2.zip', type: 'application/x-zip-compressed-fb2' },
+  mobi: { extension: '.mobi', type: 'application/x-mobipocket-ebook' },
+  cbz: { extension: '.cbz', type: 'application/vnd.comicbook+zip' },
+};
+
+/**
+ * The book as the renderer wants it: a `File`, named for the format the bytes actually are.
+ *
+ * A bare `Blob` is not enough — `makeBook` reads `name` and would throw on its absence, which is a
+ * confusing way to learn that a `Blob` is not a `File`.
+ */
+export function asFoliateFile(book: { bytes: ArrayBuffer; format: string }): File {
+  const naming = FOLIATE_NAMING[book.format] ?? { extension: '', type: 'application/octet-stream' };
+  return new File([book.bytes], `book${naming.extension}`, { type: naming.type });
+}
+
+/**
+ * Paint the opening page.
+ *
+ * `open()` prepares the book and renders nothing — upstream's own reader calls `renderer.next()`
+ * afterwards, and without an equivalent the view sits there, correctly loaded and entirely blank.
+ * That is a confusing failure to read backwards from, so it is a named function rather than a line
+ * in a component.
+ *
+ * When stored positions arrive (11.5) this is where resuming happens: the saved locator if there is
+ * one, the first page if there is not.
+ */
+export async function renderFirstPage(view: FoliateView): Promise<void> {
+  await view.goTo(0);
+}

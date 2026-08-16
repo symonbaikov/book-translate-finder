@@ -375,4 +375,15 @@ export const pt: Dictionary = {
   'work.descriptionFrom': 'Descrição:',
   'work.descriptionNotLocalized':
     'Esta descrição está no idioma em que a fonte a escreveu — ainda não há nenhuma no seu para este livro.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Ler no navegador',
+  'reader.privacy':
+    'É o seu navegador que abre este livro. Nem o ficheiro, nem a sua origem, nem o ponto em que vai na leitura chegam a este site.',
+  'reader.chooseFile': 'Abrir um livro deste dispositivo',
+  'reader.formats': 'EPUB, FB2, MOBI e CBZ.',
+  'reader.loading': 'A abrir…',
+  'reader.failed': 'Não foi possível abrir este livro: {reason}',
+  'reader.previous': 'Página anterior',
+  'reader.next': 'Página seguinte',
 };

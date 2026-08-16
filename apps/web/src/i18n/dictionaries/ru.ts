@@ -385,4 +385,15 @@ export const ru: Dictionary = {
   'work.descriptionFrom': 'Описание:',
   'work.descriptionNotLocalized':
     'Описание приводится так, как его написал источник, — на вашем языке для этой книги его пока нет.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Читать в браузере',
+  'reader.privacy':
+    'Книгу открывает сам ваш браузер. Ни файл, ни то, откуда он взят, ни то, докуда вы дочитали, на этот сайт не попадают.',
+  'reader.chooseFile': 'Открыть книгу с этого устройства',
+  'reader.formats': 'EPUB, FB2, MOBI и CBZ.',
+  'reader.loading': 'Открываем…',
+  'reader.failed': 'Не удалось открыть книгу: {reason}',
+  'reader.previous': 'Предыдущая страница',
+  'reader.next': 'Следующая страница',
 };

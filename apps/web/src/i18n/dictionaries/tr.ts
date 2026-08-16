@@ -372,4 +372,15 @@ export const tr: Dictionary = {
   'work.descriptionFrom': 'Açıklama:',
   'work.descriptionNotLocalized':
     'Bu açıklama, kaynağın yazdığı dilde — bu kitap için kendi dilinizde henüz bir açıklama yok.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Tarayıcıda oku',
+  'reader.privacy':
+    'Bu kitabı tarayıcınız kendisi açar. Ne dosya, ne nereden geldiği, ne de nereye kadar okuduğunuz bu siteye ulaşır.',
+  'reader.chooseFile': 'Bu cihazdan bir kitap aç',
+  'reader.formats': 'EPUB, FB2, MOBI ve CBZ.',
+  'reader.loading': 'Açılıyor…',
+  'reader.failed': 'Bu kitap açılamadı: {reason}',
+  'reader.previous': 'Önceki sayfa',
+  'reader.next': 'Sonraki sayfa',
 };

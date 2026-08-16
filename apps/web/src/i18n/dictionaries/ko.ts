@@ -366,4 +366,15 @@ export const ko: Dictionary = {
   'work.descriptionFrom': '소개:',
   'work.descriptionNotLocalized':
     '이 소개는 출처가 쓴 언어 그대로입니다. 이 책에 대한 당신의 언어로 된 소개는 아직 없습니다.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': '브라우저에서 읽기',
+  'reader.privacy':
+    '이 책은 브라우저가 혼자 엽니다. 파일도, 파일을 가져온 곳도, 어디까지 읽었는지도 이 사이트에는 전해지지 않습니다.',
+  'reader.chooseFile': '이 기기에서 책 열기',
+  'reader.formats': 'EPUB, FB2, MOBI, CBZ.',
+  'reader.loading': '여는 중…',
+  'reader.failed': '이 책을 열지 못했습니다: {reason}',
+  'reader.previous': '이전 쪽',
+  'reader.next': '다음 쪽',
 };

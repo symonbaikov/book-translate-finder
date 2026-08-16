@@ -373,4 +373,15 @@ export const nl: Dictionary = {
   'work.descriptionFrom': 'Beschrijving:',
   'work.descriptionNotLocalized':
     'Deze beschrijving staat in de taal waarin de bron haar schreef — in uw taal is er voor dit boek nog geen.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Lezen in je browser',
+  'reader.privacy':
+    'Je browser opent dit boek zelf. Het bestand, waar het vandaan komt en hoe ver je bent bereiken deze site niet.',
+  'reader.chooseFile': 'Een boek van dit apparaat openen',
+  'reader.formats': 'EPUB, FB2, MOBI en CBZ.',
+  'reader.loading': 'Bezig met openen…',
+  'reader.failed': 'Dit boek kon niet worden geopend: {reason}',
+  'reader.previous': 'Vorige pagina',
+  'reader.next': 'Volgende pagina',
 };

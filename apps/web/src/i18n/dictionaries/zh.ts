@@ -346,4 +346,15 @@ export const zh: Dictionary = {
   'work.descriptionFrom': '简介：',
   'work.descriptionNotLocalized':
     '这段简介是来源撰写时所用的语言——本书暂时还没有你所用语言的简介。',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': '在浏览器中阅读',
+  'reader.privacy':
+    '这本书由你的浏览器自己打开。文件、文件的来源，以及你读到哪里，都不会传到本站。',
+  'reader.chooseFile': '从此设备打开一本书',
+  'reader.formats': 'EPUB、FB2、MOBI 和 CBZ。',
+  'reader.loading': '正在打开…',
+  'reader.failed': '无法打开这本书：{reason}',
+  'reader.previous': '上一页',
+  'reader.next': '下一页',
 };

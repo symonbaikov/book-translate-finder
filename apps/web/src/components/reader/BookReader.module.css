@@ -1,0 +1,68 @@
+/* The reading surface. Deliberately plain for now: type, margins and the four themes are 11.6,
+   and building them here would mean building them twice. */
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-height: 70vh;
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 60ch;
+}
+
+.privacy {
+  color: var(--text-muted);
+}
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.pickerLabel {
+  font-weight: 600;
+}
+
+.formats {
+  color: var(--text-muted);
+  font-size: var(--step--1);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.title {
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* The renderer measures this box to decide where a page ends, so it needs a real height rather
+   than one that depends on its own content. */
+.view {
+  display: block;
+  width: 100%;
+  height: 70vh;
+  background: var(--surface-1);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-lg);
+}
+
+.viewEmpty {
+  display: none;
+}
+
+.diagnostic {
+  color: var(--text-faint);
+  font-size: var(--step--2);
+  font-family: var(--font-mono);
+}

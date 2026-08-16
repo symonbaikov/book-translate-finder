@@ -69,3 +69,106 @@ export function contentFramePolicy(deliversEventsWithoutScripts: boolean): Conte
           'the frame keeps it and the route CSP is what stops the book from running.',
       };
 }
+
+/**
+ * The global the patched renderer reads, and the only supported way to write it.
+ *
+ * A global is not how anything else in this codebase is configured, and it is here for one reason:
+ * the value has to reach code inside a vendored library at the moment it creates a frame, and that
+ * library takes no options. The alternatives were worse — monkey-patching `setAttribute` for the
+ * whole document, or forking the renderer's frame handling outright.
+ *
+ * The fallback in the vendored `??` is the *strict* value, so forgetting to call this yields the
+ * safe frame. That is deliberate: the failure mode of a missing call should be a Safari reader who
+ * cannot tap, not every reader running a stranger's JavaScript.
+ */
+const GLOBAL_KEY = '__goldenReaderContentFrameSandbox';
+
+/**
+ * Probe this engine, once, and install the policy it implies.
+ *
+ * Must be called before the first `view.open()` — the frame is created during it, and an attribute
+ * decided afterwards would apply to the next book rather than this one.
+ */
+export async function installContentFramePolicy(
+  documentRef: Document = globalThis.document,
+): Promise<ContentFramePolicy> {
+  const policy = contentFramePolicy(await deliversEventsWithoutScripts(documentRef));
+  (globalThis as Record<string, unknown>)[GLOBAL_KEY] = policy.sandbox;
+  return policy;
+}
+
+/** What is installed right now, for a test or a diagnostic. `null` before the probe has run. */
+export function installedContentFrameSandbox(): string | null {
+  const value = (globalThis as Record<string, unknown>)[GLOBAL_KEY];
+  return typeof value === 'string' ? value : null;
+}
+
+/**
+ * Does this engine deliver events to a frame that cannot run scripts?
+ *
+ * A synthetic click rather than a real one, because nothing in a page can produce a trusted event —
+ * and it is enough: in all three engines the synthetic answer matched what a real mouse and
+ * keyboard did (spike 11.1b). WebKit hears neither; Chromium and Firefox hear both.
+ *
+ * Answers `false` on anything unexpected — a frame that never loads, a `contentDocument` that is
+ * null, a throw. `false` is the branch that keeps the reader usable, and a probe that cannot
+ * measure should not be the thing that makes a page untappable.
+ */
+async function deliversEventsWithoutScripts(documentRef: Document): Promise<boolean> {
+  if (!documentRef?.body) return false;
+  const frame = documentRef.createElement('iframe');
+  frame.setAttribute('sandbox', SANDBOX_WITHOUT_SCRIPTS);
+  frame.setAttribute('aria-hidden', 'true');
+  frame.style.cssText = 'position:absolute;width:1px;height:1px;left:-9999px;border:0';
+
+  try {
+    documentRef.body.append(frame);
+    frame.src = URL.createObjectURL(
+      new Blob(['<!doctype html><meta charset="utf-8"><p id="probe">.</p>'], { type: 'text/html' }),
+    );
+
+    // Polled for the marker rather than settled on the first `load`, and this is not a detail: a
+    // frame fires `load` for its initial about:blank too, so trusting that event finds a document
+    // with nothing in it, concludes "no events", and quietly drops every engine to one wall. It did
+    // exactly that the first time this ran in a browser.
+    const inner = await waitForProbeDocument(frame);
+    const target = inner?.getElementById('probe');
+    if (!inner || !target) return false;
+
+    let heard = false;
+    inner.addEventListener('click', () => {
+      heard = true;
+    });
+    const view = inner.defaultView ?? globalThis;
+    target.dispatchEvent(new view.MouseEvent('click', { bubbles: true }));
+    return heard;
+  } catch {
+    return false;
+  } finally {
+    frame.remove();
+  }
+}
+
+/** The frame's document once the marker is in it, or `null` if it never arrives. */
+function waitForProbeDocument(
+  frame: HTMLIFrameElement,
+  timeoutMs = 1000,
+): Promise<Document | null> {
+  return new Promise((resolve) => {
+    const deadline = Date.now() + timeoutMs;
+    const poll = (): void => {
+      let inner: Document | null = null;
+      try {
+        inner = frame.contentDocument;
+      } catch {
+        resolve(null);
+        return;
+      }
+      if (inner?.getElementById('probe')) resolve(inner);
+      else if (Date.now() >= deadline) resolve(inner);
+      else setTimeout(poll, 25);
+    };
+    poll();
+  });
+}

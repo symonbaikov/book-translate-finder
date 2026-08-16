@@ -50,7 +50,7 @@ const UPSTREAM = 'https://github.com/johnfactotum/foliate-js.git';
  * behaved but was no longer what upstream published. `.prettierignore` and the ESLint ignores now
  * keep tools out; this is what notices when something gets past them.
  */
-const EXPECTED_TREE_SHA = 'fdf09fa3aa710789d9a496e7e4cccf98be50ec64a6a5534973feb8b6fe60edae';
+const EXPECTED_TREE_SHA = '8eb878192e846bb0c7a8f8bcf7766ff593a1f78d5581b0c20e0a34f4bde6122e';
 
 const PACKAGE_ROOT = fileURLToPath(new URL('..', import.meta.url));
 const VENDOR_ROOT = join(PACKAGE_ROOT, 'vendor', 'foliate');
@@ -59,20 +59,45 @@ const VENDOR_ROOT = join(PACKAGE_ROOT, 'vendor', 'foliate');
  * Both places upstream creates a frame for book content. `paginator.js` is the reflowable path and
  * `fixed-layout.js` the pre-paginated one; patching only the first would leave fixed-layout EPUBs
  * running scripts, which is the same hole with a narrower entrance.
+ *
+ * The patched line reads a global rather than hard-coding one value, because which value is right
+ * depends on the engine: WebKit delivers no input at all to a frame without `allow-scripts`
+ * (bug 218086, measured in spike 11.1b), so there the token stays and the route CSP is the wall
+ * instead. The global is written by `installContentFramePolicy()` in `src/content-frame.ts`, which
+ * is the only supported way to set it — and the `??` fallback is the *safe* value, so a page that
+ * forgets to call it gets the strict frame rather than the permissive one.
  */
 const PATCHES = [
   {
     file: 'paginator.js',
     from: `this.#iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts')`,
-    to: `this.#iframe.setAttribute('sandbox', 'allow-same-origin') // golden-library: ADR-0013 §3`,
+    to:
+      `this.#iframe.setAttribute('sandbox', globalThis.__goldenReaderContentFrameSandbox ` +
+      `?? 'allow-same-origin') // golden-library: ADR-0013 §3`,
+  },
+  {
+    file: 'view.js',
+    from: `        const { makePDF } = await import('./pdf.js')
+        book = await makePDF(file)`,
+    to: `        throw new UnsupportedTypeError('PDF is out of scope') // golden-library: ADR-0013 §8`,
   },
   {
     file: 'fixed-layout.js',
     from: `iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts')`,
-    to: `iframe.setAttribute('sandbox', 'allow-same-origin') // golden-library: ADR-0013 §3`,
+    to:
+      `iframe.setAttribute('sandbox', globalThis.__goldenReaderContentFrameSandbox ` +
+      `?? 'allow-same-origin') // golden-library: ADR-0013 §3`,
   },
 ];
 
+/**
+ * The third patch: remove the PDF branch, rather than only the files behind it.
+ *
+ * Dropping `pdf.js` from the tree is not enough — `view.js` reaches it through a dynamic import, and
+ * a bundler resolves that statically whether or not a PDF is ever opened. Next refused to build the
+ * whole reader over it. Deleting the branch says the same thing the deletion of the files did
+ * (ADR-0013 §8: PDF is out of scope) in the one place that is also true at build time.
+ */
 /** PDF is out of scope (ADR-0013 §8), and PDF.js is a second rendering engine's worth of bytes. */
 const DROP = [
   'vendor/pdfjs',

@@ -32,6 +32,8 @@ export {
   SANDBOX_WITHOUT_SCRIPTS,
   SANDBOX_WITH_SCRIPTS,
   contentFramePolicy,
+  installContentFramePolicy,
+  installedContentFrameSandbox,
   type ContentFramePolicy,
 } from './content-frame.js';
 
@@ -52,7 +54,9 @@ export {
 } from './progress.js';
 
 export {
+  asFoliateFile,
   loadFoliate,
+  renderFirstPage,
   titleOf,
   type FoliateBookMetadata,
   type FoliateRelocateDetail,

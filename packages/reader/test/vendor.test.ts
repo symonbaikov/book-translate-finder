@@ -41,12 +41,16 @@ describe('vendored foliate-js', () => {
     expect(offenders).toEqual([]);
   });
 
-  it('still grants allow-same-origin in both places it renders book content', () => {
-    // The patch must remove one token, not the attribute: without `allow-same-origin` the paginator
-    // cannot measure the document it lays out, and the reader silently renders nothing (spike 11.1).
+  it('asks the engine policy in both places it renders book content, and falls back to the safe value', () => {
+    // Two properties, and both matter. `allow-same-origin` must survive — without it the paginator
+    // cannot measure the document it lays out and the reader silently renders nothing (spike 11.1).
+    // And the fallback in the `??` must be the strict value, so a page that forgets to install a
+    // policy gets the safe frame rather than the permissive one.
     for (const file of ['paginator.js', 'fixed-layout.js']) {
       const source = readFileSync(join(VENDOR, file), 'utf8');
-      expect(source, file).toContain(`setAttribute('sandbox', 'allow-same-origin')`);
+      expect(source, file).toContain(
+        `globalThis.__goldenReaderContentFrameSandbox ?? 'allow-same-origin'`,
+      );
     }
   });
 

@@ -1065,6 +1065,34 @@ read a response the target refuses to share with the browser, which is most publ
 | 7.7 | Protocol spec, example addon, validator           | ✅    | [addon-protocol.md](addon-protocol.md), `examples/addon-template`, `pnpm addon:validate`. No npm SDK — see below                                 |
 | 7.8 | Fold the custom-OPDS-feed form into the engine    | ✅\*  | One list, one removal path, credentials intact. The asterisk is navigation, which stayed in the shelf — see below                                |
 
+### Found by running 11.3 in a browser, not by writing it
+
+Four things, none of which any amount of design review had produced, and each cheap only because a
+real book was opened on the real route:
+
+- **A static CSP could not have worked at all.** Next injects its own inline scripts for hydration,
+  so `script-src 'self'` without a nonce refuses the framework along with the book. The policy is
+  therefore built per request in `middleware.ts`, scoped to `/read` — and scoped deliberately, so
+  that nobody tunes it later while thinking about analytics.
+- **Development needs a different shape, and only one.** `'strict-dynamic'` disables host-based
+  allowlisting, and Next's dev-only fallback chunks carry no nonce — with it, a dev page is a wall
+  of refusals. Dev drops `'strict-dynamic'` and adds `'unsafe-eval'`; neither shape contains
+  `'unsafe-inline'` or `blob:`, so the hostile fixture is testing the real wall either way.
+- **Dropping `pdf.js` from the vendored tree was not enough.** `view.js` reaches it through a
+  dynamic import, which a bundler resolves whether or not a PDF is ever opened — Next refused to
+  build the reader at all. The branch is now patched out, which says what deleting the files meant
+  to say in the one place that is also true at build time.
+- **`open()` renders nothing.** Upstream's own reader calls `renderer.next()` afterwards; without
+  an equivalent the view sits there, correctly loaded and entirely blank, which is a hard thing to
+  read backwards from. It is now `renderFirstPage()`, named and commented, and it is where resuming
+  a stored position will go in 11.5.
+
+Two more that would have shipped silently. The engine probe **answered `false` in Chromium** the
+first time it ran, because it settled on the frame's initial `about:blank` instead of polling for
+its document — quietly dropping every reader to one wall, which is exactly the failure mode ADR-0013
+warns about. And `hidden={state !== 'open'}` rendered as `hidden="false"` on the custom element,
+because React stringifies props there and HTML's `hidden` hides on presence.
+
 ### Decided rather than assumed
 
 - **No `rightsStatus` on an addon result, and no field to hold one.** The instance's own links carry
@@ -1489,18 +1517,18 @@ Two consequences that are easy to get wrong and are therefore written down now:
 
 ### Tasks
 
-| #    | Item                                                                             | State | Notes                                                                                                                                                     |
-| ---- | -------------------------------------------------------------------------------- | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 11.0 | [ADR-0013](adr/0013-client-side-reader.md) — the reader, and the book's own code | ✅    | Carries 11.1's answer rather than the design that lost: same-origin route, two walls, the spike as its evidence base                                      |
-| 11.1 | Pagination spike inside an opaque origin                                         | ✅    | **Answered: no, in all three engines.** [reader-sandbox-spike.md](research/reader-sandbox-spike.md) — and it found a default-on escape while it was there |
-| 11.2 | `packages/reader` — a fifth leaf package                                         | ✅    | Sniffing, acquisition, progress, hashing, content-frame policy; foliate vendored, pinned, patched, with a test that fails when the patch lapses           |
-| 11.3 | The `/read` route's CSP and the content-frame policy                             | ⬜    | Was "a sandbox document on an opaque origin" until 11.1 ruled it out. Now: `script-src 'self'` on the route, plus the engine probe 11.1b made necessary   |
-| 11.4 | Acquisition: fetch, file picker, drag-and-drop, IndexedDB                        | ⬜    | Four ways in, one `BookSource`. CORS gets an honest dead end, not a workaround                                                                            |
-| 11.5 | Progress, bookmarks and annotations                                              | ⬜    | IndexedDB in the host origin, keyed by content hash; reached from the sandbox only through the RPC surface                                                |
-| 11.6 | Display: themes incl. E-Ink, type, layout                                        | ⬜    | Tokens are read in the host and passed in as values (ADR-0008 stays true); E-Ink is monochrome, motionless and paged                                      |
-| 11.7 | Surfaces: where "Read in browser" appears                                        | ⬜    | Work page, free shelf, addon sources, `/read`. Shown only where there is a file to open — see below                                                       |
-| 11.8 | Settings popups and 15 dictionaries                                              | ⬜    | Every reader preference announces itself through `useSettingChangeToast()` with `outcomeOfWrite` (CLAUDE.md)                                              |
-| 11.9 | Zero-knowledge enforcement                                                       | ⬜    | Four `dependency-cruiser` rules plus a Playwright wire suite, `pnpm test:reader`, modelled on `addon-privacy.spec.ts`                                     |
+| #    | Item                                                                             | State | Notes                                                                                                                                                       |
+| ---- | -------------------------------------------------------------------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 11.0 | [ADR-0013](adr/0013-client-side-reader.md) — the reader, and the book's own code | ✅    | Carries 11.1's answer rather than the design that lost: same-origin route, two walls, the spike as its evidence base                                        |
+| 11.1 | Pagination spike inside an opaque origin                                         | ✅    | **Answered: no, in all three engines.** [reader-sandbox-spike.md](research/reader-sandbox-spike.md) — and it found a default-on escape while it was there   |
+| 11.2 | `packages/reader` — a fifth leaf package                                         | ✅    | Sniffing, acquisition, progress, hashing, content-frame policy; foliate vendored, pinned, patched, with a test that fails when the patch lapses             |
+| 11.3 | The `/read` route's CSP and the content-frame policy                             | ✅    | Nonce-based `script-src 'self'` from middleware, the engine probe wired in, and four tests that open a hostile book on the real route (`pnpm test:sandbox`) |
+| 11.4 | Acquisition: fetch, file picker, drag-and-drop, IndexedDB                        | ⬜    | Four ways in, one `BookSource`. CORS gets an honest dead end, not a workaround                                                                              |
+| 11.5 | Progress, bookmarks and annotations                                              | ⬜    | IndexedDB in the host origin, keyed by content hash; reached from the sandbox only through the RPC surface                                                  |
+| 11.6 | Display: themes incl. E-Ink, type, layout                                        | ⬜    | Tokens are read in the host and passed in as values (ADR-0008 stays true); E-Ink is monochrome, motionless and paged                                        |
+| 11.7 | Surfaces: where "Read in browser" appears                                        | ⬜    | Work page, free shelf, addon sources, `/read`. Shown only where there is a file to open — see below                                                         |
+| 11.8 | Settings popups and 15 dictionaries                                              | ⬜    | Every reader preference announces itself through `useSettingChangeToast()` with `outcomeOfWrite` (CLAUDE.md)                                                |
+| 11.9 | Zero-knowledge enforcement                                                       | ⬜    | Four `dependency-cruiser` rules plus a Playwright wire suite, `pnpm test:reader`, modelled on `addon-privacy.spec.ts`                                       |
 
 Sizing: this is five or six PRs, not one — rules.md §7 caps a PR at ~400 diff lines. The natural
 cuts are 11.0–11.3 (the box), 11.4 (getting a file into it), 11.5–11.6 (living in it), 11.7–11.8

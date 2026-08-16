@@ -371,4 +371,15 @@ export const ja: Dictionary = {
   'work.descriptionFrom': '紹介文:',
   'work.descriptionNotLocalized':
     'この紹介文は情報源が書いた言語のままです。この本については、あなたの言語のものはまだありません。',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'ブラウザーで読む',
+  'reader.privacy':
+    'この本を開くのはあなたのブラウザーだけです。ファイルも、その入手元も、どこまで読んだかも、このサイトには届きません。',
+  'reader.chooseFile': 'この端末から本を開く',
+  'reader.formats': 'EPUB、FB2、MOBI、CBZ。',
+  'reader.loading': '開いています…',
+  'reader.failed': 'この本を開けませんでした: {reason}',
+  'reader.previous': '前のページ',
+  'reader.next': '次のページ',
 };

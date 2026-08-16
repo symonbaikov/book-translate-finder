@@ -104,8 +104,7 @@ export const makeBook = async file => {
         }
     }
     else if (await isPDF(file)) {
-        const { makePDF } = await import('./pdf.js')
-        book = await makePDF(file)
+        throw new UnsupportedTypeError('PDF is out of scope') // golden-library: ADR-0013 §8
     }
     else {
         const { isMOBI, MOBI } = await import('./mobi.js')

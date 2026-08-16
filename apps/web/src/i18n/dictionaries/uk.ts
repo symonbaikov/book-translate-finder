@@ -384,4 +384,15 @@ export const uk: Dictionary = {
   'work.descriptionFrom': 'Опис:',
   'work.descriptionNotLocalized':
     'Опис подано так, як його написало джерело, — вашою мовою для цієї книжки його поки немає.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Читати у браузері',
+  'reader.privacy':
+    'Книжку відкриває сам ваш браузер. Ані файл, ані те, звідки він узятий, ані те, доки ви дочитали, на цей сайт не потрапляють.',
+  'reader.chooseFile': 'Відкрити книжку з цього пристрою',
+  'reader.formats': 'EPUB, FB2, MOBI та CBZ.',
+  'reader.loading': 'Відкриваємо…',
+  'reader.failed': 'Не вдалося відкрити книжку: {reason}',
+  'reader.previous': 'Попередня сторінка',
+  'reader.next': 'Наступна сторінка',
 };

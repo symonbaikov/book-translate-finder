@@ -404,4 +404,15 @@ export const en = {
   'work.descriptionFrom': 'Description:',
   'work.descriptionNotLocalized':
     'This description is in the language the source wrote it in — there is none in your language for this book yet.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Read in your browser',
+  'reader.privacy':
+    'Your browser opens this book on its own. The file, the place it came from, and how far you have read never reach this site.',
+  'reader.chooseFile': 'Open a book from this device',
+  'reader.formats': 'EPUB, FB2, MOBI and CBZ.',
+  'reader.loading': 'Opening…',
+  'reader.failed': 'This book could not be opened: {reason}',
+  'reader.previous': 'Previous page',
+  'reader.next': 'Next page',
 } as const;

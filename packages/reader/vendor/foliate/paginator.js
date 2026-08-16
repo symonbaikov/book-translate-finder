@@ -241,7 +241,7 @@ class View {
         })
         // `allow-scripts` is needed for events because of WebKit bug
         // https://bugs.webkit.org/show_bug.cgi?id=218086
-        this.#iframe.setAttribute('sandbox', 'allow-same-origin') // golden-library: ADR-0013 §3
+        this.#iframe.setAttribute('sandbox', globalThis.__goldenReaderContentFrameSandbox ?? 'allow-same-origin') // golden-library: ADR-0013 §3
         this.#iframe.setAttribute('scrolling', 'no')
     }
     get element() {
