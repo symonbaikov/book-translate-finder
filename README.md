@@ -15,10 +15,16 @@ under copyright.
 
 The project is designed for self-hosting: deploy your own copy on your own server or home NAS.
 
-![Home page: search, and personalized recommendations based on browsing history worked out in the browser](docs/images/home.png)
 
 
-> ⚠️ The demo GIF and screenshots are based on **v1** and will be updated soon.
+
+
+https://github.com/user-attachments/assets/c40bea3a-45d8-4d47-a307-cf80b05f7d39
+
+<img width="1920" height="948" alt="Screenshot_20260816_074838" src="https://github.com/user-attachments/assets/00c7330b-7419-4db0-99ee-f64f5b4c5911" />
+
+
+> ⚠️ The demo video and screenshots are based on **v1** and will be updated soon.
 
 <p align="center">
   <a href="https://bank.gov.ua/en/news/all/natsionalniy-bank-vidkriv-rahunok-dlya-gumanitarnoyi-dopomogi-ukrayintsyam-postrajdalim-vid-rosiyskoyi-agresiyi" target="_blank">
