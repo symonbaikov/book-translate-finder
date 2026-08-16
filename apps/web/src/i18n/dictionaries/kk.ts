@@ -374,4 +374,115 @@ export const kk: Dictionary = {
   'work.descriptionFrom': 'Сипаттама:',
   'work.descriptionNotLocalized':
     'Бұл сипаттама дереккөз жазған тілде — сіздің тіліңізде бұл кітап үшін әзірге жоқ.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{outOf} ұпайдың {average}-і, {votes} оқырман — {source}',
+  'ratings.lowConfidence': 'салыстыруға дауыс тым аз',
+  'ratings.reviews': 'Пікірлер',
+  'ratings.reviewsOn': 'Осы басылым туралы пікірлер — {source}',
+  'ratings.noteNoRatings':
+    'Бірде-бір ашық дереккөз аударманы бағаламайды, әрі мына таралымдардың ешқайсысында мұнда оқырман бағасы жоқ.',
+  'ratings.noteReviews':
+    'Басылым {sources} дереккөзінде белгілі болса, сілтеме дәл сол таралымның пікірлеріне апарады — басылымдардың көбі белгілі емес.',
+  'ratings.translator':
+    '{name} аударған басылымдар: {editions} бағаланған басылым бойынша {outOf} ұпайдың {average}-і, барлығы {votes} оқырман.',
+  'ratings.note':
+    'Бұл — {sources} дереккөзіндегі нақты басылымға берілген оқырман бағалары, аударманың өзіне берілген баға емес — ондайды ешкім жарияламайды. Оларды қатар оқыған жөн: сол кітап, сол тіл, басқа аудармашылар, әрі әрқашан дауыс саны көз алдыңызда.',
+  'ratings.gapWithoutIsbn':
+    'Мұндағы {count} басылымда ISBN жоқ, сондықтан оларға ешқандай баға сәйкестендірілмеді.',
+  'ratings.gapNotLookedUp': 'Тағы {count} басылым осы сұрауда тексерілмеді.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Браузеріңізде оқыңыз',
+  'reader.privacy':
+    'Бұл кітапты браузеріңіз өзі ашады. Файл, оның қайдан келгені және қаншалықты оқығаныңыз бұл сайтқа ешқашан жетпейді.',
+  'reader.chooseFile': 'Осы құрылғыдан кітап ашу',
+  'reader.formats': 'EPUB, FB2, MOBI және CBZ.',
+  'reader.loading': 'Ашылуда…',
+  'reader.failed': 'Бұл кітапты ашу мүмкін болмады: {reason}',
+  'reader.previous': 'Алдыңғы бет',
+  'reader.next': 'Келесі бет',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…немесе кітапты осында тастаңыз',
+  'reader.fetching': 'Файл {host} сайтынан сұралуда…',
+  'reader.blockedTitle': '{host} файлды осы бетке бермеді',
+  'reader.blockedBody':
+    'Не оған қол жеткізу мүмкін емес, не ол басқа сайттарға өз файлдарын оқуға рұқсат бермейді. Бұл сайт оны сіздің орныңызға жүктемейді: кітабыңыз ол арқылы ешқашан өтпейді, мұнда оқудың бүкіл мәні де осында.',
+  'reader.blockedDownload': 'Оны {host} сайтынан жүктеңіз',
+  'reader.blockedOpenHere': 'содан кейін осында, өз құрылғыңыздан ашыңыз',
+  'reader.blockedAddon': 'Файлды өзі беретін қосымша да жарайды.',
+  'reader.keepFile': 'Бұл кітапты осы браузерде сақтау',
+  'reader.keepFileHint':
+    'Әдепкіде өшірулі. Онсыз қойындыны жапқанда файл жоғалады; онымен ол тек осы құрылғыда қалады.',
+  'reader.library': 'Осы браузерде сақталған',
+  'reader.libraryEmpty':
+    'Әзірге ештеңе сақталмаған. Сақтаған кітаптарыңыз осы құрылғыда қалады және ешқашан ешқайда жүктелмейді.',
+  'reader.libraryOpen': 'Ашу',
+  'reader.libraryRemove': 'Жою',
+  'reader.libraryFileKept': 'файл сақталды',
+  'reader.libraryFileGone': 'файл сақталмады',
+  'reader.untitled': 'Атауы жоқ кітап',
+  'settings.reader.libraryTitle': 'Осы браузерде сақталатын кітаптар',
+  'settings.reader.kept':
+    '«{title}» енді осы құрылғыда сақталады, сондықтан қайта жүктеусіз ашылады. Ешқайда жүктелмейді.',
+  'settings.reader.forgotten':
+    '«{title}» кітабының файлы осы браузерден жойылды. Жазба тізімде қалады, сондықтан оны өз дереккөзінен қайта аша аласыз.',
+  'settings.reader.removed': '«{title}» осы браузерден толықтай жойылды — файлы да, жазбасы да.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Тоқтаған жеріңізден ашылды — {percent} % тұсынан.',
+  'reader.bookmarks': 'Бетбелгілер',
+  'reader.bookmarkAdd': 'Осы бетке бетбелгі қою',
+  'reader.bookmarkNone': 'Бұл кітапта әзірге бетбелгі жоқ.',
+  'reader.bookmarkGo': 'Өту',
+  'reader.bookmarkRemove': 'Бетбелгіні жою',
+  'reader.bookmarkNote': 'Ескертпе',
+  'reader.bookmarkNotePlaceholder': 'Осы бет туралы өз сөзіңіз',
+  'reader.bookmarkAt': '{percent} % тұсында',
+  'settings.reader.bookmarkTitle': 'Осы браузердегі бетбелгілер',
+  'settings.reader.bookmarkAdded':
+    'Бетбелгі «{title}» кітабының {percent} % тұсында. Бетбелгілер кітаппен бірге осы құрылғыда қалады.',
+  'settings.reader.bookmarkRemoved': '«{title}» кітабындағы сол бетбелгі осы браузерден жойылды.',
+  'settings.reader.noteSaved':
+    '«{title}» кітабының осы бетіндегі ескертпеңіз осы құрылғыда сақталды.',
+  'settings.reader.positionTitle': 'Оқу орны',
+  'settings.reader.positionUnstored':
+    'Бұл браузер «{title}» кітабындағы орныңызды сақтамады, сондықтан келесі жолы ол басынан ашылады. Мұны жеке режим де, толған диск те істейді.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Бұл кітап қалай көрінеді',
+  'reader.theme': 'Түстер',
+  'reader.themeApp': 'Сайттағыдай',
+  'reader.themeLight': 'Қағаз',
+  'reader.themeDark': 'Сия',
+  'reader.themeSepia': 'Сепия',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Ақ бетте таза қара, анимациясыз, бір баған — электрондық қағаз экрандары үшін.',
+  'reader.fontSize': 'Қаріп өлшемі',
+  'reader.smaller': 'Кішірек',
+  'reader.larger': 'Үлкенірек',
+  'reader.lineHeight': 'Жоларалық қашықтық',
+  'reader.margin': 'Жиектер',
+  'reader.flow': 'Беттер',
+  'reader.flowPaged': 'Бет ашу',
+  'reader.flowScrolled': 'Айналдыру',
+  'reader.justify': 'Ені бойынша туралау',
+  'reader.hyphenate': 'Тасымалдау',
+  'reader.displayReset': 'Әдепкіге қайту',
+  'settings.reader.displayTitle': 'Оқу көрінісі',
+  'settings.reader.displayChanged':
+    '{setting} енді — {value}. Бұл осы браузерде ашатын әр кітапқа қатысты.',
+  'settings.reader.displayReset':
+    'Оқу көрінісі осы браузердегі барлық кітап үшін әдепкі күйіне қайтарылды.',
+  'reader.on': 'Қосулы',
+  'reader.off': 'Өшірулі',
+  'reader.openHere': 'Браузеріңізде оқыңыз',
+  'reader.notAFileTitle': '{host} файл емес, веб-бет жіберді',
+  'reader.notAFileBody':
+    'Сілтеме кітапқа емес, бетке апарады — жүктеу бетіне, келісім терезесіне немесе робот еместігіңізді тексеруге. Оны өзіңіз ашыңыз, сонда файл сол жерде болады.',
+  'settings.status.session': 'Есте сақталмады',
+  'settings.notRemembered':
+    'Бұл браузер мұны есте сақтамады, сондықтан келесі жолы кітап ашқанда бәрі бұрынғыдай болады.',
 };

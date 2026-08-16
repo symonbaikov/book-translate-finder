@@ -373,4 +373,113 @@ export const da: Dictionary = {
   'work.descriptionFrom': 'Beskrivelse:',
   'work.descriptionNotLocalized':
     'Denne beskrivelse er på det sprog, kilden skrev den på — der er ingen på dit sprog til denne bog endnu.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} af {outOf} fra {votes} læsere på {source}',
+  'ratings.lowConfidence': 'for få stemmer til at sammenligne',
+  'ratings.reviews': 'Anmeldelser',
+  'ratings.reviewsOn': 'Anmeldelser af denne udgave på {source}',
+  'ratings.noteNoRatings':
+    'Ingen åben kilde bedømmer en oversættelse, og ingen af disse oplag har en læserbedømmelse her.',
+  'ratings.noteReviews':
+    'Hvor en udgave er kendt på {sources}, fører linket til anmeldelserne af netop det oplag — de fleste udgaver er det ikke.',
+  'ratings.translator':
+    'Udgaver oversat af {name}: {average} af {outOf} på tværs af {editions} bedømte udgaver, {votes} læsere i alt.',
+  'ratings.note':
+    'Dette er læsernes bedømmelser af en bestemt udgave på {sources}, ikke en vurdering af selve oversættelsen — det udgiver ingen. De er værd at læse side om side: samme bog, samme sprog, forskellige oversættere, og altid med antallet af stemmer for øje.',
+  'ratings.gapWithoutIsbn':
+    '{count} udgaver her har intet ISBN, så ingen bedømmelse kunne knyttes til dem.',
+  'ratings.gapNotLookedUp': '{count} yderligere udgaver blev ikke slået op i denne forespørgsel.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Læs i din browser',
+  'reader.privacy':
+    'Din browser åbner denne bog helt selv. Filen, stedet den kom fra, og hvor langt du er nået, når aldrig frem til dette site.',
+  'reader.chooseFile': 'Åbn en bog fra denne enhed',
+  'reader.formats': 'EPUB, FB2, MOBI og CBZ.',
+  'reader.loading': 'Åbner…',
+  'reader.failed': 'Denne bog kunne ikke åbnes: {reason}',
+  'reader.previous': 'Forrige side',
+  'reader.next': 'Næste side',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…eller slip en bog her',
+  'reader.fetching': 'Beder {host} om filen…',
+  'reader.blockedTitle': '{host} gav ikke filen til denne side',
+  'reader.blockedBody':
+    'Enten kan den ikke nås, eller også tillader den ikke andre sites at læse dens filer. Dette site henter den ikke for dig i stedet: din bog passerer aldrig igennem det, og det er hele pointen med at læse her.',
+  'reader.blockedDownload': 'Download den fra {host}',
+  'reader.blockedOpenHere': 'og åbn den så her fra din enhed',
+  'reader.blockedAddon': 'En tilføjelse, der selv serverer filen, virker også.',
+  'reader.keepFile': 'Behold denne bog i denne browser',
+  'reader.keepFileHint':
+    'Slået fra som standard. Uden den er filen væk, når du lukker fanen; med den bliver den kun på denne enhed.',
+  'reader.library': 'Beholdt i denne browser',
+  'reader.libraryEmpty':
+    'Intet beholdt endnu. Bøger, du beholder, bliver på denne enhed og uploades aldrig.',
+  'reader.libraryOpen': 'Åbn',
+  'reader.libraryRemove': 'Fjern',
+  'reader.libraryFileKept': 'filen beholdt',
+  'reader.libraryFileGone': 'filen ikke beholdt',
+  'reader.untitled': 'Bog uden titel',
+  'settings.reader.libraryTitle': 'Bøger, der beholdes i denne browser',
+  'settings.reader.kept':
+    '“{title}” beholdes nu på denne enhed, så den åbner uden at blive downloadet igen. Den uploades ingen steder.',
+  'settings.reader.forgotten':
+    'Filen til “{title}” blev slettet fra denne browser. Den bliver på listen, så du kan åbne den igen fra dens kilde.',
+  'settings.reader.removed': '“{title}” blev fjernet helt fra denne browser — filen og posten.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Åbnet, hvor du slap — {percent}% inde.',
+  'reader.bookmarks': 'Bogmærker',
+  'reader.bookmarkAdd': 'Sæt bogmærke på denne side',
+  'reader.bookmarkNone': 'Ingen bogmærker i denne bog endnu.',
+  'reader.bookmarkGo': 'Gå til',
+  'reader.bookmarkRemove': 'Fjern bogmærke',
+  'reader.bookmarkNote': 'Note',
+  'reader.bookmarkNotePlaceholder': 'Dine egne ord om denne side',
+  'reader.bookmarkAt': '{percent}% inde',
+  'settings.reader.bookmarkTitle': 'Bogmærker i denne browser',
+  'settings.reader.bookmarkAdded':
+    'Bogmærke {percent}% inde i “{title}”. Bogmærker bliver på denne enhed sammen med bogen.',
+  'settings.reader.bookmarkRemoved': 'Det bogmærke i “{title}” blev fjernet fra denne browser.',
+  'settings.reader.noteSaved': 'Din note på denne side af “{title}” blev gemt på denne enhed.',
+  'settings.reader.positionTitle': 'Læseposition',
+  'settings.reader.positionUnstored':
+    'Denne browser ville ikke gemme, hvor du er i “{title}”, så den åbner forfra næste gang. Privat tilstand og en fuld disk gør begge det.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Sådan ser denne bog ud',
+  'reader.theme': 'Farver',
+  'reader.themeApp': 'Følg sitet',
+  'reader.themeLight': 'Papir',
+  'reader.themeDark': 'Blæk',
+  'reader.themeSepia': 'Sepia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint': 'Rent sort på hvidt, ingen animation, én spalte — til e-papirskærme.',
+  'reader.fontSize': 'Skriftstørrelse',
+  'reader.smaller': 'Mindre',
+  'reader.larger': 'Større',
+  'reader.lineHeight': 'Linjeafstand',
+  'reader.margin': 'Margener',
+  'reader.flow': 'Sider',
+  'reader.flowPaged': 'Bladr',
+  'reader.flowScrolled': 'Rul',
+  'reader.justify': 'Lige margener',
+  'reader.hyphenate': 'Orddeling',
+  'reader.displayReset': 'Tilbage til standard',
+  'settings.reader.displayTitle': 'Læsevisning',
+  'settings.reader.displayChanged':
+    '{setting} er nu {value}. Det gælder hver bog, du åbner i denne browser.',
+  'settings.reader.displayReset':
+    'Læsevisningen er tilbage til standard for hver bog i denne browser.',
+  'reader.on': 'Til',
+  'reader.off': 'Fra',
+  'reader.openHere': 'Læs i din browser',
+  'reader.notAFileTitle': '{host} sendte en webside, ikke filen',
+  'reader.notAFileBody':
+    'Linket fører til en side i stedet for til en bog — en downloadside, et samtykkeskærmbillede eller en kontrol af, at du ikke er en robot. Åbn den selv, så er filen der.',
+  'settings.status.session': 'Ikke husket',
+  'settings.notRemembered':
+    'Denne browser ville ikke huske det, så det er tilbage, som det var, næste gang du åbner en bog.',
 };

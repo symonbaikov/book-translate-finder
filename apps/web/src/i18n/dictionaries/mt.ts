@@ -375,4 +375,116 @@ export const mt: Dictionary = {
   'work.descriptionFrom': 'Deskrizzjoni:',
   'work.descriptionNotLocalized':
     'Din id-deskrizzjoni hija bil-lingwa li biha kitibha s-sors — bil-lingwa tiegħek għadha m’hemmx waħda għal dan il-ktieb.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} minn {outOf} minn {votes} qarrejja fuq {source}',
+  'ratings.lowConfidence': 'ftit wisq voti biex issir paragun',
+  'ratings.reviews': 'Reċensjonijiet',
+  'ratings.reviewsOn': 'Reċensjonijiet ta’ din l-edizzjoni fuq {source}',
+  'ratings.noteNoRatings':
+    'Ebda sors miftuħ ma jagħti punteġġ lil traduzzjoni, u ebda waħda minn dawn l-istampi m’għandha hawn klassifikazzjoni tal-qarrejja.',
+  'ratings.noteReviews':
+    'Fejn edizzjoni hija magħrufa fuq {sources}, il-link twassal għar-reċensjonijiet ta’ dik l-istampa eżatta — il-biċċa l-kbira tal-edizzjonijiet mhumiex.',
+  'ratings.translator':
+    'Edizzjonijiet tradotti minn {name}: {average} minn {outOf} fuq {editions} edizzjonijiet ikklassifikati, {votes} qarrejja b’kollox.',
+  'ratings.note':
+    'Dawn huma klassifikazzjonijiet tal-qarrejja għal edizzjoni partikolari fuq {sources}, mhux ġudizzju fuq it-traduzzjoni nnifisha — dak ma jippubblikah ħadd. Jiswew jinqraw ħdejn xulxin: l-istess ktieb, l-istess lingwa, tradutturi differenti, u dejjem bin-numru ta’ voti quddiem għajnejk.',
+  'ratings.gapWithoutIsbn':
+    '{count} edizzjonijiet hawn m’għandhomx ISBN, għalhekk ma setgħet titqabbel magħhom ebda klassifikazzjoni.',
+  'ratings.gapNotLookedUp': '{count} edizzjonijiet oħra ma ġewx imfittxija f’din it-talba.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Aqra fil-browser tiegħek',
+  'reader.privacy':
+    'Il-browser tiegħek jiftaħ dan il-ktieb waħdu. Il-fajl, il-post minn fejn ġie, u kemm wasalt fil-qari qatt ma jaslu għand dan is-sit.',
+  'reader.chooseFile': 'Iftaħ ktieb minn dan l-apparat',
+  'reader.formats': 'EPUB, FB2, MOBI u CBZ.',
+  'reader.loading': 'Qed jinfetaħ…',
+  'reader.failed': 'Dan il-ktieb ma setax jinfetaħ: {reason}',
+  'reader.previous': 'Paġna ta’ qabel',
+  'reader.next': 'Paġna li jmiss',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…jew waqqa’ ktieb hawn',
+  'reader.fetching': 'Qed jintalab il-fajl mingħand {host}…',
+  'reader.blockedTitle': '{host} ma tax il-fajl lil din il-paġna',
+  'reader.blockedBody':
+    'Jew ma jistax jintlaħaq, jew ma jippermettix li siti oħra jaqraw il-fajls tiegħu. Dan is-sit mhux se jġibu minflokok: il-ktieb tiegħek qatt ma jgħaddi minnu, u dak hu s-sens kollu tal-qari hawn.',
+  'reader.blockedDownload': 'Niżżlu minn {host}',
+  'reader.blockedOpenHere': 'u mbagħad iftħu hawn mill-apparat tiegħek',
+  'reader.blockedAddon': 'Taħdem ukoll estensjoni li sservi hi stess il-fajl.',
+  'reader.keepFile': 'Żomm dan il-ktieb f’dan il-browser',
+  'reader.keepFileHint':
+    'Mitfi awtomatikament. Mingħajru l-fajl jispiċċa meta tagħlaq it-tab; miegħu jibqa’ f’dan l-apparat biss.',
+  'reader.library': 'Miżmuma f’dan il-browser',
+  'reader.libraryEmpty':
+    'Xejn miżmum s’issa. Il-kotba li żżomm jibqgħu f’dan l-apparat u qatt ma jittellgħu x’imkien.',
+  'reader.libraryOpen': 'Iftaħ',
+  'reader.libraryRemove': 'Neħħi',
+  'reader.libraryFileKept': 'fajl miżmum',
+  'reader.libraryFileGone': 'fajl mhux miżmum',
+  'reader.untitled': 'Ktieb bla titlu',
+  'settings.reader.libraryTitle': 'Kotba miżmuma f’dan il-browser',
+  'settings.reader.kept':
+    '“{title}” issa qed jinżamm f’dan l-apparat, għalhekk jinfetaħ mingħajr ma jerġa’ jitniżżel. Ma jittellax x’imkien.',
+  'settings.reader.forgotten':
+    'Il-fajl ta’ “{title}” tħassar minn dan il-browser. Jibqa’ fil-lista, biex tkun tista’ terġa’ tiftħu mis-sors tiegħu.',
+  'settings.reader.removed':
+    '“{title}” tneħħa kompletament minn dan il-browser — il-fajl u l-entrata.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Infetaħ fejn kont wasalt — {percent}% ’il ġewwa.',
+  'reader.bookmarks': 'Sinjali',
+  'reader.bookmarkAdd': 'Poġġi sinjal f’din il-paġna',
+  'reader.bookmarkNone': 'Għad m’hemmx sinjali f’dan il-ktieb.',
+  'reader.bookmarkGo': 'Mur',
+  'reader.bookmarkRemove': 'Neħħi s-sinjal',
+  'reader.bookmarkNote': 'Nota',
+  'reader.bookmarkNotePlaceholder': 'Kliemek dwar din il-paġna',
+  'reader.bookmarkAt': '{percent}% ’il ġewwa',
+  'settings.reader.bookmarkTitle': 'Sinjali f’dan il-browser',
+  'settings.reader.bookmarkAdded':
+    'Sinjal {percent}% ’il ġewwa f’“{title}”. Is-sinjali jibqgħu f’dan l-apparat mal-ktieb.',
+  'settings.reader.bookmarkRemoved': 'Dak is-sinjal f’“{title}” tneħħa minn dan il-browser.',
+  'settings.reader.noteSaved':
+    'In-nota tiegħek f’din il-paġna ta’ “{title}” ġiet salvata f’dan l-apparat.',
+  'settings.reader.positionTitle': 'Post fil-qari',
+  'settings.reader.positionUnstored':
+    'Dan il-browser ma riedx jaħżen fejn wasalt f’“{title}”, għalhekk id-darba li jmiss jinfetaħ mill-bidu. Dan jagħmluh kemm il-modalità privata kif ukoll diska mimlija.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Kif jidher dan il-ktieb',
+  'reader.theme': 'Kuluri',
+  'reader.themeApp': 'Bħas-sit',
+  'reader.themeLight': 'Karta',
+  'reader.themeDark': 'Linka',
+  'reader.themeSepia': 'Sepja',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Iswed pur fuq abjad, bla animazzjoni, kolonna waħda — għal skrins tal-karta elettronika.',
+  'reader.fontSize': 'Daqs tal-kitba',
+  'reader.smaller': 'Iżgħar',
+  'reader.larger': 'Ikbar',
+  'reader.lineHeight': 'Spazju bejn il-linji',
+  'reader.margin': 'Marġni',
+  'reader.flow': 'Paġni',
+  'reader.flowPaged': 'Dawwar il-paġni',
+  'reader.flowScrolled': 'Skrollja',
+  'reader.justify': 'Iġġustifika t-test',
+  'reader.hyphenate': 'Qsim tal-kliem',
+  'reader.displayReset': 'Lura għall-valuri awtomatiċi',
+  'settings.reader.displayTitle': 'Dehra tal-qari',
+  'settings.reader.displayChanged':
+    '{setting} issa hu {value}. Japplika għal kull ktieb li tiftaħ f’dan il-browser.',
+  'settings.reader.displayReset':
+    'Id-dehra tal-qari reġgħet għall-valuri awtomatiċi għal kull ktieb f’dan il-browser.',
+  'reader.on': 'Mixgħul',
+  'reader.off': 'Mitfi',
+  'reader.openHere': 'Aqra fil-browser tiegħek',
+  'reader.notAFileTitle': '{host} bagħat paġna tal-web, mhux il-fajl',
+  'reader.notAFileBody':
+    'Il-link twassal għal paġna u mhux għal ktieb — paġna ta’ tniżżil, skrin ta’ kunsens, jew verifika li m’intix robot. Iftaħha int u l-fajl ikun hemm.',
+  'settings.status.session': 'Ma ġiex miftakar',
+  'settings.notRemembered':
+    'Dan il-browser ma riedx jiftakru, għalhekk id-darba li jmiss li tiftaħ ktieb kollox ikun kif kien.',
 };

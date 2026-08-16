@@ -377,4 +377,114 @@ export const sq: Dictionary = {
   'work.descriptionFrom': 'Përshkrimi:',
   'work.descriptionNotLocalized':
     'Ky përshkrim është në gjuhën në të cilën e shkroi burimi — në gjuhën tuaj ende s’ka asnjë për këtë libër.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} nga {outOf}, {votes} lexues në {source}',
+  'ratings.lowConfidence': 'shumë pak vota për krahasim',
+  'ratings.reviews': 'Vlerësime',
+  'ratings.reviewsOn': 'Vlerësime të këtij botimi në {source}',
+  'ratings.noteNoRatings':
+    'Asnjë burim i hapur nuk vlerëson një përkthim, dhe asnjë prej këtyre tirazheve nuk ka këtu një notë nga lexuesit.',
+  'ratings.noteReviews':
+    'Aty ku një botim njihet në {sources}, lidhja të çon te vlerësimet pikërisht të atij tirazhi — shumica e botimeve nuk njihen.',
+  'ratings.translator':
+    'Botime të përkthyera nga {name}: {average} nga {outOf} përgjatë {editions} botimeve të vlerësuara, {votes} lexues gjithsej.',
+  'ratings.note':
+    'Këto janë nota të lexuesve për një botim të caktuar në {sources}, jo një gjykim mbi vetë përkthimin — atë nuk e publikon askush. Ia vlen të lexohen krah për krah: i njëjti libër, e njëjta gjuhë, përkthyes të ndryshëm, dhe gjithnjë me numrin e votave para syve.',
+  'ratings.gapWithoutIsbn':
+    '{count} botime këtu s’kanë ISBN, prandaj asnjë notë nuk u përputh dot me to.',
+  'ratings.gapNotLookedUp': '{count} botime të tjera nuk u kërkuan në këtë kërkesë.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Lexoni në shfletuesin tuaj',
+  'reader.privacy':
+    'Shfletuesi juaj e hap vetë këtë libër. Skedari, vendi nga erdhi, dhe sa larg keni lexuar nuk arrijnë kurrë te kjo faqe.',
+  'reader.chooseFile': 'Hapni një libër nga kjo pajisje',
+  'reader.formats': 'EPUB, FB2, MOBI dhe CBZ.',
+  'reader.loading': 'Po hapet…',
+  'reader.failed': 'Ky libër nuk u hap dot: {reason}',
+  'reader.previous': 'Faqja e mëparshme',
+  'reader.next': 'Faqja tjetër',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…ose lëshoni një libër këtu',
+  'reader.fetching': 'Po i kërkohet skedari {host}…',
+  'reader.blockedTitle': '{host} nuk ia dorëzoi skedarin kësaj faqeje',
+  'reader.blockedBody':
+    'Ose nuk arrihet dot, ose nuk lejon faqe të tjera të lexojnë skedarët e tij. Kjo faqe nuk do ta marrë në vendin tuaj: libri juaj nuk kalon kurrë nëpër të, dhe pikërisht në këtë qëndron leximi këtu.',
+  'reader.blockedDownload': 'Shkarkojeni nga {host}',
+  'reader.blockedOpenHere': 'dhe pastaj hapeni këtu nga pajisja juaj',
+  'reader.blockedAddon': 'Punon edhe një shtojcë që e shërben vetë skedarin.',
+  'reader.keepFile': 'Mbaje këtë libër në këtë shfletues',
+  'reader.keepFileHint':
+    'E fikur si parazgjedhje. Pa të, skedari zhduket sapo mbyllni skedën; me të, mbetet vetëm në këtë pajisje.',
+  'reader.library': 'Të mbajtur në këtë shfletues',
+  'reader.libraryEmpty':
+    'Ende asgjë e mbajtur. Librat që mbani rrinë në këtë pajisje dhe nuk ngarkohen kurrë askund.',
+  'reader.libraryOpen': 'Hap',
+  'reader.libraryRemove': 'Hiq',
+  'reader.libraryFileKept': 'skedari u mbajt',
+  'reader.libraryFileGone': 'skedari nuk u mbajt',
+  'reader.untitled': 'Libër pa titull',
+  'settings.reader.libraryTitle': 'Libra të mbajtur në këtë shfletues',
+  'settings.reader.kept':
+    '“{title}” tani mbahet në këtë pajisje, prandaj hapet pa u shkarkuar sërish. Nuk ngarkohet askund.',
+  'settings.reader.forgotten':
+    'Skedari i “{title}” u fshi nga ky shfletues. Zëri mbetet në listë, kështu që mund ta hapni sërish nga burimi i tij.',
+  'settings.reader.removed': '“{title}” u hoq krejtësisht nga ky shfletues — skedari dhe zëri.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'U hap aty ku e latë — te {percent}%.',
+  'reader.bookmarks': 'Faqerojtës',
+  'reader.bookmarkAdd': 'Vër faqerojtës në këtë faqe',
+  'reader.bookmarkNone': 'Ende asnjë faqerojtës në këtë libër.',
+  'reader.bookmarkGo': 'Shko te',
+  'reader.bookmarkRemove': 'Hiq faqerojtësin',
+  'reader.bookmarkNote': 'Shënim',
+  'reader.bookmarkNotePlaceholder': 'Fjalët tuaja për këtë faqe',
+  'reader.bookmarkAt': 'te {percent}%',
+  'settings.reader.bookmarkTitle': 'Faqerojtës në këtë shfletues',
+  'settings.reader.bookmarkAdded':
+    'Faqerojtës te {percent}% i “{title}”. Faqerojtësit rrinë në këtë pajisje bashkë me librin.',
+  'settings.reader.bookmarkRemoved': 'Ai faqerojtës në “{title}” u hoq nga ky shfletues.',
+  'settings.reader.noteSaved': 'Shënimi juaj në këtë faqe të “{title}” u ruajt në këtë pajisje.',
+  'settings.reader.positionTitle': 'Vendi i leximit',
+  'settings.reader.positionUnstored':
+    'Ky shfletues nuk deshi të ruajë ku jeni në “{title}”, prandaj herës tjetër do të hapet nga fillimi. Këtë e bëjnë si mënyra private ashtu edhe një disk plot.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Si duket ky libër',
+  'reader.theme': 'Ngjyrat',
+  'reader.themeApp': 'Si faqja',
+  'reader.themeLight': 'Letër',
+  'reader.themeDark': 'Bojë',
+  'reader.themeSepia': 'Sepia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'E zezë e pastër mbi të bardhë, pa animacion, një kolonë — për ekranet me letër elektronike.',
+  'reader.fontSize': 'Madhësia e shkronjave',
+  'reader.smaller': 'Më e vogël',
+  'reader.larger': 'Më e madhe',
+  'reader.lineHeight': 'Hapësira mes rreshtave',
+  'reader.margin': 'Anët',
+  'reader.flow': 'Faqet',
+  'reader.flowPaged': 'Kthe faqet',
+  'reader.flowScrolled': 'Rrëshqit',
+  'reader.justify': 'Drejtim në të dyja anët',
+  'reader.hyphenate': 'Ndarje në rrokje',
+  'reader.displayReset': 'Kthehu te parazgjedhjet',
+  'settings.reader.displayTitle': 'Pamja gjatë leximit',
+  'settings.reader.displayChanged':
+    '{setting} tani është {value}. Vlen për çdo libër që hapni në këtë shfletues.',
+  'settings.reader.displayReset':
+    'Pamja gjatë leximit u kthye te parazgjedhjet për çdo libër në këtë shfletues.',
+  'reader.on': 'Ndezur',
+  'reader.off': 'Fikur',
+  'reader.openHere': 'Lexoni në shfletuesin tuaj',
+  'reader.notAFileTitle': '{host} dërgoi një faqe interneti, jo skedarin',
+  'reader.notAFileBody':
+    'Lidhja të çon te një faqe e jo te një libër — një faqe shkarkimi, një ekran pëlqimi, ose një kontroll që s’jeni robot. Hapeni vetë dhe skedari do të jetë atje.',
+  'settings.status.session': 'Nuk u mbajt mend',
+  'settings.notRemembered':
+    'Ky shfletues nuk e mbajti mend, prandaj herës tjetër që hapni një libër gjithçka do të jetë si më parë.',
 };

@@ -384,4 +384,117 @@ export const el: Dictionary = {
   'work.descriptionFrom': 'Περιγραφή:',
   'work.descriptionNotLocalized':
     'Αυτή η περιγραφή είναι στη γλώσσα που την έγραψε η πηγή — στη δική σας γλώσσα δεν υπάρχει ακόμη για αυτό το βιβλίο.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} στα {outOf} από {votes} αναγνώστες στο {source}',
+  'ratings.lowConfidence': 'πολύ λίγες ψήφοι για σύγκριση',
+  'ratings.reviews': 'Κριτικές',
+  'ratings.reviewsOn': 'Κριτικές αυτής της έκδοσης στο {source}',
+  'ratings.noteNoRatings':
+    'Καμία ανοιχτή πηγή δεν βαθμολογεί μετάφραση, και καμία από αυτές τις ανατυπώσεις δεν έχει εδώ βαθμολογία αναγνωστών.',
+  'ratings.noteReviews':
+    'Όπου μια έκδοση είναι γνωστή στο {sources}, ο σύνδεσμος οδηγεί στις κριτικές ακριβώς εκείνης της ανατύπωσης — οι περισσότερες εκδόσεις δεν είναι.',
+  'ratings.translator':
+    'Εκδόσεις σε μετάφραση {name}: {average} στα {outOf} σε {editions} βαθμολογημένες εκδόσεις, {votes} αναγνώστες συνολικά.',
+  'ratings.note':
+    'Πρόκειται για βαθμολογίες αναγνωστών σε συγκεκριμένη έκδοση στο {sources}, όχι για κρίση της ίδιας της μετάφρασης — αυτό δεν το δημοσιεύει κανείς. Αξίζει να διαβαστούν δίπλα-δίπλα: ίδιο βιβλίο, ίδια γλώσσα, διαφορετικοί μεταφραστές, και πάντα με τον αριθμό των ψήφων μπροστά σας.',
+  'ratings.gapWithoutIsbn':
+    '{count} εκδόσεις εδώ δεν φέρουν ISBN, οπότε δεν μπόρεσε να αντιστοιχηθεί καμία βαθμολογία.',
+  'ratings.gapNotLookedUp': 'Άλλες {count} εκδόσεις δεν αναζητήθηκαν σε αυτό το αίτημα.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Διαβάστε στο πρόγραμμα περιήγησής σας',
+  'reader.privacy':
+    'Το πρόγραμμα περιήγησής σας ανοίγει αυτό το βιβλίο μόνο του. Το αρχείο, το πού βρέθηκε και το πόσο έχετε διαβάσει δεν φτάνουν ποτέ σε αυτόν τον ιστότοπο.',
+  'reader.chooseFile': 'Ανοίξτε ένα βιβλίο από αυτή τη συσκευή',
+  'reader.formats': 'EPUB, FB2, MOBI και CBZ.',
+  'reader.loading': 'Άνοιγμα…',
+  'reader.failed': 'Αυτό το βιβλίο δεν άνοιξε: {reason}',
+  'reader.previous': 'Προηγούμενη σελίδα',
+  'reader.next': 'Επόμενη σελίδα',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…ή αφήστε ένα βιβλίο εδώ',
+  'reader.fetching': 'Ζητείται το αρχείο από {host}…',
+  'reader.blockedTitle': 'Το {host} δεν έδωσε το αρχείο σε αυτή τη σελίδα',
+  'reader.blockedBody':
+    'Είτε δεν είναι προσβάσιμο, είτε δεν επιτρέπει σε άλλους ιστότοπους να διαβάζουν τα αρχεία του. Αυτός ο ιστότοπος δεν θα το κατεβάσει για λογαριασμό σας: το βιβλίο σας δεν περνά ποτέ από εδώ, και σε αυτό ακριβώς έγκειται η ανάγνωση εδώ.',
+  'reader.blockedDownload': 'Κατεβάστε το από το {host}',
+  'reader.blockedOpenHere': 'και μετά ανοίξτε το εδώ από τη συσκευή σας',
+  'reader.blockedAddon': 'Λειτουργεί και ένα πρόσθετο που σερβίρει το ίδιο το αρχείο.',
+  'reader.keepFile': 'Κρατήστε αυτό το βιβλίο σε αυτό το πρόγραμμα περιήγησης',
+  'reader.keepFileHint':
+    'Απενεργοποιημένο εξ ορισμού. Χωρίς αυτό, το αρχείο χάνεται μόλις κλείσετε την καρτέλα· με αυτό, μένει μόνο σε αυτή τη συσκευή.',
+  'reader.library': 'Κρατημένα σε αυτό το πρόγραμμα περιήγησης',
+  'reader.libraryEmpty':
+    'Τίποτα κρατημένο ακόμη. Τα βιβλία που κρατάτε μένουν σε αυτή τη συσκευή και δεν ανεβαίνουν ποτέ πουθενά.',
+  'reader.libraryOpen': 'Άνοιγμα',
+  'reader.libraryRemove': 'Αφαίρεση',
+  'reader.libraryFileKept': 'το αρχείο κρατήθηκε',
+  'reader.libraryFileGone': 'το αρχείο δεν κρατήθηκε',
+  'reader.untitled': 'Βιβλίο χωρίς τίτλο',
+  'settings.reader.libraryTitle': 'Βιβλία που κρατούνται σε αυτό το πρόγραμμα περιήγησης',
+  'settings.reader.kept':
+    'Το «{title}» κρατείται πλέον σε αυτή τη συσκευή, οπότε ανοίγει χωρίς να ξανακατέβει. Δεν ανεβαίνει πουθενά.',
+  'settings.reader.forgotten':
+    'Το αρχείο του «{title}» διαγράφηκε από αυτό το πρόγραμμα περιήγησης. Παραμένει στη λίστα, ώστε να το ανοίξετε ξανά από την πηγή του.',
+  'settings.reader.removed':
+    'Το «{title}» αφαιρέθηκε εντελώς από αυτό το πρόγραμμα περιήγησης — το αρχείο και η καταχώριση.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Άνοιξε εκεί που το αφήσατε — στο {percent}%.',
+  'reader.bookmarks': 'Σελιδοδείκτες',
+  'reader.bookmarkAdd': 'Σελιδοδείκτης σε αυτή τη σελίδα',
+  'reader.bookmarkNone': 'Δεν υπάρχουν σελιδοδείκτες σε αυτό το βιβλίο ακόμη.',
+  'reader.bookmarkGo': 'Μετάβαση',
+  'reader.bookmarkRemove': 'Αφαίρεση σελιδοδείκτη',
+  'reader.bookmarkNote': 'Σημείωση',
+  'reader.bookmarkNotePlaceholder': 'Τα δικά σας λόγια για αυτή τη σελίδα',
+  'reader.bookmarkAt': 'στο {percent}%',
+  'settings.reader.bookmarkTitle': 'Σελιδοδείκτες σε αυτό το πρόγραμμα περιήγησης',
+  'settings.reader.bookmarkAdded':
+    'Σελιδοδείκτης στο {percent}% του «{title}». Οι σελιδοδείκτες μένουν σε αυτή τη συσκευή μαζί με το βιβλίο.',
+  'settings.reader.bookmarkRemoved':
+    'Εκείνος ο σελιδοδείκτης στο «{title}» αφαιρέθηκε από αυτό το πρόγραμμα περιήγησης.',
+  'settings.reader.noteSaved':
+    'Η σημείωσή σας σε αυτή τη σελίδα του «{title}» αποθηκεύτηκε σε αυτή τη συσκευή.',
+  'settings.reader.positionTitle': 'Θέση ανάγνωσης',
+  'settings.reader.positionUnstored':
+    'Αυτό το πρόγραμμα περιήγησης δεν αποθήκευσε πού βρίσκεστε στο «{title}», οπότε την επόμενη φορά θα ανοίξει από την αρχή. Το ίδιο κάνουν η ιδιωτική περιήγηση και ένας γεμάτος δίσκος.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Πώς δείχνει αυτό το βιβλίο',
+  'reader.theme': 'Χρώματα',
+  'reader.themeApp': 'Όπως ο ιστότοπος',
+  'reader.themeLight': 'Χαρτί',
+  'reader.themeDark': 'Μελάνι',
+  'reader.themeSepia': 'Σέπια',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Καθαρό μαύρο σε λευκό, χωρίς κίνηση, μία στήλη — για οθόνες ηλεκτρονικού χαρτιού.',
+  'reader.fontSize': 'Μέγεθος γραμμάτων',
+  'reader.smaller': 'Μικρότερο',
+  'reader.larger': 'Μεγαλύτερο',
+  'reader.lineHeight': 'Διάστιχο',
+  'reader.margin': 'Περιθώρια',
+  'reader.flow': 'Σελίδες',
+  'reader.flowPaged': 'Γύρισμα σελίδων',
+  'reader.flowScrolled': 'Κύλιση',
+  'reader.justify': 'Πλήρης στοίχιση',
+  'reader.hyphenate': 'Συλλαβισμός',
+  'reader.displayReset': 'Επιστροφή στις προεπιλογές',
+  'settings.reader.displayTitle': 'Εμφάνιση ανάγνωσης',
+  'settings.reader.displayChanged':
+    '{setting}: τώρα {value}. Ισχύει για κάθε βιβλίο που ανοίγετε σε αυτό το πρόγραμμα περιήγησης.',
+  'settings.reader.displayReset':
+    'Η εμφάνιση ανάγνωσης επέστρεψε στις προεπιλογές της για κάθε βιβλίο σε αυτό το πρόγραμμα περιήγησης.',
+  'reader.on': 'Ενεργό',
+  'reader.off': 'Ανενεργό',
+  'reader.openHere': 'Διαβάστε στο πρόγραμμα περιήγησής σας',
+  'reader.notAFileTitle': 'Το {host} έστειλε ιστοσελίδα, όχι το αρχείο',
+  'reader.notAFileBody':
+    'Ο σύνδεσμος οδηγεί σε σελίδα και όχι σε βιβλίο — σελίδα λήψης, οθόνη συγκατάθεσης ή έλεγχο ότι δεν είστε ρομπότ. Ανοίξτε την μόνοι σας και το αρχείο θα είναι εκεί.',
+  'settings.status.session': 'Δεν αποθηκεύτηκε',
+  'settings.notRemembered':
+    'Αυτό το πρόγραμμα περιήγησης δεν το θυμήθηκε, οπότε την επόμενη φορά που θα ανοίξετε βιβλίο όλα θα είναι όπως πριν.',
 };

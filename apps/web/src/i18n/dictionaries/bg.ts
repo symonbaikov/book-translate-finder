@@ -376,4 +376,115 @@ export const bg: Dictionary = {
   'work.descriptionFrom': 'Описание:',
   'work.descriptionNotLocalized':
     'Това описание е на езика, на който източникът го е написал — на вашия език за тази книга още няма.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} от {outOf} от {votes} читатели в {source}',
+  'ratings.lowConfidence': 'твърде малко гласове за сравнение',
+  'ratings.reviews': 'Отзиви',
+  'ratings.reviewsOn': 'Отзиви за това издание в {source}',
+  'ratings.noteNoRatings':
+    'Никой отворен източник не оценява превод, а нито едно от тези издания няма тук читателска оценка.',
+  'ratings.noteReviews':
+    'Там, където изданието е познато в {sources}, връзката води към отзивите точно за този тираж — повечето издания не са познати.',
+  'ratings.translator':
+    'Издания в превод на {name}: {average} от {outOf} по {editions} оценени издания, общо {votes} читатели.',
+  'ratings.note':
+    'Това са оценки на читателите за конкретно издание в {sources}, а не преценка за самия превод — такава никой не публикува. Струва си да се четат едно до друго: същата книга, същият език, различни преводачи, и винаги с броя гласове пред очите.',
+  'ratings.gapWithoutIsbn':
+    '{count} издания тук нямат ISBN, затова към тях не можа да се съотнесе оценка.',
+  'ratings.gapNotLookedUp': 'Още {count} издания не бяха проверени при тази заявка.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Четете в браузъра си',
+  'reader.privacy':
+    'Браузърът ви отваря тази книга сам. Файлът, мястото, откъдето идва, и докъде сте стигнали никога не достигат до този сайт.',
+  'reader.chooseFile': 'Отворете книга от това устройство',
+  'reader.formats': 'EPUB, FB2, MOBI и CBZ.',
+  'reader.loading': 'Отваряне…',
+  'reader.failed': 'Тази книга не можа да бъде отворена: {reason}',
+  'reader.previous': 'Предишна страница',
+  'reader.next': 'Следваща страница',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…или пуснете книга тук',
+  'reader.fetching': 'Файлът се иска от {host}…',
+  'reader.blockedTitle': '{host} не предаде файла на тази страница',
+  'reader.blockedBody':
+    'Или е недостъпен, или не позволява на други сайтове да четат файловете му. Този сайт няма да го изтегли вместо вас: книгата ви никога не минава през него, а точно в това е смисълът да четете тук.',
+  'reader.blockedDownload': 'Изтеглете я от {host}',
+  'reader.blockedOpenHere': 'и после я отворете тук от устройството си',
+  'reader.blockedAddon': 'Работи и добавка, която сама предоставя файла.',
+  'reader.keepFile': 'Запази тази книга в този браузър',
+  'reader.keepFileHint':
+    'По подразбиране изключено. Без него файлът изчезва, щом затворите раздела; с него остава само на това устройство.',
+  'reader.library': 'Запазени в този браузър',
+  'reader.libraryEmpty':
+    'Още нищо не е запазено. Книгите, които запазвате, остават на това устройство и никога не се качват никъде.',
+  'reader.libraryOpen': 'Отвори',
+  'reader.libraryRemove': 'Премахни',
+  'reader.libraryFileKept': 'файлът е запазен',
+  'reader.libraryFileGone': 'файлът не е запазен',
+  'reader.untitled': 'Книга без заглавие',
+  'settings.reader.libraryTitle': 'Книги, запазени в този браузър',
+  'settings.reader.kept':
+    '„{title}“ вече се пази на това устройство, така че се отваря без ново изтегляне. Никъде не се качва.',
+  'settings.reader.forgotten':
+    'Файлът на „{title}“ бе изтрит от този браузър. Записът остава в списъка, за да можете да я отворите отново от нейния източник.',
+  'settings.reader.removed': '„{title}“ бе премахната напълно от този браузър — файлът и записът.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Отворена оттам, докъдето стигнахте — на {percent}%.',
+  'reader.bookmarks': 'Отметки',
+  'reader.bookmarkAdd': 'Отметни тази страница',
+  'reader.bookmarkNone': 'В тази книга още няма отметки.',
+  'reader.bookmarkGo': 'Към',
+  'reader.bookmarkRemove': 'Премахни отметката',
+  'reader.bookmarkNote': 'Бележка',
+  'reader.bookmarkNotePlaceholder': 'Вашите думи за тази страница',
+  'reader.bookmarkAt': 'на {percent}%',
+  'settings.reader.bookmarkTitle': 'Отметки в този браузър',
+  'settings.reader.bookmarkAdded':
+    'Отметка на {percent}% от „{title}“. Отметките остават на това устройство заедно с книгата.',
+  'settings.reader.bookmarkRemoved': 'Онази отметка в „{title}“ бе премахната от този браузър.',
+  'settings.reader.noteSaved':
+    'Бележката ви на тази страница от „{title}“ бе запазена на това устройство.',
+  'settings.reader.positionTitle': 'Място в четенето',
+  'settings.reader.positionUnstored':
+    'Този браузър отказа да запази докъде сте в „{title}“, затова следващия път ще се отвори отначало. Същото правят режимът инкогнито и пълният диск.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Как изглежда тази книга',
+  'reader.theme': 'Цветове',
+  'reader.themeApp': 'Като сайта',
+  'reader.themeLight': 'Хартия',
+  'reader.themeDark': 'Мастило',
+  'reader.themeSepia': 'Сепия',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Чисто черно върху бяло, без анимация, една колона — за екрани с електронна хартия.',
+  'reader.fontSize': 'Размер на буквите',
+  'reader.smaller': 'По-малко',
+  'reader.larger': 'По-голямо',
+  'reader.lineHeight': 'Междуредие',
+  'reader.margin': 'Полета',
+  'reader.flow': 'Страници',
+  'reader.flowPaged': 'Прелистване',
+  'reader.flowScrolled': 'Превъртане',
+  'reader.justify': 'Двустранно подравняване',
+  'reader.hyphenate': 'Пренасяне на думи',
+  'reader.displayReset': 'Обратно към стандартните',
+  'settings.reader.displayTitle': 'Изглед при четене',
+  'settings.reader.displayChanged':
+    '{setting} вече е {value}. Важи за всяка книга, която отваряте в този браузър.',
+  'settings.reader.displayReset':
+    'Изгледът при четене се върна към стандартния за всяка книга в този браузър.',
+  'reader.on': 'Включено',
+  'reader.off': 'Изключено',
+  'reader.openHere': 'Четете в браузъра си',
+  'reader.notAFileTitle': '{host} изпрати уебстраница, а не файла',
+  'reader.notAFileBody':
+    'Връзката води към страница, а не към книга — страница за изтегляне, екран за съгласие или проверка, че не сте робот. Отворете я сами и файлът ще е там.',
+  'settings.status.session': 'Незапомнено',
+  'settings.notRemembered':
+    'Този браузър отказа да го запомни, така че следващия път, когато отворите книга, всичко ще е както преди.',
 };

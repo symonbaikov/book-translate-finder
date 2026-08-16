@@ -378,4 +378,117 @@ export const hu: Dictionary = {
   'work.descriptionFrom': 'Leírás:',
   'work.descriptionNotLocalized':
     'Ez a leírás azon a nyelven van, amelyen a forrás megírta — az Ön nyelvén ehhez a könyvhöz még nincs.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} / {outOf}, {votes} olvasótól a(z) {source} oldalon',
+  'ratings.lowConfidence': 'túl kevés szavazat az összehasonlításhoz',
+  'ratings.reviews': 'Vélemények',
+  'ratings.reviewsOn': 'E kiadás véleményei a(z) {source} oldalon',
+  'ratings.noteNoRatings':
+    'Egyetlen nyílt forrás sem értékel fordítást, és e kiadások egyikének sincs itt olvasói értékelése.',
+  'ratings.noteReviews':
+    'Ahol egy kiadás ismert a(z) {sources} oldalon, a hivatkozás pontosan annak a kiadásnak a véleményeire mutat — a legtöbb kiadás nem ismert.',
+  'ratings.translator':
+    '{name} fordításában megjelent kiadások: {average} / {outOf} összesen {editions} értékelt kiadáson, {votes} olvasótól.',
+  'ratings.note':
+    'Ezek az olvasók értékelései egy adott kiadásról a(z) {sources} oldalon, nem a fordítás megítélése — olyat senki sem tesz közzé. Érdemes őket egymás mellett olvasni: ugyanaz a könyv, ugyanaz a nyelv, más fordítók, és mindig a szavazatszámmal együtt.',
+  'ratings.gapWithoutIsbn':
+    'Itt {count} kiadásnak nincs ISBN-je, így hozzájuk nem lehetett értékelést párosítani.',
+  'ratings.gapNotLookedUp': 'További {count} kiadást ez a lekérés nem keresett meg.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Olvasson a böngészőjében',
+  'reader.privacy':
+    'A böngészője magától nyitja meg ezt a könyvet. A fájl, a hely, ahonnan jött, és az, hogy hol tart, sosem jut el erre az oldalra.',
+  'reader.chooseFile': 'Könyv megnyitása erről az eszközről',
+  'reader.formats': 'EPUB, FB2, MOBI és CBZ.',
+  'reader.loading': 'Megnyitás…',
+  'reader.failed': 'Ezt a könyvet nem sikerült megnyitni: {reason}',
+  'reader.previous': 'Előző oldal',
+  'reader.next': 'Következő oldal',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…vagy ejtsen ide egy könyvet',
+  'reader.fetching': 'Fájl kérése innen: {host}…',
+  'reader.blockedTitle': 'A(z) {host} nem adta át a fájlt ennek az oldalnak',
+  'reader.blockedBody':
+    'Vagy nem érhető el, vagy nem engedi, hogy más oldalak olvassák a fájljait. Ez az oldal nem tölti le helyette: a könyve sosem halad át rajta, és pontosan ez az értelme az itteni olvasásnak.',
+  'reader.blockedDownload': 'Töltse le innen: {host}',
+  'reader.blockedOpenHere': 'majd nyissa meg itt az eszközéről',
+  'reader.blockedAddon': 'Olyan kiegészítő is működik, amely maga szolgálja ki a fájlt.',
+  'reader.keepFile': 'Tartsa meg ezt a könyvet ebben a böngészőben',
+  'reader.keepFileHint':
+    'Alapból kikapcsolva. Enélkül a fájl eltűnik, amint bezárja a lapot; ezzel csak ezen az eszközön marad meg.',
+  'reader.library': 'Ebben a böngészőben megtartva',
+  'reader.libraryEmpty':
+    'Még semmi sincs megtartva. A megtartott könyvek ezen az eszközön maradnak, és sosem kerülnek fel sehová.',
+  'reader.libraryOpen': 'Megnyitás',
+  'reader.libraryRemove': 'Eltávolítás',
+  'reader.libraryFileKept': 'fájl megtartva',
+  'reader.libraryFileGone': 'fájl nincs megtartva',
+  'reader.untitled': 'Cím nélküli könyv',
+  'settings.reader.libraryTitle': 'Ebben a böngészőben megtartott könyvek',
+  'settings.reader.kept':
+    'A(z) „{title}” mostantól ezen az eszközön marad, így újbóli letöltés nélkül nyílik meg. Sehová nem kerül fel.',
+  'settings.reader.forgotten':
+    'A(z) „{title}” fájlja törlődött ebből a böngészőből. A listában marad, így újra megnyithatja a forrásából.',
+  'settings.reader.removed':
+    'A(z) „{title}” teljesen eltávolítva ebből a böngészőből — a fájl és a bejegyzés is.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Ott nyílt meg, ahol abbahagyta — {percent}%-nál.',
+  'reader.bookmarks': 'Könyvjelzők',
+  'reader.bookmarkAdd': 'Könyvjelző erre az oldalra',
+  'reader.bookmarkNone': 'Ebben a könyvben még nincs könyvjelző.',
+  'reader.bookmarkGo': 'Ugrás',
+  'reader.bookmarkRemove': 'Könyvjelző eltávolítása',
+  'reader.bookmarkNote': 'Jegyzet',
+  'reader.bookmarkNotePlaceholder': 'A saját szavai erről az oldalról',
+  'reader.bookmarkAt': '{percent}%-nál',
+  'settings.reader.bookmarkTitle': 'Könyvjelzők ebben a böngészőben',
+  'settings.reader.bookmarkAdded':
+    'Könyvjelző a(z) „{title}” {percent}%-ánál. A könyvjelzők a könyvvel együtt ezen az eszközön maradnak.',
+  'settings.reader.bookmarkRemoved':
+    'Az a könyvjelző a(z) „{title}” könyvben eltávolítva ebből a böngészőből.',
+  'settings.reader.noteSaved':
+    'A(z) „{title}” ezen oldalához fűzött jegyzete elmentve erre az eszközre.',
+  'settings.reader.positionTitle': 'Olvasási pozíció',
+  'settings.reader.positionUnstored':
+    'Ez a böngésző nem tárolta el, hol tart a(z) „{title}” könyvben, így legközelebb az elejéről nyílik meg. A privát mód és a tele lemez egyaránt ezt okozza.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Hogyan néz ki ez a könyv',
+  'reader.theme': 'Színek',
+  'reader.themeApp': 'Az oldalt követve',
+  'reader.themeLight': 'Papír',
+  'reader.themeDark': 'Tinta',
+  'reader.themeSepia': 'Szépia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Tiszta fekete fehéren, animáció nélkül, egy hasábban — e-papír kijelzőkhöz.',
+  'reader.fontSize': 'Betűméret',
+  'reader.smaller': 'Kisebb',
+  'reader.larger': 'Nagyobb',
+  'reader.lineHeight': 'Sorköz',
+  'reader.margin': 'Margók',
+  'reader.flow': 'Oldalak',
+  'reader.flowPaged': 'Lapozás',
+  'reader.flowScrolled': 'Görgetés',
+  'reader.justify': 'Sorkizárás',
+  'reader.hyphenate': 'Elválasztás',
+  'reader.displayReset': 'Vissza az alapértékekhez',
+  'settings.reader.displayTitle': 'Olvasási megjelenés',
+  'settings.reader.displayChanged':
+    '{setting} mostantól {value}. Minden könyvre vonatkozik, amelyet ebben a böngészőben nyit meg.',
+  'settings.reader.displayReset':
+    'Az olvasási megjelenés visszaállt az alapértékekre ebben a böngészőben minden könyvhöz.',
+  'reader.on': 'Be',
+  'reader.off': 'Ki',
+  'reader.openHere': 'Olvasson a böngészőjében',
+  'reader.notAFileTitle': 'A(z) {host} weboldalt küldött, nem a fájlt',
+  'reader.notAFileBody':
+    'A hivatkozás egy oldalra vezet, nem egy könyvhöz — letöltési oldalra, hozzájárulási képernyőre vagy robotellenőrzésre. Nyissa meg maga, és ott lesz a fájl.',
+  'settings.status.session': 'Nincs megjegyezve',
+  'settings.notRemembered':
+    'Ez a böngésző nem jegyezte meg, így a következő könyv megnyitásakor minden úgy lesz, ahogy volt.',
 };

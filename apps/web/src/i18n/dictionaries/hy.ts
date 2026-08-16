@@ -379,4 +379,114 @@ export const hy: Dictionary = {
   'work.descriptionFrom': 'Նկարագրություն․',
   'work.descriptionNotLocalized':
     'Այս նկարագրությունն այն լեզվով է, որով գրել է աղբյուրը — ձեր լեզվով այս գրքի համար դեռ չկա։',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} {outOf}-ից, {votes} ընթերցողից {source} կայքում',
+  'ratings.lowConfidence': 'չափազանց քիչ ձայն՝ համեմատելու համար',
+  'ratings.reviews': 'Կարծիքներ',
+  'ratings.reviewsOn': 'Այս հրատարակության կարծիքները {source} կայքում',
+  'ratings.noteNoRatings':
+    'Ոչ մի բաց աղբյուր չի գնահատում թարգմանությունը, և այս տպագրություններից ոչ մեկը այստեղ ընթերցողի գնահատական չունի։',
+  'ratings.noteReviews':
+    'Այնտեղ, որտեղ հրատարակությունը հայտնի է {sources} աղբյուրում, հղումը տանում է հենց այդ տպագրության կարծիքներին — հրատարակությունների մեծ մասը հայտնի չէ։',
+  'ratings.translator':
+    '{name}-ի թարգմանած հրատարակությունները․ {average} {outOf}-ից՝ {editions} գնահատված հրատարակության վրա, ընդամենը {votes} ընթերցող։',
+  'ratings.note':
+    'Սրանք ընթերցողների գնահատականներն են որոշակի հրատարակության մասին {sources} աղբյուրում, ոչ թե բուն թարգմանության գնահատականը — այդպիսին ոչ ոք չի հրապարակում։ Արժե դրանք կարդալ կողք կողքի․ նույն գիրքը, նույն լեզուն, տարբեր թարգմանիչներ, և միշտ ձայների քանակը աչքի առաջ։',
+  'ratings.gapWithoutIsbn':
+    'Այստեղ {count} հրատարակություն ISBN չունի, ուստի դրանց հետ չհաջողվեց որևէ գնահատական համապատասխանեցնել։',
+  'ratings.gapNotLookedUp': 'Եվս {count} հրատարակություն այս հարցման ժամանակ չի ստուգվել։',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Կարդացեք ձեր դիտարկիչում',
+  'reader.privacy':
+    'Ձեր դիտարկիչն ինքն է բացում այս գիրքը։ Ֆայլը, այն վայրը, որտեղից եկել է, և թե որքան եք կարդացել, երբեք չեն հասնում այս կայքին։',
+  'reader.chooseFile': 'Բացել գիրք այս սարքից',
+  'reader.formats': 'EPUB, FB2, MOBI և CBZ։',
+  'reader.loading': 'Բացվում է…',
+  'reader.failed': 'Այս գիրքը չհաջողվեց բացել՝ {reason}',
+  'reader.previous': 'Նախորդ էջ',
+  'reader.next': 'Հաջորդ էջ',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…կամ գցեք գիրքն այստեղ',
+  'reader.fetching': 'Ֆայլը խնդրվում է {host}-ից…',
+  'reader.blockedTitle': '{host}-ը ֆայլը չտվեց այս էջին',
+  'reader.blockedBody':
+    'Կա՛մ այն հասանելի չէ, կա՛մ չի թույլատրում այլ կայքերին կարդալ իր ֆայլերը։ Այս կայքը ձեր փոխարեն այն չի բերի․ ձեր գիրքը երբեք չի անցնում նրա միջով, և հենց դա է այստեղ կարդալու իմաստը։',
+  'reader.blockedDownload': 'Ներբեռնեք այն {host}-ից',
+  'reader.blockedOpenHere': 'ապա բացեք այստեղ՝ ձեր սարքից',
+  'reader.blockedAddon': 'Աշխատում է նաև հավելում, որն ինքն է մատուցում ֆայլը։',
+  'reader.keepFile': 'Պահել այս գիրքը այս դիտարկիչում',
+  'reader.keepFileHint':
+    'Լռելյայն անջատված է։ Առանց դրա ֆայլը կորչում է, երբ փակում եք ներդիրը; դրանով այն մնում է միայն այս սարքում։',
+  'reader.library': 'Պահված այս դիտարկիչում',
+  'reader.libraryEmpty':
+    'Դեռ ոչինչ պահված չէ։ Ձեր պահած գրքերը մնում են այս սարքում և երբեք ոչ մի տեղ չեն վերբեռնվում։',
+  'reader.libraryOpen': 'Բացել',
+  'reader.libraryRemove': 'Հեռացնել',
+  'reader.libraryFileKept': 'ֆայլը պահված է',
+  'reader.libraryFileGone': 'ֆայլը պահված չէ',
+  'reader.untitled': 'Անվերնագիր գիրք',
+  'settings.reader.libraryTitle': 'Այս դիտարկիչում պահվող գրքերը',
+  'settings.reader.kept':
+    '«{title}»-ն այժմ պահվում է այս սարքում, ուստի բացվում է առանց կրկին ներբեռնելու։ Ոչ մի տեղ չի վերբեռնվում։',
+  'settings.reader.forgotten':
+    '«{title}»-ի ֆայլը ջնջվեց այս դիտարկիչից։ Գրառումը մնում է ցանկում, որպեսզի կարողանաք կրկին բացել այն իր աղբյուրից։',
+  'settings.reader.removed': '«{title}»-ը լիովին հեռացվեց այս դիտարկիչից՝ և՛ ֆայլը, և՛ գրառումը։',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Բացվեց այնտեղ, որտեղ կանգ էիք առել՝ {percent}%-ի վրա։',
+  'reader.bookmarks': 'Էջանիշեր',
+  'reader.bookmarkAdd': 'Էջանիշ դնել այս էջին',
+  'reader.bookmarkNone': 'Այս գրքում դեռ էջանիշեր չկան։',
+  'reader.bookmarkGo': 'Անցնել',
+  'reader.bookmarkRemove': 'Հեռացնել էջանիշը',
+  'reader.bookmarkNote': 'Նշում',
+  'reader.bookmarkNotePlaceholder': 'Ձեր սեփական խոսքերն այս էջի մասին',
+  'reader.bookmarkAt': '{percent}%-ի վրա',
+  'settings.reader.bookmarkTitle': 'Էջանիշեր այս դիտարկիչում',
+  'settings.reader.bookmarkAdded':
+    'Էջանիշ «{title}»-ի {percent}%-ի վրա։ Էջանիշերը մնում են այս սարքում գրքի հետ միասին։',
+  'settings.reader.bookmarkRemoved': 'Այդ էջանիշը «{title}»-ում հեռացվեց այս դիտարկիչից։',
+  'settings.reader.noteSaved': '«{title}»-ի այս էջի ձեր նշումը պահվեց այս սարքում։',
+  'settings.reader.positionTitle': 'Ընթերցման տեղը',
+  'settings.reader.positionUnstored':
+    'Այս դիտարկիչը չպահեց, թե որտեղ եք «{title}»-ում, ուստի հաջորդ անգամ այն կբացվի սկզբից։ Այդպես են վարվում և՛ գաղտնի ռեժիմը, և՛ լեցուն սկավառակը։',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Ինչպես է երևում այս գիրքը',
+  'reader.theme': 'Գույներ',
+  'reader.themeApp': 'Ինչպես կայքում',
+  'reader.themeLight': 'Թուղթ',
+  'reader.themeDark': 'Թանաք',
+  'reader.themeSepia': 'Սեպիա',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Մաքուր սև սպիտակի վրա, առանց շարժապատկերի, մեկ սյուն — էլեկտրոնային թղթի էկրանների համար։',
+  'reader.fontSize': 'Տառաչափ',
+  'reader.smaller': 'Փոքր',
+  'reader.larger': 'Մեծ',
+  'reader.lineHeight': 'Տողամիջոց',
+  'reader.margin': 'Լուսանցքներ',
+  'reader.flow': 'Էջեր',
+  'reader.flowPaged': 'Էջերը թերթել',
+  'reader.flowScrolled': 'Ոլորել',
+  'reader.justify': 'Հավասարեցնել երկու եզրով',
+  'reader.hyphenate': 'Տողադարձ',
+  'reader.displayReset': 'Վերադառնալ լռելյայնին',
+  'settings.reader.displayTitle': 'Ընթերցման տեսք',
+  'settings.reader.displayChanged':
+    '{setting}-ն այժմ {value} է։ Դա վերաբերում է այս դիտարկիչում բացվող յուրաքանչյուր գրքի։',
+  'settings.reader.displayReset':
+    'Ընթերցման տեսքը վերադարձել է լռելյայն արժեքներին այս դիտարկիչի բոլոր գրքերի համար։',
+  'reader.on': 'Միացված',
+  'reader.off': 'Անջատված',
+  'reader.openHere': 'Կարդացեք ձեր դիտարկիչում',
+  'reader.notAFileTitle': '{host}-ը ուղարկեց վեբ-էջ, ոչ թե ֆայլը',
+  'reader.notAFileBody':
+    'Հղումը տանում է էջ, ոչ թե գիրք — ներբեռնման էջ, համաձայնության պատուհան կամ ստուգում, որ դուք ռոբոտ չեք։ Բացեք այն ինքներդ, և ֆայլը կլինի այնտեղ։',
+  'settings.status.session': 'Չհիշվեց',
+  'settings.notRemembered':
+    'Այս դիտարկիչը չհիշեց դա, ուստի հաջորդ անգամ գիրք բացելիս ամեն ինչ կլինի ինչպես առաջ։',
 };

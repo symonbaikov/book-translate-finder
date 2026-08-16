@@ -375,4 +375,116 @@ export const sv: Dictionary = {
   'work.descriptionFrom': 'Beskrivning:',
   'work.descriptionNotLocalized':
     'Den här beskrivningen är på det språk källan skrev den på — det finns ingen på ditt språk för den här boken ännu.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} av {outOf} från {votes} läsare på {source}',
+  'ratings.lowConfidence': 'för få röster för att jämföra',
+  'ratings.reviews': 'Recensioner',
+  'ratings.reviewsOn': 'Recensioner av den här utgåvan på {source}',
+  'ratings.noteNoRatings':
+    'Ingen öppen källa betygsätter en översättning, och ingen av de här tryckningarna har något läsarbetyg här.',
+  'ratings.noteReviews':
+    'Där en utgåva är känd på {sources} går länken till recensionerna av just den tryckningen — de flesta utgåvor är det inte.',
+  'ratings.translator':
+    'Utgåvor översatta av {name}: {average} av {outOf} över {editions} betygsatta utgåvor, {votes} läsare totalt.',
+  'ratings.note':
+    'Det här är läsarnas betyg på en bestämd utgåva på {sources}, inte ett omdöme om själva översättningen — det publicerar ingen. De är värda att läsa sida vid sida: samma bok, samma språk, olika översättare, och alltid med antalet röster i sikte.',
+  'ratings.gapWithoutIsbn':
+    '{count} utgåvor här saknar ISBN, så inget betyg kunde matchas mot dem.',
+  'ratings.gapNotLookedUp': '{count} ytterligare utgåvor slogs inte upp i den här förfrågan.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Läs i din webbläsare',
+  'reader.privacy':
+    'Din webbläsare öppnar den här boken på egen hand. Filen, platsen den kom ifrån och hur långt du har läst når aldrig den här sajten.',
+  'reader.chooseFile': 'Öppna en bok från den här enheten',
+  'reader.formats': 'EPUB, FB2, MOBI och CBZ.',
+  'reader.loading': 'Öppnar…',
+  'reader.failed': 'Den här boken kunde inte öppnas: {reason}',
+  'reader.previous': 'Föregående sida',
+  'reader.next': 'Nästa sida',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…eller släpp en bok här',
+  'reader.fetching': 'Ber {host} om filen…',
+  'reader.blockedTitle': '{host} lämnade inte filen till den här sidan',
+  'reader.blockedBody':
+    'Antingen går den inte att nå, eller så tillåter den inte att andra sajter läser dess filer. Den här sajten hämtar den inte åt dig i stället: din bok passerar aldrig genom den, och det är hela poängen med att läsa här.',
+  'reader.blockedDownload': 'Ladda ned den från {host}',
+  'reader.blockedOpenHere': 'och öppna den sedan här från din enhet',
+  'reader.blockedAddon': 'Ett tillägg som serverar filen själv fungerar också.',
+  'reader.keepFile': 'Behåll den här boken i den här webbläsaren',
+  'reader.keepFileHint':
+    'Av som standard. Utan den är filen borta när du stänger fliken; med den stannar den bara på den här enheten.',
+  'reader.library': 'Behållna i den här webbläsaren',
+  'reader.libraryEmpty':
+    'Inget behållet ännu. Böcker du behåller stannar på den här enheten och laddas aldrig upp.',
+  'reader.libraryOpen': 'Öppna',
+  'reader.libraryRemove': 'Ta bort',
+  'reader.libraryFileKept': 'filen behållen',
+  'reader.libraryFileGone': 'filen inte behållen',
+  'reader.untitled': 'Bok utan titel',
+  'settings.reader.libraryTitle': 'Böcker som behålls i den här webbläsaren',
+  'settings.reader.kept':
+    '”{title}” behålls nu på den här enheten, så den öppnas utan att laddas ned igen. Den laddas inte upp någonstans.',
+  'settings.reader.forgotten':
+    'Filen för ”{title}” raderades från den här webbläsaren. Den står kvar i listan, så du kan öppna den igen från dess källa.',
+  'settings.reader.removed':
+    '”{title}” togs bort från den här webbläsaren helt och hållet — filen och posten.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Öppnad där du slutade — {percent}% in.',
+  'reader.bookmarks': 'Bokmärken',
+  'reader.bookmarkAdd': 'Bokmärk den här sidan',
+  'reader.bookmarkNone': 'Inga bokmärken i den här boken ännu.',
+  'reader.bookmarkGo': 'Gå till',
+  'reader.bookmarkRemove': 'Ta bort bokmärket',
+  'reader.bookmarkNote': 'Anteckning',
+  'reader.bookmarkNotePlaceholder': 'Dina egna ord om den här sidan',
+  'reader.bookmarkAt': '{percent}% in',
+  'settings.reader.bookmarkTitle': 'Bokmärken i den här webbläsaren',
+  'settings.reader.bookmarkAdded':
+    'Bokmärke {percent}% in i ”{title}”. Bokmärken stannar på den här enheten tillsammans med boken.',
+  'settings.reader.bookmarkRemoved':
+    'Det bokmärket i ”{title}” togs bort från den här webbläsaren.',
+  'settings.reader.noteSaved':
+    'Din anteckning på den här sidan av ”{title}” sparades på den här enheten.',
+  'settings.reader.positionTitle': 'Läsposition',
+  'settings.reader.positionUnstored':
+    'Den här webbläsaren ville inte lagra var du är i ”{title}”, så den öppnas från början nästa gång. Privat läge och en full disk gör båda så.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Hur den här boken ser ut',
+  'reader.theme': 'Färger',
+  'reader.themeApp': 'Följ sajten',
+  'reader.themeLight': 'Papper',
+  'reader.themeDark': 'Bläck',
+  'reader.themeSepia': 'Sepia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint': 'Rent svart på vitt, ingen animation, en spalt — för e-pappersskärmar.',
+  'reader.fontSize': 'Textstorlek',
+  'reader.smaller': 'Mindre',
+  'reader.larger': 'Större',
+  'reader.lineHeight': 'Radavstånd',
+  'reader.margin': 'Marginaler',
+  'reader.flow': 'Sidor',
+  'reader.flowPaged': 'Bläddra',
+  'reader.flowScrolled': 'Rulla',
+  'reader.justify': 'Marginaljustera',
+  'reader.hyphenate': 'Avstavning',
+  'reader.displayReset': 'Tillbaka till standard',
+  'settings.reader.displayTitle': 'Läsvy',
+  'settings.reader.displayChanged':
+    '{setting} är nu {value}. Det gäller varje bok du öppnar i den här webbläsaren.',
+  'settings.reader.displayReset':
+    'Läsvyn är tillbaka till sina standardvärden för varje bok i den här webbläsaren.',
+  'reader.on': 'På',
+  'reader.off': 'Av',
+  'reader.openHere': 'Läs i din webbläsare',
+  'reader.notAFileTitle': '{host} skickade en webbsida, inte filen',
+  'reader.notAFileBody':
+    'Länken leder till en sida i stället för till en bok — en nedladdningssida, en samtyckesruta, eller en kontroll av att du inte är en robot. Öppna den själv så finns filen där.',
+  'settings.status.session': 'Inte ihågkommet',
+  'settings.notRemembered':
+    'Den här webbläsaren ville inte komma ihåg det, så det är tillbaka som det var nästa gång du öppnar en bok.',
 };

@@ -381,4 +381,117 @@ export const eu: Dictionary = {
   'work.descriptionFrom': 'Deskribapena:',
   'work.descriptionNotLocalized':
     'Deskribapen hau iturriak idatzi zuen hizkuntzan dago — zure hizkuntzan ez dago oraindik bat ere liburu honentzat.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} / {outOf}, {votes} irakurle {source} atarian',
+  'ratings.lowConfidence': 'boto gutxiegi konparatzeko',
+  'ratings.reviews': 'Iritziak',
+  'ratings.reviewsOn': 'Edizio honen iritziak {source} atarian',
+  'ratings.noteNoRatings':
+    'Iturri irekirik ez du itzulpenik puntuatzen, eta tirada hauetako batek ere ez du hemen irakurleen baloraziorik.',
+  'ratings.noteReviews':
+    'Edizio bat {sources} atarian ezaguna denean, esteka tirada horren beraren iritzietara doa — edizio gehienak ez dira ezagunak.',
+  'ratings.translator':
+    '{name} itzultzailearen edizioak: {average} / {outOf} balioetsitako {editions} edizioren artean, guztira {votes} irakurle.',
+  'ratings.note':
+    'Hauek edizio jakin baten irakurleen balorazioak dira {sources} atarian, ez itzulpenaren beraren epaia — hori inork ez du argitaratzen. Merezi du elkarren ondoan irakurtzea: liburu bera, hizkuntza bera, itzultzaile desberdinak, eta beti boto kopurua begi bistan dela.',
+  'ratings.gapWithoutIsbn':
+    'Hemengo {count} ediziok ez dute ISBNrik, beraz ezin izan zaie baloraziorik lotu.',
+  'ratings.gapNotLookedUp': 'Beste {count} edizio ez dira eskaera honetan begiratu.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Irakurri zure nabigatzailean',
+  'reader.privacy':
+    'Zure nabigatzaileak berak irekitzen du liburu hau. Fitxategia, nondik etorri den eta noraino irakurri duzun ez dira inoiz gune honetara iristen.',
+  'reader.chooseFile': 'Ireki liburu bat gailu honetatik',
+  'reader.formats': 'EPUB, FB2, MOBI eta CBZ.',
+  'reader.loading': 'Irekitzen…',
+  'reader.failed': 'Ezin izan da liburu hau ireki: {reason}',
+  'reader.previous': 'Aurreko orria',
+  'reader.next': 'Hurrengo orria',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…edo jaregin liburu bat hemen',
+  'reader.fetching': 'Fitxategia eskatzen {host} zerbitzariari…',
+  'reader.blockedTitle': '{host} zerbitzariak ez dio fitxategia eman orri honi',
+  'reader.blockedBody':
+    'Edo ezin da harengana iritsi, edo ez die beste guneei bere fitxategiak irakurtzen uzten. Gune honek ez du zure ordez ekarriko: zure liburua ez da inoiz hemendik igarotzen, eta horixe da hemen irakurtzearen zentzua.',
+  'reader.blockedDownload': 'Deskargatu {host} zerbitzaritik',
+  'reader.blockedOpenHere': 'eta gero ireki hemen zure gailutik',
+  'reader.blockedAddon': 'Fitxategia berak ematen duen gehigarri batek ere balio du.',
+  'reader.keepFile': 'Gorde liburu hau nabigatzaile honetan',
+  'reader.keepFileHint':
+    'Lehenetsita itzalita. Hori gabe, fitxategia desagertu egiten da fitxa ixtean; horrekin, gailu honetan bakarrik geratzen da.',
+  'reader.library': 'Nabigatzaile honetan gordeta',
+  'reader.libraryEmpty':
+    'Oraindik ez dago ezer gordeta. Gordetzen dituzun liburuak gailu honetan geratzen dira eta ez dira inoiz inora igotzen.',
+  'reader.libraryOpen': 'Ireki',
+  'reader.libraryRemove': 'Kendu',
+  'reader.libraryFileKept': 'fitxategia gordeta',
+  'reader.libraryFileGone': 'fitxategia ez dago gordeta',
+  'reader.untitled': 'Izenbururik gabeko liburua',
+  'settings.reader.libraryTitle': 'Nabigatzaile honetan gordetako liburuak',
+  'settings.reader.kept':
+    '«{title}» orain gailu honetan gordeta dago, beraz berriro deskargatu gabe irekitzen da. Ez da inora igotzen.',
+  'settings.reader.forgotten':
+    '«{title}» liburuaren fitxategia ezabatu da nabigatzaile honetatik. Sarrera zerrendan geratzen da, beraz bere iturritik berriro ireki dezakezu.',
+  'settings.reader.removed':
+    '«{title}» erabat kendu da nabigatzaile honetatik — fitxategia eta sarrera.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Utzi zenuen tokian ireki da — % {percent} inguruan.',
+  'reader.bookmarks': 'Laster-markak',
+  'reader.bookmarkAdd': 'Jarri laster-marka orri honetan',
+  'reader.bookmarkNone': 'Liburu honetan ez dago laster-markarik oraindik.',
+  'reader.bookmarkGo': 'Joan hona',
+  'reader.bookmarkRemove': 'Kendu laster-marka',
+  'reader.bookmarkNote': 'Oharra',
+  'reader.bookmarkNotePlaceholder': 'Zure hitzak orri honi buruz',
+  'reader.bookmarkAt': '% {percent} inguruan',
+  'settings.reader.bookmarkTitle': 'Laster-markak nabigatzaile honetan',
+  'settings.reader.bookmarkAdded':
+    'Laster-marka «{title}» liburuaren % {percent} inguruan. Laster-markak liburuarekin batera geratzen dira gailu honetan.',
+  'settings.reader.bookmarkRemoved':
+    '«{title}» liburuko laster-marka hori kendu da nabigatzaile honetatik.',
+  'settings.reader.noteSaved':
+    '«{title}» liburuaren orri honetako zure oharra gailu honetan gorde da.',
+  'settings.reader.positionTitle': 'Irakurketa-tokia',
+  'settings.reader.positionUnstored':
+    'Nabigatzaile honek ez du gorde nahi izan non zauden «{title}» liburuan, beraz hurrengoan hasieratik irekiko da. Hori egiten dute bai modu pribatuak bai disko beteak.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Nolakoa den liburu hau',
+  'reader.theme': 'Koloreak',
+  'reader.themeApp': 'Gunearen arabera',
+  'reader.themeLight': 'Papera',
+  'reader.themeDark': 'Tinta',
+  'reader.themeSepia': 'Sepia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Beltz garbia zuriaren gainean, animaziorik gabe, zutabe bakarra — paper elektronikoko pantailetarako.',
+  'reader.fontSize': 'Letra-tamaina',
+  'reader.smaller': 'Txikiagoa',
+  'reader.larger': 'Handiagoa',
+  'reader.lineHeight': 'Lerroarteko tartea',
+  'reader.margin': 'Marjinak',
+  'reader.flow': 'Orriak',
+  'reader.flowPaged': 'Orriak pasatu',
+  'reader.flowScrolled': 'Korritu',
+  'reader.justify': 'Testua justifikatu',
+  'reader.hyphenate': 'Hitz-zatiketa',
+  'reader.displayReset': 'Itzuli lehenetsietara',
+  'settings.reader.displayTitle': 'Irakurketaren itxura',
+  'settings.reader.displayChanged':
+    '{setting} orain {value} da. Nabigatzaile honetan irekitzen duzun liburu bakoitzari aplikatzen zaio.',
+  'settings.reader.displayReset':
+    'Irakurketaren itxura lehenetsietara itzuli da nabigatzaile honetako liburu guztientzat.',
+  'reader.on': 'Piztuta',
+  'reader.off': 'Itzalita',
+  'reader.openHere': 'Irakurri zure nabigatzailean',
+  'reader.notAFileTitle': '{host} zerbitzariak web-orri bat bidali du, ez fitxategia',
+  'reader.notAFileBody':
+    'Estekak orri batera darama, ez liburu batera — deskarga-orri batera, baimen-pantaila batera, edo robota ez zarela egiaztatzera. Ireki ezazu zeuk eta fitxategia han egongo da.',
+  'settings.status.session': 'Ez da gogoratu',
+  'settings.notRemembered':
+    'Nabigatzaile honek ez du gogoratu nahi izan, beraz hurrengoan liburu bat irekitzean dena lehen bezala egongo da.',
 };

@@ -376,4 +376,116 @@ export const ro: Dictionary = {
   'work.descriptionFrom': 'Descriere:',
   'work.descriptionNotLocalized':
     'Această descriere este în limba în care a scris-o sursa — în limba ta nu există încă una pentru această carte.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} din {outOf} de la {votes} cititori pe {source}',
+  'ratings.lowConfidence': 'prea puține voturi pentru o comparație',
+  'ratings.reviews': 'Recenzii',
+  'ratings.reviewsOn': 'Recenzii ale acestei ediții pe {source}',
+  'ratings.noteNoRatings':
+    'Nicio sursă deschisă nu notează o traducere, iar niciunul dintre aceste tiraje nu are aici o notă de la cititori.',
+  'ratings.noteReviews':
+    'Acolo unde o ediție este cunoscută pe {sources}, linkul duce la recenziile exact ale acelui tiraj — majoritatea edițiilor nu sunt.',
+  'ratings.translator':
+    'Ediții traduse de {name}: {average} din {outOf} pe {editions} ediții notate, {votes} cititori în total.',
+  'ratings.note':
+    'Acestea sunt notele cititorilor pentru o anumită ediție pe {sources}, nu o evaluare a traducerii în sine — asta nu publică nimeni. Merită citite alături: aceeași carte, aceeași limbă, traducători diferiți, și mereu cu numărul de voturi la vedere.',
+  'ratings.gapWithoutIsbn':
+    '{count} ediții de aici nu au ISBN, așa că nicio notă nu a putut fi asociată cu ele.',
+  'ratings.gapNotLookedUp': 'Alte {count} ediții nu au fost căutate în această cerere.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Citește în navigatorul tău',
+  'reader.privacy':
+    'Navigatorul tău deschide singur această carte. Fișierul, locul din care a venit și cât ai citit nu ajung niciodată la acest site.',
+  'reader.chooseFile': 'Deschide o carte de pe acest dispozitiv',
+  'reader.formats': 'EPUB, FB2, MOBI și CBZ.',
+  'reader.loading': 'Se deschide…',
+  'reader.failed': 'Această carte nu a putut fi deschisă: {reason}',
+  'reader.previous': 'Pagina anterioară',
+  'reader.next': 'Pagina următoare',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…sau lasă o carte aici',
+  'reader.fetching': 'Se cere fișierul de la {host}…',
+  'reader.blockedTitle': '{host} nu a predat fișierul acestei pagini',
+  'reader.blockedBody':
+    'Fie nu poate fi contactat, fie nu permite altor site-uri să îi citească fișierele. Acest site nu îl aduce în locul tău: cartea ta nu trece niciodată prin el, și tocmai în asta constă cititul aici.',
+  'reader.blockedDownload': 'Descarc-o de la {host}',
+  'reader.blockedOpenHere': 'apoi deschide-o aici, de pe dispozitivul tău',
+  'reader.blockedAddon': 'Merge și un supliment care servește el însuși fișierul.',
+  'reader.keepFile': 'Păstrează această carte în acest navigator',
+  'reader.keepFileHint':
+    'Oprit implicit. Fără el, fișierul dispare când închizi fila; cu el, rămâne doar pe acest dispozitiv.',
+  'reader.library': 'Păstrate în acest navigator',
+  'reader.libraryEmpty':
+    'Nimic păstrat încă. Cărțile pe care le păstrezi rămân pe acest dispozitiv și nu sunt încărcate nicăieri.',
+  'reader.libraryOpen': 'Deschide',
+  'reader.libraryRemove': 'Elimină',
+  'reader.libraryFileKept': 'fișier păstrat',
+  'reader.libraryFileGone': 'fișier nepăstrat',
+  'reader.untitled': 'Carte fără titlu',
+  'settings.reader.libraryTitle': 'Cărți păstrate în acest navigator',
+  'settings.reader.kept':
+    '„{title}” este acum păstrată pe acest dispozitiv, deci se deschide fără să fie descărcată din nou. Nu este încărcată nicăieri.',
+  'settings.reader.forgotten':
+    'Fișierul pentru „{title}” a fost șters din acest navigator. Rămâne în listă, așa că o poți deschide din nou de la sursa ei.',
+  'settings.reader.removed':
+    '„{title}” a fost eliminată complet din acest navigator — fișierul și intrarea.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Deschisă de unde ai rămas — la {percent}%.',
+  'reader.bookmarks': 'Semne de carte',
+  'reader.bookmarkAdd': 'Pune semn la această pagină',
+  'reader.bookmarkNone': 'Încă niciun semn de carte în această carte.',
+  'reader.bookmarkGo': 'Mergi la',
+  'reader.bookmarkRemove': 'Elimină semnul',
+  'reader.bookmarkNote': 'Notă',
+  'reader.bookmarkNotePlaceholder': 'Cuvintele tale despre această pagină',
+  'reader.bookmarkAt': 'la {percent}%',
+  'settings.reader.bookmarkTitle': 'Semne de carte în acest navigator',
+  'settings.reader.bookmarkAdded':
+    'Semn pus la {percent}% din „{title}”. Semnele rămân pe acest dispozitiv, împreună cu cartea.',
+  'settings.reader.bookmarkRemoved': 'Acel semn din „{title}” a fost eliminat din acest navigator.',
+  'settings.reader.noteSaved':
+    'Nota ta de pe această pagină din „{title}” a fost salvată pe acest dispozitiv.',
+  'settings.reader.positionTitle': 'Poziția în lectură',
+  'settings.reader.positionUnstored':
+    'Acest navigator nu a păstrat unde ai rămas în „{title}”, deci data viitoare se va deschide de la început. Modul privat și un disc plin fac amândouă asta.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Cum arată această carte',
+  'reader.theme': 'Culori',
+  'reader.themeApp': 'După site',
+  'reader.themeLight': 'Hârtie',
+  'reader.themeDark': 'Cerneală',
+  'reader.themeSepia': 'Sepia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Negru pur pe alb, fără animație, o singură coloană — pentru ecrane cu cerneală electronică.',
+  'reader.fontSize': 'Mărimea literelor',
+  'reader.smaller': 'Mai mic',
+  'reader.larger': 'Mai mare',
+  'reader.lineHeight': 'Spațiere între rânduri',
+  'reader.margin': 'Margini',
+  'reader.flow': 'Pagini',
+  'reader.flowPaged': 'Întoarce paginile',
+  'reader.flowScrolled': 'Derulează',
+  'reader.justify': 'Aliniere stânga-dreapta',
+  'reader.hyphenate': 'Despărțire în silabe',
+  'reader.displayReset': 'Înapoi la valorile implicite',
+  'settings.reader.displayTitle': 'Afișarea la lectură',
+  'settings.reader.displayChanged':
+    '{setting} este acum {value}. Se aplică fiecărei cărți pe care o deschizi în acest navigator.',
+  'settings.reader.displayReset':
+    'Afișarea la lectură a revenit la valorile implicite pentru fiecare carte din acest navigator.',
+  'reader.on': 'Pornit',
+  'reader.off': 'Oprit',
+  'reader.openHere': 'Citește în navigatorul tău',
+  'reader.notAFileTitle': '{host} a trimis o pagină web, nu fișierul',
+  'reader.notAFileBody':
+    'Linkul duce la o pagină, nu la o carte — o pagină de descărcare, un ecran de consimțământ sau o verificare că nu ești robot. Deschide-o tu și fișierul va fi acolo.',
+  'settings.status.session': 'Nereținut',
+  'settings.notRemembered':
+    'Acest navigator nu a reținut, deci data viitoare când deschizi o carte totul va fi cum era.',
 };

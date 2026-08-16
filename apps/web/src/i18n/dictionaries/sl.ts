@@ -375,4 +375,117 @@ export const sl: Dictionary = {
   'work.descriptionFrom': 'Opis:',
   'work.descriptionNotLocalized':
     'Ta opis je v jeziku, v katerem ga je napisal vir — v vašem jeziku ga za to knjigo še ni.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} od {outOf}, {votes} bralcev na {source}',
+  'ratings.lowConfidence': 'premalo glasov za primerjavo',
+  'ratings.reviews': 'Ocene',
+  'ratings.reviewsOn': 'Ocene te izdaje na {source}',
+  'ratings.noteNoRatings':
+    'Noben odprt vir ne ocenjuje prevoda, in nobena od teh naklad tu nima bralske ocene.',
+  'ratings.noteReviews':
+    'Kjer je izdaja znana na {sources}, povezava vodi na ocene prav te naklade — večina izdaj ni znana.',
+  'ratings.translator':
+    'Izdaje v prevodu {name}: {average} od {outOf} čez {editions} ocenjenih izdaj, skupaj {votes} bralcev.',
+  'ratings.note':
+    'To so ocene bralcev za določeno izdajo na {sources}, ne presoja samega prevoda — te ne objavlja nihče. Vredno jih je brati drugo ob drugi: ista knjiga, isti jezik, drugi prevajalci, in vedno s številom glasov pred očmi.',
+  'ratings.gapWithoutIsbn':
+    '{count} tukajšnjih izdaj nima ISBN, zato jim ni bilo mogoče pripisati nobene ocene.',
+  'ratings.gapNotLookedUp': 'Nadaljnjih {count} izdaj v tej zahtevi ni bilo preverjenih.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Berite v svojem brskalniku',
+  'reader.privacy':
+    'Vaš brskalnik odpre to knjigo sam. Datoteka, kraj, od koder je prišla, in to, kako daleč ste prebrali, nikoli ne pridejo do tega spletišča.',
+  'reader.chooseFile': 'Odprite knjigo iz te naprave',
+  'reader.formats': 'EPUB, FB2, MOBI in CBZ.',
+  'reader.loading': 'Odpiram…',
+  'reader.failed': 'Te knjige ni bilo mogoče odpreti: {reason}',
+  'reader.previous': 'Prejšnja stran',
+  'reader.next': 'Naslednja stran',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…ali spustite knjigo sem',
+  'reader.fetching': 'Prosim za datoteko pri {host}…',
+  'reader.blockedTitle': '{host} datoteke ni izročil tej strani',
+  'reader.blockedBody':
+    'Ali ni dosegljiv ali pa ne dovoli drugim spletiščem brati svojih datotek. To spletišče je namesto vas ne bo prineslo: vaša knjiga nikoli ne gre skozenj, in prav v tem je smisel branja tukaj.',
+  'reader.blockedDownload': 'Prenesite jo z {host}',
+  'reader.blockedOpenHere': 'in jo nato odprite tukaj iz svoje naprave',
+  'reader.blockedAddon': 'Deluje tudi dodatek, ki datoteko postreže sam.',
+  'reader.keepFile': 'Obdrži to knjigo v tem brskalniku',
+  'reader.keepFileHint':
+    'Privzeto izklopljeno. Brez tega datoteka izgine, ko zaprete zavihek; s tem ostane samo v tej napravi.',
+  'reader.library': 'Obdržano v tem brskalniku',
+  'reader.libraryEmpty':
+    'Zaenkrat nič obdržanega. Knjige, ki jih obdržite, ostanejo v tej napravi in nikoli niso nikamor naložene.',
+  'reader.libraryOpen': 'Odpri',
+  'reader.libraryRemove': 'Odstrani',
+  'reader.libraryFileKept': 'datoteka obdržana',
+  'reader.libraryFileGone': 'datoteka ni obdržana',
+  'reader.untitled': 'Knjiga brez naslova',
+  'settings.reader.libraryTitle': 'Knjige, obdržane v tem brskalniku',
+  'settings.reader.kept':
+    '»{title}« se zdaj hrani v tej napravi, zato se odpre brez ponovnega prenosa. Nikamor ni naložena.',
+  'settings.reader.forgotten':
+    'Datoteka knjige »{title}« je bila izbrisana iz tega brskalnika. Zapis ostane na seznamu, tako da jo lahko znova odprete iz njenega vira.',
+  'settings.reader.removed':
+    '»{title}« je bila v celoti odstranjena iz tega brskalnika — datoteka in zapis.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Odprta tam, kjer ste končali — pri {percent} %.',
+  'reader.bookmarks': 'Zaznamki',
+  'reader.bookmarkAdd': 'Zaznamuj to stran',
+  'reader.bookmarkNone': 'V tej knjigi še ni zaznamkov.',
+  'reader.bookmarkGo': 'Pojdi na',
+  'reader.bookmarkRemove': 'Odstrani zaznamek',
+  'reader.bookmarkNote': 'Zapisek',
+  'reader.bookmarkNotePlaceholder': 'Vaše besede o tej strani',
+  'reader.bookmarkAt': 'pri {percent} %',
+  'settings.reader.bookmarkTitle': 'Zaznamki v tem brskalniku',
+  'settings.reader.bookmarkAdded':
+    'Zaznamek pri {percent} % knjige »{title}«. Zaznamki ostanejo v tej napravi skupaj s knjigo.',
+  'settings.reader.bookmarkRemoved':
+    'Tisti zaznamek v knjigi »{title}« je bil odstranjen iz tega brskalnika.',
+  'settings.reader.noteSaved':
+    'Vaš zapisek na tej strani knjige »{title}« je bil shranjen v tej napravi.',
+  'settings.reader.positionTitle': 'Mesto v branju',
+  'settings.reader.positionUnstored':
+    'Ta brskalnik ni hotel shraniti, kje ste v knjigi »{title}«, zato se bo naslednjič odprla od začetka. To počneta tako zasebni način kot poln disk.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Kako je videti ta knjiga',
+  'reader.theme': 'Barve',
+  'reader.themeApp': 'Kot spletišče',
+  'reader.themeLight': 'Papir',
+  'reader.themeDark': 'Črnilo',
+  'reader.themeSepia': 'Sepija',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Čista črna na belem, brez animacije, en stolpec — za zaslone iz elektronskega papirja.',
+  'reader.fontSize': 'Velikost črk',
+  'reader.smaller': 'Manjše',
+  'reader.larger': 'Večje',
+  'reader.lineHeight': 'Razmik med vrsticami',
+  'reader.margin': 'Robovi',
+  'reader.flow': 'Strani',
+  'reader.flowPaged': 'Obračanje strani',
+  'reader.flowScrolled': 'Drsenje',
+  'reader.justify': 'Obojestranska poravnava',
+  'reader.hyphenate': 'Deljenje besed',
+  'reader.displayReset': 'Nazaj na privzeto',
+  'settings.reader.displayTitle': 'Videz branja',
+  'settings.reader.displayChanged':
+    '{setting} je zdaj {value}. Velja za vsako knjigo, ki jo odprete v tem brskalniku.',
+  'settings.reader.displayReset':
+    'Videz branja je za vse knjige v tem brskalniku vrnjen na privzete vrednosti.',
+  'reader.on': 'Vklopljeno',
+  'reader.off': 'Izklopljeno',
+  'reader.openHere': 'Berite v svojem brskalniku',
+  'reader.notAFileTitle': '{host} je poslal spletno stran, ne datoteke',
+  'reader.notAFileBody':
+    'Povezava vodi na stran, ne h knjigi — na stran za prenos, zaslon s privolitvijo ali preverjanje, da niste robot. Odprite jo sami in datoteka bo tam.',
+  'settings.status.session': 'Ni zapomnjeno',
+  'settings.notRemembered':
+    'Ta brskalnik si tega ni zapomnil, zato bo naslednjič, ko odprete knjigo, vse tako, kot je bilo.',
 };

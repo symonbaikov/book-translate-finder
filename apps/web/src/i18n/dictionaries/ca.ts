@@ -379,4 +379,116 @@ export const ca: Dictionary = {
   'work.descriptionFrom': 'Descripció:',
   'work.descriptionNotLocalized':
     'Aquesta descripció és en la llengua en què la va escriure la font — en la teva llengua encara no n’hi ha cap per a aquest llibre.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} de {outOf} de {votes} lectors a {source}',
+  'ratings.lowConfidence': 'massa pocs vots per comparar',
+  'ratings.reviews': 'Ressenyes',
+  'ratings.reviewsOn': 'Ressenyes d’aquesta edició a {source}',
+  'ratings.noteNoRatings':
+    'Cap font oberta no puntua una traducció, i cap d’aquestes tirades no té aquí una valoració de lectors.',
+  'ratings.noteReviews':
+    'On una edició es coneix a {sources}, l’enllaç porta a les ressenyes exactament d’aquella tirada — la majoria d’edicions no s’hi coneixen.',
+  'ratings.translator':
+    'Edicions traduïdes per {name}: {average} de {outOf} en {editions} edicions valorades, {votes} lectors en total.',
+  'ratings.note':
+    'Són valoracions de lectors d’una edició concreta a {sources}, no un judici sobre la traducció mateixa — això no ho publica ningú. Val la pena llegir-les de costat: mateix llibre, mateixa llengua, traductors diferents, i sempre amb el nombre de vots a la vista.',
+  'ratings.gapWithoutIsbn':
+    '{count} edicions d’aquí no porten ISBN, així que no s’hi ha pogut fer coincidir cap valoració.',
+  'ratings.gapNotLookedUp': '{count} edicions més no s’han consultat en aquesta petició.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Llegeix al teu navegador',
+  'reader.privacy':
+    'El teu navegador obre aquest llibre pel seu compte. El fitxer, el lloc d’on ve i fins on has llegit no arriben mai a aquest lloc.',
+  'reader.chooseFile': 'Obre un llibre d’aquest dispositiu',
+  'reader.formats': 'EPUB, FB2, MOBI i CBZ.',
+  'reader.loading': 'S’està obrint…',
+  'reader.failed': 'Aquest llibre no s’ha pogut obrir: {reason}',
+  'reader.previous': 'Pàgina anterior',
+  'reader.next': 'Pàgina següent',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…o deixa anar un llibre aquí',
+  'reader.fetching': 'S’està demanant el fitxer a {host}…',
+  'reader.blockedTitle': '{host} no ha lliurat el fitxer a aquesta pàgina',
+  'reader.blockedBody':
+    'O no s’hi pot arribar, o no permet que altres llocs llegeixin els seus fitxers. Aquest lloc no l’anirà a buscar en lloc teu: el teu llibre no hi passa mai, i aquesta és tota la gràcia de llegir aquí.',
+  'reader.blockedDownload': 'Descarrega’l de {host}',
+  'reader.blockedOpenHere': 'i després obre’l aquí des del teu dispositiu',
+  'reader.blockedAddon': 'També funciona un complement que serveixi el fitxer ell mateix.',
+  'reader.keepFile': 'Conserva aquest llibre en aquest navegador',
+  'reader.keepFileHint':
+    'Desactivat per defecte. Sense això, el fitxer desapareix quan tanques la pestanya; amb això, es queda només en aquest dispositiu.',
+  'reader.library': 'Conservats en aquest navegador',
+  'reader.libraryEmpty':
+    'Encara no hi ha res conservat. Els llibres que conserves es queden en aquest dispositiu i no es pugen mai enlloc.',
+  'reader.libraryOpen': 'Obre',
+  'reader.libraryRemove': 'Elimina',
+  'reader.libraryFileKept': 'fitxer conservat',
+  'reader.libraryFileGone': 'fitxer no conservat',
+  'reader.untitled': 'Llibre sense títol',
+  'settings.reader.libraryTitle': 'Llibres conservats en aquest navegador',
+  'settings.reader.kept':
+    '«{title}» ara es conserva en aquest dispositiu, així que s’obre sense tornar-lo a descarregar. No es puja enlloc.',
+  'settings.reader.forgotten':
+    'El fitxer de «{title}» s’ha esborrat d’aquest navegador. L’entrada es queda a la llista, així que el pots tornar a obrir des de la seva font.',
+  'settings.reader.removed':
+    '«{title}» s’ha tret completament d’aquest navegador — el fitxer i l’entrada.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Obert on ho vas deixar — al {percent}%.',
+  'reader.bookmarks': 'Marcadors',
+  'reader.bookmarkAdd': 'Posa un marcador en aquesta pàgina',
+  'reader.bookmarkNone': 'Encara no hi ha marcadors en aquest llibre.',
+  'reader.bookmarkGo': 'Vés a',
+  'reader.bookmarkRemove': 'Treu el marcador',
+  'reader.bookmarkNote': 'Nota',
+  'reader.bookmarkNotePlaceholder': 'Les teves paraules sobre aquesta pàgina',
+  'reader.bookmarkAt': 'al {percent}%',
+  'settings.reader.bookmarkTitle': 'Marcadors en aquest navegador',
+  'settings.reader.bookmarkAdded':
+    'Marcador al {percent}% de «{title}». Els marcadors es queden en aquest dispositiu amb el llibre.',
+  'settings.reader.bookmarkRemoved': 'Aquell marcador de «{title}» s’ha tret d’aquest navegador.',
+  'settings.reader.noteSaved':
+    'La teva nota d’aquesta pàgina de «{title}» s’ha desat en aquest dispositiu.',
+  'settings.reader.positionTitle': 'Punt de lectura',
+  'settings.reader.positionUnstored':
+    'Aquest navegador no ha volgut desar on ets a «{title}», així que la propera vegada s’obrirà des del començament. Tant el mode privat com un disc ple fan això.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Com es veu aquest llibre',
+  'reader.theme': 'Colors',
+  'reader.themeApp': 'Com el lloc',
+  'reader.themeLight': 'Paper',
+  'reader.themeDark': 'Tinta',
+  'reader.themeSepia': 'Sèpia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Negre pur sobre blanc, sense animació, una columna — per a pantalles de paper electrònic.',
+  'reader.fontSize': 'Mida de la lletra',
+  'reader.smaller': 'Més petita',
+  'reader.larger': 'Més gran',
+  'reader.lineHeight': 'Interlineat',
+  'reader.margin': 'Marges',
+  'reader.flow': 'Pàgines',
+  'reader.flowPaged': 'Passa pàgines',
+  'reader.flowScrolled': 'Desplaça',
+  'reader.justify': 'Justifica el text',
+  'reader.hyphenate': 'Partició de mots',
+  'reader.displayReset': 'Torna als valors per defecte',
+  'settings.reader.displayTitle': 'Aspecte de lectura',
+  'settings.reader.displayChanged':
+    '{setting} ara és {value}. S’aplica a cada llibre que obris en aquest navegador.',
+  'settings.reader.displayReset':
+    'L’aspecte de lectura ha tornat als valors per defecte per a tots els llibres d’aquest navegador.',
+  'reader.on': 'Activat',
+  'reader.off': 'Desactivat',
+  'reader.openHere': 'Llegeix al teu navegador',
+  'reader.notAFileTitle': '{host} ha enviat una pàgina web, no el fitxer',
+  'reader.notAFileBody':
+    'L’enllaç porta a una pàgina i no a un llibre — una pàgina de descàrrega, una pantalla de consentiment o una comprovació que no ets un robot. Obre-la tu mateix i el fitxer hi serà.',
+  'settings.status.session': 'No recordat',
+  'settings.notRemembered':
+    'Aquest navegador no ho ha volgut recordar, així que tornarà a ser com era la propera vegada que obris un llibre.',
 };

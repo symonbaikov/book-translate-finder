@@ -376,4 +376,117 @@ export const fi: Dictionary = {
   'work.descriptionFrom': 'Kuvaus:',
   'work.descriptionNotLocalized':
     'Tämä kuvaus on sillä kielellä, jolla lähde sen kirjoitti — omalla kielelläsi ei ole vielä kuvausta tälle kirjalle.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} / {outOf}, {votes} lukijaa palvelussa {source}',
+  'ratings.lowConfidence': 'liian vähän ääniä vertailtavaksi',
+  'ratings.reviews': 'Arviot',
+  'ratings.reviewsOn': 'Tämän laitoksen arviot palvelussa {source}',
+  'ratings.noteNoRatings':
+    'Yksikään avoin lähde ei arvioi käännöstä, eikä millään näistä painoksista ole täällä lukija-arviota.',
+  'ratings.noteReviews':
+    'Kun laitos tunnetaan lähteissä {sources}, linkki vie juuri sen painoksen arvioihin — useimmat laitokset eivät ole tunnettuja.',
+  'ratings.translator':
+    'Kääntäjän {name} laitokset: {average} / {outOf} yhteensä {editions} arvioidusta laitoksesta, {votes} lukijaa kaikkiaan.',
+  'ratings.note':
+    'Nämä ovat lukijoiden arvioita tietystä laitoksesta lähteissä {sources}, eivät arvio itse käännöksestä — sellaista ei julkaise kukaan. Niitä kannattaa lukea rinnakkain: sama kirja, sama kieli, eri kääntäjät, ja aina äänimäärä näkyvissä.',
+  'ratings.gapWithoutIsbn':
+    'Täällä on {count} laitosta ilman ISBN-tunnusta, joten niihin ei voitu yhdistää arviota.',
+  'ratings.gapNotLookedUp': 'Vielä {count} laitosta jäi tässä pyynnössä tarkistamatta.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Lue selaimessasi',
+  'reader.privacy':
+    'Selaimesi avaa tämän kirjan itse. Tiedosto, sen alkuperä ja se, kuinka pitkälle olet lukenut, eivät koskaan päädy tälle sivustolle.',
+  'reader.chooseFile': 'Avaa kirja tältä laitteelta',
+  'reader.formats': 'EPUB, FB2, MOBI ja CBZ.',
+  'reader.loading': 'Avataan…',
+  'reader.failed': 'Tätä kirjaa ei voitu avata: {reason}',
+  'reader.previous': 'Edellinen sivu',
+  'reader.next': 'Seuraava sivu',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…tai pudota kirja tähän',
+  'reader.fetching': 'Pyydetään tiedostoa palvelimelta {host}…',
+  'reader.blockedTitle': '{host} ei luovuttanut tiedostoa tälle sivulle',
+  'reader.blockedBody':
+    'Joko siihen ei saada yhteyttä tai se ei salli muiden sivustojen lukea tiedostojaan. Tämä sivusto ei hae sitä sinun puolestasi: kirjasi ei kulje sen kautta koskaan, ja juuri siitä täällä lukemisessa on kyse.',
+  'reader.blockedDownload': 'Lataa se lähteestä {host}',
+  'reader.blockedOpenHere': 'ja avaa se sitten täällä omalta laitteeltasi',
+  'reader.blockedAddon': 'Myös lisäosa, joka tarjoaa tiedoston itse, toimii.',
+  'reader.keepFile': 'Säilytä tämä kirja tässä selaimessa',
+  'reader.keepFileHint':
+    'Oletuksena pois. Ilman sitä tiedosto katoaa, kun suljet välilehden; sen kanssa se säilyy vain tällä laitteella.',
+  'reader.library': 'Säilytetään tässä selaimessa',
+  'reader.libraryEmpty':
+    'Mitään ei ole vielä säilytettävänä. Säilyttämäsi kirjat pysyvät tällä laitteella eikä niitä koskaan lähetetä mihinkään.',
+  'reader.libraryOpen': 'Avaa',
+  'reader.libraryRemove': 'Poista',
+  'reader.libraryFileKept': 'tiedosto säilytetty',
+  'reader.libraryFileGone': 'tiedostoa ei säilytetty',
+  'reader.untitled': 'Nimetön kirja',
+  'settings.reader.libraryTitle': 'Tässä selaimessa säilytettävät kirjat',
+  'settings.reader.kept':
+    '”{title}” säilytetään nyt tällä laitteella, joten se avautuu ilman uutta latausta. Sitä ei lähetetä minnekään.',
+  'settings.reader.forgotten':
+    'Teoksen ”{title}” tiedosto poistettiin tästä selaimesta. Se jää listaan, joten voit avata sen uudelleen alkuperäisestä lähteestään.',
+  'settings.reader.removed':
+    '”{title}” poistettiin tästä selaimesta kokonaan — sekä tiedosto että merkintä.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Avattiin siitä mihin jäit — {percent} % kohdalla.',
+  'reader.bookmarks': 'Kirjanmerkit',
+  'reader.bookmarkAdd': 'Lisää kirjanmerkki tälle sivulle',
+  'reader.bookmarkNone': 'Tässä kirjassa ei ole vielä kirjanmerkkejä.',
+  'reader.bookmarkGo': 'Siirry',
+  'reader.bookmarkRemove': 'Poista kirjanmerkki',
+  'reader.bookmarkNote': 'Muistiinpano',
+  'reader.bookmarkNotePlaceholder': 'Omat sanasi tästä sivusta',
+  'reader.bookmarkAt': '{percent} % kohdalla',
+  'settings.reader.bookmarkTitle': 'Kirjanmerkit tässä selaimessa',
+  'settings.reader.bookmarkAdded':
+    'Kirjanmerkki teoksen ”{title}” kohtaan {percent} %. Kirjanmerkit pysyvät tällä laitteella kirjan mukana.',
+  'settings.reader.bookmarkRemoved':
+    'Tuo kirjanmerkki teoksessa ”{title}” poistettiin tästä selaimesta.',
+  'settings.reader.noteSaved':
+    'Muistiinpanosi tällä teoksen ”{title}” sivulla tallennettiin tälle laitteelle.',
+  'settings.reader.positionTitle': 'Lukukohta',
+  'settings.reader.positionUnstored':
+    'Tämä selain ei suostunut tallentamaan kohtaasi teoksessa ”{title}”, joten se avautuu ensi kerralla alusta. Yksityinen tila ja täysi levy tekevät molemmat näin.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Miltä tämä kirja näyttää',
+  'reader.theme': 'Värit',
+  'reader.themeApp': 'Seuraa sivustoa',
+  'reader.themeLight': 'Paperi',
+  'reader.themeDark': 'Muste',
+  'reader.themeSepia': 'Seepia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Puhdas musta valkoisella, ei animaatiota, yksi palsta — e-paperinäytöille.',
+  'reader.fontSize': 'Tekstin koko',
+  'reader.smaller': 'Pienempi',
+  'reader.larger': 'Suurempi',
+  'reader.lineHeight': 'Riviväli',
+  'reader.margin': 'Marginaalit',
+  'reader.flow': 'Sivut',
+  'reader.flowPaged': 'Käännä sivuja',
+  'reader.flowScrolled': 'Vieritä',
+  'reader.justify': 'Tasaa molemmat reunat',
+  'reader.hyphenate': 'Tavutus',
+  'reader.displayReset': 'Takaisin oletuksiin',
+  'settings.reader.displayTitle': 'Lukunäkymä',
+  'settings.reader.displayChanged':
+    '{setting} on nyt {value}. Se koskee jokaista kirjaa, jonka avaat tässä selaimessa.',
+  'settings.reader.displayReset':
+    'Lukunäkymä on palautettu oletuksiin jokaiselle kirjalle tässä selaimessa.',
+  'reader.on': 'Päällä',
+  'reader.off': 'Pois',
+  'reader.openHere': 'Lue selaimessasi',
+  'reader.notAFileTitle': '{host} lähetti verkkosivun, ei tiedostoa',
+  'reader.notAFileBody':
+    'Linkki vie sivulle eikä kirjaan — lataussivulle, suostumusruudulle tai robottitarkistukseen. Avaa se itse, niin tiedosto on siellä.',
+  'settings.status.session': 'Ei muistettu',
+  'settings.notRemembered':
+    'Tämä selain ei suostunut muistamaan sitä, joten se on ennallaan, kun seuraavan kerran avaat kirjan.',
 };

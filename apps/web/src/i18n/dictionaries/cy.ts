@@ -381,4 +381,114 @@ export const cy: Dictionary = {
   'work.descriptionFrom': 'Disgrifiad:',
   'work.descriptionNotLocalized':
     'Mae’r disgrifiad hwn yn yr iaith yr ysgrifennodd y ffynhonnell ef ynddi — nid oes un yn eich iaith chi ar gyfer y llyfr hwn eto.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} o {outOf} gan {votes} o ddarllenwyr ar {source}',
+  'ratings.lowConfidence': 'rhy ychydig o bleidleisiau i gymharu',
+  'ratings.reviews': 'Adolygiadau',
+  'ratings.reviewsOn': 'Adolygiadau o’r argraffiad hwn ar {source}',
+  'ratings.noteNoRatings':
+    'Nid oes unrhyw ffynhonnell agored yn rhoi sgôr i gyfieithiad, ac nid oes gan yr un o’r argraffiadau hyn sgôr gan ddarllenwyr yma.',
+  'ratings.noteReviews':
+    'Lle mae argraffiad yn hysbys ar {sources}, mae’r ddolen yn mynd at adolygiadau’r union argraffiad hwnnw — nid yw’r rhan fwyaf o argraffiadau’n hysbys.',
+  'ratings.translator':
+    'Argraffiadau a gyfieithwyd gan {name}: {average} o {outOf} ar draws {editions} argraffiad wedi’u sgorio, {votes} o ddarllenwyr i gyd.',
+  'ratings.note':
+    'Sgorau darllenwyr ar argraffiad penodol ar {sources} yw’r rhain, nid barn ar y cyfieithiad ei hun — nid oes neb yn cyhoeddi hynny. Mae’n werth eu darllen ochr yn ochr: yr un llyfr, yr un iaith, cyfieithwyr gwahanol, a’r nifer o bleidleisiau bob amser yn y golwg.',
+  'ratings.gapWithoutIsbn':
+    'Nid oes ISBN gan {count} o’r argraffiadau yma, felly ni ellid paru unrhyw sgôr â nhw.',
+  'ratings.gapNotLookedUp': 'Ni chwiliwyd am {count} argraffiad arall yn y cais hwn.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Darllenwch yn eich porwr',
+  'reader.privacy':
+    'Mae eich porwr yn agor y llyfr hwn ar ei ben ei hun. Nid yw’r ffeil, y lle y daeth ohono, na pha mor bell rydych wedi darllen byth yn cyrraedd y wefan hon.',
+  'reader.chooseFile': 'Agor llyfr o’r ddyfais hon',
+  'reader.formats': 'EPUB, FB2, MOBI a CBZ.',
+  'reader.loading': 'Yn agor…',
+  'reader.failed': 'Ni ellid agor y llyfr hwn: {reason}',
+  'reader.previous': 'Tudalen flaenorol',
+  'reader.next': 'Tudalen nesaf',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…neu ollyngwch lyfr yma',
+  'reader.fetching': 'Yn gofyn i {host} am y ffeil…',
+  'reader.blockedTitle': 'Ni roddodd {host} y ffeil i’r dudalen hon',
+  'reader.blockedBody':
+    'Naill ai ni ellir ei gyrraedd, neu nid yw’n caniatáu i wefannau eraill ddarllen ei ffeiliau. Ni fydd y wefan hon yn ei nôl ar eich rhan: nid yw eich llyfr byth yn mynd drwyddi, a dyna holl bwynt darllen yma.',
+  'reader.blockedDownload': 'Lawrlwythwch ef o {host}',
+  'reader.blockedOpenHere': 'ac yna agorwch ef yma o’ch dyfais',
+  'reader.blockedAddon': 'Mae ategyn sy’n gweini’r ffeil ei hun hefyd yn gweithio.',
+  'reader.keepFile': 'Cadw’r llyfr hwn yn y porwr hwn',
+  'reader.keepFileHint':
+    'I ffwrdd yn ddiofyn. Hebddo mae’r ffeil wedi mynd pan gaewch y tab; gydag ef, mae’n aros ar y ddyfais hon yn unig.',
+  'reader.library': 'Wedi’u cadw yn y porwr hwn',
+  'reader.libraryEmpty':
+    'Dim byd wedi’i gadw eto. Mae llyfrau a gedwch yn aros ar y ddyfais hon ac ni chânt eu huwchlwytho byth.',
+  'reader.libraryOpen': 'Agor',
+  'reader.libraryRemove': 'Tynnu',
+  'reader.libraryFileKept': 'ffeil wedi’i chadw',
+  'reader.libraryFileGone': 'ffeil heb ei chadw',
+  'reader.untitled': 'Llyfr heb deitl',
+  'settings.reader.libraryTitle': 'Llyfrau a gedwir yn y porwr hwn',
+  'settings.reader.kept':
+    'Mae “{title}” bellach yn cael ei gadw ar y ddyfais hon, felly mae’n agor heb ei lawrlwytho eto. Nid yw’n cael ei uwchlwytho i unman.',
+  'settings.reader.forgotten':
+    'Dilëwyd ffeil “{title}” o’r porwr hwn. Mae’n aros ar y rhestr, felly gallwch ei hagor eto o’i ffynhonnell.',
+  'settings.reader.removed': 'Tynnwyd “{title}” o’r porwr hwn yn gyfan gwbl — y ffeil a’r cofnod.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Agorwyd lle gwnaethoch orffen — {percent}% i mewn.',
+  'reader.bookmarks': 'Nodau tudalen',
+  'reader.bookmarkAdd': 'Rhoi nod tudalen ar y dudalen hon',
+  'reader.bookmarkNone': 'Dim nodau tudalen yn y llyfr hwn eto.',
+  'reader.bookmarkGo': 'Mynd i',
+  'reader.bookmarkRemove': 'Tynnu’r nod tudalen',
+  'reader.bookmarkNote': 'Nodyn',
+  'reader.bookmarkNotePlaceholder': 'Eich geiriau chi am y dudalen hon',
+  'reader.bookmarkAt': '{percent}% i mewn',
+  'settings.reader.bookmarkTitle': 'Nodau tudalen yn y porwr hwn',
+  'settings.reader.bookmarkAdded':
+    'Nod tudalen {percent}% i mewn i “{title}”. Mae nodau tudalen yn aros ar y ddyfais hon gyda’r llyfr.',
+  'settings.reader.bookmarkRemoved': 'Tynnwyd y nod tudalen hwnnw yn “{title}” o’r porwr hwn.',
+  'settings.reader.noteSaved': 'Cadwyd eich nodyn ar y dudalen hon o “{title}” ar y ddyfais hon.',
+  'settings.reader.positionTitle': 'Safle darllen',
+  'settings.reader.positionUnstored':
+    'Ni fyddai’r porwr hwn yn storio lle rydych yn “{title}”, felly bydd yn agor o’r dechrau y tro nesaf. Mae modd preifat a disg lawn yn gwneud hyn ill dau.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Sut mae’r llyfr hwn yn edrych',
+  'reader.theme': 'Lliwiau',
+  'reader.themeApp': 'Dilyn y wefan',
+  'reader.themeLight': 'Papur',
+  'reader.themeDark': 'Inc',
+  'reader.themeSepia': 'Sepia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Du pur ar wyn, dim animeiddio, un golofn — ar gyfer sgriniau papur electronig.',
+  'reader.fontSize': 'Maint y teip',
+  'reader.smaller': 'Llai',
+  'reader.larger': 'Mwy',
+  'reader.lineHeight': 'Bylchu llinellau',
+  'reader.margin': 'Ymylon',
+  'reader.flow': 'Tudalennau',
+  'reader.flowPaged': 'Troi tudalennau',
+  'reader.flowScrolled': 'Sgrolio',
+  'reader.justify': 'Unioni’r testun',
+  'reader.hyphenate': 'Cysylltnodi',
+  'reader.displayReset': 'Yn ôl i’r rhagosodiadau',
+  'settings.reader.displayTitle': 'Golwg darllen',
+  'settings.reader.displayChanged':
+    'Mae {setting} bellach yn {value}. Mae’n berthnasol i bob llyfr a agorwch yn y porwr hwn.',
+  'settings.reader.displayReset':
+    'Mae’r golwg darllen yn ôl i’w ragosodiadau ar gyfer pob llyfr yn y porwr hwn.',
+  'reader.on': 'Ymlaen',
+  'reader.off': 'I ffwrdd',
+  'reader.openHere': 'Darllenwch yn eich porwr',
+  'reader.notAFileTitle': 'Anfonodd {host} dudalen we, nid y ffeil',
+  'reader.notAFileBody':
+    'Mae’r ddolen yn arwain at dudalen yn hytrach nag at lyfr — tudalen lawrlwytho, sgrin gydsyniad, neu wiriad nad ydych yn robot. Agorwch hi eich hun a bydd y ffeil yno.',
+  'settings.status.session': 'Heb ei gofio',
+  'settings.notRemembered':
+    'Ni fyddai’r porwr hwn yn ei gofio, felly bydd yn ôl fel yr oedd y tro nesaf i chi agor llyfr.',
 };

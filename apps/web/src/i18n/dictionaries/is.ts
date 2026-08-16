@@ -372,4 +372,115 @@ export const is: Dictionary = {
   'work.descriptionFrom': 'Lýsing:',
   'work.descriptionNotLocalized':
     'Þessi lýsing er á því tungumáli sem heimildin skrifaði hana á — engin er til á þínu tungumáli fyrir þessa bók enn.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} af {outOf} frá {votes} lesendum á {source}',
+  'ratings.lowConfidence': 'of fá atkvæði til að bera saman',
+  'ratings.reviews': 'Umsagnir',
+  'ratings.reviewsOn': 'Umsagnir um þessa útgáfu á {source}',
+  'ratings.noteNoRatings':
+    'Engin opin heimild gefur þýðingu einkunn og ekkert þessara upplaga hefur lesendaeinkunn hér.',
+  'ratings.noteReviews':
+    'Þar sem útgáfa er þekkt á {sources} vísar hlekkurinn á umsagnir um einmitt það upplag — flestar útgáfur eru það ekki.',
+  'ratings.translator':
+    'Útgáfur þýddar af {name}: {average} af {outOf} yfir {editions} útgáfur með einkunn, {votes} lesendur alls.',
+  'ratings.note':
+    'Þetta eru einkunnir lesenda á tiltekinni útgáfu á {sources}, ekki mat á þýðingunni sjálfri — það birtir enginn. Það borgar sig að lesa þær hlið við hlið: sama bók, sama tungumál, ólíkir þýðendur, og alltaf með fjölda atkvæða í sjónmáli.',
+  'ratings.gapWithoutIsbn':
+    '{count} útgáfur hér bera ekkert ISBN, svo engri einkunn var hægt að para við þær.',
+  'ratings.gapNotLookedUp': '{count} útgáfur til viðbótar voru ekki flettar upp í þessari beiðni.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Lestu í vafranum þínum',
+  'reader.privacy':
+    'Vafrinn þinn opnar þessa bók upp á eigin spýtur. Skráin, staðurinn sem hún kom frá og hversu langt þú ert komin berast aldrei á þennan vef.',
+  'reader.chooseFile': 'Opnaðu bók úr þessu tæki',
+  'reader.formats': 'EPUB, FB2, MOBI og CBZ.',
+  'reader.loading': 'Opna…',
+  'reader.failed': 'Ekki tókst að opna þessa bók: {reason}',
+  'reader.previous': 'Fyrri síða',
+  'reader.next': 'Næsta síða',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…eða slepptu bók hér',
+  'reader.fetching': 'Bið {host} um skrána…',
+  'reader.blockedTitle': '{host} afhenti þessari síðu ekki skrána',
+  'reader.blockedBody':
+    'Annaðhvort næst ekki í hann eða hann leyfir ekki öðrum vefjum að lesa skrárnar sínar. Þessi vefur sækir hana ekki fyrir þig í staðinn: bókin þín fer aldrei í gegnum hann, og það er einmitt tilgangurinn með að lesa hér.',
+  'reader.blockedDownload': 'Sæktu hana frá {host}',
+  'reader.blockedOpenHere': 'og opnaðu hana svo hér úr tækinu þínu',
+  'reader.blockedAddon': 'Viðbót sem afhendir skrána sjálf virkar líka.',
+  'reader.keepFile': 'Geymdu þessa bók í þessum vafra',
+  'reader.keepFileHint':
+    'Sjálfgefið slökkt. Án þess hverfur skráin þegar þú lokar flipanum; með því helst hún aðeins í þessu tæki.',
+  'reader.library': 'Geymt í þessum vafra',
+  'reader.libraryEmpty':
+    'Ekkert geymt enn. Bækur sem þú geymir haldast í þessu tæki og eru aldrei sendar upp.',
+  'reader.libraryOpen': 'Opna',
+  'reader.libraryRemove': 'Fjarlægja',
+  'reader.libraryFileKept': 'skrá geymd',
+  'reader.libraryFileGone': 'skrá ekki geymd',
+  'reader.untitled': 'Ónefnd bók',
+  'settings.reader.libraryTitle': 'Bækur geymdar í þessum vafra',
+  'settings.reader.kept':
+    '„{title}“ er nú geymd í þessu tæki og opnast því án þess að sækja hana aftur. Hún er ekki send neitt.',
+  'settings.reader.forgotten':
+    'Skránni fyrir „{title}“ var eytt úr þessum vafra. Færslan er áfram á listanum, svo þú getur opnað hana aftur frá upprunanum.',
+  'settings.reader.removed':
+    '„{title}“ var fjarlægð alveg úr þessum vafra — bæði skráin og færslan.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Opnuð þar sem frá var horfið — {percent}% komin.',
+  'reader.bookmarks': 'Bókamerki',
+  'reader.bookmarkAdd': 'Setja bókamerki á þessa síðu',
+  'reader.bookmarkNone': 'Engin bókamerki í þessari bók enn.',
+  'reader.bookmarkGo': 'Fara á',
+  'reader.bookmarkRemove': 'Fjarlægja bókamerki',
+  'reader.bookmarkNote': 'Athugasemd',
+  'reader.bookmarkNotePlaceholder': 'Þín eigin orð um þessa síðu',
+  'reader.bookmarkAt': '{percent}% komin',
+  'settings.reader.bookmarkTitle': 'Bókamerki í þessum vafra',
+  'settings.reader.bookmarkAdded':
+    'Bókamerki við {percent}% í „{title}“. Bókamerki haldast í þessu tæki með bókinni.',
+  'settings.reader.bookmarkRemoved': 'Það bókamerki í „{title}“ var fjarlægt úr þessum vafra.',
+  'settings.reader.noteSaved':
+    'Athugasemdin þín á þessari síðu í „{title}“ var vistuð í þessu tæki.',
+  'settings.reader.positionTitle': 'Lesstaða',
+  'settings.reader.positionUnstored':
+    'Þessi vafri vildi ekki geyma hvar þú ert stödd í „{title}“, svo hún opnast frá byrjun næst. Huliðsstilling og fullur diskur gera hvort tveggja þetta.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Hvernig þessi bók lítur út',
+  'reader.theme': 'Litir',
+  'reader.themeApp': 'Fylgja vefnum',
+  'reader.themeLight': 'Pappír',
+  'reader.themeDark': 'Blek',
+  'reader.themeSepia': 'Sepía',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint': 'Hreint svart á hvítu, engin hreyfing, einn dálkur — fyrir rafblekskjái.',
+  'reader.fontSize': 'Leturstærð',
+  'reader.smaller': 'Minna',
+  'reader.larger': 'Stærra',
+  'reader.lineHeight': 'Línubil',
+  'reader.margin': 'Spássíur',
+  'reader.flow': 'Síður',
+  'reader.flowPaged': 'Fletta',
+  'reader.flowScrolled': 'Skruna',
+  'reader.justify': 'Jafna báðar spássíur',
+  'reader.hyphenate': 'Orðskipting',
+  'reader.displayReset': 'Aftur í sjálfgefið',
+  'settings.reader.displayTitle': 'Lestrarútlit',
+  'settings.reader.displayChanged':
+    '{setting} er núna {value}. Það gildir um hverja bók sem þú opnar í þessum vafra.',
+  'settings.reader.displayReset':
+    'Lestrarútlitið er komið aftur í sjálfgefin gildi fyrir allar bækur í þessum vafra.',
+  'reader.on': 'Kveikt',
+  'reader.off': 'Slökkt',
+  'reader.openHere': 'Lestu í vafranum þínum',
+  'reader.notAFileTitle': '{host} sendi vefsíðu, ekki skrána',
+  'reader.notAFileBody':
+    'Hlekkurinn vísar á síðu frekar en á bók — niðurhalssíðu, samþykkisskjá eða athugun á því hvort þú sért vélmenni. Opnaðu hana sjálf og skráin verður þar.',
+  'settings.status.session': 'Ekki munað',
+  'settings.notRemembered':
+    'Þessi vafri vildi ekki muna það, svo það verður eins og áður næst þegar þú opnar bók.',
 };

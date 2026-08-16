@@ -384,4 +384,117 @@ export const ga: Dictionary = {
   'work.descriptionFrom': 'Cur síos:',
   'work.descriptionNotLocalized':
     'Tá an cur síos seo sa teanga inar scríobh an fhoinse é — níl ceann i do theanga féin ann don leabhar seo fós.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} as {outOf} ó {votes} léitheoir ar {source}',
+  'ratings.lowConfidence': 'ró-bheagán vótaí le comparáid a dhéanamh',
+  'ratings.reviews': 'Léirmheasanna',
+  'ratings.reviewsOn': 'Léirmheasanna ar an eagrán seo ar {source}',
+  'ratings.noteNoRatings':
+    'Ní thugann aon fhoinse oscailte rátáil ar aistriúchán, agus níl rátáil léitheoirí anseo ag ceann ar bith de na cur amach seo.',
+  'ratings.noteReviews':
+    'Nuair a bhíonn eagrán ar eolas ar {sources}, téann an nasc chuig léirmheasanna an chur amach sin go díreach — níl formhór na n-eagrán ar eolas.',
+  'ratings.translator':
+    'Eagráin aistrithe ag {name}: {average} as {outOf} thar {editions} eagrán rátáilte, {votes} léitheoir san iomlán.',
+  'ratings.note':
+    'Rátálacha léitheoirí ar eagrán ar leith ar {sources} atá anseo, ní breithiúnas ar an aistriúchán féin — ní fhoilsíonn aon duine é sin. Is fiú iad a léamh taobh le taobh: an leabhar céanna, an teanga chéanna, aistritheoirí éagsúla, agus líon na vótaí i gcónaí os comhair do shúl.',
+  'ratings.gapWithoutIsbn':
+    'Níl ISBN ar {count} eagrán anseo, mar sin níorbh fhéidir aon rátáil a mheaitseáil leo.',
+  'ratings.gapNotLookedUp': 'Níor cuardaíodh {count} eagrán eile san iarratas seo.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Léigh i do bhrabhsálaí',
+  'reader.privacy':
+    'Osclaíonn do bhrabhsálaí an leabhar seo as a stuaim féin. Ní shroicheann an comhad, an áit as ar tháinig sé, ná cé chomh fada is atá léite agat an suíomh seo riamh.',
+  'reader.chooseFile': 'Oscail leabhar ón ngléas seo',
+  'reader.formats': 'EPUB, FB2, MOBI agus CBZ.',
+  'reader.loading': 'Á oscailt…',
+  'reader.failed': 'Níorbh fhéidir an leabhar seo a oscailt: {reason}',
+  'reader.previous': 'An leathanach roimhe',
+  'reader.next': 'An chéad leathanach eile',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…nó lig leabhar anuas anseo',
+  'reader.fetching': 'Ag iarraidh an chomhaid ar {host}…',
+  'reader.blockedTitle': 'Níor thug {host} an comhad don leathanach seo',
+  'reader.blockedBody':
+    'Níl teacht air, nó ní cheadaíonn sé do shuímh eile a chuid comhad a léamh. Ní rachaidh an suíomh seo á fháil duit ina áit: ní théann do leabhar tríd riamh, agus sin cuspóir iomlán na léitheoireachta anseo.',
+  'reader.blockedDownload': 'Íoslódáil ó {host} é',
+  'reader.blockedOpenHere': 'agus ansin oscail anseo é ó do ghléas',
+  'reader.blockedAddon': 'Oibríonn breiseán a fhreastalaíonn ar an gcomhad é féin chomh maith.',
+  'reader.keepFile': 'Coinnigh an leabhar seo sa bhrabhsálaí seo',
+  'reader.keepFileHint':
+    'As de réir réamhshocraithe. Gan é bíonn an comhad imithe nuair a dhúnann tú an cluaisín; leis, fanann sé ar an ngléas seo amháin.',
+  'reader.library': 'Coinnithe sa bhrabhsálaí seo',
+  'reader.libraryEmpty':
+    'Níl aon rud coinnithe fós. Fanann leabhair a choinníonn tú ar an ngléas seo agus ní uaslódáiltear riamh iad.',
+  'reader.libraryOpen': 'Oscail',
+  'reader.libraryRemove': 'Bain',
+  'reader.libraryFileKept': 'comhad coinnithe',
+  'reader.libraryFileGone': 'comhad gan choinneáil',
+  'reader.untitled': 'Leabhar gan teideal',
+  'settings.reader.libraryTitle': 'Leabhair choinnithe sa bhrabhsálaí seo',
+  'settings.reader.kept':
+    'Coinnítear “{title}” ar an ngléas seo anois, mar sin osclaíonn sé gan é a íoslódáil arís. Ní uaslódáiltear áit ar bith é.',
+  'settings.reader.forgotten':
+    'Scriosadh comhad “{title}” den bhrabhsálaí seo. Fanann sé ar an liosta, mar sin is féidir leat é a oscailt arís óna fhoinse.',
+  'settings.reader.removed':
+    'Baineadh “{title}” den bhrabhsálaí seo go hiomlán — an comhad agus an iontráil.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Osclaíodh mar ar stad tú — {percent}% isteach.',
+  'reader.bookmarks': 'Leabharmharcanna',
+  'reader.bookmarkAdd': 'Cuir leabharmharc ar an leathanach seo',
+  'reader.bookmarkNone': 'Níl aon leabharmharc sa leabhar seo fós.',
+  'reader.bookmarkGo': 'Téigh go',
+  'reader.bookmarkRemove': 'Bain an leabharmharc',
+  'reader.bookmarkNote': 'Nóta',
+  'reader.bookmarkNotePlaceholder': 'Do chuid focal féin faoin leathanach seo',
+  'reader.bookmarkAt': '{percent}% isteach',
+  'settings.reader.bookmarkTitle': 'Leabharmharcanna sa bhrabhsálaí seo',
+  'settings.reader.bookmarkAdded':
+    'Leabharmharc {percent}% isteach i “{title}”. Fanann leabharmharcanna ar an ngléas seo leis an leabhar.',
+  'settings.reader.bookmarkRemoved':
+    'Baineadh an leabharmharc sin i “{title}” den bhrabhsálaí seo.',
+  'settings.reader.noteSaved':
+    'Sábháladh do nóta ar an leathanach seo de “{title}” ar an ngléas seo.',
+  'settings.reader.positionTitle': 'Ionad léitheoireachta',
+  'settings.reader.positionUnstored':
+    'Ní stórálfadh an brabhsálaí seo cá bhfuil tú i “{title}”, mar sin osclóidh sé ón tús an chéad uair eile. Déanann an mód príobháideach agus diosca lán araon é seo.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'An chuma atá ar an leabhar seo',
+  'reader.theme': 'Dathanna',
+  'reader.themeApp': 'Mar an suíomh',
+  'reader.themeLight': 'Páipéar',
+  'reader.themeDark': 'Dúch',
+  'reader.themeSepia': 'Sepia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Dubh glan ar bhán, gan beochan, colún amháin — do scáileáin pháipéir leictreonaigh.',
+  'reader.fontSize': 'Méid an chló',
+  'reader.smaller': 'Níos lú',
+  'reader.larger': 'Níos mó',
+  'reader.lineHeight': 'Spásáil línte',
+  'reader.margin': 'Imill',
+  'reader.flow': 'Leathanaigh',
+  'reader.flowPaged': 'Iompaigh leathanaigh',
+  'reader.flowScrolled': 'Scrollaigh',
+  'reader.justify': 'Comhfhadaigh an téacs',
+  'reader.hyphenate': 'Fleiscíniú',
+  'reader.displayReset': 'Ar ais go dtí na réamhshocruithe',
+  'settings.reader.displayTitle': 'Taispeáint léitheoireachta',
+  'settings.reader.displayChanged':
+    'Tá {setting} anois {value}. Baineann sé le gach leabhar a osclaíonn tú sa bhrabhsálaí seo.',
+  'settings.reader.displayReset':
+    'Tá an taispeáint léitheoireachta ar ais ag a réamhshocruithe do gach leabhar sa bhrabhsálaí seo.',
+  'reader.on': 'Air',
+  'reader.off': 'As',
+  'reader.openHere': 'Léigh i do bhrabhsálaí',
+  'reader.notAFileTitle': 'Sheol {host} leathanach gréasáin, ní an comhad',
+  'reader.notAFileBody':
+    'Treoraíonn an nasc chuig leathanach seachas chuig leabhar — leathanach íoslódála, scáileán toilithe, nó seiceáil nach robot thú. Oscail féin é agus beidh an comhad ann.',
+  'settings.status.session': 'Gan cuimhneamh',
+  'settings.notRemembered':
+    'Ní chuimhneodh an brabhsálaí seo air, mar sin beidh sé ar ais mar a bhí an chéad uair eile a osclaíonn tú leabhar.',
 };

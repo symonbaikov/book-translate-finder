@@ -374,4 +374,117 @@ export const et: Dictionary = {
   'work.descriptionFrom': 'Kirjeldus:',
   'work.descriptionNotLocalized':
     'See kirjeldus on keeles, milles allikas selle kirjutas — sinu keeles pole selle raamatu kohta veel ühtegi.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} / {outOf}, {votes} lugejat platvormil {source}',
+  'ratings.lowConfidence': 'liiga vähe hääli võrdlemiseks',
+  'ratings.reviews': 'Arvustused',
+  'ratings.reviewsOn': 'Selle väljaande arvustused platvormil {source}',
+  'ratings.noteNoRatings':
+    'Ükski avatud allikas ei hinda tõlget ja ühelgi neist trükkidest pole siin lugejate hinnangut.',
+  'ratings.noteReviews':
+    'Kui väljaanne on teada allikas {sources}, viib link just selle trüki arvustustele — enamik väljaandeid pole teada.',
+  'ratings.translator':
+    'Tõlkija {name} väljaanded: {average} / {outOf} kokku {editions} hinnatud väljaande peale, {votes} lugejat kokku.',
+  'ratings.note':
+    'Need on lugejate hinnangud kindlale väljaandele allikas {sources}, mitte hinnang tõlkele endale — seda ei avalda keegi. Neid tasub lugeda kõrvuti: sama raamat, sama keel, eri tõlkijad, ja alati häälte arv silme ees.',
+  'ratings.gapWithoutIsbn':
+    'Siin on {count} väljaannet ilma ISBN-ita, seega ei saanud neile ühtki hinnangut vastavusse seada.',
+  'ratings.gapNotLookedUp': 'Veel {count} väljaannet jäi selles päringus üle vaatamata.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Loe oma brauseris',
+  'reader.privacy':
+    'Sinu brauser avab selle raamatu ise. Fail, koht kust see tuli, ja see, kui kaugele oled lugenud, ei jõua kunagi sellele saidile.',
+  'reader.chooseFile': 'Ava raamat sellest seadmest',
+  'reader.formats': 'EPUB, FB2, MOBI ja CBZ.',
+  'reader.loading': 'Avan…',
+  'reader.failed': 'Seda raamatut ei õnnestunud avada: {reason}',
+  'reader.previous': 'Eelmine lehekülg',
+  'reader.next': 'Järgmine lehekülg',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…või lohista raamat siia',
+  'reader.fetching': 'Küsin faili aadressilt {host}…',
+  'reader.blockedTitle': '{host} ei andnud faili sellele lehele',
+  'reader.blockedBody':
+    'Kas see pole kättesaadav või ei luba teistel saitidel oma faile lugeda. See sait ei too seda sinu eest: sinu raamat ei liigu kunagi läbi selle, ja just selles ongi siin lugemise mõte.',
+  'reader.blockedDownload': 'Laadi see alla aadressilt {host}',
+  'reader.blockedOpenHere': 'ja ava see siis siin oma seadmest',
+  'reader.blockedAddon': 'Töötab ka lisa, mis faili ise pakub.',
+  'reader.keepFile': 'Hoia see raamat selles brauseris',
+  'reader.keepFileHint':
+    'Vaikimisi väljas. Ilma selleta on fail kadunud, kui vahekaardi sulged; sellega jääb see ainult sellesse seadmesse.',
+  'reader.library': 'Hoitud selles brauseris',
+  'reader.libraryEmpty':
+    'Midagi pole veel hoiul. Raamatud, mida hoiad, jäävad sellesse seadmesse ja neid ei laadita kunagi kuhugi üles.',
+  'reader.libraryOpen': 'Ava',
+  'reader.libraryRemove': 'Eemalda',
+  'reader.libraryFileKept': 'fail alles',
+  'reader.libraryFileGone': 'faili pole alles',
+  'reader.untitled': 'Pealkirjata raamat',
+  'settings.reader.libraryTitle': 'Selles brauseris hoitavad raamatud',
+  'settings.reader.kept':
+    '„{title}“ hoitakse nüüd selles seadmes, nii et see avaneb ilma uuesti alla laadimata. Kuhugi seda üles ei laadita.',
+  'settings.reader.forgotten':
+    'Raamatu „{title}“ fail kustutati sellest brauserist. Kirje jääb loendisse, nii et saad selle uuesti oma allikast avada.',
+  'settings.reader.removed':
+    '„{title}“ eemaldati sellest brauserist täielikult — nii fail kui kirje.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Avatud sealt, kus pooleli jäid — {percent}% peal.',
+  'reader.bookmarks': 'Järjehoidjad',
+  'reader.bookmarkAdd': 'Lisa sellele leheküljele järjehoidja',
+  'reader.bookmarkNone': 'Selles raamatus pole veel järjehoidjaid.',
+  'reader.bookmarkGo': 'Mine',
+  'reader.bookmarkRemove': 'Eemalda järjehoidja',
+  'reader.bookmarkNote': 'Märkus',
+  'reader.bookmarkNotePlaceholder': 'Sinu enda sõnad selle lehekülje kohta',
+  'reader.bookmarkAt': '{percent}% peal',
+  'settings.reader.bookmarkTitle': 'Järjehoidjad selles brauseris',
+  'settings.reader.bookmarkAdded':
+    'Järjehoidja raamatu „{title}“ {percent}% peal. Järjehoidjad jäävad koos raamatuga sellesse seadmesse.',
+  'settings.reader.bookmarkRemoved':
+    'See järjehoidja raamatus „{title}“ eemaldati sellest brauserist.',
+  'settings.reader.noteSaved':
+    'Sinu märkus sellel raamatu „{title}“ leheküljel salvestati sellesse seadmesse.',
+  'settings.reader.positionTitle': 'Lugemiskoht',
+  'settings.reader.positionUnstored':
+    'See brauser ei salvestanud, kus sa raamatus „{title}“ oled, nii et järgmisel korral avaneb see algusest. Nii teevad nii privaatrežiim kui täis ketas.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Kuidas see raamat välja näeb',
+  'reader.theme': 'Värvid',
+  'reader.themeApp': 'Nagu saidil',
+  'reader.themeLight': 'Paber',
+  'reader.themeDark': 'Tint',
+  'reader.themeSepia': 'Seepia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Puhas must valgel, ilma animatsioonita, üks veerg — e-paberi ekraanidele.',
+  'reader.fontSize': 'Kirja suurus',
+  'reader.smaller': 'Väiksem',
+  'reader.larger': 'Suurem',
+  'reader.lineHeight': 'Reavahe',
+  'reader.margin': 'Veerised',
+  'reader.flow': 'Leheküljed',
+  'reader.flowPaged': 'Keera lehte',
+  'reader.flowScrolled': 'Keri',
+  'reader.justify': 'Rööpjoondus',
+  'reader.hyphenate': 'Poolitus',
+  'reader.displayReset': 'Tagasi vaikeseadetele',
+  'settings.reader.displayTitle': 'Lugemisvaade',
+  'settings.reader.displayChanged':
+    '{setting} on nüüd {value}. See kehtib igale raamatule, mille selles brauseris avad.',
+  'settings.reader.displayReset':
+    'Lugemisvaade on selles brauseris iga raamatu jaoks tagasi vaikeseadetel.',
+  'reader.on': 'Sees',
+  'reader.off': 'Väljas',
+  'reader.openHere': 'Loe oma brauseris',
+  'reader.notAFileTitle': '{host} saatis veebilehe, mitte faili',
+  'reader.notAFileBody':
+    'Link viib lehele, mitte raamatule — allalaadimislehele, nõusolekuaknasse või robotikontrolli. Ava see ise ja fail on seal.',
+  'settings.status.session': 'Ei jäetud meelde',
+  'settings.notRemembered':
+    'See brauser ei jätnud seda meelde, nii et järgmisel korral, kui raamatu avad, on kõik nagu enne.',
 };

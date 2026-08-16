@@ -373,4 +373,115 @@ export const ka: Dictionary = {
   'work.descriptionFrom': 'აღწერა:',
   'work.descriptionNotLocalized':
     'ეს აღწერა იმ ენაზეა, რომელზეც წყარომ დაწერა — თქვენს ენაზე ამ წიგნისთვის ჯერ არ არის.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} {outOf}-დან, {votes} მკითხველისგან საიტზე {source}',
+  'ratings.lowConfidence': 'ძალიან ცოტა ხმაა შესადარებლად',
+  'ratings.reviews': 'მიმოხილვები',
+  'ratings.reviewsOn': 'ამ გამოცემის მიმოხილვები საიტზე {source}',
+  'ratings.noteNoRatings':
+    'არცერთი ღია წყარო არ აფასებს თარგმანს, და ამ ტირაჟებიდან არცერთს აქ არ აქვს მკითხველის შეფასება.',
+  'ratings.noteReviews':
+    'იქ, სადაც გამოცემა ცნობილია წყაროზე {sources}, ბმული ზუსტად იმ ტირაჟის მიმოხილვებზე მიდის — გამოცემების უმეტესობა ცნობილი არაა.',
+  'ratings.translator':
+    '{name}-ის თარგმნილი გამოცემები: {average} {outOf}-დან {editions} შეფასებულ გამოცემაზე, სულ {votes} მკითხველი.',
+  'ratings.note':
+    'ეს არის მკითხველთა შეფასებები კონკრეტული გამოცემისა საიტზე {sources}, და არა თავად თარგმანის შეფასება — ასეთს არავინ აქვეყნებს. ღირს მათი გვერდიგვერდ წაკითხვა: იგივე წიგნი, იგივე ენა, სხვადასხვა მთარგმნელი, და ყოველთვის ხმების რაოდენობა თვალწინ.',
+  'ratings.gapWithoutIsbn':
+    'აქ {count} გამოცემას არ აქვს ISBN, ამიტომ მათ ვერცერთი შეფასება ვერ დაუკავშირდა.',
+  'ratings.gapNotLookedUp': 'კიდევ {count} გამოცემა ამ მოთხოვნისას არ შემოწმებულა.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'იკითხეთ თქვენს ბრაუზერში',
+  'reader.privacy':
+    'თქვენი ბრაუზერი ამ წიგნს თავად ხსნის. ფაილი, ადგილი, საიდანაც ის მოვიდა, და ის, თუ სადამდე წაიკითხეთ, ამ საიტამდე არასოდეს აღწევს.',
+  'reader.chooseFile': 'გახსენით წიგნი ამ მოწყობილობიდან',
+  'reader.formats': 'EPUB, FB2, MOBI და CBZ.',
+  'reader.loading': 'იხსნება…',
+  'reader.failed': 'ამ წიგნის გახსნა ვერ მოხერხდა: {reason}',
+  'reader.previous': 'წინა გვერდი',
+  'reader.next': 'შემდეგი გვერდი',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…ან ჩააგდეთ წიგნი აქ',
+  'reader.fetching': 'ფაილი ითხოვება {host}-ისგან…',
+  'reader.blockedTitle': '{host}-მა ფაილი ამ გვერდს არ გადასცა',
+  'reader.blockedBody':
+    'ან მასთან წვდომა არ არის, ან ის სხვა საიტებს არ აძლევს უფლებას წაიკითხონ მისი ფაილები. ეს საიტი მას თქვენ ნაცვლად არ ჩამოტვირთავს: თქვენი წიგნი მასზე არასოდეს გადის, და სწორედ ესაა აქ კითხვის აზრი.',
+  'reader.blockedDownload': 'ჩამოტვირთეთ იგი {host}-იდან',
+  'reader.blockedOpenHere': 'შემდეგ კი გახსენით აქ თქვენი მოწყობილობიდან',
+  'reader.blockedAddon': 'გამოდგება დამატებაც, რომელიც ფაილს თავად აწვდის.',
+  'reader.keepFile': 'შეინახე ეს წიგნი ამ ბრაუზერში',
+  'reader.keepFileHint':
+    'ნაგულისხმევად გამორთულია. მის გარეშე ფაილი ქრება, როცა ჩანართს დახურავთ; მასთან ერთად ის რჩება მხოლოდ ამ მოწყობილობაზე.',
+  'reader.library': 'შენახული ამ ბრაუზერში',
+  'reader.libraryEmpty':
+    'ჯერ არაფერია შენახული. წიგნები, რომლებსაც ინახავთ, რჩება ამ მოწყობილობაზე და არასოდეს იტვირთება არსად.',
+  'reader.libraryOpen': 'გახსნა',
+  'reader.libraryRemove': 'წაშლა',
+  'reader.libraryFileKept': 'ფაილი შენახულია',
+  'reader.libraryFileGone': 'ფაილი არ არის შენახული',
+  'reader.untitled': 'უსათაურო წიგნი',
+  'settings.reader.libraryTitle': 'ამ ბრაუზერში შენახული წიგნები',
+  'settings.reader.kept':
+    '„{title}“ ახლა ინახება ამ მოწყობილობაზე, ამიტომ იხსნება ხელახლა ჩამოტვირთვის გარეშე. არსად არ იტვირთება.',
+  'settings.reader.forgotten':
+    '„{title}“-ის ფაილი წაიშალა ამ ბრაუზერიდან. ჩანაწერი სიაში რჩება, ასე რომ შეგიძლიათ ხელახლა გახსნათ თავისი წყაროდან.',
+  'settings.reader.removed': '„{title}“ სრულად ამოღებულია ამ ბრაუზერიდან — ფაილიც და ჩანაწერიც.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'გაიხსნა იქ, სადაც შეწყვიტეთ — {percent}%-ზე.',
+  'reader.bookmarks': 'სანიშნეები',
+  'reader.bookmarkAdd': 'დაუსვით სანიშნე ამ გვერდს',
+  'reader.bookmarkNone': 'ამ წიგნში ჯერ სანიშნეები არ არის.',
+  'reader.bookmarkGo': 'გადასვლა',
+  'reader.bookmarkRemove': 'სანიშნის წაშლა',
+  'reader.bookmarkNote': 'შენიშვნა',
+  'reader.bookmarkNotePlaceholder': 'თქვენი სიტყვები ამ გვერდზე',
+  'reader.bookmarkAt': '{percent}%-ზე',
+  'settings.reader.bookmarkTitle': 'სანიშნეები ამ ბრაუზერში',
+  'settings.reader.bookmarkAdded':
+    'სანიშნე „{title}“-ის {percent}%-ზე. სანიშნეები რჩება ამ მოწყობილობაზე წიგნთან ერთად.',
+  'settings.reader.bookmarkRemoved': 'ის სანიშნე „{title}“-ში ამოღებულია ამ ბრაუზერიდან.',
+  'settings.reader.noteSaved':
+    'თქვენი შენიშვნა „{title}“-ის ამ გვერდზე შენახულია ამ მოწყობილობაზე.',
+  'settings.reader.positionTitle': 'კითხვის ადგილი',
+  'settings.reader.positionUnstored':
+    'ამ ბრაუზერს არ სურდა შეენახა, სად ხართ „{title}“-ში, ამიტომ შემდეგ ჯერზე ის თავიდან გაიხსნება. ასე იქცევა როგორც პრივატული რეჟიმი, ისე სავსე დისკი.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'როგორ გამოიყურება ეს წიგნი',
+  'reader.theme': 'ფერები',
+  'reader.themeApp': 'როგორც საიტზე',
+  'reader.themeLight': 'ქაღალდი',
+  'reader.themeDark': 'მელანი',
+  'reader.themeSepia': 'სეპია',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'სუფთა შავი თეთრზე, ანიმაციის გარეშე, ერთი სვეტი — ელექტრონული ქაღალდის ეკრანებისთვის.',
+  'reader.fontSize': 'შრიფტის ზომა',
+  'reader.smaller': 'უფრო პატარა',
+  'reader.larger': 'უფრო დიდი',
+  'reader.lineHeight': 'სტრიქონებს შორის დაშორება',
+  'reader.margin': 'მინდვრები',
+  'reader.flow': 'გვერდები',
+  'reader.flowPaged': 'გვერდების გადაფურცვლა',
+  'reader.flowScrolled': 'გადაადგილება',
+  'reader.justify': 'ორივე კიდეზე გასწორება',
+  'reader.hyphenate': 'გადატანა',
+  'reader.displayReset': 'ნაგულისხმევზე დაბრუნება',
+  'settings.reader.displayTitle': 'კითხვის იერსახე',
+  'settings.reader.displayChanged':
+    '{setting} ახლა არის {value}. ეს ეხება ყველა წიგნს, რომელსაც ამ ბრაუზერში ხსნით.',
+  'settings.reader.displayReset':
+    'კითხვის იერსახე დაუბრუნდა ნაგულისხმევს ამ ბრაუზერის ყველა წიგნისთვის.',
+  'reader.on': 'ჩართული',
+  'reader.off': 'გამორთული',
+  'reader.openHere': 'იკითხეთ თქვენს ბრაუზერში',
+  'reader.notAFileTitle': '{host}-მა გამოგზავნა ვებგვერდი, და არა ფაილი',
+  'reader.notAFileBody':
+    'ბმული მიდის გვერდზე და არა წიგნზე — ჩამოტვირთვის გვერდზე, თანხმობის ეკრანზე ან შემოწმებაზე, რომ რობოტი არ ხართ. გახსენით თავად და ფაილი იქ იქნება.',
+  'settings.status.session': 'არ დამახსოვრდა',
+  'settings.notRemembered':
+    'ამ ბრაუზერს ეს არ დაუმახსოვრებია, ამიტომ შემდეგ ჯერზე, როცა წიგნს გახსნით, ყველაფერი ისე იქნება, როგორც იყო.',
 };

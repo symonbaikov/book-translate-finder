@@ -378,4 +378,117 @@ export const lb: Dictionary = {
   'work.descriptionFrom': 'Beschreiwung:',
   'work.descriptionNotLocalized':
     'Dës Beschreiwung ass an der Sprooch, an där d’Quell se geschriwwen huet — an Ärer Sprooch gëtt et fir dëst Buch nach keng.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} vu {outOf} vu {votes} Lieser op {source}',
+  'ratings.lowConfidence': 'ze wéineg Stëmmen fir ze vergläichen',
+  'ratings.reviews': 'Rezensiounen',
+  'ratings.reviewsOn': 'Rezensioune vun dëser Editioun op {source}',
+  'ratings.noteNoRatings':
+    'Keng oppe Quell bewäert eng Iwwersetzung, a keng vun dësen Oplage huet hei eng Lieserbewäertung.',
+  'ratings.noteReviews':
+    'Wou eng Editioun op {sources} bekannt ass, féiert de Link op d’Rezensioune vun genee där Oplag — déi meescht Editioune sinn et net.',
+  'ratings.translator':
+    'Editiounen iwwersat vum {name}: {average} vu {outOf} iwwer {editions} bewäert Editiounen, am Ganzen {votes} Lieser.',
+  'ratings.note':
+    'Dat sinn d’Bewäertunge vu Lieser vun enger bestëmmter Editioun op {sources}, keng Beuerteelung vun der Iwwersetzung selwer — déi verëffentlecht keen. Et lount sech, se niewenteneen ze liesen: datselwecht Buch, déiselwecht Sprooch, aner Iwwersetzer, an ëmmer mat der Zuel vun de Stëmmen am Bléck.',
+  'ratings.gapWithoutIsbn':
+    '{count} Editiounen hei hu keng ISBN, dofir konnt hinne keng Bewäertung zougeuerdent ginn.',
+  'ratings.gapNotLookedUp': 'Nach {count} Editioune goufen an dëser Ufro net nogekuckt.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Liest an Ärem Browser',
+  'reader.privacy':
+    'Äre Browser mécht dëst Buch selwer op. D’Datei, de Plaz, wou se hierkënnt, a wéi wäit Dir gelies hutt, kommen ni op dës Säit.',
+  'reader.chooseFile': 'E Buch vun dësem Apparat opmaachen',
+  'reader.formats': 'EPUB, FB2, MOBI a CBZ.',
+  'reader.loading': 'Gëtt opgemaach…',
+  'reader.failed': 'Dëst Buch konnt net opgemaach ginn: {reason}',
+  'reader.previous': 'Viregt Säit',
+  'reader.next': 'Nächst Säit',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…oder lued hei e Buch of',
+  'reader.fetching': 'D’Datei gëtt bei {host} ugefrot…',
+  'reader.blockedTitle': '{host} huet dëser Säit d’Datei net ginn',
+  'reader.blockedBody':
+    'Entweder ass en net z’erreechen, oder hie léisst aner Säiten net seng Dateie liesen. Dës Säit hëlt se net fir Iech: Äert Buch geet ni duerch si, an dat ass de ganze Sënn vum Liese hei.',
+  'reader.blockedDownload': 'Lued se vu {host} erof',
+  'reader.blockedOpenHere': 'a maach se dann hei vun Ärem Apparat op',
+  'reader.blockedAddon': 'Och eng Erweiderung, déi d’Datei selwer liwwert, funktionéiert.',
+  'reader.keepFile': 'Dëst Buch an dësem Browser behalen',
+  'reader.keepFileHint':
+    'Standardméisseg aus. Ouni dat ass d’Datei fort, wann Dir den Tab zoumaacht; domat bleift se nëmmen op dësem Apparat.',
+  'reader.library': 'An dësem Browser behalen',
+  'reader.libraryEmpty':
+    'Nach näischt behalen. Bicher, déi Dir behalt, bleiwen op dësem Apparat a gi ni iergendwou eropgelueden.',
+  'reader.libraryOpen': 'Opmaachen',
+  'reader.libraryRemove': 'Ewechhuelen',
+  'reader.libraryFileKept': 'Datei behalen',
+  'reader.libraryFileGone': 'Datei net behalen',
+  'reader.untitled': 'Buch ouni Titel',
+  'settings.reader.libraryTitle': 'Bicher, déi an dësem Browser behale ginn',
+  'settings.reader.kept':
+    '„{title}“ gëtt elo op dësem Apparat behalen, sou datt et opgeet, ouni nach eng Kéier erofgelueden ze ginn. Et gëtt néierens eropgelueden.',
+  'settings.reader.forgotten':
+    'D’Datei vu „{title}“ gouf aus dësem Browser geläscht. Den Entrée bleift op der Lëscht, sou datt Dir et nach eng Kéier vu senger Quell opmaache kënnt.',
+  'settings.reader.removed':
+    '„{title}“ gouf ganz aus dësem Browser ewechgeholl — d’Datei an den Entrée.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Do opgemaach, wou Dir opgehalen hutt — bei {percent} %.',
+  'reader.bookmarks': 'Lieszeechen',
+  'reader.bookmarkAdd': 'E Lieszeechen op dës Säit setzen',
+  'reader.bookmarkNone': 'Nach keng Lieszeechen an dësem Buch.',
+  'reader.bookmarkGo': 'Goen op',
+  'reader.bookmarkRemove': 'Lieszeechen ewechhuelen',
+  'reader.bookmarkNote': 'Notiz',
+  'reader.bookmarkNotePlaceholder': 'Är eege Wierder zu dëser Säit',
+  'reader.bookmarkAt': 'bei {percent} %',
+  'settings.reader.bookmarkTitle': 'Lieszeechen an dësem Browser',
+  'settings.reader.bookmarkAdded':
+    'Lieszeechen bei {percent} % vu „{title}“. Lieszeeche bleiwe mam Buch op dësem Apparat.',
+  'settings.reader.bookmarkRemoved':
+    'Dat Lieszeechen an „{title}“ gouf aus dësem Browser ewechgeholl.',
+  'settings.reader.noteSaved':
+    'Är Notiz op dëser Säit vu „{title}“ gouf op dësem Apparat gespäichert.',
+  'settings.reader.positionTitle': 'Liesplaz',
+  'settings.reader.positionUnstored':
+    'Dëse Browser wollt net späicheren, wou Dir a „{title}“ sidd, dofir geet et déi nächst Kéier vun uewen un op. Dat maachen de private Modus an eng voll Disk béid.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Wéi dëst Buch ausgesäit',
+  'reader.theme': 'Faarwen',
+  'reader.themeApp': 'Wéi d’Säit',
+  'reader.themeLight': 'Pabeier',
+  'reader.themeDark': 'Tënt',
+  'reader.themeSepia': 'Sepia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Reng schwaarz op wäiss, keng Animatioun, eng Kolonn — fir E-Pabeier-Bildschiermer.',
+  'reader.fontSize': 'Schrëftgréisst',
+  'reader.smaller': 'Méi kleng',
+  'reader.larger': 'Méi grouss',
+  'reader.lineHeight': 'Zeilenofstand',
+  'reader.margin': 'Rand',
+  'reader.flow': 'Säiten',
+  'reader.flowPaged': 'Ëmblieden',
+  'reader.flowScrolled': 'Scrollen',
+  'reader.justify': 'Blocksatz',
+  'reader.hyphenate': 'Silbentrennung',
+  'reader.displayReset': 'Zréck op d’Standardwäerter',
+  'settings.reader.displayTitle': 'Liesusiicht',
+  'settings.reader.displayChanged':
+    '{setting} ass elo {value}. Dat gëllt fir all Buch, dat Dir an dësem Browser opmaacht.',
+  'settings.reader.displayReset':
+    'D’Liesusiicht ass fir all Buch an dësem Browser zréck op hir Standardwäerter.',
+  'reader.on': 'Un',
+  'reader.off': 'Aus',
+  'reader.openHere': 'Liest an Ärem Browser',
+  'reader.notAFileTitle': '{host} huet eng Websäit geschéckt, net d’Datei',
+  'reader.notAFileBody':
+    'De Link féiert op eng Säit an net op e Buch — op eng Downloadsäit, en Zoustëmmungsfenster oder eng Kontroll, datt Dir kee Roboter sidd. Maacht se selwer op, an d’Datei wäert do sinn.',
+  'settings.status.session': 'Net gemierkt',
+  'settings.notRemembered':
+    'Dëse Browser wollt sech dat net mierken, dofir ass alles nees wéi virdrun, wann Dir déi nächst Kéier e Buch opmaacht.',
 };

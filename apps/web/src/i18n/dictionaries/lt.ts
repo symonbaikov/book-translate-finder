@@ -376,4 +376,116 @@ export const lt: Dictionary = {
   'work.descriptionFrom': 'Aprašymas:',
   'work.descriptionNotLocalized':
     'Šis aprašymas yra ta kalba, kuria jį parašė šaltinis — jūsų kalba šiai knygai jo dar nėra.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} iš {outOf}, {votes} skaitytojų svetainėje {source}',
+  'ratings.lowConfidence': 'per mažai balsų palyginti',
+  'ratings.reviews': 'Atsiliepimai',
+  'ratings.reviewsOn': 'Šio leidimo atsiliepimai svetainėje {source}',
+  'ratings.noteNoRatings':
+    'Nė vienas atviras šaltinis nevertina vertimo, ir nė vienas iš šių tiražų čia neturi skaitytojų įvertinimo.',
+  'ratings.noteReviews':
+    'Ten, kur leidimas žinomas šaltinyje {sources}, nuoroda veda į būtent to tiražo atsiliepimus — daugelis leidimų nėra žinomi.',
+  'ratings.translator':
+    '{name} verstuose leidimuose: {average} iš {outOf} per {editions} įvertintus leidimus, iš viso {votes} skaitytojų.',
+  'ratings.note':
+    'Tai skaitytojų įvertinimai konkrečiam leidimui šaltinyje {sources}, o ne paties vertimo vertinimas — tokio niekas neskelbia. Juos verta skaityti greta: ta pati knyga, ta pati kalba, skirtingi vertėjai, ir visada su balsų skaičiumi prieš akis.',
+  'ratings.gapWithoutIsbn':
+    '{count} čia esantys leidimai neturi ISBN, todėl jiems nepavyko priskirti jokio įvertinimo.',
+  'ratings.gapNotLookedUp': 'Dar {count} leidimai šioje užklausoje nebuvo tikrinami.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Skaitykite savo naršyklėje',
+  'reader.privacy':
+    'Jūsų naršyklė atveria šią knygą pati. Failas, vieta, iš kurios jis atkeliavo, ir tai, kiek toli perskaitėte, niekada nepasiekia šios svetainės.',
+  'reader.chooseFile': 'Atverti knygą iš šio įrenginio',
+  'reader.formats': 'EPUB, FB2, MOBI ir CBZ.',
+  'reader.loading': 'Atveriama…',
+  'reader.failed': 'Šios knygos atverti nepavyko: {reason}',
+  'reader.previous': 'Ankstesnis puslapis',
+  'reader.next': 'Kitas puslapis',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…arba numeskite knygą čia',
+  'reader.fetching': 'Prašoma failo iš {host}…',
+  'reader.blockedTitle': '{host} neperdavė failo šiam puslapiui',
+  'reader.blockedBody':
+    'Arba jis nepasiekiamas, arba neleidžia kitoms svetainėms skaityti savo failų. Ši svetainė jo už jus neparsisiųs: jūsų knyga per ją niekada nekeliauja, ir būtent tame skaitymo čia esmė.',
+  'reader.blockedDownload': 'Atsisiųskite ją iš {host}',
+  'reader.blockedOpenHere': 'ir tada atverkite ją čia iš savo įrenginio',
+  'reader.blockedAddon': 'Tinka ir papildinys, kuris pats pateikia failą.',
+  'reader.keepFile': 'Palikti šią knygą šioje naršyklėje',
+  'reader.keepFileHint':
+    'Pagal numatymą išjungta. Be to failas dingsta, kai uždarote kortelę; su tuo jis lieka tik šiame įrenginyje.',
+  'reader.library': 'Palikta šioje naršyklėje',
+  'reader.libraryEmpty':
+    'Kol kas nieko nepalikta. Knygos, kurias paliekate, lieka šiame įrenginyje ir niekada niekur neįkeliamos.',
+  'reader.libraryOpen': 'Atverti',
+  'reader.libraryRemove': 'Pašalinti',
+  'reader.libraryFileKept': 'failas paliktas',
+  'reader.libraryFileGone': 'failas nepaliktas',
+  'reader.untitled': 'Knyga be pavadinimo',
+  'settings.reader.libraryTitle': 'Šioje naršyklėje paliekamos knygos',
+  'settings.reader.kept':
+    '„{title}“ dabar laikoma šiame įrenginyje, tad atsiveria iš naujo jos nesiunčiant. Niekur ji neįkeliama.',
+  'settings.reader.forgotten':
+    'Knygos „{title}“ failas ištrintas iš šios naršyklės. Įrašas lieka sąraše, tad galite ją vėl atverti iš jos šaltinio.',
+  'settings.reader.removed':
+    '„{title}“ visiškai pašalinta iš šios naršyklės — ir failas, ir įrašas.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Atverta ten, kur baigėte — ties {percent} %.',
+  'reader.bookmarks': 'Žymelės',
+  'reader.bookmarkAdd': 'Pažymėti šį puslapį',
+  'reader.bookmarkNone': 'Šioje knygoje žymelių dar nėra.',
+  'reader.bookmarkGo': 'Pereiti',
+  'reader.bookmarkRemove': 'Pašalinti žymelę',
+  'reader.bookmarkNote': 'Pastaba',
+  'reader.bookmarkNotePlaceholder': 'Jūsų pačių žodžiai apie šį puslapį',
+  'reader.bookmarkAt': 'ties {percent} %',
+  'settings.reader.bookmarkTitle': 'Žymelės šioje naršyklėje',
+  'settings.reader.bookmarkAdded':
+    'Žymelė ties {percent} % knygos „{title}“. Žymelės lieka šiame įrenginyje kartu su knyga.',
+  'settings.reader.bookmarkRemoved': 'Ta žymelė knygoje „{title}“ pašalinta iš šios naršyklės.',
+  'settings.reader.noteSaved':
+    'Jūsų pastaba šiame knygos „{title}“ puslapyje išsaugota šiame įrenginyje.',
+  'settings.reader.positionTitle': 'Skaitymo vieta',
+  'settings.reader.positionUnstored':
+    'Ši naršyklė neišsaugojo, kur esate knygoje „{title}“, tad kitą kartą ji atsivers nuo pradžios. Taip elgiasi ir privatus režimas, ir pilnas diskas.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Kaip atrodo ši knyga',
+  'reader.theme': 'Spalvos',
+  'reader.themeApp': 'Kaip svetainėje',
+  'reader.themeLight': 'Popierius',
+  'reader.themeDark': 'Rašalas',
+  'reader.themeSepia': 'Sepija',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Grynas juodas ant balto, be animacijos, viena skiltis — elektroninio popieriaus ekranams.',
+  'reader.fontSize': 'Šrifto dydis',
+  'reader.smaller': 'Mažiau',
+  'reader.larger': 'Daugiau',
+  'reader.lineHeight': 'Eilučių tarpai',
+  'reader.margin': 'Paraštės',
+  'reader.flow': 'Puslapiai',
+  'reader.flowPaged': 'Versti puslapius',
+  'reader.flowScrolled': 'Slinkti',
+  'reader.justify': 'Lygiuoti abipus',
+  'reader.hyphenate': 'Žodžių kėlimas',
+  'reader.displayReset': 'Atgal į numatytuosius',
+  'settings.reader.displayTitle': 'Skaitymo vaizdas',
+  'settings.reader.displayChanged':
+    '{setting} dabar — {value}. Tai galioja kiekvienai knygai, kurią atveriate šioje naršyklėje.',
+  'settings.reader.displayReset':
+    'Skaitymo vaizdas grąžintas į numatytąjį visoms knygoms šioje naršyklėje.',
+  'reader.on': 'Įjungta',
+  'reader.off': 'Išjungta',
+  'reader.openHere': 'Skaitykite savo naršyklėje',
+  'reader.notAFileTitle': '{host} atsiuntė tinklalapį, o ne failą',
+  'reader.notAFileBody':
+    'Nuoroda veda į puslapį, o ne į knygą — atsisiuntimo puslapį, sutikimo langą arba patikrą, ar nesate robotas. Atverkite jį patys ir failas ten bus.',
+  'settings.status.session': 'Neįsiminta',
+  'settings.notRemembered':
+    'Ši naršyklė to neįsiminė, tad kitą kartą atvėrus knygą viskas bus kaip buvo.',
 };

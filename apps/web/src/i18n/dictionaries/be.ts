@@ -375,4 +375,115 @@ export const be: Dictionary = {
   'work.descriptionFrom': 'Апісанне:',
   'work.descriptionNotLocalized':
     'Гэтае апісанне на той мове, на якой яго напісала крыніца — на вашай мове для гэтай кнігі яго пакуль няма.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} з {outOf}, {votes} чытачоў на {source}',
+  'ratings.lowConfidence': 'занадта мала галасоў для параўнання',
+  'ratings.reviews': 'Водгукі',
+  'ratings.reviewsOn': 'Водгукі пра гэтае выданне на {source}',
+  'ratings.noteNoRatings':
+    'Ніводная адкрытая крыніца не ацэньвае пераклад, і ніводны з гэтых накладаў не мае тут чытацкай ацэнкі.',
+  'ratings.noteReviews':
+    'Там, дзе выданне вядомае на {sources}, спасылка вядзе да водгукаў менавіта пра той наклад — большасць выданняў не вядомыя.',
+  'ratings.translator':
+    'Выданні ў перакладзе {name}: {average} з {outOf} па {editions} ацэненых выданнях, усяго {votes} чытачоў.',
+  'ratings.note':
+    'Гэта ацэнкі чытачоў пэўнага выдання на {sources}, а не ацэнка самога перакладу — такой ніхто не публікуе. Іх варта чытаць побач: тая ж кніга, тая ж мова, іншыя перакладчыкі, і заўсёды з колькасцю галасоў перад вачыма.',
+  'ratings.gapWithoutIsbn':
+    '{count} тутэйшых выданняў не маюць ISBN, таму да іх не ўдалося прывязаць ніводнай ацэнкі.',
+  'ratings.gapNotLookedUp': 'Яшчэ {count} выданняў не правяраліся ў гэтым запыце.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Чытайце ў сваім браўзеры',
+  'reader.privacy':
+    'Ваш браўзер адкрывае гэтую кнігу сам. Файл, месца, адкуль ён узяўся, і тое, як далёка вы прачыталі, ніколі не трапляюць на гэты сайт.',
+  'reader.chooseFile': 'Адкрыць кнігу з гэтай прылады',
+  'reader.formats': 'EPUB, FB2, MOBI і CBZ.',
+  'reader.loading': 'Адкрываю…',
+  'reader.failed': 'Гэтую кнігу не ўдалося адкрыць: {reason}',
+  'reader.previous': 'Папярэдняя старонка',
+  'reader.next': 'Наступная старонка',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…або перацягніце кнігу сюды',
+  'reader.fetching': 'Прашу файл у {host}…',
+  'reader.blockedTitle': '{host} не аддаў файл гэтай старонцы',
+  'reader.blockedBody':
+    'Ці ён недаступны, ці не дазваляе іншым сайтам чытаць свае файлы. Гэты сайт не спампуе яго замест вас: ваша кніга ніколі праз яго не праходзіць, і менавіта ў гэтым сэнс чытання тут.',
+  'reader.blockedDownload': 'Спампуйце яе з {host}',
+  'reader.blockedOpenHere': 'а потым адкрыйце тут са сваёй прылады',
+  'reader.blockedAddon': 'Падыдзе і дадатак, які сам аддае файл.',
+  'reader.keepFile': 'Пакінуць гэтую кнігу ў гэтым браўзеры',
+  'reader.keepFileHint':
+    'Па змаўчанні выключана. Без гэтага файл знікае, калі вы зачыніце ўкладку; з гэтым ён застаецца толькі на гэтай прыладзе.',
+  'reader.library': 'Пакінута ў гэтым браўзеры',
+  'reader.libraryEmpty':
+    'Пакуль нічога не пакінута. Кнігі, якія вы пакідаеце, застаюцца на гэтай прыладзе і ніколі нікуды не адпраўляюцца.',
+  'reader.libraryOpen': 'Адкрыць',
+  'reader.libraryRemove': 'Выдаліць',
+  'reader.libraryFileKept': 'файл пакінуты',
+  'reader.libraryFileGone': 'файл не пакінуты',
+  'reader.untitled': 'Кніга без назвы',
+  'settings.reader.libraryTitle': 'Кнігі, пакінутыя ў гэтым браўзеры',
+  'settings.reader.kept':
+    '«{title}» цяпер захоўваецца на гэтай прыладзе, таму адкрываецца без паўторнага спампоўвання. Нікуды не адпраўляецца.',
+  'settings.reader.forgotten':
+    'Файл кнігі «{title}» выдалены з гэтага браўзера. Запіс застаецца ў спісе, каб вы маглі адкрыць яе зноў з яе крыніцы.',
+  'settings.reader.removed': '«{title}» цалкам выдалена з гэтага браўзера — і файл, і запіс.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Адкрыта там, дзе вы спыніліся — на {percent} %.',
+  'reader.bookmarks': 'Закладкі',
+  'reader.bookmarkAdd': 'Дадаць закладку на гэтую старонку',
+  'reader.bookmarkNone': 'У гэтай кнізе яшчэ няма закладак.',
+  'reader.bookmarkGo': 'Перайсці',
+  'reader.bookmarkRemove': 'Выдаліць закладку',
+  'reader.bookmarkNote': 'Нататка',
+  'reader.bookmarkNotePlaceholder': 'Вашы ўласныя словы пра гэтую старонку',
+  'reader.bookmarkAt': 'на {percent} %',
+  'settings.reader.bookmarkTitle': 'Закладкі ў гэтым браўзеры',
+  'settings.reader.bookmarkAdded':
+    'Закладка на {percent} % кнігі «{title}». Закладкі застаюцца на гэтай прыладзе разам з кнігай.',
+  'settings.reader.bookmarkRemoved': 'Тая закладка ў кнізе «{title}» выдалена з гэтага браўзера.',
+  'settings.reader.noteSaved':
+    'Ваша нататка на гэтай старонцы кнігі «{title}» захавана на гэтай прыладзе.',
+  'settings.reader.positionTitle': 'Месца ў чытанні',
+  'settings.reader.positionUnstored':
+    'Гэты браўзер не стаў захоўваць, дзе вы ў кнізе «{title}», таму наступным разам яна адкрыецца спачатку. Так робяць і прыватны рэжым, і поўны дыск.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Як выглядае гэтая кніга',
+  'reader.theme': 'Колеры',
+  'reader.themeApp': 'Як на сайце',
+  'reader.themeLight': 'Папера',
+  'reader.themeDark': 'Чарніла',
+  'reader.themeSepia': 'Сепія',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Чыстае чорнае на белым, без анімацыі, адна калонка — для экранаў з электроннай паперы.',
+  'reader.fontSize': 'Памер шрыфту',
+  'reader.smaller': 'Драбней',
+  'reader.larger': 'Буйней',
+  'reader.lineHeight': 'Міжрадковы інтэрвал',
+  'reader.margin': 'Палі',
+  'reader.flow': 'Старонкі',
+  'reader.flowPaged': 'Перагортваць',
+  'reader.flowScrolled': 'Пракручваць',
+  'reader.justify': 'Выраўноўванне па шырыні',
+  'reader.hyphenate': 'Перанос слоў',
+  'reader.displayReset': 'Вярнуць прадвызначанае',
+  'settings.reader.displayTitle': 'Выгляд чытання',
+  'settings.reader.displayChanged':
+    '{setting} цяпер {value}. Гэта тычыцца кожнай кнігі, якую вы адкрываеце ў гэтым браўзеры.',
+  'settings.reader.displayReset':
+    'Выгляд чытання вернуты да прадвызначанага для ўсіх кніг у гэтым браўзеры.',
+  'reader.on': 'Уключана',
+  'reader.off': 'Выключана',
+  'reader.openHere': 'Чытайце ў сваім браўзеры',
+  'reader.notAFileTitle': '{host} даслаў вэб-старонку, а не файл',
+  'reader.notAFileBody':
+    'Спасылка вядзе на старонку, а не да кнігі — на старонку спампоўвання, экран згоды або праверку, што вы не робат. Адкрыйце яе самі, і файл будзе там.',
+  'settings.status.session': 'Не запомнена',
+  'settings.notRemembered':
+    'Гэты браўзер не стаў гэтага запамінаць, таму наступным разам, калі вы адкрыеце кнігу, усё будзе як раней.',
 };

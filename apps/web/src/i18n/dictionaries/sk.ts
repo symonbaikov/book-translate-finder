@@ -376,4 +376,117 @@ export const sk: Dictionary = {
   'work.descriptionFrom': 'Popis:',
   'work.descriptionNotLocalized':
     'Tento popis je v jazyku, v ktorom ho napísal zdroj — vo vašom jazyku zatiaľ pre túto knihu žiadny nie je.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} z {outOf} od {votes} čitateľov na {source}',
+  'ratings.lowConfidence': 'príliš málo hlasov na porovnanie',
+  'ratings.reviews': 'Recenzie',
+  'ratings.reviewsOn': 'Recenzie tohto vydania na {source}',
+  'ratings.noteNoRatings':
+    'Žiadny otvorený zdroj nehodnotí preklad a ani jeden z týchto výtlačkov tu nemá čitateľské hodnotenie.',
+  'ratings.noteReviews':
+    'Tam, kde je vydanie známe na {sources}, odkaz vedie na recenzie práve toho výtlačku — pri väčšine vydaní to tak nie je.',
+  'ratings.translator':
+    'Vydania v preklade {name}: {average} z {outOf} naprieč {editions} hodnotenými vydaniami, spolu {votes} čitateľov.',
+  'ratings.note':
+    'Sú to hodnotenia čitateľov konkrétneho vydania na {sources}, nie posúdenie samotného prekladu — to nikto nezverejňuje. Oplatí sa čítať ich vedľa seba: tá istá kniha, ten istý jazyk, iní prekladatelia, a vždy s počtom hlasov na očiach.',
+  'ratings.gapWithoutIsbn':
+    '{count} tunajších vydaní nemá ISBN, takže sa k nim nedalo priradiť žiadne hodnotenie.',
+  'ratings.gapNotLookedUp': 'Ďalších {count} vydaní sa v tejto požiadavke nedohľadávalo.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Čítajte vo svojom prehliadači',
+  'reader.privacy':
+    'Váš prehliadač otvorí túto knihu sám. Súbor, miesto, odkiaľ pochádza, ani to, kam ste sa dočítali, sa na tento web nikdy nedostanú.',
+  'reader.chooseFile': 'Otvoriť knihu z tohto zariadenia',
+  'reader.formats': 'EPUB, FB2, MOBI a CBZ.',
+  'reader.loading': 'Otváram…',
+  'reader.failed': 'Túto knihu sa nepodarilo otvoriť: {reason}',
+  'reader.previous': 'Predchádzajúca strana',
+  'reader.next': 'Ďalšia strana',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…alebo sem knihu presuňte',
+  'reader.fetching': 'Žiadam {host} o súbor…',
+  'reader.blockedTitle': '{host} tejto stránke súbor nevydal',
+  'reader.blockedBody':
+    'Buď je nedostupný, alebo nedovoľuje iným webom čítať svoje súbory. Tento web ho za vás nestiahne: vaša kniha ním nikdy neprechádza, a presne o to pri čítaní tu ide.',
+  'reader.blockedDownload': 'Stiahnite ju z {host}',
+  'reader.blockedOpenHere': 'a potom ju tu otvorte zo svojho zariadenia',
+  'reader.blockedAddon': 'Funguje aj doplnok, ktorý súbor poskytuje sám.',
+  'reader.keepFile': 'Ponechať túto knihu v tomto prehliadači',
+  'reader.keepFileHint':
+    'V predvolenom stave vypnuté. Bez toho súbor zmizne, keď zavriete kartu; s tým zostane len na tomto zariadení.',
+  'reader.library': 'Ponechané v tomto prehliadači',
+  'reader.libraryEmpty':
+    'Zatiaľ nič ponechané. Knihy, ktoré si ponecháte, zostávajú na tomto zariadení a nikam sa nenahrávajú.',
+  'reader.libraryOpen': 'Otvoriť',
+  'reader.libraryRemove': 'Odstrániť',
+  'reader.libraryFileKept': 'súbor ponechaný',
+  'reader.libraryFileGone': 'súbor neponechaný',
+  'reader.untitled': 'Kniha bez názvu',
+  'settings.reader.libraryTitle': 'Knihy ponechané v tomto prehliadači',
+  'settings.reader.kept':
+    'Kniha „{title}“ je teraz ponechaná na tomto zariadení, takže sa otvorí bez opätovného sťahovania. Nikam sa nenahráva.',
+  'settings.reader.forgotten':
+    'Súbor knihy „{title}“ bol z tohto prehliadača vymazaný. V zozname zostáva, takže ju môžete znova otvoriť z jej zdroja.',
+  'settings.reader.removed':
+    'Kniha „{title}“ bola z tohto prehliadača odstránená úplne — súbor aj záznam.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Otvorené tam, kde ste skončili — na {percent} %.',
+  'reader.bookmarks': 'Záložky',
+  'reader.bookmarkAdd': 'Pridať záložku na túto stranu',
+  'reader.bookmarkNone': 'V tejto knihe zatiaľ nie sú žiadne záložky.',
+  'reader.bookmarkGo': 'Prejsť na',
+  'reader.bookmarkRemove': 'Odstrániť záložku',
+  'reader.bookmarkNote': 'Poznámka',
+  'reader.bookmarkNotePlaceholder': 'Vaše vlastné slová k tejto strane',
+  'reader.bookmarkAt': 'na {percent} %',
+  'settings.reader.bookmarkTitle': 'Záložky v tomto prehliadači',
+  'settings.reader.bookmarkAdded':
+    'Záložka na {percent} % knihy „{title}“. Záložky zostávajú na tomto zariadení spolu s knihou.',
+  'settings.reader.bookmarkRemoved':
+    'Tá záložka v knihe „{title}“ bola z tohto prehliadača odstránená.',
+  'settings.reader.noteSaved':
+    'Vaša poznámka k tejto strane knihy „{title}“ bola uložená na tomto zariadení.',
+  'settings.reader.positionTitle': 'Miesto v čítaní',
+  'settings.reader.positionUnstored':
+    'Tento prehliadač odmietol uložiť, kde ste v knihe „{title}“, takže sa nabudúce otvorí od začiatku. Robí to anonymný režim aj plný disk.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Ako táto kniha vyzerá',
+  'reader.theme': 'Farby',
+  'reader.themeApp': 'Podľa webu',
+  'reader.themeLight': 'Papier',
+  'reader.themeDark': 'Atrament',
+  'reader.themeSepia': 'Sépia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Čistá čierna na bielej, žiadna animácia, jeden stĺpec — pre displeje z elektronického papiera.',
+  'reader.fontSize': 'Veľkosť písma',
+  'reader.smaller': 'Menšie',
+  'reader.larger': 'Väčšie',
+  'reader.lineHeight': 'Riadkovanie',
+  'reader.margin': 'Okraje',
+  'reader.flow': 'Strany',
+  'reader.flowPaged': 'Otáčať strany',
+  'reader.flowScrolled': 'Rolovať',
+  'reader.justify': 'Zarovnať do bloku',
+  'reader.hyphenate': 'Delenie slov',
+  'reader.displayReset': 'Späť na predvolené',
+  'settings.reader.displayTitle': 'Vzhľad čítania',
+  'settings.reader.displayChanged':
+    '{setting} je teraz {value}. Platí pre každú knihu, ktorú v tomto prehliadači otvoríte.',
+  'settings.reader.displayReset':
+    'Vzhľad čítania sa vrátil k predvoleným hodnotám pre všetky knihy v tomto prehliadači.',
+  'reader.on': 'Zapnuté',
+  'reader.off': 'Vypnuté',
+  'reader.openHere': 'Čítajte vo svojom prehliadači',
+  'reader.notAFileTitle': '{host} poslal webovú stránku, nie súbor',
+  'reader.notAFileBody':
+    'Odkaz vedie na stránku, nie ku knihe — na stránku na stiahnutie, obrazovku so súhlasom alebo overenie, že nie ste robot. Otvorte ju sami a súbor tam bude.',
+  'settings.status.session': 'Nezapamätané',
+  'settings.notRemembered':
+    'Tento prehliadač si to odmietol zapamätať, takže keď nabudúce otvoríte knihu, bude všetko ako predtým.',
 };

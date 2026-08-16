@@ -374,4 +374,116 @@ export const lv: Dictionary = {
   'work.descriptionFrom': 'Apraksts:',
   'work.descriptionNotLocalized':
     'Šis apraksts ir valodā, kurā to rakstīja avots — jūsu valodā šai grāmatai tāda vēl nav.',
+
+  // Reader ratings of an edition, never of a translation — see TranslationRatings.tsx.
+  'ratings.edition': '{average} no {outOf}, {votes} lasītāju vietnē {source}',
+  'ratings.lowConfidence': 'par maz balsu, lai salīdzinātu',
+  'ratings.reviews': 'Atsauksmes',
+  'ratings.reviewsOn': 'Šī izdevuma atsauksmes vietnē {source}',
+  'ratings.noteNoRatings':
+    'Neviens atvērtais avots nevērtē tulkojumu, un nevienam no šiem metieniem šeit nav lasītāju vērtējuma.',
+  'ratings.noteReviews':
+    'Kur izdevums ir zināms vietnē {sources}, saite ved uz tieši tā metiena atsauksmēm — vairums izdevumu nav zināmi.',
+  'ratings.translator':
+    'Izdevumi {name} tulkojumā: {average} no {outOf} pāri {editions} vērtētiem izdevumiem, kopā {votes} lasītāju.',
+  'ratings.note':
+    'Šie ir lasītāju vērtējumi konkrētam izdevumam vietnē {sources}, nevis paša tulkojuma novērtējums — tādu neviens nepublicē. Tos vērts lasīt blakus: tā pati grāmata, tā pati valoda, dažādi tulkotāji, un vienmēr ar balsu skaitu acu priekšā.',
+  'ratings.gapWithoutIsbn':
+    '{count} šejienes izdevumiem nav ISBN, tāpēc tiem nevarēja piesaistīt nevienu vērtējumu.',
+  'ratings.gapNotLookedUp': 'Vēl {count} izdevumi šajā pieprasījumā netika pārbaudīti.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Lasiet savā pārlūkā',
+  'reader.privacy':
+    'Jūsu pārlūks atver šo grāmatu pats. Fails, vieta, no kuras tas nāca, un tas, cik tālu esat izlasījis, nekad nenonāk šajā vietnē.',
+  'reader.chooseFile': 'Atvērt grāmatu no šīs ierīces',
+  'reader.formats': 'EPUB, FB2, MOBI un CBZ.',
+  'reader.loading': 'Atver…',
+  'reader.failed': 'Šo grāmatu neizdevās atvērt: {reason}',
+  'reader.previous': 'Iepriekšējā lapa',
+  'reader.next': 'Nākamā lapa',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…vai nometiet grāmatu šeit',
+  'reader.fetching': 'Pieprasa failu no {host}…',
+  'reader.blockedTitle': '{host} neatdeva failu šai lapai',
+  'reader.blockedBody':
+    'Vai nu tas nav sasniedzams, vai arī neļauj citām vietnēm lasīt savus failus. Šī vietne to jūsu vietā neielādēs: jūsu grāmata caur to nekad neiet, un tieši tāda ir šeit lasīšanas jēga.',
+  'reader.blockedDownload': 'Lejupielādējiet to no {host}',
+  'reader.blockedOpenHere': 'un tad atveriet to šeit no savas ierīces',
+  'reader.blockedAddon': 'Der arī papildinājums, kas pats piegādā failu.',
+  'reader.keepFile': 'Paturēt šo grāmatu šajā pārlūkā',
+  'reader.keepFileHint':
+    'Pēc noklusējuma izslēgts. Bez tā fails pazūd, tiklīdz aizverat cilni; ar to tas paliek tikai šajā ierīcē.',
+  'reader.library': 'Paturēts šajā pārlūkā',
+  'reader.libraryEmpty':
+    'Vēl nekas nav paturēts. Grāmatas, ko paturat, paliek šajā ierīcē un nekad netiek nekur augšupielādētas.',
+  'reader.libraryOpen': 'Atvērt',
+  'reader.libraryRemove': 'Noņemt',
+  'reader.libraryFileKept': 'fails paturēts',
+  'reader.libraryFileGone': 'fails nav paturēts',
+  'reader.untitled': 'Grāmata bez nosaukuma',
+  'settings.reader.libraryTitle': 'Šajā pārlūkā paturētās grāmatas',
+  'settings.reader.kept':
+    '„{title}” tagad tiek paturēta šajā ierīcē, tāpēc atveras bez atkārtotas lejupielādes. Tā nekur netiek augšupielādēta.',
+  'settings.reader.forgotten':
+    'Grāmatas „{title}” fails tika izdzēsts no šī pārlūka. Ieraksts paliek sarakstā, tāpēc varat to atkal atvērt no tās avota.',
+  'settings.reader.removed':
+    '„{title}” tika pilnībā noņemta no šī pārlūka — gan fails, gan ieraksts.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Atvērta tur, kur beidzāt — {percent}% vietā.',
+  'reader.bookmarks': 'Grāmatzīmes',
+  'reader.bookmarkAdd': 'Ielikt grāmatzīmi šajā lapā',
+  'reader.bookmarkNone': 'Šajā grāmatā vēl nav grāmatzīmju.',
+  'reader.bookmarkGo': 'Pāriet',
+  'reader.bookmarkRemove': 'Noņemt grāmatzīmi',
+  'reader.bookmarkNote': 'Piezīme',
+  'reader.bookmarkNotePlaceholder': 'Jūsu pašu vārdi par šo lapu',
+  'reader.bookmarkAt': '{percent}% vietā',
+  'settings.reader.bookmarkTitle': 'Grāmatzīmes šajā pārlūkā',
+  'settings.reader.bookmarkAdded':
+    'Grāmatzīme grāmatas „{title}” {percent}% vietā. Grāmatzīmes paliek šajā ierīcē kopā ar grāmatu.',
+  'settings.reader.bookmarkRemoved': 'Tā grāmatzīme grāmatā „{title}” tika noņemta no šī pārlūka.',
+  'settings.reader.noteSaved':
+    'Jūsu piezīme šajā grāmatas „{title}” lapā tika saglabāta šajā ierīcē.',
+  'settings.reader.positionTitle': 'Lasīšanas vieta',
+  'settings.reader.positionUnstored':
+    'Šis pārlūks neglabāja, kur esat grāmatā „{title}”, tāpēc nākamreiz tā atvērsies no sākuma. Tā dara gan privātais režīms, gan pilns disks.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Kā šī grāmata izskatās',
+  'reader.theme': 'Krāsas',
+  'reader.themeApp': 'Kā vietnē',
+  'reader.themeLight': 'Papīrs',
+  'reader.themeDark': 'Tinte',
+  'reader.themeSepia': 'Sēpija',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Tīri melns uz balta, bez animācijas, viena sleja — elektroniskā papīra ekrāniem.',
+  'reader.fontSize': 'Burtu lielums',
+  'reader.smaller': 'Mazāks',
+  'reader.larger': 'Lielāks',
+  'reader.lineHeight': 'Rindstarpa',
+  'reader.margin': 'Malas',
+  'reader.flow': 'Lapas',
+  'reader.flowPaged': 'Šķirstīt',
+  'reader.flowScrolled': 'Ritināt',
+  'reader.justify': 'Izlīdzināt abās malās',
+  'reader.hyphenate': 'Vārdu pārnese',
+  'reader.displayReset': 'Atpakaļ uz noklusējumu',
+  'settings.reader.displayTitle': 'Lasīšanas izskats',
+  'settings.reader.displayChanged':
+    '{setting} tagad ir {value}. Tas attiecas uz katru grāmatu, ko atverat šajā pārlūkā.',
+  'settings.reader.displayReset':
+    'Lasīšanas izskats šajā pārlūkā ir atgriezts noklusējumā visām grāmatām.',
+  'reader.on': 'Ieslēgts',
+  'reader.off': 'Izslēgts',
+  'reader.openHere': 'Lasiet savā pārlūkā',
+  'reader.notAFileTitle': '{host} atsūtīja tīmekļa lapu, nevis failu',
+  'reader.notAFileBody':
+    'Saite ved uz lapu, nevis uz grāmatu — lejupielādes lapu, piekrišanas ekrānu vai pārbaudi, ka neesat robots. Atveriet to pats, un fails tur būs.',
+  'settings.status.session': 'Neatcerējās',
+  'settings.notRemembered':
+    'Šis pārlūks to neatcerējās, tāpēc nākamreiz, kad atvērsiet grāmatu, viss būs kā iepriekš.',
 };
