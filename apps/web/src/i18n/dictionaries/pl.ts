@@ -461,4 +461,8 @@ export const pl: Dictionary = {
     'Wygląd czytania wrócił do wartości domyślnych dla wszystkich książek w tej przeglądarce.',
   'reader.on': 'Włączone',
   'reader.off': 'Wyłączone',
+  'reader.openHere': 'Czytaj w przeglądarce',
+  'reader.notAFileTitle': '{host} przysłał stronę internetową, a nie plik',
+  'reader.notAFileBody':
+    'Odnośnik prowadzi do strony, nie do książki: strony pobierania, ekranu zgody albo sprawdzenia, czy nie jesteś robotem. Otwórz ją sam, a plik tam będzie.',
 };

@@ -478,4 +478,8 @@ export const fr: Dictionary = {
     'L’affichage de lecture est revenu à ses valeurs par défaut pour tous les livres de ce navigateur.',
   'reader.on': 'Activé',
   'reader.off': 'Désactivé',
+  'reader.openHere': 'Lire dans le navigateur',
+  'reader.notAFileTitle': '{host} a renvoyé une page web, pas le fichier',
+  'reader.notAFileBody':
+    'Le lien mène à une page et non à un livre : page de téléchargement, écran de consentement ou vérification que vous n’êtes pas un robot. Ouvrez-la vous-même et le fichier y sera.',
 };

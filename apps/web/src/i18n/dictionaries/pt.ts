@@ -463,4 +463,8 @@ export const pt: Dictionary = {
     'A apresentação da leitura voltou às predefinições para todos os livros neste navegador.',
   'reader.on': 'Ligado',
   'reader.off': 'Desligado',
+  'reader.openHere': 'Ler no navegador',
+  'reader.notAFileTitle': '{host} enviou uma página web, não o ficheiro',
+  'reader.notAFileBody':
+    'A ligação leva a uma página e não a um livro: uma página de transferência, um ecrã de consentimento ou uma verificação de que não é um robô. Abra-a e o ficheiro estará lá.',
 };

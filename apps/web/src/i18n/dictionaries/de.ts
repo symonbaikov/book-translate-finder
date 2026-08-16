@@ -482,4 +482,8 @@ export const de: Dictionary = {
     'Die Darstellung beim Lesen steht wieder auf den Standardwerten — für jedes Buch in diesem Browser.',
   'reader.on': 'Ein',
   'reader.off': 'Aus',
+  'reader.openHere': 'Im Browser lesen',
+  'reader.notAFileTitle': '{host} hat eine Webseite geschickt, nicht die Datei',
+  'reader.notAFileBody':
+    'Der Link führt auf eine Seite statt auf ein Buch — eine Downloadseite, eine Einwilligung oder eine Prüfung, ob Sie ein Roboter sind. Öffnen Sie sie selbst, dann ist die Datei dort.',
 };

@@ -457,4 +457,8 @@ export const ja: Dictionary = {
     '読書時の表示を、このブラウザーのすべての本について既定に戻しました。',
   'reader.on': 'オン',
   'reader.off': 'オフ',
+  'reader.openHere': 'ブラウザーで読む',
+  'reader.notAFileTitle': '{host} はファイルではなくウェブページを返しました',
+  'reader.notAFileBody':
+    'リンクの先は本ではなくページです — ダウンロードページ、同意画面、あるいはロボットでないことの確認。ご自身で開けば、そこにファイルがあります。',
 };

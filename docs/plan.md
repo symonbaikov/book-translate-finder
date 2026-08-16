@@ -1173,6 +1173,35 @@ Two found by looking at it. The type-size stepper is three controls in one grid 
 screen behind it. And the two new toggles broke four older tests that asked for "the checkbox";
 they now name the one they mean, which they should have done from the start.
 
+### 11.7 met the real catalogue, and the catalogue had opinions
+
+The button is offered where a row has a file whose format this reader opens: a `download` link on
+the work page, and an addon source that is not flagged `externalPage`. Nowhere else. The free shelf
+has no button because it has no file — its cards carry a "downloadable" badge and link to the work
+page, where the URLs actually are, and adding one would mean a request per card for data the free
+shelf's contract does not carry.
+
+Then it was pointed at this instance's own database, and three things came out of that:
+
+- **`readableFormatOf` has to be conservative, and the data says why.** The `format` column here
+  holds `epub` (468 links) and `mobi` (96) — and also `abbyy gz`, `animated gif`,
+  `archive bittorrent`, `64kbps mp3` and `additional text pdf`. It is a guess about whether to show
+  a button, never about how to parse a file; the bytes decide that later, in `sniffFormat`.
+- **Most download links here have no format at all** (422 of them), and most are Internet Archive
+  `/stream/…` addresses, which are reading pages rather than files. No format, no button — which is
+  the right answer twice over.
+- **The CORS dead end is the common case for the big sources.** Measured with `Origin:` set:
+  `standardebooks.org` answers `Access-Control-Allow-Origin: *`; `gutenberg.org` and `archive.org`
+  send no such header at all. So on this catalogue the direct fetch usually ends at the honest dead
+  end, and the file picker carries the feature — exactly the risk this phase wrote down in advance,
+  now with numbers instead of a guess.
+
+**And a fourth thing, which was a bug.** Following the button to a real Standard Ebooks URL got
+`200 OK` with `text/html` — a landing page or an anti-bot check, not the EPUB — and the reader
+answered "this file is not a book this reader can open". True, and useless: the reader did not
+choose a broken file, they were handed a page. `not-a-file` is now its own outcome with its own
+sentence and the same fork in the road: open the page yourself, the file is behind it.
+
 ### Decided rather than assumed
 
 - **No `rightsStatus` on an addon result, and no field to hold one.** The instance's own links carry
@@ -1606,7 +1635,7 @@ Two consequences that are easy to get wrong and are therefore written down now:
 | 11.4 | Acquisition: fetch, file picker, drag-and-drop, IndexedDB                        | ✅    | Four ways in, one path out; the CORS dead end offers the download and nothing else; kept files live in IndexedDB and are the reader's own opt-in            |
 | 11.5 | Progress, bookmarks and notes                                                    | ✅    | Position and bookmarks in the one record, keyed by content hash; resume through `renderFirstPage`; only a _refused_ write says anything                     |
 | 11.6 | Display: themes incl. E-Ink, type, layout                                        | ✅    | Four palettes from `tokens.css`, seven preferences, every one announced; E-Ink is monochrome, motionless and single-column                                  |
-| 11.7 | Surfaces: where "Read in browser" appears                                        | ⬜    | Work page, free shelf, addon sources, `/read`. Shown only where there is a file to open — see below                                                         |
+| 11.7 | Surfaces: where "Read in browser" appears                                        | ✅    | On a download link and an addon source whose format this reader opens, and nowhere else; measured against this instance's real catalogue                    |
 | 11.8 | Settings popups and 15 dictionaries                                              | ⬜    | Every reader preference announces itself through `useSettingChangeToast()` with `outcomeOfWrite` (CLAUDE.md)                                                |
 | 11.9 | Zero-knowledge enforcement                                                       | ⬜    | Four `dependency-cruiser` rules plus a Playwright wire suite, `pnpm test:reader`, modelled on `addon-privacy.spec.ts`                                       |
 

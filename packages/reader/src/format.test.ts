@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isSupportedFormat, sniffFormat } from './format.js';
+import { isSupportedFormat, readableFormatOf, sniffFormat } from './format.js';
 
 /** A ZIP whose first entry is `mimetype` holding a media type — how EPUB identifies itself. */
 function zipWithMimetype(mediaType: string): Uint8Array {
@@ -78,5 +78,35 @@ describe('isSupportedFormat', () => {
     expect(isSupportedFormat('epub')).toBe(true);
     expect(isSupportedFormat('pdf')).toBe(false);
     expect(isSupportedFormat(null)).toBe(false);
+  });
+});
+
+describe('readableFormatOf', () => {
+  it('recognises what catalogues and addons actually write', () => {
+    expect(readableFormatOf('epub')).toBe('epub');
+    expect(readableFormatOf('EPUB')).toBe('epub');
+    expect(readableFormatOf('application/epub+zip')).toBe('epub');
+    expect(readableFormatOf('ePub 3')).toBe('epub');
+    expect(readableFormatOf('azw3')).toBe('mobi');
+    expect(readableFormatOf('Mobipocket')).toBe('mobi');
+    expect(readableFormatOf('FB2')).toBe('fb2');
+    expect(readableFormatOf('fb2.zip')).toBe('fbz');
+    expect(readableFormatOf('CBZ')).toBe('cbz');
+  });
+
+  it('says no to everything else, including the formats this reader does not open', () => {
+    // Internet Archive's format strings are the reason this is conservative: "abbyy gz",
+    // "archive bittorrent" and "64kbps mp3" all sit in the same field as "epub".
+    expect(readableFormatOf('pdf')).toBeNull();
+    expect(readableFormatOf('abbyy gz')).toBeNull();
+    expect(readableFormatOf('64kbps mp3')).toBeNull();
+    expect(readableFormatOf('djvu')).toBeNull();
+    expect(readableFormatOf(null)).toBeNull();
+    expect(readableFormatOf('')).toBeNull();
+  });
+
+  it('does not mistake a comic or a compressed FB2 for an EPUB because both are zips', () => {
+    expect(readableFormatOf('application/vnd.comicbook+zip')).toBe('cbz');
+    expect(readableFormatOf('application/x-zip-compressed-fb2')).toBe('fbz');
   });
 });

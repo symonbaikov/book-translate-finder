@@ -43,5 +43,14 @@ export type AcquisitionFailure =
   | 'unreachable'
   /** The source answered, with a status that is not a book. */
   | 'http-error'
+  /**
+   * The source answered with a web page.
+   *
+   * Found against a real download URL that returned `text/html` — a landing page, a consent wall or
+   * an anti-bot challenge, all of which arrive as 200 OK. "This file is not a book" would be true
+   * and useless: the reader did not choose a broken file, they were handed a page, and their next
+   * step is the same fork as a refused fetch.
+   */
+  | 'not-a-file'
   /** Larger than this tab is willing to hold. The whole file lives in memory by design. */
   | 'too-large';

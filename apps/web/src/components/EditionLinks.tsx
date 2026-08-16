@@ -8,6 +8,7 @@ import { COUNTRY_CHANGE_EVENT, readCountry } from '../lib/country';
 import { rightsStatusTone } from '../lib/link-labels';
 import { useT } from '../i18n/I18nProvider';
 import { CustomSources } from './CustomSources';
+import { ReadInBrowser } from './reader/ReadInBrowser';
 import { Badge, Button, ChipLink, Sheet, Skeleton } from '../ui';
 import type { Translate } from '../i18n/dictionary';
 import styles from './EditionLinks.module.css';
@@ -159,6 +160,13 @@ function LinkList({ links, t }: { links: SourceLinkDto[]; t: Translate }) {
             {t(`rights.${group.rightsStatus}` as never)}
           </Badge>
           <span className={styles.provider}>{group.provider}</span>
+          {/* Offered on downloads only, and only where the format is one the reader opens. A
+              `buy` or `borrow` link leads to a page, not a file, and this instance does not
+              pretend otherwise (ADR-0013 §7). The button adds no claim of its own: whatever
+              rights status this row carries is the row's, not the reader's. */}
+          {group.type === 'download' && (
+            <ReadInBrowser url={group.url} formatHint={group.formats.join(' ')} />
+          )}
           {group.viaEdition && (
             <span className={styles.viaEdition}>
               {t('links.viaOtherEdition', { label: group.viaEdition.label })}

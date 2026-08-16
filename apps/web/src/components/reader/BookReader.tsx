@@ -52,6 +52,8 @@ type State =
   | { kind: 'open'; book: AcquiredBook; title: string | null; record: LibraryEntry }
   /** The source would not hand the file over. Not an error message — a fork in the road. */
   | { kind: 'blocked'; host: string; url: string }
+  /** The source answered with a page. Same fork in the road, different sentence. */
+  | { kind: 'not-a-file'; host: string; url: string }
   | { kind: 'failed'; reason: string };
 
 /**
@@ -211,6 +213,13 @@ export function BookReader() {
         // same opaque failure, and this application refuses to guess between them (errors.ts).
         if (error instanceof AcquisitionError && error.reason === 'unreachable') {
           setState({ kind: 'blocked', host, url });
+          return;
+        }
+        // Measured against a real download URL: a landing page, a consent wall and an anti-bot
+        // check all arrive as 200 OK with HTML in the body. Telling the reader their file is
+        // broken would be true and useless — they were handed a page.
+        if (error instanceof AcquisitionError && error.reason === 'not-a-file') {
+          setState({ kind: 'not-a-file', host, url });
           return;
         }
         setState({ kind: 'failed', reason: describe(error) });
@@ -452,6 +461,14 @@ export function BookReader() {
             <p className="error-box">{t('reader.failed', { reason: state.reason })}</p>
           )}
           {state.kind === 'blocked' && <Blocked host={state.host} url={state.url} />}
+          {state.kind === 'not-a-file' && (
+            <Blocked
+              host={state.host}
+              url={state.url}
+              title={t('reader.notAFileTitle', { host: state.host })}
+              body={t('reader.notAFileBody')}
+            />
+          )}
 
           <ReaderLibrary
             entries={library}
@@ -538,12 +555,23 @@ export function BookReader() {
  * be a server-side fetch — the single route ADR-0013 forbids — and offering it would make every
  * sentence above it untrue.
  */
-function Blocked({ host, url }: { host: string; url: string }) {
+function Blocked({
+  host,
+  url,
+  title,
+  body,
+}: {
+  host: string;
+  url: string;
+  /** Overridden when the source answered with a page: same fork, different reason. */
+  title?: string;
+  body?: string;
+}) {
   const t = useT();
   return (
     <div className={styles.blocked}>
-      <h2 className={styles.blockedTitle}>{t('reader.blockedTitle', { host })}</h2>
-      <p>{t('reader.blockedBody')}</p>
+      <h2 className={styles.blockedTitle}>{title ?? t('reader.blockedTitle', { host })}</h2>
+      <p>{body ?? t('reader.blockedBody')}</p>
       <p>
         <a href={url} download rel="noopener noreferrer">
           {t('reader.blockedDownload', { host })}

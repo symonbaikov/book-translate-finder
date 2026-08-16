@@ -452,4 +452,8 @@ export const ko: Dictionary = {
     '읽기 화면을 이 브라우저의 모든 책에 대해 기본값으로 되돌렸습니다.',
   'reader.on': '켬',
   'reader.off': '끔',
+  'reader.openHere': '브라우저에서 읽기',
+  'reader.notAFileTitle': '{host}이(가) 파일이 아니라 웹 페이지를 보냈습니다',
+  'reader.notAFileBody':
+    '링크가 책이 아니라 페이지로 이어집니다 — 다운로드 페이지, 동의 화면, 또는 로봇이 아님을 확인하는 절차입니다. 직접 열면 파일이 거기 있습니다.',
 };

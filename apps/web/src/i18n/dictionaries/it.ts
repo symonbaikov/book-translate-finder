@@ -465,4 +465,8 @@ export const it: Dictionary = {
     'L’aspetto della lettura è tornato ai valori predefiniti per tutti i libri in questo browser.',
   'reader.on': 'Attivo',
   'reader.off': 'Disattivo',
+  'reader.openHere': 'Leggi nel browser',
+  'reader.notAFileTitle': '{host} ha risposto con una pagina web, non con il file',
+  'reader.notAFileBody':
+    'Il link porta a una pagina e non a un libro: una pagina di download, una schermata di consenso o un controllo che tu non sia un robot. Aprila tu e il file sarà lì.',
 };

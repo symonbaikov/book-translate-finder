@@ -81,3 +81,29 @@ export function sniffFormat(bytes: Uint8Array, filename?: string): ReaderFormat 
 export function isSupportedFormat(format: string | null): format is ReaderFormat {
   return format !== null && (READER_FORMATS as readonly string[]).includes(format);
 }
+
+/**
+ * What a source *claims* a file is, turned into a format this reader can open — or `null`.
+ *
+ * The two surfaces that offer "read in your browser" both have a free-text hint and nothing else:
+ * `SourceLinkDto.format` is whatever the catalogue recorded, and `AddonSource.format` is whatever
+ * the addon calls it. Neither is a media type and neither is validated, so this is deliberately a
+ * *guess about whether to show a button* — never a decision about how to parse the file. The bytes
+ * decide that, once they are here, in `sniffFormat`.
+ *
+ * A wrong `null` costs the reader a button they could have used. A wrong match costs them a click
+ * and an honest error message. Both are recoverable, which is why this is allowed to be a guess at
+ * all — and why it stays conservative: an unknown word is not a book.
+ */
+export function readableFormatOf(hint: string | null | undefined): ReaderFormat | null {
+  if (!hint) return null;
+  const normalised = hint.toLowerCase().replace(/[^a-z0-9+]/g, ' ');
+
+  // Checked before the rest: "application/epub+zip" contains "zip", and a comic is a zip too.
+  if (/\bepub\b|epub\+zip/.test(normalised)) return 'epub';
+  if (/\bcbz\b|comicbook/.test(normalised)) return 'cbz';
+  if (/\bfbz\b|fb2\s*zip|zip\s*compressed\s*fb2/.test(normalised)) return 'fbz';
+  if (/\bfb2\b|fictionbook/.test(normalised)) return 'fb2';
+  if (/\bmobi\b|\bazw3?\b|\bkf8\b|mobipocket/.test(normalised)) return 'mobi';
+  return null;
+}

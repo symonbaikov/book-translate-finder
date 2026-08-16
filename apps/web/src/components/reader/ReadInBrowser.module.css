@@ -1,0 +1,6 @@
+/* Sits inside a row of links, so it keeps its own baseline rather than stretching the row. */
+
+.button {
+  align-self: center;
+  white-space: nowrap;
+}

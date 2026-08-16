@@ -5,6 +5,7 @@ import { settleAddons, type AddonOutcome, type AddonSource } from '@golden/addon
 import { useT } from '../i18n/I18nProvider';
 import { useAddons } from '../lib/use-addons';
 import { Badge, Section } from '../ui';
+import { ReadInBrowser } from './reader/ReadInBrowser';
 import styles from './AddonResults.module.css';
 
 /** How long the whole row waits. One slow addon must not hold the page (ADR-0010 §7). */
@@ -97,6 +98,12 @@ export function AddonSources({ ids }: { ids: readonly string[] }) {
                       <span className={styles.sourceTitle}>{source.title}</span>
                     ) : null}
                     {source.format ? <Badge tone="neutral">{source.format}</Badge> : null}
+                    {/* Inside the addon's own group, under the addon's own attribution: opening a
+                        file in this tab must not make it look like something this instance
+                        produced (ADR-0009). `externalPage` sources are pages, not files. */}
+                    {source.behaviorHints?.externalPage ? null : (
+                      <ReadInBrowser url={source.url} formatHint={source.format} />
+                    )}
                   </li>
                 ))}
               </ul>

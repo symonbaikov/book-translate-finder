@@ -459,4 +459,8 @@ export const tr: Dictionary = {
     'Okuma görünümü, bu tarayıcıdaki tüm kitaplar için varsayılanlara döndü.',
   'reader.on': 'Açık',
   'reader.off': 'Kapalı',
+  'reader.openHere': 'Tarayıcıda oku',
+  'reader.notAFileTitle': '{host} dosya yerine bir web sayfası gönderdi',
+  'reader.notAFileBody':
+    'Bağlantı kitaba değil bir sayfaya gidiyor: indirme sayfası, onay ekranı ya da robot olmadığınızın kontrolü. Kendiniz açın, dosya orada olacak.',
 };

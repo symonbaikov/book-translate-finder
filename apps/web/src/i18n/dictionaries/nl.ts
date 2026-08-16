@@ -460,4 +460,8 @@ export const nl: Dictionary = {
     'De weergave bij het lezen staat weer op de standaardwaarden, voor elk boek in deze browser.',
   'reader.on': 'Aan',
   'reader.off': 'Uit',
+  'reader.openHere': 'Lezen in je browser',
+  'reader.notAFileTitle': '{host} stuurde een webpagina, niet het bestand',
+  'reader.notAFileBody':
+    'De link gaat naar een pagina in plaats van naar een boek: een downloadpagina, een toestemmingsscherm of een controle of je geen robot bent. Open hem zelf, dan staat het bestand er.',
 };

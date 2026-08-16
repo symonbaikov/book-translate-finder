@@ -63,6 +63,15 @@ function filenameOf(url: string): string {
   }
 }
 
+/** `<!DOCTYPE`, `<html`, `<?xml … <html` — a page, whatever the URL promised. */
+function looksLikeWebPage(bytes: ArrayBuffer): boolean {
+  const head = new TextDecoder('utf-8', { fatal: false })
+    .decode(new Uint8Array(bytes).subarray(0, 512))
+    .trimStart()
+    .toLowerCase();
+  return head.startsWith('<!doctype html') || head.startsWith('<html') || head.includes('<html');
+}
+
 async function finish(
   bytes: ArrayBuffer,
   filename: string,
@@ -70,6 +79,12 @@ async function finish(
   options: AcquireOptions,
 ): Promise<AcquiredBook> {
   const format = sniffFormat(new Uint8Array(bytes), filename);
+  if (!isSupportedFormat(format) && looksLikeWebPage(bytes)) {
+    throw new AcquisitionError(
+      'The source answered with a web page rather than the file.',
+      'not-a-file',
+    );
+  }
   if (!isSupportedFormat(format)) {
     throw new UnsupportedFormatError(
       filename

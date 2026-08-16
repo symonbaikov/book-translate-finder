@@ -490,4 +490,8 @@ export const en = {
     'Reading display is back to its defaults for every book in this browser.',
   'reader.on': 'On',
   'reader.off': 'Off',
+  'reader.openHere': 'Read in your browser',
+  'reader.notAFileTitle': '{host} sent a web page, not the file',
+  'reader.notAFileBody':
+    'The link leads to a page rather than to a book — a download page, a consent screen, or a check that you are not a robot. Open it yourself and the file will be there.',
 } as const;

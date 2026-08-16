@@ -425,4 +425,8 @@ export const zh: Dictionary = {
   'settings.reader.displayReset': '阅读显示已恢复默认，对此浏览器中的所有书生效。',
   'reader.on': '开',
   'reader.off': '关',
+  'reader.openHere': '在浏览器中阅读',
+  'reader.notAFileTitle': '{host} 返回的是网页，不是文件',
+  'reader.notAFileBody':
+    '这个链接指向的是页面而不是书：下载页、同意页，或是在确认你不是机器人。你自己打开它，文件就在那里。',
 };

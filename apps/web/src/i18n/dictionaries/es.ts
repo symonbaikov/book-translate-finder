@@ -477,4 +477,8 @@ export const es: Dictionary = {
     'La presentación de lectura vuelve a sus valores por defecto para todos los libros de este navegador.',
   'reader.on': 'Sí',
   'reader.off': 'No',
+  'reader.openHere': 'Leer en el navegador',
+  'reader.notAFileTitle': '{host} envió una página web, no el archivo',
+  'reader.notAFileBody':
+    'El enlace lleva a una página y no a un libro: una página de descarga, una pantalla de consentimiento o una comprobación de que no es un robot. Ábrala usted y el archivo estará allí.',
 };

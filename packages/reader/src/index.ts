@@ -56,7 +56,13 @@ export {
   type ReaderTheme,
 } from './display.js';
 
-export { READER_FORMATS, isSupportedFormat, sniffFormat, type ReaderFormat } from './format.js';
+export {
+  READER_FORMATS,
+  isSupportedFormat,
+  readableFormatOf,
+  sniffFormat,
+  type ReaderFormat,
+} from './format.js';
 
 export { contentHashOf, isContentHash } from './identity.js';
 

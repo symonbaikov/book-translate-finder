@@ -439,4 +439,8 @@ export const ar: Dictionary = {
   'settings.reader.displayReset': 'عاد عرض القراءة إلى الوضع الافتراضي لكل الكتب في هذا المتصفّح.',
   'reader.on': 'مفعّل',
   'reader.off': 'معطّل',
+  'reader.openHere': 'اقرأ في المتصفّح',
+  'reader.notAFileTitle': 'أرسل {host} صفحة وِب لا الملف',
+  'reader.notAFileBody':
+    'يقود الرابط إلى صفحة لا إلى كتاب: صفحة تنزيل أو شاشة موافقة أو تحقّق من أنك لست روبوتًا. افتحها بنفسك وستجد الملف هناك.',
 };

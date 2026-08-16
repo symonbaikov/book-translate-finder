@@ -210,3 +210,30 @@ describe('acquireFromStored', () => {
     ).rejects.toBeInstanceOf(AcquisitionError);
   });
 });
+
+describe('a source that answers with a page instead of a file', () => {
+  it('says so, rather than calling the file broken', async () => {
+    // Found against a real download URL: landing pages, consent walls and anti-bot checks all
+    // arrive as 200 OK with HTML in the body. "This file is not a book" is true and useless.
+    const page = new TextEncoder().encode(
+      '<!DOCTYPE html>\n<html><head><title>Download</title></head><body>Are you a robot?</body></html>',
+    );
+    const error = await failureOf(
+      acquireFromUrl('https://books.example/gatsby.epub', {
+        subtle,
+        fetch: async () => okResponse(page),
+      }),
+    );
+
+    expect(error.reason).toBe('not-a-file');
+  });
+
+  it('still calls a genuinely unreadable file what it is', async () => {
+    const error = await acquireFromUrl('https://books.example/notes.djvu', {
+      subtle,
+      fetch: async () => okResponse(new TextEncoder().encode('AT&TFORM  DJVU')),
+    }).catch((caught: unknown) => caught);
+
+    expect(error).toBeInstanceOf(UnsupportedFormatError);
+  });
+});
