@@ -17,6 +17,9 @@ The project is designed for self-hosting: deploy your own copy on your own serve
 
 ![Home page: search, and personalized recommendations based on browsing history worked out in the browser](docs/images/home.png)
 
+
+> ⚠️ The demo GIF and screenshots are based on **v1** and will be updated soon.
+
 <p align="center">
   <a href="https://bank.gov.ua/en/news/all/natsionalniy-bank-vidkriv-rahunok-dlya-gumanitarnoyi-dopomogi-ukrayintsyam-postrajdalim-vid-rosiyskoyi-agresiyi" target="_blank">
     <img
