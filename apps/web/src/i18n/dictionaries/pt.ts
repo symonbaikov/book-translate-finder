@@ -434,4 +434,33 @@ export const pt: Dictionary = {
   'settings.reader.positionTitle': 'Posição de leitura',
   'settings.reader.positionUnstored':
     'Este navegador não quis guardar onde vai em “{title}”, por isso da próxima vez o livro abrirá no início. O modo privado e um disco cheio fazem o mesmo.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'O aspeto deste livro',
+  'reader.theme': 'Cores',
+  'reader.themeApp': 'Como o site',
+  'reader.themeLight': 'Papel',
+  'reader.themeDark': 'Tinta',
+  'reader.themeSepia': 'Sépia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Preto puro sobre branco, sem animação, uma coluna — para ecrãs de tinta eletrónica.',
+  'reader.fontSize': 'Tamanho do texto',
+  'reader.smaller': 'Menor',
+  'reader.larger': 'Maior',
+  'reader.lineHeight': 'Entrelinha',
+  'reader.margin': 'Margens',
+  'reader.flow': 'Páginas',
+  'reader.flowPaged': 'Virar páginas',
+  'reader.flowScrolled': 'Deslocar',
+  'reader.justify': 'Justificar',
+  'reader.hyphenate': 'Hifenizar',
+  'reader.displayReset': 'Voltar às predefinições',
+  'settings.reader.displayTitle': 'Apresentação da leitura',
+  'settings.reader.displayChanged':
+    '{setting}: agora {value}. Aplica-se a todos os livros que abrir neste navegador.',
+  'settings.reader.displayReset':
+    'A apresentação da leitura voltou às predefinições para todos os livros neste navegador.',
+  'reader.on': 'Ligado',
+  'reader.off': 'Desligado',
 };

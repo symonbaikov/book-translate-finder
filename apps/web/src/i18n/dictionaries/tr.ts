@@ -430,4 +430,33 @@ export const tr: Dictionary = {
   'settings.reader.positionTitle': 'Okuma yeri',
   'settings.reader.positionUnstored':
     'Bu tarayıcı “{title}” içinde nerede kaldığınızı saklamadı; kitap bir dahaki sefere baştan açılacak. Gizli mod ve dolu disk bunu yapar.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Bu kitabın görünümü',
+  'reader.theme': 'Renkler',
+  'reader.themeApp': 'Site gibi',
+  'reader.themeLight': 'Kâğıt',
+  'reader.themeDark': 'Mürekkep',
+  'reader.themeSepia': 'Sepya',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Beyaz üzerine saf siyah, animasyon yok, tek sütun — e-mürekkep ekranlar için.',
+  'reader.fontSize': 'Yazı boyutu',
+  'reader.smaller': 'Küçült',
+  'reader.larger': 'Büyüt',
+  'reader.lineHeight': 'Satır aralığı',
+  'reader.margin': 'Kenar boşlukları',
+  'reader.flow': 'Sayfalar',
+  'reader.flowPaged': 'Sayfa çevir',
+  'reader.flowScrolled': 'Kaydır',
+  'reader.justify': 'İki yana yasla',
+  'reader.hyphenate': 'Heceleme',
+  'reader.displayReset': 'Varsayılanlara dön',
+  'settings.reader.displayTitle': 'Okuma görünümü',
+  'settings.reader.displayChanged':
+    '{setting} artık {value}. Bu tarayıcıda açtığınız her kitap için geçerlidir.',
+  'settings.reader.displayReset':
+    'Okuma görünümü, bu tarayıcıdaki tüm kitaplar için varsayılanlara döndü.',
+  'reader.on': 'Açık',
+  'reader.off': 'Kapalı',
 };

@@ -448,4 +448,33 @@ export const es: Dictionary = {
   'settings.reader.positionTitle': 'Posición de lectura',
   'settings.reader.positionUnstored':
     'Este navegador no quiso guardar por dónde va en «{title}», así que la próxima vez el libro se abrirá desde el principio. El modo privado y un disco lleno hacen lo mismo.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Cómo se ve este libro',
+  'reader.theme': 'Colores',
+  'reader.themeApp': 'Como el sitio',
+  'reader.themeLight': 'Papel',
+  'reader.themeDark': 'Tinta',
+  'reader.themeSepia': 'Sepia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Negro puro sobre blanco, sin animación, una columna: para pantallas de tinta electrónica.',
+  'reader.fontSize': 'Tamaño de letra',
+  'reader.smaller': 'Más pequeña',
+  'reader.larger': 'Más grande',
+  'reader.lineHeight': 'Interlineado',
+  'reader.margin': 'Márgenes',
+  'reader.flow': 'Páginas',
+  'reader.flowPaged': 'Pasar páginas',
+  'reader.flowScrolled': 'Desplazar',
+  'reader.justify': 'Justificar',
+  'reader.hyphenate': 'Partir palabras',
+  'reader.displayReset': 'Volver a los valores por defecto',
+  'settings.reader.displayTitle': 'Presentación de lectura',
+  'settings.reader.displayChanged':
+    '{setting}: ahora {value}. Se aplica a todos los libros que abra en este navegador.',
+  'settings.reader.displayReset':
+    'La presentación de lectura vuelve a sus valores por defecto para todos los libros de este navegador.',
+  'reader.on': 'Sí',
+  'reader.off': 'No',
 };

@@ -12,6 +12,9 @@ import { expect, test, type Page } from '@playwright/test';
  */
 
 const PLAIN = fileURLToPath(new URL('./fixtures/spike.epub', import.meta.url));
+
+/** Named, not "the checkbox": the display panel has its own, and an unnamed locator finds three. */
+const keepFileCheckbox = (page: Page) => page.getByRole('checkbox', { name: /keep this book/i });
 const BOOK_URL = 'https://books.example.test/gatsby.epub';
 
 /** Requests to this instance that mention the book in any part of the wire. */
@@ -102,8 +105,8 @@ test('a kept book reopens from this browser, touching no network at all', async 
   // `click()` then wait, rather than `check()`: this checkbox is controlled by what storage *did*,
   // not by what was clicked, so it flips a few milliseconds later — and on a browser that refuses
   // the write it never flips at all, which is exactly the behaviour being relied on here.
-  await page.getByRole('checkbox').click();
-  await expect(page.getByRole('checkbox')).toBeChecked();
+  await keepFileCheckbox(page).click();
+  await expect(keepFileCheckbox(page)).toBeChecked();
   // The popup is the only place a reader learns whether the browser actually kept it, so its
   // presence is part of the feature rather than decoration (CLAUDE.md).
   await expect(page.locator('[data-sonner-toast]')).toContainText(/kept|device/i);

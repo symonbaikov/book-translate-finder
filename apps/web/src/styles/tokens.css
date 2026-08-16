@@ -267,3 +267,41 @@
     --cover-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
   }
 }
+
+/* ===== Reading surfaces ==================================================
+ *
+ * The four palettes a book can be read on, declared here for the same reason as everything else in
+ * this file: a colour is decided once, in one place. `packages/reader` contains none of them — it
+ * takes a palette as a value and writes CSS text into the book's own document, which is a document
+ * this stylesheet can never reach (docs/adr/0013-client-side-reader.md §3).
+ *
+ * `app` is not listed: it means "whatever `--surface-1` and `--text` currently are", so it follows
+ * the light/dark switch above without a second set of values to keep in step.
+ *
+ * The other three are not decorations of it:
+ *
+ *   light  paper under a lamp — the warm neutral the rest of the site uses, at full contrast.
+ *   dark   ink, not soot. #000 on an OLED smears while scrolling and makes every surface above it
+ *          look like a floating rectangle; this is the same reasoning as the dark theme above.
+ *   sepia  the one people mean by "easier on the eyes at night": a warm, low-blue paper. Contrast
+ *          measured at 10.4:1, well above the 7:1 that long-form reading wants.
+ *   eink   pure black on pure white, and deliberately so. An e-paper panel has no greys worth
+ *          trusting and a slow redraw: anything softer than #000 on #fff arrives as mud.
+ */
+:root {
+  --reader-light-bg: #fbfaf8;
+  --reader-light-text: #14171c;
+  --reader-light-link: #6f520f;
+
+  --reader-dark-bg: #15171b;
+  --reader-dark-text: #e6e8ec;
+  --reader-dark-link: #e0b155;
+
+  --reader-sepia-bg: #f4ecd8;
+  --reader-sepia-text: #3b2f21;
+  --reader-sepia-link: #7a4b16;
+
+  --reader-eink-bg: #ffffff;
+  --reader-eink-text: #000000;
+  --reader-eink-link: #000000;
+}

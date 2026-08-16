@@ -424,4 +424,32 @@ export const ko: Dictionary = {
   'settings.reader.positionTitle': '읽던 위치',
   'settings.reader.positionUnstored':
     '이 브라우저가 「{title}」에서 어디까지 읽었는지를 저장하지 않았습니다. 다음에는 처음부터 열립니다. 시크릿 모드나 디스크가 가득 찬 경우에 그렇습니다.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': '이 책의 모습',
+  'reader.theme': '색',
+  'reader.themeApp': '사이트와 동일',
+  'reader.themeLight': '종이',
+  'reader.themeDark': '먹',
+  'reader.themeSepia': '세피아',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint': '흰 바탕에 순수한 검정, 애니메이션 없음, 한 단 — 전자잉크 화면용입니다.',
+  'reader.fontSize': '글자 크기',
+  'reader.smaller': '작게',
+  'reader.larger': '크게',
+  'reader.lineHeight': '줄 간격',
+  'reader.margin': '여백',
+  'reader.flow': '쪽',
+  'reader.flowPaged': '쪽 넘기기',
+  'reader.flowScrolled': '스크롤',
+  'reader.justify': '양쪽 정렬',
+  'reader.hyphenate': '하이픈 넣기',
+  'reader.displayReset': '기본값으로',
+  'settings.reader.displayTitle': '읽기 화면',
+  'settings.reader.displayChanged':
+    '{setting}을(를) {value}(으)로 바꿨습니다. 이 브라우저에서 여는 모든 책에 적용됩니다.',
+  'settings.reader.displayReset':
+    '읽기 화면을 이 브라우저의 모든 책에 대해 기본값으로 되돌렸습니다.',
+  'reader.on': '켬',
+  'reader.off': '끔',
 };

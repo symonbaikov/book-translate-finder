@@ -442,4 +442,33 @@ export const uk: Dictionary = {
   'settings.reader.positionTitle': 'Позиція читання',
   'settings.reader.positionUnstored':
     'Браузер не зберіг, де ви спинилися в «{title}», — наступного разу книжка відкриється спочатку. Так буває в приватному режимі та при заповненому диску.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Як виглядає ця книжка',
+  'reader.theme': 'Кольори',
+  'reader.themeApp': 'Як на сайті',
+  'reader.themeLight': 'Папір',
+  'reader.themeDark': 'Чорнило',
+  'reader.themeSepia': 'Сепія',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Чистий чорний на білому, без анімації, одна колонка — для екранів на електронному чорнилі.',
+  'reader.fontSize': 'Розмір шрифту',
+  'reader.smaller': 'Менше',
+  'reader.larger': 'Більше',
+  'reader.lineHeight': 'Міжрядковий інтервал',
+  'reader.margin': 'Поля',
+  'reader.flow': 'Сторінки',
+  'reader.flowPaged': 'Гортати',
+  'reader.flowScrolled': 'Прокручувати',
+  'reader.justify': 'Вирівнювання за шириною',
+  'reader.hyphenate': 'Переноси',
+  'reader.displayReset': 'Повернути типові',
+  'settings.reader.displayTitle': 'Оформлення читання',
+  'settings.reader.displayChanged':
+    '{setting} — тепер {value}. Застосовується до всіх книжок, які ви відкриваєте в цьому браузері.',
+  'settings.reader.displayReset':
+    'Оформлення читання повернуто до типових значень для всіх книжок у цьому браузері.',
+  'reader.on': 'Увімкнено',
+  'reader.off': 'Вимкнено',
 };

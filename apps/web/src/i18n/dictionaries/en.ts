@@ -462,4 +462,32 @@ export const en = {
   'settings.reader.positionTitle': 'Reading position',
   'settings.reader.positionUnstored':
     'This browser would not store where you are in “{title}”, so it will open at the beginning next time. Private mode and a full disk both do this.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'How this book looks',
+  'reader.theme': 'Colours',
+  'reader.themeApp': 'Follow the site',
+  'reader.themeLight': 'Paper',
+  'reader.themeDark': 'Ink',
+  'reader.themeSepia': 'Sepia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint': 'Pure black on white, no animation, one column — for e-paper screens.',
+  'reader.fontSize': 'Type size',
+  'reader.smaller': 'Smaller',
+  'reader.larger': 'Larger',
+  'reader.lineHeight': 'Line spacing',
+  'reader.margin': 'Margins',
+  'reader.flow': 'Pages',
+  'reader.flowPaged': 'Turn pages',
+  'reader.flowScrolled': 'Scroll',
+  'reader.justify': 'Justify text',
+  'reader.hyphenate': 'Hyphenate',
+  'reader.displayReset': 'Back to defaults',
+  'settings.reader.displayTitle': 'Reading display',
+  'settings.reader.displayChanged':
+    '{setting} is now {value}. It applies to every book you open in this browser.',
+  'settings.reader.displayReset':
+    'Reading display is back to its defaults for every book in this browser.',
+  'reader.on': 'On',
+  'reader.off': 'Off',
 } as const;

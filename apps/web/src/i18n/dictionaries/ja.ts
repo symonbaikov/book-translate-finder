@@ -429,4 +429,32 @@ export const ja: Dictionary = {
   'settings.reader.positionTitle': '読書位置',
   'settings.reader.positionUnstored':
     'このブラウザーは「{title}」のどこまで読んだかを保存しませんでした。次回は最初から開きます。プライベートモードや空き容量不足で起こります。',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'この本の見え方',
+  'reader.theme': '配色',
+  'reader.themeApp': 'サイトに合わせる',
+  'reader.themeLight': '紙',
+  'reader.themeDark': '墨',
+  'reader.themeSepia': 'セピア',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint': '白地に純黒、アニメーションなし、一段組み — 電子ペーパー向けです。',
+  'reader.fontSize': '文字の大きさ',
+  'reader.smaller': '小さく',
+  'reader.larger': '大きく',
+  'reader.lineHeight': '行間',
+  'reader.margin': '余白',
+  'reader.flow': 'ページ',
+  'reader.flowPaged': 'ページをめくる',
+  'reader.flowScrolled': 'スクロール',
+  'reader.justify': '両端揃え',
+  'reader.hyphenate': 'ハイフネーション',
+  'reader.displayReset': '既定に戻す',
+  'settings.reader.displayTitle': '読書時の表示',
+  'settings.reader.displayChanged':
+    '{setting} を {value} にしました。このブラウザーで開くすべての本に適用されます。',
+  'settings.reader.displayReset':
+    '読書時の表示を、このブラウザーのすべての本について既定に戻しました。',
+  'reader.on': 'オン',
+  'reader.off': 'オフ',
 };

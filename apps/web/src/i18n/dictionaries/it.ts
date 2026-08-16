@@ -436,4 +436,33 @@ export const it: Dictionary = {
   'settings.reader.positionTitle': 'Punto di lettura',
   'settings.reader.positionUnstored':
     'Questo browser non ha voluto salvare a che punto sei di «{title}»: la prossima volta il libro si aprirà dall’inizio. Succede in navigazione privata e con il disco pieno.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Come si vede questo libro',
+  'reader.theme': 'Colori',
+  'reader.themeApp': 'Come il sito',
+  'reader.themeLight': 'Carta',
+  'reader.themeDark': 'Inchiostro',
+  'reader.themeSepia': 'Seppia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Nero pieno su bianco, nessuna animazione, una colonna: per schermi a inchiostro elettronico.',
+  'reader.fontSize': 'Dimensione del testo',
+  'reader.smaller': 'Più piccolo',
+  'reader.larger': 'Più grande',
+  'reader.lineHeight': 'Interlinea',
+  'reader.margin': 'Margini',
+  'reader.flow': 'Pagine',
+  'reader.flowPaged': 'Sfogliare',
+  'reader.flowScrolled': 'Scorrere',
+  'reader.justify': 'Giustifica',
+  'reader.hyphenate': 'Sillabazione',
+  'reader.displayReset': 'Torna ai valori predefiniti',
+  'settings.reader.displayTitle': 'Aspetto della lettura',
+  'settings.reader.displayChanged':
+    '{setting}: ora {value}. Vale per ogni libro che apri in questo browser.',
+  'settings.reader.displayReset':
+    'L’aspetto della lettura è tornato ai valori predefiniti per tutti i libri in questo browser.',
+  'reader.on': 'Attivo',
+  'reader.off': 'Disattivo',
 };

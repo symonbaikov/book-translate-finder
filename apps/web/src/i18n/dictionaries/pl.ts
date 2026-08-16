@@ -432,4 +432,33 @@ export const pl: Dictionary = {
   'settings.reader.positionTitle': 'Miejsce czytania',
   'settings.reader.positionUnstored':
     'Ta przeglądarka nie zapisała, gdzie jesteś w „{title}”, więc następnym razem książka otworzy się od początku. Tak działa tryb prywatny i pełny dysk.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Jak wygląda ta książka',
+  'reader.theme': 'Kolory',
+  'reader.themeApp': 'Jak strona',
+  'reader.themeLight': 'Papier',
+  'reader.themeDark': 'Atrament',
+  'reader.themeSepia': 'Sepia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Czysta czerń na bieli, bez animacji, jedna kolumna — dla ekranów e-papierowych.',
+  'reader.fontSize': 'Wielkość pisma',
+  'reader.smaller': 'Mniejsze',
+  'reader.larger': 'Większe',
+  'reader.lineHeight': 'Interlinia',
+  'reader.margin': 'Marginesy',
+  'reader.flow': 'Strony',
+  'reader.flowPaged': 'Przewracaj strony',
+  'reader.flowScrolled': 'Przewijaj',
+  'reader.justify': 'Justowanie',
+  'reader.hyphenate': 'Dzielenie wyrazów',
+  'reader.displayReset': 'Przywróć domyślne',
+  'settings.reader.displayTitle': 'Wygląd czytania',
+  'settings.reader.displayChanged':
+    '{setting} — teraz {value}. Dotyczy każdej książki otwieranej w tej przeglądarce.',
+  'settings.reader.displayReset':
+    'Wygląd czytania wrócił do wartości domyślnych dla wszystkich książek w tej przeglądarce.',
+  'reader.on': 'Włączone',
+  'reader.off': 'Wyłączone',
 };

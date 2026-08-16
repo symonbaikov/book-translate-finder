@@ -10,6 +10,9 @@ import { expect, test, type Page } from '@playwright/test';
 
 const PLAIN = fileURLToPath(new URL('./fixtures/spike.epub', import.meta.url));
 
+/** Named, not "the checkbox": the display panel has its own, and an unnamed locator finds three. */
+const keepFileCheckbox = (page: Page) => page.getByRole('checkbox', { name: /keep this book/i });
+
 async function waitForRenderedBook(page: Page): Promise<void> {
   await page.waitForFunction(
     () => {
@@ -37,8 +40,8 @@ async function openAndKeep(page: Page): Promise<void> {
   await page.goto('/read');
   await page.locator('input[type=file]').setInputFiles(PLAIN);
   await waitForRenderedBook(page);
-  await page.getByRole('checkbox').click();
-  await expect(page.getByRole('checkbox')).toBeChecked();
+  await keepFileCheckbox(page).click();
+  await expect(keepFileCheckbox(page)).toBeChecked();
 }
 
 test('reopening a book comes back to the page it was left on', async ({ page }) => {

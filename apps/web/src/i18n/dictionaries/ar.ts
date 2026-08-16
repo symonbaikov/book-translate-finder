@@ -412,4 +412,31 @@ export const ar: Dictionary = {
   'settings.reader.positionTitle': 'موضع القراءة',
   'settings.reader.positionUnstored':
     'لم يحفظ هذا المتصفّح موضعك في «{title}»، لذا سيُفتح الكتاب من البداية في المرة القادمة. يحدث هذا في الوضع الخاص وعند امتلاء القرص.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'شكل هذا الكتاب',
+  'reader.theme': 'الألوان',
+  'reader.themeApp': 'مثل الموقع',
+  'reader.themeLight': 'ورق',
+  'reader.themeDark': 'حبر',
+  'reader.themeSepia': 'بنّي داكن',
+  'reader.themeEink': 'حبر إلكتروني',
+  'reader.themeEinkHint': 'أسود خالص على أبيض، بلا حركة، عمود واحد — لشاشات الحبر الإلكتروني.',
+  'reader.fontSize': 'حجم الخط',
+  'reader.smaller': 'أصغر',
+  'reader.larger': 'أكبر',
+  'reader.lineHeight': 'تباعد الأسطر',
+  'reader.margin': 'الهوامش',
+  'reader.flow': 'الصفحات',
+  'reader.flowPaged': 'تقليب الصفحات',
+  'reader.flowScrolled': 'تمرير',
+  'reader.justify': 'ضبط النص',
+  'reader.hyphenate': 'فصل الكلمات',
+  'reader.displayReset': 'العودة إلى الوضع الافتراضي',
+  'settings.reader.displayTitle': 'عرض القراءة',
+  'settings.reader.displayChanged':
+    '{setting}: صار {value}. ينطبق على كل كتاب تفتحه في هذا المتصفّح.',
+  'settings.reader.displayReset': 'عاد عرض القراءة إلى الوضع الافتراضي لكل الكتب في هذا المتصفّح.',
+  'reader.on': 'مفعّل',
+  'reader.off': 'معطّل',
 };

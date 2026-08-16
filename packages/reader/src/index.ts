@@ -37,6 +37,25 @@ export {
   type ContentFramePolicy,
 } from './content-frame.js';
 
+export {
+  DEFAULT_DISPLAY,
+  FLOWS,
+  LINE_HEIGHTS,
+  MARGINS,
+  READER_THEMES,
+  canStepFontScale,
+  isDisplaySettings,
+  isEink,
+  paginatorAttributes,
+  readerCss,
+  rootFontSize,
+  stepFontScale,
+  type DisplaySettings,
+  type ReaderFlow,
+  type ReaderPalette,
+  type ReaderTheme,
+} from './display.js';
+
 export { READER_FORMATS, isSupportedFormat, sniffFormat, type ReaderFormat } from './format.js';
 
 export { contentHashOf, isContentHash } from './identity.js';

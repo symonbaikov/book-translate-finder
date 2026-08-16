@@ -432,4 +432,32 @@ export const nl: Dictionary = {
   'settings.reader.positionTitle': 'Leespositie',
   'settings.reader.positionUnstored':
     'Deze browser wilde niet bewaren waar je bent in “{title}”, dus het boek begint de volgende keer vooraan. Privémodus en een volle schijf doen dit allebei.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Hoe dit boek eruitziet',
+  'reader.theme': 'Kleuren',
+  'reader.themeApp': 'Zoals de site',
+  'reader.themeLight': 'Papier',
+  'reader.themeDark': 'Inkt',
+  'reader.themeSepia': 'Sepia',
+  'reader.themeEink': 'E-ink',
+  'reader.themeEinkHint': 'Puur zwart op wit, geen animatie, één kolom — voor e-paperschermen.',
+  'reader.fontSize': 'Tekstgrootte',
+  'reader.smaller': 'Kleiner',
+  'reader.larger': 'Groter',
+  'reader.lineHeight': 'Regelafstand',
+  'reader.margin': 'Marges',
+  'reader.flow': 'Pagina’s',
+  'reader.flowPaged': 'Bladeren',
+  'reader.flowScrolled': 'Scrollen',
+  'reader.justify': 'Uitvullen',
+  'reader.hyphenate': 'Afbreken',
+  'reader.displayReset': 'Terug naar de standaardwaarden',
+  'settings.reader.displayTitle': 'Weergave bij het lezen',
+  'settings.reader.displayChanged':
+    '{setting} is nu {value}. Dit geldt voor elk boek dat je in deze browser opent.',
+  'settings.reader.displayReset':
+    'De weergave bij het lezen staat weer op de standaardwaarden, voor elk boek in deze browser.',
+  'reader.on': 'Aan',
+  'reader.off': 'Uit',
 };

@@ -11,6 +11,9 @@ import {
   keepBookFile,
   libraryEntryOf,
   listLibrary,
+  paginatorAttributes,
+  readerCss,
+  rootFontSize,
   loadFoliate,
   readBook,
   readBookFile,
@@ -22,7 +25,9 @@ import {
   withPosition,
   withoutBookmark,
   AcquisitionError,
+  DEFAULT_DISPLAY,
   type AcquiredBook,
+  type DisplaySettings,
   type Bookmark,
   type ContentFramePolicy,
   type FoliateRelocateDetail,
@@ -33,6 +38,9 @@ import { useT } from '../../i18n/I18nProvider';
 import { outcomeOfWrite } from '../../lib/setting-change';
 import { useSettingChangeToast } from '../../lib/settings-toast';
 import { takeHandoff } from '../../lib/reader-handoff';
+import { clearDisplay, readDisplay, writeDisplay } from '../../lib/reader-display';
+import { paletteFor } from '../../lib/reader-palette';
+import { ReaderDisplay } from './ReaderDisplay';
 import { Button, cx } from '../../ui';
 import { ReaderBookmarks } from './ReaderBookmarks';
 import { ReaderLibrary } from './ReaderLibrary';
@@ -66,6 +74,14 @@ export function BookReader() {
   const [policy, setPolicy] = useState<ContentFramePolicy | null>(null);
   const [library, setLibrary] = useState<readonly LibraryEntry[]>([]);
   const [dragging, setDragging] = useState(false);
+  /**
+   * How books look here, read from storage on mount rather than initialised from it.
+   *
+   * The server renders this component too, and `localStorage` does not exist there — starting from
+   * the defaults and correcting on mount is what keeps the first paint from disagreeing with the
+   * markup that was sent.
+   */
+  const [display, setDisplay] = useState<DisplaySettings>(DEFAULT_DISPLAY);
   /** Percent through the book when a stored position was restored, for one line of feedback. */
   const [resumed, setResumed] = useState<number | null>(null);
   /**
@@ -104,10 +120,38 @@ export function BookReader() {
       if (live) setPolicy(installed);
     });
     refreshLibrary();
+    setDisplay(readDisplay());
     return () => {
       live = false;
     };
   }, [refreshLibrary]);
+
+  /**
+   * Push the reader's choices into the renderer and into the book's own documents.
+   *
+   * Runs whenever either changes, and after every open: a section that loads later gets the same
+   * stylesheet, because the renderer re-applies what it was last given. The palette is resolved
+   * here rather than in the package — the tokens are the single place a colour is decided, and this
+   * is the document that has them (ADR-0008).
+   */
+  const applyDisplay = useCallback((next: DisplaySettings) => {
+    const view = viewRef.current;
+    if (!view) return;
+    const renderer = (
+      view as unknown as { renderer?: HTMLElement & { setStyles?: (css: string) => void } }
+    ).renderer;
+    if (!renderer) return;
+
+    for (const [attribute, value] of Object.entries(paginatorAttributes(next))) {
+      renderer.setAttribute(attribute, value);
+    }
+    renderer.style.setProperty('font-size', rootFontSize(next));
+    renderer.setStyles?.(readerCss(next, paletteFor(next.theme)));
+  }, []);
+
+  useEffect(() => {
+    applyDisplay(display);
+  }, [applyDisplay, display, state.kind]);
 
   const render = useCallback(
     async (book: AcquiredBook): Promise<void> => {
@@ -121,6 +165,7 @@ export function BookReader() {
       const known = await readBook(book.hash);
       await view.open(asFoliateFile(book));
       const title = titleOf(view.book?.metadata) ?? known?.title ?? null;
+      applyDisplay(display);
       await renderFirstPage(view, known?.position.cfi ?? null);
 
       const record: LibraryEntry = known
@@ -140,7 +185,7 @@ export function BookReader() {
       setState({ kind: 'open', book, title, record });
       if (known?.position.cfi) setResumed(Math.round(known.position.fraction * 100));
     },
-    [refreshLibrary, rememberHere],
+    [applyDisplay, display, refreshLibrary, rememberHere],
   );
 
   const openFile = useCallback(
@@ -307,6 +352,31 @@ export function BookReader() {
     if (stored) setState({ ...state, record: next });
   }
 
+  function changeDisplay(next: DisplaySettings, label: string, value: string): void {
+    const stored = writeDisplay(next);
+    // Applied either way: refusing to show the reader what they just chose because the browser will
+    // not remember it for next time would be a second, worse failure. The popup says it will not
+    // last; the screen does what they asked.
+    setDisplay(next);
+    announce({
+      setting: `reader.display.${label}`,
+      outcome: outcomeOfWrite(stored, 'set'),
+      title: t('settings.reader.displayTitle'),
+      detail: t('settings.reader.displayChanged', { setting: label, value }),
+    });
+  }
+
+  function resetDisplay(): void {
+    const cleared = clearDisplay();
+    setDisplay(DEFAULT_DISPLAY);
+    announce({
+      setting: 'reader.display.reset',
+      outcome: outcomeOfWrite(cleared, 'clear'),
+      title: t('settings.reader.displayTitle'),
+      detail: t('settings.reader.displayReset'),
+    });
+  }
+
   async function toggleKeepFile(keep: boolean): Promise<void> {
     if (state.kind !== 'open') return;
     const title = state.title ?? t('reader.untitled');
@@ -420,6 +490,10 @@ export function BookReader() {
         }}
         class={cx(styles.view, state.kind !== 'open' && styles.viewEmpty)}
       />
+
+      {state.kind === 'open' && (
+        <ReaderDisplay display={display} onChange={changeDisplay} onReset={resetDisplay} />
+      )}
 
       {state.kind === 'open' && (
         <ReaderBookmarks

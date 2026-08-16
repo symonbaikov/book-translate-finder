@@ -453,4 +453,33 @@ export const de: Dictionary = {
   'settings.reader.positionTitle': 'Leseposition',
   'settings.reader.positionUnstored':
     'Dieser Browser wollte nicht speichern, wo Sie in „{title}“ sind — beim nächsten Mal beginnt das Buch von vorn. Privater Modus und eine volle Festplatte tun beides.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Wie dieses Buch aussieht',
+  'reader.theme': 'Farben',
+  'reader.themeApp': 'Wie die Website',
+  'reader.themeLight': 'Papier',
+  'reader.themeDark': 'Tinte',
+  'reader.themeSepia': 'Sepia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Reines Schwarz auf Weiß, keine Animation, eine Spalte — für E-Paper-Displays.',
+  'reader.fontSize': 'Schriftgröße',
+  'reader.smaller': 'Kleiner',
+  'reader.larger': 'Größer',
+  'reader.lineHeight': 'Zeilenabstand',
+  'reader.margin': 'Ränder',
+  'reader.flow': 'Seiten',
+  'reader.flowPaged': 'Blättern',
+  'reader.flowScrolled': 'Scrollen',
+  'reader.justify': 'Blocksatz',
+  'reader.hyphenate': 'Silbentrennung',
+  'reader.displayReset': 'Zurück zu den Standardwerten',
+  'settings.reader.displayTitle': 'Darstellung beim Lesen',
+  'settings.reader.displayChanged':
+    '{setting} ist jetzt {value}. Das gilt für jedes Buch, das Sie in diesem Browser öffnen.',
+  'settings.reader.displayReset':
+    'Die Darstellung beim Lesen steht wieder auf den Standardwerten — für jedes Buch in diesem Browser.',
+  'reader.on': 'Ein',
+  'reader.off': 'Aus',
 };

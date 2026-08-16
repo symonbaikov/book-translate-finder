@@ -443,4 +443,33 @@ export const ru: Dictionary = {
   'settings.reader.positionTitle': 'Позиция чтения',
   'settings.reader.positionUnstored':
     'Браузер не сохранил, где вы остановились в «{title}», — в следующий раз книга откроется с начала. Так бывает в приватном режиме и при заполненном диске.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Как выглядит эта книга',
+  'reader.theme': 'Цвета',
+  'reader.themeApp': 'Как на сайте',
+  'reader.themeLight': 'Бумага',
+  'reader.themeDark': 'Чернила',
+  'reader.themeSepia': 'Сепия',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Чистый чёрный на белом, без анимации, одна колонка — для экранов на электронных чернилах.',
+  'reader.fontSize': 'Размер шрифта',
+  'reader.smaller': 'Меньше',
+  'reader.larger': 'Больше',
+  'reader.lineHeight': 'Межстрочный интервал',
+  'reader.margin': 'Поля',
+  'reader.flow': 'Страницы',
+  'reader.flowPaged': 'Листать',
+  'reader.flowScrolled': 'Прокручивать',
+  'reader.justify': 'Выключка по ширине',
+  'reader.hyphenate': 'Переносы',
+  'reader.displayReset': 'Вернуть по умолчанию',
+  'settings.reader.displayTitle': 'Оформление чтения',
+  'settings.reader.displayChanged':
+    '{setting} — теперь {value}. Применяется ко всем книгам, которые вы открываете в этом браузере.',
+  'settings.reader.displayReset':
+    'Оформление чтения возвращено к значениям по умолчанию для всех книг в этом браузере.',
+  'reader.on': 'Включено',
+  'reader.off': 'Выключено',
 };

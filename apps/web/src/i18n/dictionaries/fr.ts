@@ -449,4 +449,33 @@ export const fr: Dictionary = {
   'settings.reader.positionTitle': 'Position de lecture',
   'settings.reader.positionUnstored':
     'Ce navigateur n’a pas voulu retenir où vous en êtes dans « {title} » : la prochaine fois, le livre s’ouvrira au début. La navigation privée et un disque plein font cela.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'L’aspect de ce livre',
+  'reader.theme': 'Couleurs',
+  'reader.themeApp': 'Comme le site',
+  'reader.themeLight': 'Papier',
+  'reader.themeDark': 'Encre',
+  'reader.themeSepia': 'Sépia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Noir pur sur blanc, sans animation, une colonne — pour les écrans à encre électronique.',
+  'reader.fontSize': 'Taille du texte',
+  'reader.smaller': 'Plus petit',
+  'reader.larger': 'Plus grand',
+  'reader.lineHeight': 'Interlignage',
+  'reader.margin': 'Marges',
+  'reader.flow': 'Pages',
+  'reader.flowPaged': 'Tourner les pages',
+  'reader.flowScrolled': 'Défiler',
+  'reader.justify': 'Justifier',
+  'reader.hyphenate': 'Césure',
+  'reader.displayReset': 'Revenir aux valeurs par défaut',
+  'settings.reader.displayTitle': 'Affichage de lecture',
+  'settings.reader.displayChanged':
+    '{setting} : maintenant {value}. Cela vaut pour tous les livres ouverts dans ce navigateur.',
+  'settings.reader.displayReset':
+    'L’affichage de lecture est revenu à ses valeurs par défaut pour tous les livres de ce navigateur.',
+  'reader.on': 'Activé',
+  'reader.off': 'Désactivé',
 };

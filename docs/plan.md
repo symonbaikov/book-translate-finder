@@ -1148,6 +1148,31 @@ is the frame WebKit delivers no events to. Building it would mean a feature that
 and silently does nothing in Safari, or moving selection handling somewhere it does not belong. A
 bookmark with a note does what most of the need is, works everywhere, and does not pretend.
 
+### What 11.6 settled about how a book looks
+
+- **`packages/reader` decides no colour.** It takes a palette and writes CSS text into the book's
+  own document — a document `tokens.css` can never reach. The four palettes live in `tokens.css`
+  with the rest of the project's colours (ADR-0008), the host resolves them, and a test asserts the
+  package emits no hex value it was not given.
+- **`app` is not a fifth palette.** It means "whatever `--surface-1` and `--text` are right now", so
+  it follows the site's light/dark switch with no second set of values to keep in step.
+- **E-Ink is not dark mode inverted.** Pure `#000` on `#fff` — an e-paper panel has no greys worth
+  trusting — plus one column, no transition, no shadow, no gradient, and images desaturated. It is
+  the only theme that removes motion unconditionally: elsewhere that stays inside
+  `prefers-reduced-motion`, because there the reader's system has already answered.
+- **Every control is discrete.** Steps and choices, no sliders: each change announces itself, and a
+  slider means either a popup per pixel or a rule about when a drag has "finished". Values show as
+  numbers — 130%, 1.5, 6% — so the interface does not invent a word for every step and translate it
+  fifteen times.
+- **A refused write still applies on screen.** Refusing to show the reader what they just chose,
+  because the browser will not remember it for next time, would be a second and worse failure. The
+  popup says it will not last; the page does what was asked.
+
+Two found by looking at it. The type-size stepper is three controls in one grid cell, and at
+`minmax(11rem)` its last button overlapped the next column — invisible until a real book was on
+screen behind it. And the two new toggles broke four older tests that asked for "the checkbox";
+they now name the one they mean, which they should have done from the start.
+
 ### Decided rather than assumed
 
 - **No `rightsStatus` on an addon result, and no field to hold one.** The instance's own links carry
@@ -1580,7 +1605,7 @@ Two consequences that are easy to get wrong and are therefore written down now:
 | 11.3 | The `/read` route's CSP and the content-frame policy                             | ✅    | Nonce-based `script-src 'self'` from middleware, the engine probe wired in, and four tests that open a hostile book on the real route (`pnpm test:sandbox`) |
 | 11.4 | Acquisition: fetch, file picker, drag-and-drop, IndexedDB                        | ✅    | Four ways in, one path out; the CORS dead end offers the download and nothing else; kept files live in IndexedDB and are the reader's own opt-in            |
 | 11.5 | Progress, bookmarks and notes                                                    | ✅    | Position and bookmarks in the one record, keyed by content hash; resume through `renderFirstPage`; only a _refused_ write says anything                     |
-| 11.6 | Display: themes incl. E-Ink, type, layout                                        | ⬜    | Tokens are read in the host and passed in as values (ADR-0008 stays true); E-Ink is monochrome, motionless and paged                                        |
+| 11.6 | Display: themes incl. E-Ink, type, layout                                        | ✅    | Four palettes from `tokens.css`, seven preferences, every one announced; E-Ink is monochrome, motionless and single-column                                  |
 | 11.7 | Surfaces: where "Read in browser" appears                                        | ⬜    | Work page, free shelf, addon sources, `/read`. Shown only where there is a file to open — see below                                                         |
 | 11.8 | Settings popups and 15 dictionaries                                              | ⬜    | Every reader preference announces itself through `useSettingChangeToast()` with `outcomeOfWrite` (CLAUDE.md)                                                |
 | 11.9 | Zero-knowledge enforcement                                                       | ⬜    | Four `dependency-cruiser` rules plus a Playwright wire suite, `pnpm test:reader`, modelled on `addon-privacy.spec.ts`                                       |
