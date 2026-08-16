@@ -1093,6 +1093,32 @@ its document — quietly dropping every reader to one wall, which is exactly the
 warns about. And `hidden={state !== 'open'}` rendered as `hidden="false"` on the custom element,
 because React stringifies props there and HTML's `hidden` hides on presence.
 
+### What 11.4 settled about getting a book in
+
+- **The handoff carries the address in `sessionStorage` or the URL fragment, never a query string.**
+  Both are invisible to the server; a query string would be in the access log before any of this
+  code ran. The fragment form exists for a pasted link and is erased with `replaceState` on arrival,
+  so the address does not outlive the moment it was useful.
+- **The dead end has no "try through this site" button, and the test asserts its absence.** A source
+  that refuses the browser gets an explanation, a download link, and the suggestion to open the file
+  from the device. The only thing a retry button could do is call a route this project does not have.
+- **The message still does not say "CORS".** It cannot: a refused cross-origin read and an
+  unreachable host arrive at `fetch` as the same opaque `TypeError`. That is not a limitation to
+  route around — the reader's next step is identical either way.
+- **A record per book, bytes only on request.** Opening a book writes a few hundred bytes so the
+  reader can find it again; keeping the file is a separate switch, off by default, and the checkbox
+  follows what IndexedDB _did_ rather than what was clicked. On a browser that refuses the write it
+  never moves, and the popup says the browser refused rather than claiming success.
+- **Two object stores rather than one.** Listing the library must not deserialize a 40 MB EPUB per
+  row, which one store would.
+
+Two things the tests learned the hard way. Playwright's `route.fulfill` **skips the CORS check**, so
+a "refused" response arrived intact and the dead-end test passed the book through instead — the
+faithful simulation is `route.abort()`, for the same reason the message does not name CORS. And
+`check()` on the keep-file checkbox fails: it is controlled by what storage did, not by the click,
+so it flips a few milliseconds later — which is exactly the property that makes a refused write
+visible.
+
 ### Decided rather than assumed
 
 - **No `rightsStatus` on an addon result, and no field to hold one.** The instance's own links carry
@@ -1523,7 +1549,7 @@ Two consequences that are easy to get wrong and are therefore written down now:
 | 11.1 | Pagination spike inside an opaque origin                                         | ✅    | **Answered: no, in all three engines.** [reader-sandbox-spike.md](research/reader-sandbox-spike.md) — and it found a default-on escape while it was there   |
 | 11.2 | `packages/reader` — a fifth leaf package                                         | ✅    | Sniffing, acquisition, progress, hashing, content-frame policy; foliate vendored, pinned, patched, with a test that fails when the patch lapses             |
 | 11.3 | The `/read` route's CSP and the content-frame policy                             | ✅    | Nonce-based `script-src 'self'` from middleware, the engine probe wired in, and four tests that open a hostile book on the real route (`pnpm test:sandbox`) |
-| 11.4 | Acquisition: fetch, file picker, drag-and-drop, IndexedDB                        | ⬜    | Four ways in, one `BookSource`. CORS gets an honest dead end, not a workaround                                                                              |
+| 11.4 | Acquisition: fetch, file picker, drag-and-drop, IndexedDB                        | ✅    | Four ways in, one path out; the CORS dead end offers the download and nothing else; kept files live in IndexedDB and are the reader's own opt-in            |
 | 11.5 | Progress, bookmarks and annotations                                              | ⬜    | IndexedDB in the host origin, keyed by content hash; reached from the sandbox only through the RPC surface                                                  |
 | 11.6 | Display: themes incl. E-Ink, type, layout                                        | ⬜    | Tokens are read in the host and passed in as values (ADR-0008 stays true); E-Ink is monochrome, motionless and paged                                        |
 | 11.7 | Surfaces: where "Read in browser" appears                                        | ⬜    | Work page, free shelf, addon sources, `/read`. Shown only where there is a file to open — see below                                                         |

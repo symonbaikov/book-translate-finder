@@ -382,4 +382,32 @@ export const ja: Dictionary = {
   'reader.failed': 'この本を開けませんでした: {reason}',
   'reader.previous': '前のページ',
   'reader.next': '次のページ',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…またはここに本をドロップ',
+  'reader.fetching': '{host} にファイルを要求しています…',
+  'reader.blockedTitle': '{host} はこのページにファイルを渡しませんでした',
+  'reader.blockedBody':
+    '到達できないか、他のサイトからファイルを読むことを許可していないかのどちらかです。このサイトが代わりに取得することはありません。あなたの本がこのサイトを通らないこと自体が、ここで読む意味だからです。',
+  'reader.blockedDownload': '{host} からダウンロード',
+  'reader.blockedOpenHere': 'して、端末からここで開く',
+  'reader.blockedAddon': 'ファイルを自分で配信するアドオンでも構いません。',
+  'reader.keepFile': 'この本をこのブラウザーに保存する',
+  'reader.keepFileHint':
+    '既定はオフです。オフならタブを閉じるとファイルは消えます。オンならこの端末にだけ残ります。',
+  'reader.library': 'このブラウザーに保存済み',
+  'reader.libraryEmpty':
+    'まだ何も保存されていません。保存した本はこの端末に留まり、どこにもアップロードされません。',
+  'reader.libraryOpen': '開く',
+  'reader.libraryRemove': '削除',
+  'reader.libraryFileKept': 'ファイルあり',
+  'reader.libraryFileGone': 'ファイルなし',
+  'reader.untitled': '無題の本',
+  'settings.reader.title': 'このブラウザーの本',
+  'settings.reader.kept':
+    '「{title}」はこの端末に保存され、再ダウンロードなしで開けるようになりました。どこにも送信されません。',
+  'settings.reader.forgotten':
+    '「{title}」のファイルをこのブラウザーから削除しました。記録は残るので、元の場所から開き直せます。',
+  'settings.reader.removed':
+    '「{title}」をこのブラウザーから完全に削除しました — ファイルも記録も。',
 };

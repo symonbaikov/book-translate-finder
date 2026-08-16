@@ -66,3 +66,71 @@
   font-size: var(--step--2);
   font-family: var(--font-mono);
 }
+
+/* Drag-and-drop, the library and the dead end — 11.4. Still plain: type, margins and the four
+   themes are 11.6, and styling them twice would be the only thing achieved by doing it here. */
+
+.dragging {
+  outline: 2px dashed var(--accent);
+  outline-offset: var(--space-3);
+  border-radius: var(--r-lg);
+}
+
+.blocked {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--caution-text);
+  border-radius: var(--r-lg);
+  background: var(--caution-soft);
+  color: var(--text);
+}
+
+.blockedTitle {
+  font-size: var(--step-1);
+  margin: 0;
+}
+
+.library {
+  margin-block-start: var(--space-5);
+}
+
+.libraryHeading {
+  font-size: var(--step-0);
+  margin-block-end: var(--space-2);
+}
+
+.libraryList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.libraryRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.libraryTitle {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.libraryMeta {
+  color: var(--text-muted);
+  font-size: var(--step--1);
+}
+
+.keep {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}

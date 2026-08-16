@@ -400,4 +400,32 @@ export const es: Dictionary = {
   'reader.failed': 'No se pudo abrir este libro: {reason}',
   'reader.previous': 'Página anterior',
   'reader.next': 'Página siguiente',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…o arrastre un libro aquí',
+  'reader.fetching': 'Pidiendo el archivo a {host}…',
+  'reader.blockedTitle': '{host} no entregó el archivo a esta página',
+  'reader.blockedBody':
+    'O no está accesible, o no permite que otros sitios lean sus archivos. Este sitio no lo descargará por usted: su libro nunca pasa por él, y eso es justamente el sentido de leer aquí.',
+  'reader.blockedDownload': 'Descargarlo de {host}',
+  'reader.blockedOpenHere': 'y abrirlo aquí desde su dispositivo',
+  'reader.blockedAddon': 'También sirve un complemento que entregue el archivo por su cuenta.',
+  'reader.keepFile': 'Guardar este libro en este navegador',
+  'reader.keepFileHint':
+    'Desactivado por defecto. Sin esto el archivo desaparece al cerrar la pestaña; con esto queda solo en este dispositivo.',
+  'reader.library': 'Guardado en este navegador',
+  'reader.libraryEmpty':
+    'Todavía no hay nada guardado. Los libros guardados se quedan en este dispositivo y no se suben a ningún sitio.',
+  'reader.libraryOpen': 'Abrir',
+  'reader.libraryRemove': 'Quitar',
+  'reader.libraryFileKept': 'archivo guardado',
+  'reader.libraryFileGone': 'archivo no guardado',
+  'reader.untitled': 'Libro sin título',
+  'settings.reader.title': 'Libros en este navegador',
+  'settings.reader.kept':
+    '«{title}» ahora se guarda en este dispositivo y se abre sin volver a descargarlo. No se sube a ninguna parte.',
+  'settings.reader.forgotten':
+    'El archivo de «{title}» se borró de este navegador. La entrada sigue ahí: puede abrirlo otra vez desde su fuente.',
+  'settings.reader.removed':
+    '«{title}» se quitó por completo de este navegador: el archivo y la entrada.',
 };

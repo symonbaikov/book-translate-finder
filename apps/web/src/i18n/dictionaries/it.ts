@@ -387,4 +387,32 @@ export const it: Dictionary = {
   'reader.failed': 'Non è stato possibile aprire questo libro: {reason}',
   'reader.previous': 'Pagina precedente',
   'reader.next': 'Pagina successiva',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…oppure trascina un libro qui',
+  'reader.fetching': 'Richiesta del file a {host}…',
+  'reader.blockedTitle': '{host} non ha consegnato il file a questa pagina',
+  'reader.blockedBody':
+    'O è irraggiungibile, o non permette ad altri siti di leggere i suoi file. Questo sito non lo scaricherà al posto tuo: il tuo libro non passa mai da qui, ed è esattamente il senso di leggere qui.',
+  'reader.blockedDownload': 'Scaricarlo da {host}',
+  'reader.blockedOpenHere': 'e aprirlo qui dal tuo dispositivo',
+  'reader.blockedAddon': 'Va bene anche un addon che serva il file da sé.',
+  'reader.keepFile': 'Tieni questo libro in questo browser',
+  'reader.keepFileHint':
+    'Disattivato di default. Senza, il file sparisce chiudendo la scheda; con, resta solo su questo dispositivo.',
+  'reader.library': 'Tenuti in questo browser',
+  'reader.libraryEmpty':
+    'Ancora nulla. I libri che tieni restano su questo dispositivo e non vengono mai caricati altrove.',
+  'reader.libraryOpen': 'Apri',
+  'reader.libraryRemove': 'Rimuovi',
+  'reader.libraryFileKept': 'file tenuto',
+  'reader.libraryFileGone': 'file non tenuto',
+  'reader.untitled': 'Libro senza titolo',
+  'settings.reader.title': 'Libri in questo browser',
+  'settings.reader.kept':
+    '«{title}» ora è tenuto su questo dispositivo e si apre senza riscaricarlo. Non viene caricato da nessuna parte.',
+  'settings.reader.forgotten':
+    'Il file di «{title}» è stato cancellato da questo browser. La voce resta: puoi riaprirlo dalla sua fonte.',
+  'settings.reader.removed':
+    '«{title}» è stato rimosso del tutto da questo browser — il file e la voce.',
 };

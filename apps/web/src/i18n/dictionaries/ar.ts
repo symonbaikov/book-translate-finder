@@ -366,4 +366,31 @@ export const ar: Dictionary = {
   'reader.failed': 'تعذّر فتح هذا الكتاب: {reason}',
   'reader.previous': 'الصفحة السابقة',
   'reader.next': 'الصفحة التالية',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…أو أفلِت كتابًا هنا',
+  'reader.fetching': 'يُطلب الملف من {host}…',
+  'reader.blockedTitle': 'لم يُسلّم {host} الملف إلى هذه الصفحة',
+  'reader.blockedBody':
+    'إمّا أنه غير متاح، وإمّا أنه لا يسمح للمواقع الأخرى بقراءة ملفاته. ولن يجلبه هذا الموقع نيابةً عنك: كتابك لا يمرّ به أبدًا، وهذا هو معنى القراءة هنا.',
+  'reader.blockedDownload': 'نزِّله من {host}',
+  'reader.blockedOpenHere': 'ثم افتحه هنا من جهازك',
+  'reader.blockedAddon': 'وتفي بالغرض أيضًا إضافةٌ تقدّم الملف بنفسها.',
+  'reader.keepFile': 'احتفظ بهذا الكتاب في هذا المتصفّح',
+  'reader.keepFileHint':
+    'معطَّل افتراضيًا. بدونه يزول الملف عند إغلاق التبويب؛ ومعه يبقى على هذا الجهاز وحده.',
+  'reader.library': 'محفوظ في هذا المتصفّح',
+  'reader.libraryEmpty':
+    'لا شيء محفوظ بعد. الكتب التي تحفظها تبقى على هذا الجهاز ولا تُرفع إلى أي مكان.',
+  'reader.libraryOpen': 'افتح',
+  'reader.libraryRemove': 'أزل',
+  'reader.libraryFileKept': 'الملف محفوظ',
+  'reader.libraryFileGone': 'الملف غير محفوظ',
+  'reader.untitled': 'كتاب بلا عنوان',
+  'settings.reader.title': 'الكتب في هذا المتصفّح',
+  'settings.reader.kept':
+    '«{title}» صار محفوظًا على هذا الجهاز ويُفتح دون تنزيله من جديد. ولا يُرفع إلى أي مكان.',
+  'settings.reader.forgotten':
+    'حُذف ملف «{title}» من هذا المتصفّح. بقي السجل، فيمكنك فتحه من مصدره مرة أخرى.',
+  'settings.reader.removed': 'أُزيل «{title}» من هذا المتصفّح تمامًا — الملف والسجل معًا.',
 };

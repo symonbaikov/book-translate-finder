@@ -42,6 +42,18 @@ export { READER_FORMATS, isSupportedFormat, sniffFormat, type ReaderFormat } fro
 export { contentHashOf, isContentHash } from './identity.js';
 
 export {
+  forgetBookFile,
+  keepBookFile,
+  libraryEntryOf,
+  listLibrary,
+  readBookFile,
+  rememberBook,
+  removeBook,
+  sortLibrary,
+  type LibraryEntry,
+} from './library.js';
+
+export {
   isReadingRecord,
   newReadingRecord,
   withBookmark,

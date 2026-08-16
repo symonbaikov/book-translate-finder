@@ -404,4 +404,32 @@ export const de: Dictionary = {
   'reader.failed': 'Dieses Buch konnte nicht geöffnet werden: {reason}',
   'reader.previous': 'Vorherige Seite',
   'reader.next': 'Nächste Seite',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…oder ein Buch hierher ziehen',
+  'reader.fetching': 'Die Datei wird bei {host} angefragt…',
+  'reader.blockedTitle': '{host} hat die Datei nicht an diese Seite übergeben',
+  'reader.blockedBody':
+    'Entweder ist der Server nicht erreichbar, oder er erlaubt anderen Websites nicht, seine Dateien zu lesen. Diese Website holt sie nicht ersatzweise für Sie: Ihr Buch läuft nie über sie — genau darum geht es beim Lesen hier.',
+  'reader.blockedDownload': 'Bei {host} herunterladen',
+  'reader.blockedOpenHere': 'und hier von Ihrem Gerät öffnen',
+  'reader.blockedAddon': 'Ein Add-on, das die Datei selbst ausliefert, funktioniert ebenfalls.',
+  'reader.keepFile': 'Dieses Buch in diesem Browser behalten',
+  'reader.keepFileHint':
+    'Standardmäßig aus. Ohne das ist die Datei beim Schließen des Tabs weg; damit bleibt sie ausschließlich auf diesem Gerät.',
+  'reader.library': 'In diesem Browser behalten',
+  'reader.libraryEmpty':
+    'Noch nichts behalten. Behaltene Bücher bleiben auf diesem Gerät und werden nirgendwohin hochgeladen.',
+  'reader.libraryOpen': 'Öffnen',
+  'reader.libraryRemove': 'Entfernen',
+  'reader.libraryFileKept': 'Datei behalten',
+  'reader.libraryFileGone': 'Datei nicht behalten',
+  'reader.untitled': 'Buch ohne Titel',
+  'settings.reader.title': 'Bücher in diesem Browser',
+  'settings.reader.kept':
+    '„{title}“ liegt jetzt auf diesem Gerät und öffnet sich ohne erneuten Download. Es wird nirgendwohin hochgeladen.',
+  'settings.reader.forgotten':
+    'Die Datei zu „{title}“ wurde aus diesem Browser gelöscht. Der Eintrag bleibt, Sie können das Buch erneut aus seiner Quelle öffnen.',
+  'settings.reader.removed':
+    '„{title}“ wurde vollständig aus diesem Browser entfernt — Datei und Eintrag.',
 };

@@ -415,4 +415,32 @@ export const en = {
   'reader.failed': 'This book could not be opened: {reason}',
   'reader.previous': 'Previous page',
   'reader.next': 'Next page',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…or drop a book here',
+  'reader.fetching': 'Asking {host} for the file…',
+  'reader.blockedTitle': '{host} did not hand the file to this page',
+  'reader.blockedBody':
+    'Either it is unreachable, or it does not allow other sites to read its files. This site will not fetch it for you instead: your book never passes through it, and that is the whole point of reading here.',
+  'reader.blockedDownload': 'Download it from {host}',
+  'reader.blockedOpenHere': 'then open it here from your device',
+  'reader.blockedAddon': 'An addon that serves the file itself will also work.',
+  'reader.keepFile': 'Keep this book in this browser',
+  'reader.keepFileHint':
+    'Off by default. Without it the file is gone when you close the tab; with it, it stays on this device only.',
+  'reader.library': 'Kept in this browser',
+  'reader.libraryEmpty':
+    'Nothing kept yet. Books you keep stay on this device and are never uploaded.',
+  'reader.libraryOpen': 'Open',
+  'reader.libraryRemove': 'Remove',
+  'reader.libraryFileKept': 'file kept',
+  'reader.libraryFileGone': 'file not kept',
+  'reader.untitled': 'Untitled book',
+  'settings.reader.title': 'Books kept in this browser',
+  'settings.reader.kept':
+    '“{title}” is now kept on this device, so it opens without downloading it again. It is not uploaded anywhere.',
+  'settings.reader.forgotten':
+    'The file for “{title}” was deleted from this browser. It stays in the list, so you can open it again from its source.',
+  'settings.reader.removed':
+    '“{title}” was removed from this browser entirely — the file and the entry.',
 } as const;

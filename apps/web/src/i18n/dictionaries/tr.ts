@@ -383,4 +383,31 @@ export const tr: Dictionary = {
   'reader.failed': 'Bu kitap açılamadı: {reason}',
   'reader.previous': 'Önceki sayfa',
   'reader.next': 'Sonraki sayfa',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…ya da bir kitabı buraya bırakın',
+  'reader.fetching': 'Dosya {host} adresinden isteniyor…',
+  'reader.blockedTitle': '{host} dosyayı bu sayfaya vermedi',
+  'reader.blockedBody':
+    'Ya erişilemiyor ya da dosyalarını başka sitelerin okumasına izin vermiyor. Bu site onu sizin yerinize indirmeyecek: kitabınız buradan hiç geçmez, zaten burada okumanın anlamı da bu.',
+  'reader.blockedDownload': '{host} adresinden indirin',
+  'reader.blockedOpenHere': 've burada kendi cihazınızdan açın',
+  'reader.blockedAddon': 'Dosyayı kendisi sunan bir eklenti de olur.',
+  'reader.keepFile': 'Bu kitabı bu tarayıcıda sakla',
+  'reader.keepFileHint':
+    'Varsayılan olarak kapalı. Kapalıyken dosya sekmeyi kapatınca kaybolur; açıkken yalnızca bu cihazda kalır.',
+  'reader.library': 'Bu tarayıcıda saklananlar',
+  'reader.libraryEmpty':
+    'Henüz bir şey saklanmadı. Sakladığınız kitaplar bu cihazda kalır ve hiçbir yere yüklenmez.',
+  'reader.libraryOpen': 'Aç',
+  'reader.libraryRemove': 'Kaldır',
+  'reader.libraryFileKept': 'dosya saklandı',
+  'reader.libraryFileGone': 'dosya saklanmadı',
+  'reader.untitled': 'Adsız kitap',
+  'settings.reader.title': 'Bu tarayıcıdaki kitaplar',
+  'settings.reader.kept':
+    '“{title}” artık bu cihazda saklanıyor ve yeniden indirmeden açılıyor. Hiçbir yere yüklenmiyor.',
+  'settings.reader.forgotten':
+    '“{title}” dosyası bu tarayıcıdan silindi. Kayıt duruyor: kitabı kaynağından yeniden açabilirsiniz.',
+  'settings.reader.removed': '“{title}” bu tarayıcıdan tamamen kaldırıldı — dosya da kayıt da.',
 };

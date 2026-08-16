@@ -384,4 +384,32 @@ export const nl: Dictionary = {
   'reader.failed': 'Dit boek kon niet worden geopend: {reason}',
   'reader.previous': 'Vorige pagina',
   'reader.next': 'Volgende pagina',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…of sleep een boek hierheen',
+  'reader.fetching': 'Het bestand wordt bij {host} opgevraagd…',
+  'reader.blockedTitle': '{host} gaf het bestand niet aan deze pagina',
+  'reader.blockedBody':
+    'Of de server is onbereikbaar, of hij staat andere sites niet toe zijn bestanden te lezen. Deze site haalt het niet in jouw plaats op: je boek gaat er nooit doorheen, en daar draait het hier om.',
+  'reader.blockedDownload': 'Download het bij {host}',
+  'reader.blockedOpenHere': 'en open het hier vanaf je apparaat',
+  'reader.blockedAddon': 'Een add-on die het bestand zelf levert werkt ook.',
+  'reader.keepFile': 'Dit boek in deze browser bewaren',
+  'reader.keepFileHint':
+    'Standaard uit. Zonder dit is het bestand weg als je het tabblad sluit; met dit blijft het alleen op dit apparaat.',
+  'reader.library': 'Bewaard in deze browser',
+  'reader.libraryEmpty':
+    'Nog niets bewaard. Bewaarde boeken blijven op dit apparaat en worden nergens naartoe geüpload.',
+  'reader.libraryOpen': 'Openen',
+  'reader.libraryRemove': 'Verwijderen',
+  'reader.libraryFileKept': 'bestand bewaard',
+  'reader.libraryFileGone': 'bestand niet bewaard',
+  'reader.untitled': 'Boek zonder titel',
+  'settings.reader.title': 'Boeken in deze browser',
+  'settings.reader.kept':
+    '“{title}” staat nu op dit apparaat en opent zonder opnieuw downloaden. Er wordt niets geüpload.',
+  'settings.reader.forgotten':
+    'Het bestand van “{title}” is uit deze browser verwijderd. De vermelding blijft: je kunt het opnieuw vanaf de bron openen.',
+  'settings.reader.removed':
+    '“{title}” is volledig uit deze browser verwijderd — het bestand en de vermelding.',
 };

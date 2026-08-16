@@ -386,4 +386,32 @@ export const pt: Dictionary = {
   'reader.failed': 'Não foi possível abrir este livro: {reason}',
   'reader.previous': 'Página anterior',
   'reader.next': 'Página seguinte',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…ou arraste um livro para aqui',
+  'reader.fetching': 'A pedir o ficheiro a {host}…',
+  'reader.blockedTitle': '{host} não entregou o ficheiro a esta página',
+  'reader.blockedBody':
+    'Ou está inacessível, ou não permite que outros sites leiam os seus ficheiros. Este site não o vai buscar por si: o seu livro nunca passa por aqui, e é precisamente esse o sentido de ler aqui.',
+  'reader.blockedDownload': 'Transferi-lo de {host}',
+  'reader.blockedOpenHere': 'e abri-lo aqui a partir do seu dispositivo',
+  'reader.blockedAddon': 'Também serve um addon que entregue o ficheiro por si próprio.',
+  'reader.keepFile': 'Guardar este livro neste navegador',
+  'reader.keepFileHint':
+    'Desligado por omissão. Sem isto o ficheiro desaparece ao fechar o separador; com isto fica apenas neste dispositivo.',
+  'reader.library': 'Guardado neste navegador',
+  'reader.libraryEmpty':
+    'Ainda nada guardado. Os livros guardados ficam neste dispositivo e nunca são enviados para lado nenhum.',
+  'reader.libraryOpen': 'Abrir',
+  'reader.libraryRemove': 'Remover',
+  'reader.libraryFileKept': 'ficheiro guardado',
+  'reader.libraryFileGone': 'ficheiro não guardado',
+  'reader.untitled': 'Livro sem título',
+  'settings.reader.title': 'Livros neste navegador',
+  'settings.reader.kept':
+    '“{title}” fica agora guardado neste dispositivo e abre sem voltar a transferir. Não é enviado para lado nenhum.',
+  'settings.reader.forgotten':
+    'O ficheiro de “{title}” foi apagado deste navegador. A entrada permanece: pode abri-lo de novo a partir da fonte.',
+  'settings.reader.removed':
+    '“{title}” foi removido por completo deste navegador — o ficheiro e a entrada.',
 };

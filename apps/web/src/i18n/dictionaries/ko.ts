@@ -377,4 +377,32 @@ export const ko: Dictionary = {
   'reader.failed': '이 책을 열지 못했습니다: {reason}',
   'reader.previous': '이전 쪽',
   'reader.next': '다음 쪽',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…또는 여기에 책을 놓으세요',
+  'reader.fetching': '{host}에 파일을 요청하는 중…',
+  'reader.blockedTitle': '{host}이(가) 이 페이지에 파일을 주지 않았습니다',
+  'reader.blockedBody':
+    '연결할 수 없거나, 다른 사이트가 자기 파일을 읽는 것을 허용하지 않는 것입니다. 이 사이트가 대신 받아오지는 않습니다. 책이 이 사이트를 거치지 않는 것이 여기서 읽는 이유이기 때문입니다.',
+  'reader.blockedDownload': '{host}에서 내려받기',
+  'reader.blockedOpenHere': '그런 다음 기기에서 여기로 열기',
+  'reader.blockedAddon': '파일을 직접 제공하는 애드온도 괜찮습니다.',
+  'reader.keepFile': '이 책을 이 브라우저에 보관',
+  'reader.keepFileHint':
+    '기본은 꺼짐입니다. 끄면 탭을 닫을 때 파일이 사라지고, 켜면 이 기기에만 남습니다.',
+  'reader.library': '이 브라우저에 보관됨',
+  'reader.libraryEmpty':
+    '아직 보관한 것이 없습니다. 보관한 책은 이 기기에 남고 어디에도 올라가지 않습니다.',
+  'reader.libraryOpen': '열기',
+  'reader.libraryRemove': '삭제',
+  'reader.libraryFileKept': '파일 보관됨',
+  'reader.libraryFileGone': '파일 없음',
+  'reader.untitled': '제목 없는 책',
+  'settings.reader.title': '이 브라우저의 책',
+  'settings.reader.kept':
+    '「{title}」이(가) 이 기기에 보관되어 다시 내려받지 않고 열립니다. 어디에도 올라가지 않습니다.',
+  'settings.reader.forgotten':
+    '「{title}」의 파일을 이 브라우저에서 지웠습니다. 목록은 남아 있으니 원본에서 다시 열 수 있습니다.',
+  'settings.reader.removed':
+    '「{title}」을(를) 이 브라우저에서 완전히 지웠습니다 — 파일과 기록 모두.',
 };

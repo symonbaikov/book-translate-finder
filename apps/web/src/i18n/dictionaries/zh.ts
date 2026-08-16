@@ -357,4 +357,27 @@ export const zh: Dictionary = {
   'reader.failed': '无法打开这本书：{reason}',
   'reader.previous': '上一页',
   'reader.next': '下一页',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…或把书拖到这里',
+  'reader.fetching': '正在向 {host} 请求文件…',
+  'reader.blockedTitle': '{host} 没有把文件交给本页面',
+  'reader.blockedBody':
+    '要么无法访问，要么不允许别的网站读取它的文件。本站不会代你去取：你的书从不经过本站，这正是在这里阅读的意义。',
+  'reader.blockedDownload': '从 {host} 下载',
+  'reader.blockedOpenHere': '然后在这里从你的设备打开',
+  'reader.blockedAddon': '自行提供文件的插件同样可行。',
+  'reader.keepFile': '把这本书留在此浏览器',
+  'reader.keepFileHint': '默认关闭。关闭时关掉标签页文件就没了；打开则只留在这台设备上。',
+  'reader.library': '留在此浏览器',
+  'reader.libraryEmpty': '还没有留存任何书。留存的书只在这台设备上，不会上传到任何地方。',
+  'reader.libraryOpen': '打开',
+  'reader.libraryRemove': '移除',
+  'reader.libraryFileKept': '已存文件',
+  'reader.libraryFileGone': '未存文件',
+  'reader.untitled': '无标题的书',
+  'settings.reader.title': '此浏览器中的书',
+  'settings.reader.kept': '《{title}》已留在这台设备上，无需重新下载即可打开。不会上传到任何地方。',
+  'settings.reader.forgotten': '《{title}》的文件已从此浏览器删除。条目仍在，你可以再从来源打开。',
+  'settings.reader.removed': '《{title}》已从此浏览器完全移除——文件和条目都删除了。',
 };

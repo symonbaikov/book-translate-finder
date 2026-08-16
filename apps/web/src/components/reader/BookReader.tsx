@@ -3,41 +3,65 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   acquireFromFile,
+  acquireFromStored,
+  acquireFromUrl,
   asFoliateFile,
+  forgetBookFile,
   installContentFramePolicy,
+  keepBookFile,
+  libraryEntryOf,
+  listLibrary,
   loadFoliate,
+  readBookFile,
+  rememberBook,
   renderFirstPage,
   titleOf,
+  AcquisitionError,
   type AcquiredBook,
   type ContentFramePolicy,
   type FoliateView,
+  type LibraryEntry,
 } from '@golden/reader';
 import { useT } from '../../i18n/I18nProvider';
+import { outcomeOfWrite } from '../../lib/setting-change';
+import { useSettingChangeToast } from '../../lib/settings-toast';
+import { takeHandoff } from '../../lib/reader-handoff';
 import { Button, cx } from '../../ui';
+import { ReaderLibrary } from './ReaderLibrary';
 import styles from './BookReader.module.css';
 
 type State =
   | { kind: 'idle' }
-  | { kind: 'opening' }
-  | { kind: 'open'; book: AcquiredBook; title: string | null }
+  | { kind: 'opening'; host?: string }
+  | { kind: 'open'; book: AcquiredBook; title: string | null; keepFile: boolean }
+  /** The source would not hand the file over. Not an error message — a fork in the road. */
+  | { kind: 'blocked'; host: string; url: string }
   | { kind: 'failed'; reason: string };
 
 /**
- * The reading surface.
+ * The reading surface, and the four ways a book reaches it.
  *
- * Everything here happens in this tab. There is no API client in this component and there is not
- * allowed to be one — `pnpm boundaries` refuses the import, because "just the resume position"
- * is how the endpoint that would end ADR-0013 §1 gets written.
+ * A URL the reader followed from a work page, a file they picked, a file they dropped, or bytes this
+ * browser kept for them. All four end in the same place, and none of them involves this instance:
+ * there is no API client in this component and `pnpm boundaries` refuses the import, because "just
+ * the resume position" is how the endpoint that would end ADR-0013 §1 gets written.
  *
- * What this file is *not* yet: the acquisition flow (11.4), stored progress (11.5), themes and
- * type (11.6), or the entry points that lead here (11.7). It opens a book from the device, so that
- * the route's policy and the engine probe can be exercised end to end rather than argued about.
+ * The fifth way — asking this site to fetch the file — does not exist and will not be added. When a
+ * source declines to share with the browser, the `blocked` state says so and offers the two paths
+ * that work; see ADR-0013 §7 for why an honest dead end beats a proxy.
  */
 export function BookReader() {
   const t = useT();
+  const announce = useSettingChangeToast();
   const viewRef = useRef<FoliateView | null>(null);
   const [state, setState] = useState<State>({ kind: 'idle' });
   const [policy, setPolicy] = useState<ContentFramePolicy | null>(null);
+  const [library, setLibrary] = useState<readonly LibraryEntry[]>([]);
+  const [dragging, setDragging] = useState(false);
+
+  const refreshLibrary = useCallback(() => {
+    void listLibrary().then(setLibrary);
+  }, []);
 
   // The probe runs once, before any book is opened: the frame is created during `open()`, and an
   // attribute decided after that would apply to the next book instead of this one.
@@ -46,31 +70,105 @@ export function BookReader() {
     void installContentFramePolicy().then((installed) => {
       if (live) setPolicy(installed);
     });
+    refreshLibrary();
     return () => {
       live = false;
     };
-  }, []);
+  }, [refreshLibrary]);
 
-  const open = useCallback(async (file: File) => {
-    setState({ kind: 'opening' });
-    try {
-      const book = await acquireFromFile(file);
+  const render = useCallback(
+    async (book: AcquiredBook, keepFile: boolean): Promise<void> => {
       await loadFoliate();
       const view = viewRef.current;
       if (!view) throw new Error('the reading surface is not mounted');
       await view.open(asFoliateFile(book));
       await renderFirstPage(view);
-      setState({ kind: 'open', book, title: titleOf(view.book?.metadata) });
-    } catch (error) {
-      setState({
-        kind: 'failed',
-        reason: error instanceof Error ? error.message : String(error),
-      });
-    }
-  }, []);
+      const title = titleOf(view.book?.metadata);
+      // Recorded on every open so the reader can find their way back. The *file* is not kept — that
+      // is a separate, explicit choice (ADR-0013 §4), so an existing entry keeps its own answer.
+      await rememberBook({ ...libraryEntryOf(book, title, Date.now()), keepFile });
+      refreshLibrary();
+      setState({ kind: 'open', book, title, keepFile });
+    },
+    [refreshLibrary],
+  );
 
-  // Arrow keys live on the host document rather than inside the book's frame — on WebKit that frame
-  // may be the one that hears nothing (spike 11.1b), and page turns must work there too.
+  const openFile = useCallback(
+    async (file: File): Promise<void> => {
+      setState({ kind: 'opening' });
+      try {
+        await render(await acquireFromFile(file), false);
+      } catch (error) {
+        setState({ kind: 'failed', reason: describe(error) });
+      }
+    },
+    [render],
+  );
+
+  const openUrl = useCallback(
+    async (url: string): Promise<void> => {
+      const host = hostOf(url);
+      setState({ kind: 'opening', host });
+      try {
+        await render(await acquireFromUrl(url), false);
+      } catch (error) {
+        // `unreachable` is the CORS case *and* the offline case — the browser reports both as the
+        // same opaque failure, and this application refuses to guess between them (errors.ts).
+        if (error instanceof AcquisitionError && error.reason === 'unreachable') {
+          setState({ kind: 'blocked', host, url });
+          return;
+        }
+        setState({ kind: 'failed', reason: describe(error) });
+      }
+    },
+    [render],
+  );
+
+  const openKept = useCallback(
+    async (entry: LibraryEntry): Promise<void> => {
+      setState({ kind: 'opening' });
+      try {
+        const bytes = await readBookFile(entry.hash);
+        // A browser under storage pressure evicts silently, so "the entry says kept" and "the bytes
+        // are still there" are two different facts.
+        if (!bytes) throw new Error('this browser no longer has the file');
+        await render(await acquireFromStored(bytes, entry.hash), true);
+      } catch (error) {
+        setState({ kind: 'failed', reason: describe(error) });
+      }
+    },
+    [render],
+  );
+
+  // A link from a work page hands the address over in `sessionStorage`, a shared link in the URL
+  // fragment. Never a query string: that would put the book's address in this instance's access log
+  // before any of this code ran (ADR-0013 §1, lib/reader-handoff.ts).
+  useEffect(() => {
+    const handed = takeHandoff();
+    if (handed) void openUrl(handed);
+  }, [openUrl]);
+
+  async function toggleKeepFile(keep: boolean): Promise<void> {
+    if (state.kind !== 'open') return;
+    const title = state.title ?? t('reader.untitled');
+    const stored = keep
+      ? await keepBookFile(state.book.hash, state.book.bytes)
+      : await forgetBookFile(state.book.hash);
+
+    announce({
+      setting: 'reader.keepFile',
+      outcome: outcomeOfWrite(stored, keep ? 'set' : 'clear'),
+      title: t('settings.reader.title'),
+      detail: keep
+        ? t('settings.reader.kept', { title })
+        : t('settings.reader.forgotten', { title }),
+    });
+    // Snapped back to what storage actually did rather than to what was clicked: a quota failure
+    // must not leave a checkbox claiming the file is kept.
+    setState({ ...state, keepFile: stored ? keep : state.keepFile });
+    refreshLibrary();
+  }
+
   useEffect(() => {
     function onKey(event: KeyboardEvent): void {
       if (state.kind !== 'open') return;
@@ -82,9 +180,22 @@ export function BookReader() {
   }, [state.kind]);
 
   return (
-    <div className={styles.wrap}>
+    <div
+      className={styles.wrap}
+      onDragOver={(event) => {
+        event.preventDefault();
+        setDragging(true);
+      }}
+      onDragLeave={() => setDragging(false)}
+      onDrop={(event) => {
+        event.preventDefault();
+        setDragging(false);
+        const file = event.dataTransfer.files[0];
+        if (file) void openFile(file);
+      }}
+    >
       {state.kind !== 'open' && (
-        <div className={styles.intro}>
+        <div className={cx(styles.intro, dragging && styles.dragging)}>
           <p className={styles.privacy}>{t('reader.privacy')}</p>
           <label className={styles.picker}>
             <span className={styles.pickerLabel}>{t('reader.chooseFile')}</span>
@@ -93,15 +204,29 @@ export function BookReader() {
               accept=".epub,.fb2,.fbz,.mobi,.azw3,.cbz"
               onChange={(event) => {
                 const file = event.target.files?.[0];
-                if (file) void open(file);
+                if (file) void openFile(file);
               }}
             />
           </label>
-          <p className={styles.formats}>{t('reader.formats')}</p>
-          {state.kind === 'opening' && <p aria-live="polite">{t('reader.loading')}</p>}
+          <p className={styles.formats}>
+            {t('reader.dropHere')} — {t('reader.formats')}
+          </p>
+
+          {state.kind === 'opening' && (
+            <p aria-live="polite">
+              {state.host ? t('reader.fetching', { host: state.host }) : t('reader.loading')}
+            </p>
+          )}
           {state.kind === 'failed' && (
             <p className="error-box">{t('reader.failed', { reason: state.reason })}</p>
           )}
+          {state.kind === 'blocked' && <Blocked host={state.host} url={state.url} />}
+
+          <ReaderLibrary
+            entries={library}
+            onOpen={(entry) => void openKept(entry)}
+            onChanged={refreshLibrary}
+          />
         </div>
       )}
 
@@ -117,10 +242,10 @@ export function BookReader() {
         </div>
       )}
 
-      {/* Hidden by class rather than by the `hidden` attribute, and that is not a style
-          preference: React stringifies props on a custom element, so `hidden={false}` renders as
+      {/* Hidden by class rather than by the `hidden` attribute, and that is not a style preference:
+          React stringifies props on a custom element, so `hidden={false}` renders as
           `hidden="false"` — and HTML's `hidden` hides on the attribute's *presence*, whatever its
-          value. The element is kept mounted either way, because unmounting it would throw away the
+          value. The element stays mounted either way, because unmounting it would throw away the
           book on every state change. */}
       <foliate-view
         ref={(element: FoliateView | null) => {
@@ -128,6 +253,20 @@ export function BookReader() {
         }}
         class={cx(styles.view, state.kind !== 'open' && styles.viewEmpty)}
       />
+
+      {state.kind === 'open' && (
+        <label className={styles.keep}>
+          <input
+            type="checkbox"
+            checked={state.keepFile}
+            onChange={(event) => void toggleKeepFile(event.target.checked)}
+          />
+          <span>
+            {t('reader.keepFile')}
+            <span className={styles.formats}> {t('reader.keepFileHint')}</span>
+          </span>
+        </label>
+      )}
 
       {/* Which of the two walls is holding, in the one place a developer will look for it. Not a
           reader-facing string: it says nothing they can act on, and it is not translated. */}
@@ -138,4 +277,40 @@ export function BookReader() {
       ) : null}
     </div>
   );
+}
+
+/**
+ * The dead end, written as a fork in the road rather than as an apology.
+ *
+ * There is deliberately no "try again through the site" button here. The only thing behind one would
+ * be a server-side fetch — the single route ADR-0013 forbids — and offering it would make every
+ * sentence above it untrue.
+ */
+function Blocked({ host, url }: { host: string; url: string }) {
+  const t = useT();
+  return (
+    <div className={styles.blocked}>
+      <h2 className={styles.blockedTitle}>{t('reader.blockedTitle', { host })}</h2>
+      <p>{t('reader.blockedBody')}</p>
+      <p>
+        <a href={url} download rel="noopener noreferrer">
+          {t('reader.blockedDownload', { host })}
+        </a>{' '}
+        — {t('reader.blockedOpenHere')}
+      </p>
+      <p className={styles.formats}>{t('reader.blockedAddon')}</p>
+    </div>
+  );
+}
+
+function hostOf(url: string): string {
+  try {
+    return new URL(url).host;
+  } catch {
+    return url;
+  }
+}
+
+function describe(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }

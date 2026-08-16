@@ -401,4 +401,32 @@ export const fr: Dictionary = {
   'reader.failed': 'Ce livre n’a pas pu être ouvert : {reason}',
   'reader.previous': 'Page précédente',
   'reader.next': 'Page suivante',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…ou déposez un livre ici',
+  'reader.fetching': 'Demande du fichier à {host}…',
+  'reader.blockedTitle': '{host} n’a pas transmis le fichier à cette page',
+  'reader.blockedBody':
+    'Soit il est injoignable, soit il n’autorise pas les autres sites à lire ses fichiers. Ce site ne le récupérera pas à votre place : votre livre ne passe jamais par lui, et c’est tout l’intérêt de lire ici.',
+  'reader.blockedDownload': 'Le télécharger depuis {host}',
+  'reader.blockedOpenHere': 'puis l’ouvrir ici depuis votre appareil',
+  'reader.blockedAddon': 'Un module qui sert le fichier lui-même convient aussi.',
+  'reader.keepFile': 'Conserver ce livre dans ce navigateur',
+  'reader.keepFileHint':
+    'Désactivé par défaut. Sans cela le fichier disparaît à la fermeture de l’onglet ; avec, il reste uniquement sur cet appareil.',
+  'reader.library': 'Conservé dans ce navigateur',
+  'reader.libraryEmpty':
+    'Rien de conservé pour l’instant. Les livres conservés restent sur cet appareil et ne sont jamais envoyés ailleurs.',
+  'reader.libraryOpen': 'Ouvrir',
+  'reader.libraryRemove': 'Retirer',
+  'reader.libraryFileKept': 'fichier conservé',
+  'reader.libraryFileGone': 'fichier non conservé',
+  'reader.untitled': 'Livre sans titre',
+  'settings.reader.title': 'Livres dans ce navigateur',
+  'settings.reader.kept':
+    '« {title} » est maintenant conservé sur cet appareil et s’ouvre sans nouveau téléchargement. Rien n’est envoyé ailleurs.',
+  'settings.reader.forgotten':
+    'Le fichier de « {title} » a été supprimé de ce navigateur. L’entrée reste : vous pouvez le rouvrir depuis sa source.',
+  'settings.reader.removed':
+    '« {title} » a été entièrement retiré de ce navigateur — le fichier et l’entrée.',
 };

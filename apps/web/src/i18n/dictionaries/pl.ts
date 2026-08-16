@@ -384,4 +384,32 @@ export const pl: Dictionary = {
   'reader.failed': 'Nie udało się otworzyć tej książki: {reason}',
   'reader.previous': 'Poprzednia strona',
   'reader.next': 'Następna strona',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…albo przeciągnij książkę tutaj',
+  'reader.fetching': 'Prosimy {host} o plik…',
+  'reader.blockedTitle': '{host} nie przekazał pliku tej stronie',
+  'reader.blockedBody':
+    'Albo jest nieosiągalny, albo nie pozwala innym witrynom czytać swoich plików. Ta strona nie pobierze go za ciebie: twoja książka nigdy przez nią nie przechodzi i o to właśnie chodzi w czytaniu tutaj.',
+  'reader.blockedDownload': 'Pobierz z {host}',
+  'reader.blockedOpenHere': 'i otwórz tutaj ze swojego urządzenia',
+  'reader.blockedAddon': 'Zadziała też dodatek, który sam udostępnia plik.',
+  'reader.keepFile': 'Zachowaj tę książkę w tej przeglądarce',
+  'reader.keepFileHint':
+    'Domyślnie wyłączone. Bez tego plik znika po zamknięciu karty; z tym zostaje wyłącznie na tym urządzeniu.',
+  'reader.library': 'Zachowane w tej przeglądarce',
+  'reader.libraryEmpty':
+    'Na razie nic nie zachowano. Zachowane książki zostają na tym urządzeniu i nigdzie nie są wysyłane.',
+  'reader.libraryOpen': 'Otwórz',
+  'reader.libraryRemove': 'Usuń',
+  'reader.libraryFileKept': 'plik zachowany',
+  'reader.libraryFileGone': 'plik niezachowany',
+  'reader.untitled': 'Książka bez tytułu',
+  'settings.reader.title': 'Książki w tej przeglądarce',
+  'settings.reader.kept':
+    '„{title}” jest teraz zachowana na tym urządzeniu i otwiera się bez ponownego pobierania. Nigdzie nie jest wysyłana.',
+  'settings.reader.forgotten':
+    'Plik „{title}” został usunięty z tej przeglądarki. Wpis pozostaje — możesz otworzyć książkę ponownie ze źródła.',
+  'settings.reader.removed':
+    '„{title}” została usunięta z tej przeglądarki całkowicie — plik i wpis.',
 };
