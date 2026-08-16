@@ -38,7 +38,7 @@ https://github.com/user-attachments/assets/c40bea3a-45d8-4d47-a307-cf80b05f7d39
 
 Golden Library acts as an open, universal front-end for global digital archives, public domains, and community-curated book repositories.
 
-- **No Paywalls or Walled Gardens:** Bring your own search mirrors (e.g., Anna's Archive, LibGen, OpenLibrary) to index millions of public domain and open-access books instantly.
+- **No Paywalls or Walled Gardens:** Bring your own custom search templates or domain mirrors using simple URL placeholders ({title}, {isbn}) to query your preferred digital catalogs.
 - **Uncensored Search Engine:** You control where the search queries go. Bypasses restricted regional catalog views by letting you use your preferred domain mirrors.
 - **Community Presets Available:** Don't want to configure sources manually? Grab ready-to-use search templates directly from our [Telegram Channel](https://t.me/YOUR_CHANNEL).
 
