@@ -164,6 +164,8 @@ export const ja: Dictionary = {
   'search.noFreeResults':
     'これらの中に無料で入手できるものはまだありません — フィルターを解除してみてください。',
   'home.tagline': '次の一冊、あなたの代表作を見つける',
+  'home.genres': '人気のジャンル',
+  'home.genresBlurb': '本が最も多く集まっているタグです。それぞれのタグからカタログを開けます。',
   'subject.allLanguages': 'すべての言語。',
   'subject.filteredByLanguage': '{language}の版がある本のみ。',
   'subject.dropLanguageFilter': 'すべての言語を表示',

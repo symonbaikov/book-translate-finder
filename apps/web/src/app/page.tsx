@@ -1,5 +1,6 @@
 import { FeaturedBooks } from '../components/FeaturedBooks';
 import { FreeBooks } from '../components/FreeBooks';
+import { GenreChips } from '../components/GenreChips';
 import { Recommendations } from '../components/Recommendations';
 import { SearchBox } from '../components/SearchBox';
 import { getLocale, getT } from '../i18n/server';
@@ -22,6 +23,10 @@ export default async function HomePage() {
         <p className={styles.subtitle}>{t('home.subtitle')}</p>
         <SearchBox />
       </div>
+      {/* Directly under the search box, and above every list of books: someone who cannot name a
+          title can still name a genre, and this is the only way into the catalogue that does not
+          require knowing what you are looking for. */}
+      <GenreChips />
       {/* Above the curated lists: a returning reader's own trail is more useful than an
           editor's pick, and a first-time visitor sees nothing here at all. */}
       <Recommendations />

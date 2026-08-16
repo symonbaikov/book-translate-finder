@@ -105,6 +105,7 @@ export { backfillJobId as backfillQueryJobId } from './backfill-job-id.js';
 export {
   BrowseBySubject,
   ListSubjects,
+  isGenreTag,
   subjectCacheKey,
   type BrowseBySubjectDeps,
   type BrowseBySubjectInput,
