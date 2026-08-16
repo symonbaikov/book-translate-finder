@@ -112,6 +112,7 @@ export const ar: Dictionary = {
   'compare.rowPublisher': 'الناشر',
   'compare.rowTranslator': 'المترجم',
   'compare.rowTranslatedFrom': 'مترجم عن',
+  'compare.rowEditionStatement': 'الطبعة',
   'compare.rowBinding': 'التجليد',
   'compare.rowPages': 'الصفحات',
   'compare.rowIsbn': 'ردمك',

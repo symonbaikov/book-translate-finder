@@ -115,6 +115,7 @@ export const ko: Dictionary = {
   'compare.rowPublisher': '출판사',
   'compare.rowTranslator': '옮긴이',
   'compare.rowTranslatedFrom': '원어',
+  'compare.rowEditionStatement': '판',
   'compare.rowBinding': '제본',
   'compare.rowPages': '쪽수',
   'compare.rowIsbn': 'ISBN',

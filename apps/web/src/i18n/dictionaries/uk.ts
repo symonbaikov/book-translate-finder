@@ -124,6 +124,7 @@ export const uk: Dictionary = {
   'compare.rowPublisher': 'Видавництво',
   'compare.rowTranslator': 'Перекладач',
   'compare.rowTranslatedFrom': 'Переклад з мови',
+  'compare.rowEditionStatement': 'Видання',
   'compare.rowBinding': 'Оправа',
   'compare.rowPages': 'Сторінок',
   'compare.rowIsbn': 'ISBN',

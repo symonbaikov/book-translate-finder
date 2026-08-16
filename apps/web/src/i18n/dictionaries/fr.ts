@@ -127,6 +127,7 @@ export const fr: Dictionary = {
   'compare.rowPublisher': 'Éditeur',
   'compare.rowTranslator': 'Traducteur',
   'compare.rowTranslatedFrom': 'Traduit du',
+  'compare.rowEditionStatement': 'Édition',
   'compare.rowBinding': 'Reliure',
   'compare.rowPages': 'Pages',
   'compare.rowIsbn': 'ISBN',

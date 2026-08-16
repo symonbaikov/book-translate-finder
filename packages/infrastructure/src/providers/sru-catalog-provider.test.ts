@@ -1,11 +1,17 @@
 import type { CachePort } from '@golden/domain';
 import { describe, expect, it, vi } from 'vitest';
 import type { ResilientFetcher } from '../http/resilient-fetch.js';
+import { romanizationSkeleton, sameNamePart } from './catalog-record.js';
 import {
   cleanCatalogName,
   cleanCatalogTitle,
   createBnfProvider,
   createDnbProvider,
+  createK10plusProvider,
+  createLibrisProvider,
+  createLocProvider,
+  createMelindaProvider,
+  createSwisscoveryProvider,
   extractIsbn,
   extractPages,
 } from './sru-catalog-provider.js';
@@ -252,5 +258,234 @@ describe('SruCatalogProvider', () => {
     const provider = createDnbProvider(fetcher, makeCache(), 'ua');
 
     await expect(provider.searchWorks({ text: 'Vodolazkin Laurus' })).rejects.toThrow(/503/);
+  });
+});
+
+/** The same book as `LAURUS` above, in the MARCXML the union catalogues really send. */
+const LAURUS_MARC = `
+  <leader>     cam a22      c 4500</leader>
+  <controlfield tag="001">1929616341</controlfield>
+  <controlfield tag="008">160702s2016    gw ||||| m    00| ||ger c</controlfield>
+  <datafield tag="020" ind1=" " ind2=" "><subfield code="a">9783038200277</subfield></datafield>
+  <datafield tag="041" ind1=" " ind2=" ">
+    <subfield code="a">ger</subfield><subfield code="h">rus</subfield>
+  </datafield>
+  <datafield tag="100" ind1="1" ind2=" ">
+    <subfield code="a">Vodolazkin, Evgenij Germanovič</subfield><subfield code="4">aut</subfield>
+  </datafield>
+  <datafield tag="245" ind1="1" ind2="0">
+    <subfield code="a">Laurus :</subfield><subfield code="b">Roman /</subfield>
+    <subfield code="c">Evgenij Vodolazkin</subfield>
+  </datafield>
+  <datafield tag="250" ind1=" " ind2=" ">
+    <subfield code="a">Limitierte, signierte Auflage</subfield>
+  </datafield>
+  <datafield tag="264" ind1=" " ind2="1">
+    <subfield code="b">Dörlemann</subfield><subfield code="c">2016</subfield>
+  </datafield>
+  <datafield tag="300" ind1=" " ind2=" "><subfield code="a">414 Seiten</subfield></datafield>
+  <datafield tag="700" ind1="1" ind2=" ">
+    <subfield code="a">Radetzkaja, Olga</subfield><subfield code="4">trl</subfield>
+  </datafield>
+`;
+
+function marcResponse(records: string[]): string {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+    <zs:searchRetrieveResponse xmlns:zs="http://www.loc.gov/zing/srw/">
+      <zs:numberOfRecords>${records.length}</zs:numberOfRecords>
+      <zs:records>${records
+        .map(
+          (record) =>
+            `<zs:record><zs:recordData><record xmlns="http://www.loc.gov/MARC21/slim">${record}</record></zs:recordData></zs:record>`,
+        )
+        .join('')}</zs:records>
+    </zs:searchRetrieveResponse>`;
+}
+
+describe('SruCatalogProvider over MARCXML', () => {
+  it('puts the edition statement on the edition, which the Dublin Core path cannot', async () => {
+    // The point of the whole MARC path: a signed limited printing is now distinguishable from the
+    // twelfth reprint of the same book by the same publisher.
+    const provider = createK10plusProvider(
+      fetcherReturning(marcResponse([LAURUS_MARC])),
+      makeCache(),
+      'ua',
+    );
+
+    const [work] = await provider.searchWorks({ text: 'Vodolazkin Laurus' });
+    const [edition] = await provider.fetchEditions(work!.externalId);
+
+    expect(edition).toMatchObject({
+      title: 'Laurus',
+      language: 'ger',
+      publisher: 'Dörlemann',
+      year: 2016,
+      isbn13: '9783038200277',
+      pages: 414,
+      editionStatement: 'Limitierte, signierte Auflage',
+    });
+  });
+
+  it('names the translator and the original language from the relator code and 041 $h', async () => {
+    const provider = createLocProvider(
+      fetcherReturning(marcResponse([LAURUS_MARC])),
+      makeCache(),
+      'ua',
+    );
+
+    const [work] = await provider.searchWorks({ text: 'Vodolazkin Laurus' });
+    const [edition] = await provider.fetchEditions(work!.externalId);
+
+    // Neither fact needs the catalogue's own wording: `trl` and `041 $h` mean the same in every
+    // language, which is why a new MARC catalogue costs a config object and no new regexes.
+    expect(edition).toMatchObject({ translator: 'Olga Radetzkaja', translatedFrom: 'rus' });
+  });
+
+  it('still refuses a record by somebody else, exactly as the Dublin Core path does', async () => {
+    const byAnother = LAURUS_MARC.replace(
+      'Vodolazkin, Evgenij Germanovič',
+      'Maslennikova, Angelina',
+    );
+    const provider = createLibrisProvider(
+      fetcherReturning(marcResponse([byAnother])),
+      makeCache(),
+      'ua',
+    );
+
+    await expect(provider.searchWorks({ text: 'Vodolazkin Laurus' })).resolves.toEqual([]);
+  });
+
+  it('asks each catalogue in its own query language', async () => {
+    const k10plus = fetcherReturning(marcResponse([LAURUS_MARC]));
+    await createK10plusProvider(k10plus, makeCache(), 'ua').searchWorks({
+      text: 'Vodolazkin Laurus',
+    });
+    expect(String(vi.mocked(k10plus.fetch).mock.calls[0]?.[0])).toContain(
+      'pica.all%3DVodolazkin+and+pica.all%3DLaurus',
+    );
+
+    const loc = fetcherReturning(marcResponse([LAURUS_MARC]));
+    await createLocProvider(loc, makeCache(), 'ua').searchWorks({ text: 'Vodolazkin Laurus' });
+    // ANDed rather than sent as a phrase: the gateway matches a phrase literally, and a title plus
+    // an author is not a phrase anybody catalogued (verified live — it returns nothing).
+    expect(String(vi.mocked(loc.fetch).mock.calls[0]?.[0])).toContain(
+      'cql.serverChoice%3DVodolazkin+and+cql.serverChoice%3DLaurus',
+    );
+  });
+});
+
+describe('the union catalogues added last', () => {
+  it('asks Melinda and swisscovery in each one’s own query language', async () => {
+    const melinda = fetcherReturning(marcResponse([LAURUS_MARC]));
+    await createMelindaProvider(melinda, makeCache(), 'ua').searchWorks({
+      text: 'Vodolazkin Laurus',
+    });
+    expect(String(vi.mocked(melinda.fetch).mock.calls[0]?.[0])).toContain(
+      'cql.serverChoice%3DVodolazkin+and+cql.serverChoice%3DLaurus',
+    );
+
+    const swiss = fetcherReturning(marcResponse([LAURUS_MARC]));
+    await createSwisscoveryProvider(swiss, makeCache(), 'ua').searchWorks({
+      text: 'Vodolazkin Laurus',
+    });
+    // Alma's all-fields index, ANDed per word so the catalogue narrows to the book itself.
+    expect(String(vi.mocked(swiss.fetch).mock.calls[0]?.[0])).toContain(
+      'alma.all_for_ui%3D%22Vodolazkin%22+and+alma.all_for_ui%3D%22Laurus%22',
+    );
+  });
+
+  it('reads both as MARC, so an edition statement survives', async () => {
+    const provider = createMelindaProvider(
+      fetcherReturning(marcResponse([LAURUS_MARC])),
+      makeCache(),
+      'ua',
+    );
+
+    const [work] = await provider.searchWorks({ text: 'Vodolazkin Laurus' });
+    const [edition] = await provider.fetchEditions(work!.externalId);
+
+    expect(edition).toMatchObject({
+      editionStatement: 'Limitierte, signierte Auflage',
+      translator: 'Olga Radetzkaja',
+      translatedFrom: 'rus',
+    });
+  });
+});
+
+describe('matching a name across romanization systems', () => {
+  it('folds every spelling of Глуховский onto one', () => {
+    // The four a reader could meet: K10plus, the Library of Congress, an English jacket, and this
+    // project's own romanizer. Without this, «Метро 2034» is twelve records at K10plus that the
+    // relevance check throws away, and the card shows zero editions for a book the source has.
+    const spellings = ['gluchovskij', 'glukhovskiĭ', 'glukhovsky', 'glukhovskii'];
+    const skeletons = new Set(spellings.map(romanizationSkeleton));
+    expect(skeletons).toEqual(new Set(['gluhovski']));
+  });
+
+  it.each([
+    ['gluchovskij', 'glukhovskii'],
+    ['alekseevič', 'alekseevich'],
+    ['dmitrij', 'dmitrii'],
+    ['dostoyevsky', 'dostoevskii'],
+    ['tolstoy', 'tolstoi'],
+    ['chekhov', 'čechov'],
+    // The tail a language adds, which is what this check originally existed for.
+    ['prilepine', 'prilepin'],
+  ])('treats %s and %s as the same person', (a, b) => {
+    expect(sameNamePart(a, b)).toBe(true);
+  });
+
+  it.each([
+    ['carroll', 'lewis'],
+    ['bulgakov', 'prilepin'],
+    ['tolstoy', 'turgenev'],
+    ['maslennikova', 'vodolazkin'],
+    ['steiner', 'dostoevsky'],
+  ])('still keeps %s and %s apart', (a, b) => {
+    expect(sameNamePart(a, b)).toBe(false);
+  });
+});
+
+describe('a numbered series is not one book', () => {
+  it('refuses the volume next to the one asked for', async () => {
+    // Asked for «Метро 2034», K10plus and the DNB return Metro 2033 and Metro 2035 too — different
+    // novels by the same author with the same title, which is precisely what the search's own
+    // `hasConflictingNumbers` rule exists for. It was never applied on the enrichment path, so all
+    // three were filed as editions of one book.
+    const sequel = LAURUS_MARC.replace(
+      '<subfield code="a">Laurus :</subfield>',
+      '<subfield code="a">Metro 2033 :</subfield>',
+    );
+    const asked = LAURUS_MARC.replace(
+      '<subfield code="a">Laurus :</subfield>',
+      '<subfield code="a">Metro 2034 :</subfield>',
+    );
+    const provider = createK10plusProvider(
+      fetcherReturning(marcResponse([sequel, asked])),
+      makeCache(),
+      'ua',
+    );
+
+    const [work] = await provider.searchWorks({ text: 'Metro 2034 Vodolazkin' });
+    const editions = await provider.fetchEditions(work!.externalId);
+
+    expect(editions.map((edition) => edition.title)).toEqual(['Metro 2034']);
+  });
+
+  it('keeps a record whose title carries no number to disagree about', async () => {
+    // An omnibus or a plain reprint has nothing to conflict on, and dropping it would cost real
+    // editions to catch a problem it does not have.
+    const omnibus = LAURUS_MARC.replace(
+      '<subfield code="a">Laurus :</subfield>',
+      '<subfield code="a">Metro - Die Trilogie :</subfield>',
+    );
+    const provider = createK10plusProvider(
+      fetcherReturning(marcResponse([omnibus])),
+      makeCache(),
+      'ua',
+    );
+
+    const [work] = await provider.searchWorks({ text: 'Metro 2034 Vodolazkin' });
+    expect(work).toBeDefined();
   });
 });

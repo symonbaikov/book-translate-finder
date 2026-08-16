@@ -12,7 +12,9 @@ Related documents: [architecture.md](architecture.md) · [rules.md](rules.md) ·
 **Phase 1 (MVP) is fully complete** — 0, 1.0–1.6 all closed (hypothesis confirmed, see
 [coverage-phase0.md](research/coverage-phase0.md)). **Phase 2 is partially closed**: tasks
 #67–69 (Open Library Lending, source priority, load testing) are done and
-verified live; WorldCat/Index Translationum/AWS CI-CD are blocked by external constraints,
+verified live, and the "at least 3 sources" goal is now met — by six library catalogues over open
+keyless protocols, read as MARC21 so that rare and collector's printings are distinguishable at
+all, rather than by WorldCat; WorldCat/Index Translationum/AWS CI-CD remain blocked by external constraints,
 documented honestly in the "Blockers" section of Phase 2, not silently swapped out. **Phase 3 is
 closed to the extent achievable without a live owner**: open-source documents, API documentation,
 seeding the popular core, security audit, and live UX testing with fixes — done;
@@ -616,6 +618,124 @@ practice).
   "Data source: …". A live check on the real stack (Postgres + running `apps/api` +
   `apps/web`): `GET /api/works/:id` returned `sources: ["google-books", "open-library"]`, the page
   rendered "Data source: google-books, open-library".
+- ✅ Four more edition catalogues, and MARC21 as the format they are read in — **K10plus** (the
+  German union catalogue: what several hundred libraries actually own, against the DNB's deposit
+  copies — 78 records for Vodolazkin against 9), the **Library of Congress** (the English-language
+  catalogue none of the continental ones could be), **LIBRIS** (Sweden) and the **National Library
+  of Poland** (its own JSON API rather than SRU, with MARC embedded in each record). The first
+  three are the same `SruCatalogProvider` with a different config object; none of them required a
+  change to a use case. Reading them as MARC rather than Dublin Core is what puts the edition
+  statement, the translator's relator code and the language-of-original on an edition — see the
+  Definition of Done below for the measured effect and `packages/infrastructure/src/providers/marc-record.ts`
+  for why those three fields specifically. Two problems found only by running against the real
+  endpoints, both fixed: the shared XML parser trims the leading blanks off the MARC leader, whose
+  positions are absolute — read unpadded, _no_ record is a monograph and the parser silently
+  returns nothing; and LIBRIS answers 400 to an unquoted term carrying an apostrophe
+  ("Alice's"), which quoting fixes without changing any other result.
+- ✅ Two more sources, of two different kinds, plus a correctness fix to the previous batch.
+  **Wikisource** is the first new _link_ source rather than a bibliographic one: it holds free full
+  texts in dozens of languages, and it is reached through Wikidata's sitelinks, so one request
+  yields every language at once. It lives inside `WikidataProvider` rather than in an adapter of
+  its own, because finding the right Wikisource page means first knowing which Wikidata item the
+  book is — the hardest thing that class does (the label search answers "Crime and Punishment" with
+  a 1984 video game) — and a separate provider would have had to duplicate it. The link is
+  attributed to `wikisource`, which is already on `DOWNLOAD_ALLOWLIST`, so no policy change and no
+  ADR were needed. A Wikisource text is always its _own_ edition, never a link bolted onto an
+  existing one: two texts in one language are routinely two different translations, and hanging a
+  `public_domain` download off a modern in-copyright translation would be precisely the claim
+  docs/legal-policy.md exists to prevent. **NDL (Japan)** adds Japanese and Chinese editions, which
+  no other source here reaches; it works because the NDL records a romanized author and title
+  alongside the Japanese ones, in the same Anglo-American tradition Open Library follows.
+  Measured live on _Alice's Adventures in Wonderland_, on the real stack: 228 editions in **15**
+  languages (de, en, eo, fr, hu, it, ja, ko, la, pl, pt, ru, sv, uk, zh) against 6 before this
+  phase's source work began, and 5 free legal full-text links where Project Gutenberg alone had
+  offered English only.
+- ✅ **Fixed: catalogues without an all-fields index were attaching the wrong books.** Found by
+  reading the rows rather than counting them, and worth recording because counting looked fine.
+  The Polish National Library adapter shipped in the previous batch asked `author=<word>` for
+  several words of the query, which for _Alice's Adventures in Wonderland Carroll, Lewis_ meant
+  asking for books by an author called "Lewis" — so _Liar's Poker_ by Michael Lewis, _The
+  Magician's Nephew_ by C. S. Lewis and _American English for Poles_ were all filed as editions of
+  Carroll's novel, and the author check waved every one through because their author genuinely is
+  called Lewis. 83 rows on one work, of which about two were the book. The fix is structural
+  (`splitQueryHalves`): a query is split into the words that name the book and the words that name
+  the author, both halves always reach the catalogue, and a record is judged only against the words
+  the catalogue was actually asked about. Both catalogues index the _original_ title alongside the
+  translated one, which is what makes this work across languages —
+  `author=Carroll&title=Alice` at the Polish library returns "Alice's adventures in Wonderland
+  (pol.)". After the fix the same work's Polish records are 48, and a random sample of twelve is
+  twelve editions of _Alice_, from 1938 to 2012. The bad rows were deleted from the dev database.
+- 🚫 **National Library of Norway — investigated and deliberately not added.** `api.nb.no` offers no
+  field-scoped search: `creator:Carroll AND title:Alice` returns 0, and the only working form is a
+  full-text query over the digitized corpus — 3501 hits for "Carroll AND Alice" even filtered to
+  books, with a _biography_ of Carroll ranking above actual editions. The safeguard that makes the
+  Polish and Japanese catalogues safe cannot be built against it, and shipping it would knowingly
+  repeat the failure described in the item above. Recorded rather than quietly dropped: it was
+  agreed to as part of this batch.
+- ✅ Three more sources, and the first change to the legal policy since it was written.
+  **Melinda** (the Finnish union catalogue) and **swisscovery** (the Swiss one) are two more
+  `SruCatalogProvider` config objects — MARCXML, field-scoped AND verified live. swisscovery is
+  the most marginal source here and is recorded as such: it overlaps K10plus in German and the BnF
+  in French, and earns its place only on Swiss imprints and Italian-language holdings.
+  **Gallica**, the BnF's digital library, is the interesting one: it is the first source that hands
+  a reader a free legal copy in French, and adding it required
+  [ADR-0013](adr/0013-gallica-download-allowlist.md), because putting a provider on
+  `DOWNLOAD_ALLOWLIST` is a legal decision (docs/legal-policy.md §5). The case rests on a
+  distinction [ADR-0011](adr/0011-access-label-is-not-a-rights-statement.md) already drew: Gallica
+  states `dc:rights` per record ("domaine public"), which is a claim about the work, not an access
+  label. So a record that says so gets a download link and a record that says nothing gets the
+  edition and no link — and Gallica is deliberately _not_ added to
+  `CHARTERED_PUBLIC_DOMAIN_PROVIDERS`, so the 95-year plausibility guard still applies on top.
+  Measured live on _Alice's Adventures in Wonderland_: **286 editions in 17 languages**, and 13
+  free legal full-text links across Gutenberg, Wikisource and Gallica — including French printings
+  of 1869, 1908 and 1910, which are rare editions in every sense this project cares about.
+- ✅ **Fixed: a source correcting a title broke that book's sync permanently.** The edition natural
+  key is derived from the title, publisher, year, language and ISBN, so a corrected title is a new
+  natural key for the same row — while `SyncWorkFromSource` still resolves the row through
+  `external_ref` and hands back its original id. The insert then found no natural-key conflict,
+  inserted, and died on the primary key: `duplicate key value violates unique constraint
+"edition_pkey"`, on every retry, forever. Latent since the schema existed and surfaced only
+  because a parser fix changed some titles (`Alices &#xE4;ventyr i underlandet` → `Alices äventyr
+i underlandet` — several catalogues escape their records twice, so a character reference survived
+  into the database). `PgEditionRepository.save` now updates in place when the row already exists
+  under that id, and keeps the previous insert-on-conflict path so a _new_ id carrying an existing
+  natural key still merges rather than duplicating. Covered by the shared repository contract
+  suite, so it is checked against both the in-memory fake and real Postgres.
+- ✅ **Fixed: Russian books showed zero editions while the catalogues plainly had them.** Reported
+  from the live app on «Метро 2034» — a card reading "0 of 0" and "This book was written in
+  English" about a Russian novel. Three independent causes, each found by following the data rather
+  than the code:
+  1. **Romanization systems disagree, and the relevance check compared them literally.** The
+     catalogues had the book: K10plus answers this project's own romanized query with twelve
+     records — under `Gluchovskij, Dmitrij Alekseevič`, while the query asked about
+     `Glukhovskii`. The Library of Congress writes `Glukhovskiĭ`, an English jacket
+     `Glukhovsky`. No two share a prefix, so every record was discarded as "by somebody else".
+     `sameNamePart` now compares a **romanization skeleton** — diacritics resolved, the digraphs
+     that stand for one Cyrillic letter folded together (`kh`/`ch` → `h`), `j`/`y` read as `i` —
+     under which all four spellings become `gluhovski`. Effect on that book: **0 → 24 editions in
+     7 languages**.
+  2. **The original language ignored the field that states it.** `inferOriginalLanguage` worked
+     from the earliest edition's language and fell back to English; Open Library holds this book
+     as two editions, French and German, both `language: "und"`, and the work record declares no
+     language — so English it was. The German record says `translated_from: rus` outright. That
+     field is now consulted first, by majority when editions disagree.
+  3. **A numbered series was treated as one book.** Asked for «Метро 2034» the catalogues also
+     return Metro 2033 and Metro 2035 — different novels — and all of them were filed as editions
+     of this one. `hasConflictingNumbers`, the domain rule already written for exactly this shape
+     and already used by search, is now applied on the enrichment path too.
+- ✅ **Fixed: a source added today never reached a book found yesterday.** Enrichment ran in
+  exactly one place — `ProcessBackfillJob`, at the moment a book is first discovered — so every
+  catalogue added in this phase was asked about new books only, and the several hundred works
+  already in the database would have kept whatever thin edition list they were created with,
+  permanently. It is the reason «Метро 2034» showed zero editions while seven of the new
+  catalogues held it. `RefreshStaleWorks` now enqueues the enrichment list alongside the discovery
+  one on its nightly pass, each enrichment job carrying `attachToWorkId` — which is precisely why
+  it could not simply be added before: asked without a work id, the BnF answers «Обитель» with
+  "L'archipel des Solovki", misses the natural key and creates a second, half-empty book, every
+  night. The sync queue payload gained the optional field; the discovery half deliberately still
+  goes without it, so a re-run can also correct a work's own metadata. Cost: one job per source
+  per stale work — 20 rather than 6 at the time of writing — with `REFRESH_BATCH_SIZE` as the
+  lever, documented in `.env.example`.
 - 🚫 CI/CD on GitHub Actions: image builds, auto-deploy to AWS, tag-based rollback — blocked:
   this session has no AWS account/credentials, see "Blockers" below. Building and publishing
   images to GHCR (without auto-deploy to specific infrastructure) was already done in Phase 1.6 —
@@ -680,16 +800,37 @@ honestly" option instead of substituting another source/task without warning):
 
 ### Definition of Done
 
-- [ ] At least 3 sources connected, each a separate adapter, use cases unchanged when
-      adding them (verified by diff). **Not met**: still 2 (Open Library, Google
-      Books) — the third (WorldCat) is blocked, see above. What was actually done within the
-      existing sources: Open Library Lending availability (task #67) and source priority
-      on field conflicts (task #68) — both expand completeness and correctness within
-      the current two sources, not a third source.
+- [x] At least 3 sources connected, each a separate adapter, use cases unchanged when
+      adding them (verified by diff). **Met** — by a different route than the plan assumed, which
+      is worth stating plainly: WorldCat stayed blocked and nothing was substituted for it under
+      its name. What was connected instead is **six library catalogues over open, keyless
+      protocols** — BnF and DNB over SRU/Dublin Core, then K10plus, the Library of Congress and
+      LIBRIS over SRU/MARCXML, and the National Library of Poland over its own JSON API — plus
+      Wikidata, Gutenberg and LibriVox as separate adapters. `SyncWorkFromSource` and
+      `ProcessBackfillJob` were not touched to add any of them: a catalogue is a config object
+      and a line in the worker's provider map, which is the Open/Closed claim of Phase 1.1
+      actually being cashed in.
+- [x] **Rare and collector's editions are visible.** Not in the original plan, added because the
+      complaint was real: the two Dublin Core catalogues could describe _that_ a printing exists
+      but not _which_ printing, since Dublin Core has no edition-statement element. Reading the
+      catalogues as MARC21 instead puts `250` ("First edition", "Limited ed., signed", "Izd. 2-e,
+      ispr. i dop."), `700 $4 trl` (translator by relator code rather than by a regex over German
+      or French prose) and `041 $h` (the language translated from) onto the edition. Measured live
+      on the real endpoints (records offered by the providers, before the sync deduplicates them
+      into the catalog), «Мастер и Маргарита»: 26 editions in 4 languages from the two old
+      catalogues → 156 in 12 languages from all six, 17 of them carrying an edition statement
+      where none did before. «Alice's Adventures in Wonderland»: 65 editions in 6 languages →
+      203 in 9, with 31 edition statements (286 in 17 once the last three sources landed — see
+      below). The Library of Congress alone contributes 94 of the
+      Carroll ones, which no previously wired source could see at all. (These provider-level counts
+      predate the `splitQueryHalves` fix recorded above, which narrows what the Polish catalogue
+      offers to what is actually the right book — the language and edition-statement gains stand,
+      the Polish record count does not.)
 - [ ] Re-measuring completeness on the Phase 0 sample: growth in the share of books with ≥ 3 translations; target ≥ 70 %.
-      Not performed — the target metric is tied to connecting new sources (WorldCat/Index
-      Translationum), which are blocked; re-measuring the same pair of sources would give no
-      new signal.
+      **Still not performed** — the full 50-book sample was not re-run, and the per-book numbers
+      recorded above are spot checks on two titles, not that measurement. Worth stating rather
+      than blurring: the four new catalogues make the re-measurement finally worth doing (it was
+      pointless while the source set was unchanged), but doing it is its own task.
 - [ ] A dump import survives the process being killed midway and resumes correctly. Not
       applicable — the only dump-based import in the plan (Index Translationum) is blocked.
 - [ ] A push to `main` automatically delivers the change to the environment; rollback rehearsed. Not

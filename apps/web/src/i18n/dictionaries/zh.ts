@@ -110,6 +110,7 @@ export const zh: Dictionary = {
   'compare.rowPublisher': '出版社',
   'compare.rowTranslator': '译者',
   'compare.rowTranslatedFrom': '译自',
+  'compare.rowEditionStatement': '版本',
   'compare.rowBinding': '装帧',
   'compare.rowPages': '页数',
   'compare.rowIsbn': 'ISBN',

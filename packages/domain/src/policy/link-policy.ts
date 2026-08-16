@@ -63,6 +63,11 @@ const DOWNLOAD_ALLOWLIST: ReadonlySet<string> = new Set([
   // ADR-0004. Unlike the others this is not a repository we trust wholesale: each entry names the
   // page where the author or publisher grants the permission, and is reviewed one book at a time.
   'authorized-free',
+  // The BnF's own digital library (ADR-0013). Deliberately absent from
+  // `CHARTERED_PUBLIC_DOMAIN_PROVIDERS` below: its corpus is *not* public domain by charter, so a
+  // link is emitted only for a record whose own `dc:rights` says so, and the plausibility guard
+  // still applies on top of that.
+  'gallica',
 ]);
 
 /**

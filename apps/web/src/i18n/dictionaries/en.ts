@@ -137,6 +137,7 @@ export const en = {
   'compare.rowPublisher': 'Publisher',
   'compare.rowTranslator': 'Translator',
   'compare.rowTranslatedFrom': 'Translated from',
+  'compare.rowEditionStatement': 'Edition',
   'compare.rowBinding': 'Binding',
   'compare.rowPages': 'Pages',
   'compare.rowIsbn': 'ISBN',

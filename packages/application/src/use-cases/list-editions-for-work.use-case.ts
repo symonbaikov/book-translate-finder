@@ -43,6 +43,9 @@ export interface EditionSummaryDto {
   coverUrl: string | null;
   pages: number | null;
   binding: string | null;
+  /** How this printing differs from the others, as the catalogue words it: "First edition",
+   * "Limited ed., signed". Null for every source that is not a MARC library catalogue. */
+  editionStatement: string | null;
   /** How many legal source links this edition has — lets the list surface "where to get it"
    * upfront instead of hiding it behind a per-edition expand (Phase 3 live-UX finding). */
   linkCount: number;
@@ -130,6 +133,7 @@ export class ListEditionsForWork implements UseCase<
         coverUrl: edition.coverUrl,
         pages: edition.pages,
         binding: edition.binding,
+        editionStatement: edition.editionStatement,
         linkCount: linkCounts.get(edition.id) ?? 0,
         // Every edition now has shops: without an ISBN they are searched by title + author.
         hasBookstores: true,

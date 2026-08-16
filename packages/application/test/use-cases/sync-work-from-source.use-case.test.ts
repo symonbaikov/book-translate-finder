@@ -653,6 +653,106 @@ describe('SyncWorkFromSource original language', () => {
     const work = await workRepository.findById(result.workId!);
     expect(work?.originalLanguage.value).toBe('ru');
   });
+
+  it('believes an edition that says what it was translated from', async () => {
+    // «Метро 2034» as Open Library really holds it: two editions, French and German, both 2009,
+    // both with `language: "und"`, and a work record declaring no language at all. Every heuristic
+    // came up empty and the card announced "This book was written in English" about a Russian
+    // novel — while the German record said `translated_from: rus` outright.
+    const provider = new FakeBookMetadataProvider(
+      [
+        {
+          externalId: '/works/OL16796783W',
+          title: 'Метро 2034',
+          authorNames: ['Дмитрий Глуховский'],
+          languages: [],
+          firstPublishedYear: 2009,
+          editionCount: 2,
+          coverUrl: null,
+        },
+      ],
+      {
+        '/works/OL16796783W': [
+          {
+            externalId: '/books/OL49817253M',
+            title: 'Metro 2034',
+            language: 'und',
+            coverUrl: null,
+            translator: null,
+            translatedFrom: null,
+            publisher: "l'atalante",
+            year: 2009,
+            isbn13: '9782253083016',
+            isbn10: null,
+            rightsSignal: 'unknown',
+          },
+          {
+            externalId: '/books/OL25417901M',
+            title: 'Metro 2034',
+            language: 'und',
+            coverUrl: null,
+            translator: null,
+            translatedFrom: 'rus',
+            publisher: 'Heyne',
+            year: 2009,
+            isbn13: '9783453533011',
+            isbn10: null,
+            rightsSignal: 'unknown',
+          },
+        ],
+      },
+    );
+    const { deps, workRepository } = makeDeps(provider);
+
+    const result = await new SyncWorkFromSource(deps).execute({
+      source: 'open-library',
+      query: 'Метро 2034 Глуховский',
+    });
+
+    const work = await workRepository.findById(result.workId!);
+    expect(work?.originalLanguage.value).toBe('ru');
+  });
+
+  it('does not let one mis-catalogued record outvote the rest', async () => {
+    const editionsFrom = (codes: readonly (string | null)[]): ProviderEdition[] =>
+      codes.map((translatedFrom, index) => ({
+        externalId: `/books/OL${index}M`,
+        title: 'Metro 2034',
+        language: 'und',
+        coverUrl: null,
+        translator: null,
+        translatedFrom,
+        publisher: 'A publisher',
+        year: 2009,
+        isbn13: null,
+        isbn10: null,
+        rightsSignal: 'unknown' as const,
+      }));
+
+    const provider = new FakeBookMetadataProvider(
+      [
+        {
+          externalId: '/works/OL1W',
+          title: 'Метро 2034',
+          authorNames: ['Дмитрий Глуховский'],
+          languages: [],
+          firstPublishedYear: 2009,
+          editionCount: 4,
+          coverUrl: null,
+        },
+      ],
+      { '/works/OL1W': editionsFrom(['rus', 'rus', 'fre', 'rus']) },
+    );
+    const { deps, workRepository } = makeDeps(provider);
+
+    const result = await new SyncWorkFromSource(deps).execute({
+      source: 'open-library',
+      query: 'Метро 2034 Глуховский',
+    });
+
+    const work = await workRepository.findById(result.workId!);
+    expect(work?.originalLanguage.value).toBe('ru');
+  });
 });
 
 describe('SyncWorkFromSource cross-script search', () => {

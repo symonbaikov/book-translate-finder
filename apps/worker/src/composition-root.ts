@@ -8,10 +8,18 @@ import {
   AuthorizedFreeProvider,
   GutenbergProvider,
   LibriVoxProvider,
+  GallicaProvider,
+  NdlProvider,
   OpenLibraryProvider,
+  PolishLibraryProvider,
   WikidataProvider,
   createBnfProvider,
   createDnbProvider,
+  createK10plusProvider,
+  createLibrisProvider,
+  createLocProvider,
+  createMelindaProvider,
+  createSwisscoveryProvider,
   PgEditionRepository,
   PgExternalRefRepository,
   PgSourceLinkRepository,
@@ -44,6 +52,65 @@ export const REGISTERED_SOURCES = [
   'authorized-free',
   'librivox',
   'google-books',
+  'wikidata',
+] as const;
+
+/**
+ * Sources asked about a book somebody else has already identified, never allowed to decide for
+ * themselves which book they answered (`attachToWorkId`).
+ *
+ * Used in two places, and it has to be the same list in both: `ProcessBackfillJob` runs them once,
+ * when a book is first discovered, and `RefreshStaleWorks` runs them again on the nightly pass.
+ * Without the second, a catalogue added today is asked about every book found from today onward
+ * and about none of the books already in the database — which is exactly how «Метро 2034» sat at
+ * zero editions while seven of these catalogues held it.
+ */
+// Sources that run even when another one already found the work, because each answers a
+// question no other can: Gutenberg is the only one that yields downloadable files, and the
+// two national library catalogues are the only ones that know a contemporary novel came out
+// in French or German at all — with the publisher, the ISBN and the translator's name, which
+// is the fact this project promises and open bibliographic data almost never carries.
+//
+// Wikidata was already a *discovery* source and is now an enrichment one too, which is a
+// separate job: discovery asks "does this book exist", enrichment asks "what languages is it
+// in", and it was only ever being asked the first. Measured over five books
+// (scripts/measure-wikidata-languages.ts), it adds languages nobody else here had — nine to
+// Le petit prince, including Kinyarwanda, Xhosa, Wolof and Zulu, and three to Dracula.
+//
+// It is worth stating what it does not do, since it is easy to read the above as a fix: on
+// «Метро 2033» — the book whose thin language list prompted the measurement — Wikidata holds
+// no editions at all and contributes exactly nothing. This widens good coverage; it does not
+// rescue bad coverage.
+//
+// The catalogues added after the first two are all edition catalogues too, and each was
+// added because it holds printings the others do not: K10plus is a *union* catalogue where the
+// DNB is a deposit library, so it holds what several hundred libraries actually own — the
+// out-of-print, the numbered and the limited (measured live: 78 records for Vodolazkin against
+// the DNB's 9). The Library of Congress is the English-language counterpart none of the
+// continental ones could be. LIBRIS, the Polish National Library and the National Diet Library
+// of Japan each answer in languages no other source here has — the NDL reaches Japanese and
+// Chinese editions through the romanized author and title it records alongside the originals.
+// All but the NDL are read as MARC, which is what finally puts the edition
+// statement — "First edition", "Limited ed., signed" — on the card: Dublin Core has no element
+// for it, so through the BnF and the DNB a collector's printing is indistinguishable from the
+// twelfth reprint.
+//
+// Order is cost, not priority: the enrichment loop asks all of them and merges, so the cheap
+// and near-certain sources go first and the catalogues, which are a round trip each, follow.
+export const ENRICHMENT_SOURCES = [
+  'gutenberg',
+  'authorized-free',
+  'librivox',
+  'bnf',
+  'dnb',
+  'k10plus',
+  'loc',
+  'libris',
+  'melinda',
+  'swisscovery',
+  'bn-poland',
+  'ndl',
+  'gallica',
   'wikidata',
 ] as const;
 
@@ -89,6 +156,14 @@ export function buildWorkerContext(env: WorkerEnv): WorkerContext {
     ['wikidata', new WikidataProvider(fetcher, cache, userAgent)],
     ['bnf', createBnfProvider(fetcher, cache, userAgent)],
     ['dnb', createDnbProvider(fetcher, cache, userAgent)],
+    ['k10plus', createK10plusProvider(fetcher, cache, userAgent)],
+    ['loc', createLocProvider(fetcher, cache, userAgent)],
+    ['libris', createLibrisProvider(fetcher, cache, userAgent)],
+    ['melinda', createMelindaProvider(fetcher, cache, userAgent)],
+    ['swisscovery', createSwisscoveryProvider(fetcher, cache, userAgent)],
+    ['bn-poland', new PolishLibraryProvider(fetcher, cache, userAgent)],
+    ['ndl', new NdlProvider(fetcher, cache, userAgent)],
+    ['gallica', new GallicaProvider(fetcher, cache, userAgent)],
   ]);
 
   const clock = new SystemClock();
@@ -115,29 +190,14 @@ export function buildWorkerContext(env: WorkerEnv): WorkerContext {
     syncQueue,
     clock,
     sources: REGISTERED_SOURCES,
+    enrichmentSources: ENRICHMENT_SOURCES,
   });
 
   const processBackfillJob = new ProcessBackfillJob({
     syncWorkFromSource,
     cache,
     sources: REGISTERED_SOURCES,
-    // Sources that run even when another one already found the work, because each answers a
-    // question no other can: Gutenberg is the only one that yields downloadable files, and the
-    // two national library catalogues are the only ones that know a contemporary novel came out
-    // in French or German at all — with the publisher, the ISBN and the translator's name, which
-    // is the fact this project promises and open bibliographic data almost never carries.
-    //
-    // Wikidata was already a *discovery* source and is now an enrichment one too, which is a
-    // separate job: discovery asks "does this book exist", enrichment asks "what languages is it
-    // in", and it was only ever being asked the first. Measured over five books
-    // (scripts/measure-wikidata-languages.ts), it adds languages nobody else here had — nine to
-    // Le petit prince, including Kinyarwanda, Xhosa, Wolof and Zulu, and three to Dracula.
-    //
-    // It is worth stating what it does not do, since it is easy to read the above as a fix: on
-    // «Метро 2033» — the book whose thin language list prompted the measurement — Wikidata holds
-    // no editions at all and contributes exactly nothing. This widens good coverage; it does not
-    // rescue bad coverage.
-    enrichmentSources: ['gutenberg', 'authorized-free', 'librivox', 'bnf', 'dnb', 'wikidata'],
+    enrichmentSources: ENRICHMENT_SOURCES,
   });
 
   return {

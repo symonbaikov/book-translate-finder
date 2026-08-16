@@ -403,6 +403,10 @@ function EditionCard({
           {edition.publisher ? ` · ${edition.publisher}` : ''}
           {edition.year ? ` · ${edition.year}` : ''}
           {edition.translator ? ` · ${t('work.translatedBy', { name: edition.translator })}` : ''}
+          {/* Verbatim from the catalogue, and unlabelled for the same reason `binding` is: it is
+              already a phrase in the cataloguer's own words ("First edition", "Limited ed.,
+              signed"), and a label in front of it would be the only translated word in the line. */}
+          {edition.editionStatement ? ` · ${edition.editionStatement}` : ''}
           {edition.binding ? ` · ${edition.binding}` : ''}
           {edition.pages ? ` · ${t('work.pages', { count: edition.pages })}` : ''}
           {edition.isbn ? ` · ISBN ${edition.isbn}` : ''}

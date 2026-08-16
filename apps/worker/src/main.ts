@@ -20,7 +20,10 @@ async function main(): Promise<void> {
 
   const syncWorker = new Worker(
     'sync',
-    async (job: Job<{ source: string; query: string }>) => {
+    // `attachToWorkId` is optional and comes only from the nightly refresh's enrichment half —
+    // `POST /api/sync/:source` and the discovery half both omit it, and a job without it keeps
+    // deciding for itself which book it answered, exactly as before.
+    async (job: Job<{ source: string; query: string; attachToWorkId?: string }>) => {
       const result = await ctx.syncWorkFromSource.execute(job.data);
       logger.info({ jobId: job.id, ...result }, 'sync job processed');
       return result;

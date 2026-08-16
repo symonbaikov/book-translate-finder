@@ -29,10 +29,19 @@ export { AuthorizedFreeProvider } from './providers/authorized-free-provider.js'
 export { LibriVoxProvider } from './providers/librivox-provider.js';
 export { OpenLibraryProvider } from './providers/open-library-provider.js';
 export { WikidataProvider } from './providers/wikidata-provider.js';
+export { GallicaProvider } from './providers/gallica-provider.js';
+export { NdlProvider } from './providers/ndl-provider.js';
+export { PolishLibraryProvider } from './providers/polish-library-provider.js';
 export {
   createBnfProvider,
   createDnbProvider,
+  createK10plusProvider,
+  createLibrisProvider,
+  createLocProvider,
+  createMelindaProvider,
+  createSwisscoveryProvider,
   SruCatalogProvider,
+  type CatalogFormat,
   type SruCatalogConfig,
 } from './providers/sru-catalog-provider.js';
 

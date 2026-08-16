@@ -366,6 +366,7 @@ export class SyncWorkFromSource implements UseCase<
         coverUrl: providerEdition.coverUrl,
         pages: providerEdition.pages ?? null,
         binding: providerEdition.binding ?? null,
+        editionStatement: providerEdition.editionStatement ?? null,
       });
     await this.deps.editionRepository.save(edition);
     await this.deps.externalRefRepository.save(editionExternalRef, 'edition', edition.id);
@@ -457,8 +458,13 @@ export class SyncWorkFromSource implements UseCase<
   /**
    * The original language can't be read directly off a search result — Open Library's `language`
    * field lists every language the work has been published in, not which one came first
-   * (docs/research/coverage-phase0.md). Heuristic: the language of the earliest-dated edition
-   * among what was actually fetched, since a translation can't predate its original.
+   * (docs/research/coverage-phase0.md). In order of how much they can be trusted:
+   *
+   * 1. An edition stating what it was translated **from** — a fact, not an inference.
+   * 2. The language of the earliest-dated edition fetched, since a translation cannot predate its
+   *    original. A heuristic, and wrong whenever this instance holds only translations.
+   * 3. The source's own declared languages.
+   * 4. English.
    *
    * When no edition can answer, the source's own declared languages are tried before English.
    * That matters for a source that knows the answer outright and has no editions to infer it
@@ -470,6 +476,17 @@ export class SyncWorkFromSource implements UseCase<
     editions: ProviderEdition[],
     declaredLanguages: readonly string[] = [],
   ): LanguageCode {
+    // An edition that says what it was translated *from* has stated the original language
+    // outright, and no heuristic beats being told. Checked first for that reason, and because the
+    // heuristics below are at their worst exactly where this field is at its most common — a book
+    // this instance knows only through its translations. «Метро 2034» is on Open Library as two
+    // editions, French and German, both 2009 and both with `language: "und"`: the earliest-edition
+    // rule could not read them, the work record declares no language, and the card ended up
+    // announcing "This book was written in English" about a Russian novel. The German record says
+    // `translated_from: rus` in as many words.
+    const stated = this.mostCommonTranslatedFrom(editions);
+    if (stated) return stated;
+
     let best: { year: number; language: LanguageCode } | null = null;
     for (const edition of editions) {
       if (edition.year === null) continue;
@@ -486,6 +503,31 @@ export class SyncWorkFromSource implements UseCase<
       if (language) return language;
     }
     return LanguageCode.create(FALLBACK_LANGUAGE);
+  }
+
+  /**
+   * The language the editions agree they were translated from, if they agree at all.
+   *
+   * By count rather than first-seen: a single mis-catalogued record should not decide what
+   * language a book was written in when a dozen others say otherwise. A tie keeps whichever was
+   * seen first, which is arbitrary but bounded — a tie means the sources genuinely disagree, and
+   * there is nothing better to go on.
+   */
+  private mostCommonTranslatedFrom(editions: readonly ProviderEdition[]): LanguageCode | null {
+    const counts = new Map<string, { language: LanguageCode; count: number }>();
+    for (const edition of editions) {
+      const language = this.tryParseLanguage(edition.translatedFrom);
+      if (!language) continue;
+      const entry = counts.get(language.value);
+      if (entry) entry.count += 1;
+      else counts.set(language.value, { language, count: 1 });
+    }
+
+    let best: { language: LanguageCode; count: number } | null = null;
+    for (const entry of counts.values()) {
+      if (best === null || entry.count > best.count) best = entry;
+    }
+    return best?.language ?? null;
   }
 
   private async recordSyncLog(

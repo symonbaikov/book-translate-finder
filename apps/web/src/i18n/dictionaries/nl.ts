@@ -117,6 +117,7 @@ export const nl: Dictionary = {
   'compare.rowPublisher': 'Uitgeverij',
   'compare.rowTranslator': 'Vertaler',
   'compare.rowTranslatedFrom': 'Vertaald uit',
+  'compare.rowEditionStatement': 'Editie',
   'compare.rowBinding': 'Band',
   'compare.rowPages': "Pagina's",
   'compare.rowIsbn': 'ISBN',

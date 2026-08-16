@@ -217,3 +217,149 @@ describe('WikidataProvider', () => {
     await expect(provider.searchWorks({ text: 'anything' })).rejects.toThrow(/503/);
   });
 });
+
+/**
+ * Routes the three requests `fetchEditions` now makes: the entity search, the SPARQL edition
+ * query, and the sitelinks lookup that finds the free texts.
+ */
+function makeSitelinkFetcher(options: {
+  sparql?: Record<string, string>[];
+  sitelinks?: Record<string, { title: string; url: string }>;
+  sitelinksStatus?: number;
+}): ResilientFetcher {
+  return {
+    fetch: vi.fn(async (url: string) => {
+      if (url.includes('wbgetentities')) {
+        if (options.sitelinksStatus && options.sitelinksStatus !== 200) {
+          return new Response('', { status: options.sitelinksStatus });
+        }
+        return new Response(
+          JSON.stringify({ entities: { Q165318: { sitelinks: options.sitelinks ?? {} } } }),
+          { status: 200 },
+        );
+      }
+      if (url.includes('api.php')) {
+        return new Response(JSON.stringify({ search: [{ id: 'Q165318' }] }), { status: 200 });
+      }
+      return new Response(
+        JSON.stringify({ results: { bindings: (options.sparql ?? []).map(bind) } }),
+        { status: 200 },
+      );
+    }),
+  };
+}
+
+const RU_TEXT = {
+  title: 'Преступление и наказание (Достоевский)',
+  url: '//ru.wikisource.org/wiki/%D0%9F%D1%80%D0%B5%D1%81%D1%82%D1%83%D0%BF%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5',
+};
+
+describe('WikidataProvider — Wikisource full texts', () => {
+  it('adds one free edition per Wikisource language, attributed to wikisource', async () => {
+    // The attribution is not bookkeeping: `wikisource` is on LinkPolicy's DOWNLOAD_ALLOWLIST and
+    // `wikidata` is not, so a link left under the discovering provider's name would be refused —
+    // rightly, since Wikidata hosts no texts at all.
+    const provider = new WikidataProvider(
+      makeSitelinkFetcher({ sitelinks: { ruwikisource: RU_TEXT } }),
+      makeCache(),
+      'ua',
+    );
+
+    const editions = await provider.fetchEditions('Q165318');
+
+    expect(editions).toHaveLength(1);
+    expect(editions[0]).toMatchObject({
+      language: 'ru',
+      title: 'Преступление и наказание (Достоевский)',
+      rightsSignal: 'public_domain',
+      publisher: null,
+      year: null,
+    });
+    expect(editions[0]?.links).toEqual([
+      {
+        type: 'download',
+        url: 'https://ru.wikisource.org/wiki/%D0%9F%D1%80%D0%B5%D1%81%D1%82%D1%83%D0%BF%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5',
+        provider: 'wikisource',
+        format: 'HTML',
+      },
+    ]);
+  });
+
+  it('never hangs a free download off an edition somebody else described', async () => {
+    // Two texts in one language are routinely two different translations: the lapsed one on
+    // Wikisource and a modern one still in copyright. Merging them would have this project state
+    // that a copyrighted translation is free to take.
+    const provider = new WikidataProvider(
+      makeSitelinkFetcher({
+        sparql: [
+          {
+            ed: item('Q111'),
+            edLabel: 'Преступление и наказание',
+            langCode: 'ru',
+            date: '+2019-00-00T00:00:00Z',
+            publisherLabel: 'Азбука',
+          },
+        ],
+        sitelinks: { ruwikisource: RU_TEXT },
+      }),
+      makeCache(),
+      'ua',
+    );
+
+    const editions = await provider.fetchEditions('Q165318');
+
+    expect(editions).toHaveLength(2);
+    const modern = editions.find((edition) => edition.publisher === 'Азбука');
+    expect(modern?.links).toBeUndefined();
+    expect(modern?.rightsSignal).toBe('unknown');
+  });
+
+  it('strips a namespace prefix that is cataloguing apparatus, not a title', async () => {
+    const provider = new WikidataProvider(
+      makeSitelinkFetcher({
+        sitelinks: {
+          itwikisource: {
+            title: 'Opera:Le avventure di Alice nel Paese delle Meraviglie',
+            url: '//it.wikisource.org/wiki/Opera:Le_avventure',
+          },
+        },
+      }),
+      makeCache(),
+      'ua',
+    );
+
+    const editions = await provider.fetchEditions('Q165318');
+    expect(editions[0]?.title).toBe('Le avventure di Alice nel Paese delle Meraviglie');
+  });
+
+  it('skips the wikis that name no single language', async () => {
+    const provider = new WikidataProvider(
+      makeSitelinkFetcher({
+        sitelinks: {
+          wikisource: { title: 'Old', url: '//wikisource.org/wiki/Old' },
+          mulwikisource: { title: 'Multi', url: '//mul.wikisource.org/wiki/Multi' },
+          enwiki: { title: 'Crime and Punishment', url: '//en.wikipedia.org/wiki/Crime' },
+        },
+      }),
+      makeCache(),
+      'ua',
+    );
+
+    await expect(provider.fetchEditions('Q165318')).resolves.toEqual([]);
+  });
+
+  it('keeps the editions it already has when the sitelinks lookup fails', async () => {
+    const provider = new WikidataProvider(
+      makeSitelinkFetcher({
+        sparql: [{ ed: item('Q111'), edLabel: 'Crime and Punishment', langCode: 'en' }],
+        sitelinksStatus: 503,
+      }),
+      makeCache(),
+      'ua',
+    );
+
+    const editions = await provider.fetchEditions('Q165318');
+    expect(editions).toHaveLength(1);
+    expect(editions[0]?.links).toBeUndefined();
+  });
+});

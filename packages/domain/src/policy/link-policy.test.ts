@@ -99,7 +99,7 @@ describe('assertLinkAllowed — I-1 download requires allowlisted provider + pub
     ).toThrow(IllegalDownloadLinkError);
   });
 
-  it.each(['gutenberg', 'internet-archive', 'wikisource', 'standard-ebooks'])(
+  it.each(['gutenberg', 'internet-archive', 'wikisource', 'standard-ebooks', 'gallica'])(
     'allows every allowlisted download provider: %s',
     (provider) => {
       expect(() =>
@@ -237,7 +237,13 @@ describe('policy lists are change-controlled (docs/legal-policy.md §5)', () => 
     // Changing this test is the trip-wire: any edit to the allow/deny lists must also touch
     // this assertion, forcing a deliberate review (and, per policy, a dedicated ADR) rather than
     // a silent change buried in an unrelated PR.
-    const allowlistedProviders = ['gutenberg', 'internet-archive', 'wikisource', 'standard-ebooks'];
+    const allowlistedProviders = [
+      'gutenberg',
+      'internet-archive',
+      'wikisource',
+      'standard-ebooks',
+      'gallica',
+    ];
     for (const provider of allowlistedProviders) {
       expect(() =>
         assertLinkAllowed(baseCandidate({ provider: ProviderId.create(provider) })),
@@ -267,5 +273,36 @@ describe('policy lists are change-controlled (docs/legal-policy.md §5)', () => 
         ),
       ).toThrow(ForbiddenSourceError);
     }
+  });
+});
+
+describe('assertLinkAllowed — Gallica is allowlisted but not chartered (ADR-0013)', () => {
+  const gallicaCandidate = (overrides: Partial<LinkCandidate> = {}): LinkCandidate =>
+    baseCandidate({
+      provider: ProviderId.create('gallica'),
+      url: 'https://gallica.bnf.fr/ark:/12148/bpt6k10733944',
+      ...overrides,
+    });
+
+  it('allows a download of a work old enough for the BnF’s public domain claim to hold', () => {
+    expect(() =>
+      assertLinkAllowed(gallicaCandidate({ workFirstPublishedYear: 1865 })),
+    ).not.toThrow();
+  });
+
+  it('still refuses a public domain claim about a work young enough to be in copyright', () => {
+    // The point of leaving Gallica out of CHARTERED_PUBLIC_DOMAIN_PROVIDERS: its corpus is not
+    // public domain by charter — it hosts in-copyright material under agreement too — so the
+    // 95-year plausibility guard is not switched off merely because the source is a national
+    // library. Gutenberg, whose whole corpus *is* public domain by charter, is exempt; Gallica
+    // is not.
+    expect(() => assertLinkAllowed(gallicaCandidate({ workFirstPublishedYear: 2015 }))).toThrow(
+      ImplausiblePublicDomainClaimError,
+    );
+    expect(() =>
+      assertLinkAllowed(
+        baseCandidate({ provider: ProviderId.create('gutenberg'), workFirstPublishedYear: 2015 }),
+      ),
+    ).not.toThrow();
   });
 });

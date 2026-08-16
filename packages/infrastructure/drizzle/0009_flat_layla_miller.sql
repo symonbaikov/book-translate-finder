@@ -1,0 +1,1 @@
+ALTER TABLE "edition" ADD COLUMN "edition_statement" text;

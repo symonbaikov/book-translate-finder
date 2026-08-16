@@ -125,6 +125,7 @@ export const ru: Dictionary = {
   'compare.rowPublisher': 'Издательство',
   'compare.rowTranslator': 'Переводчик',
   'compare.rowTranslatedFrom': 'Перевод с языка',
+  'compare.rowEditionStatement': 'Издание',
   'compare.rowBinding': 'Переплёт',
   'compare.rowPages': 'Страниц',
   'compare.rowIsbn': 'ISBN',

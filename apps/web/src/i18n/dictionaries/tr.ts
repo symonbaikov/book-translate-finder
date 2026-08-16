@@ -116,6 +116,7 @@ export const tr: Dictionary = {
   'compare.rowPublisher': 'Yayınevi',
   'compare.rowTranslator': 'Çevirmen',
   'compare.rowTranslatedFrom': 'Çevrildiği dil',
+  'compare.rowEditionStatement': 'Baskı',
   'compare.rowBinding': 'Cilt',
   'compare.rowPages': 'Sayfa',
   'compare.rowIsbn': 'ISBN',
