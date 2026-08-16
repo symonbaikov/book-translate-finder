@@ -35,7 +35,7 @@ import {
   type LibraryEntry,
 } from '@golden/reader';
 import { useT } from '../../i18n/I18nProvider';
-import { outcomeOfWrite } from '../../lib/setting-change';
+import { outcomeOfSessionWrite, outcomeOfWrite } from '../../lib/setting-change';
 import { useSettingChangeToast } from '../../lib/settings-toast';
 import { takeHandoff } from '../../lib/reader-handoff';
 import { clearDisplay, readDisplay, writeDisplay } from '../../lib/reader-display';
@@ -266,7 +266,9 @@ export function BookReader() {
       if (!stored && announceFailureFor) {
         announce({
           setting: 'reader.position',
-          outcome: 'unstored',
+          // Derived, not named: `outcomeOfWrite` is the one place that decides what a failed write
+          // is called, and a second place would drift from it (CLAUDE.md).
+          outcome: outcomeOfWrite(stored, 'set'),
           title: t('settings.reader.positionTitle'),
           detail: t('settings.reader.positionUnstored', { title: announceFailureFor }),
         });
@@ -362,14 +364,18 @@ export function BookReader() {
   }
 
   function changeDisplay(next: DisplaySettings, label: string, value: string): void {
+    // Re-choosing what is already chosen is not a change, and a popup for it is wallpaper
+    // (CLAUDE.md). A `<select>` fires whether or not the value moved.
+    if (JSON.stringify(next) === JSON.stringify(display)) return;
     const stored = writeDisplay(next);
     // Applied either way: refusing to show the reader what they just chose because the browser will
-    // not remember it for next time would be a second, worse failure. The popup says it will not
-    // last; the screen does what they asked.
+    // not remember it for next time would be a second, worse failure. The screen does what they
+    // asked, and `session` is the outcome that says exactly that — this page holds the preference in
+    // memory, so a refused write is not "nothing happened" (setting-change.ts).
     setDisplay(next);
     announce({
       setting: `reader.display.${label}`,
-      outcome: outcomeOfWrite(stored, 'set'),
+      outcome: outcomeOfSessionWrite(stored, 'set'),
       title: t('settings.reader.displayTitle'),
       detail: t('settings.reader.displayChanged', { setting: label, value }),
     });
@@ -380,7 +386,7 @@ export function BookReader() {
     setDisplay(DEFAULT_DISPLAY);
     announce({
       setting: 'reader.display.reset',
-      outcome: outcomeOfWrite(cleared, 'clear'),
+      outcome: outcomeOfSessionWrite(cleared, 'clear'),
       title: t('settings.reader.displayTitle'),
       detail: t('settings.reader.displayReset'),
     });
@@ -398,7 +404,7 @@ export function BookReader() {
     announce({
       setting: 'reader.keepFile',
       outcome: outcomeOfWrite(stored, keep ? 'set' : 'clear'),
-      title: t('settings.reader.title'),
+      title: t('settings.reader.libraryTitle'),
       detail: keep
         ? t('settings.reader.kept', { title })
         : t('settings.reader.forgotten', { title }),

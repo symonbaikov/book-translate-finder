@@ -34,7 +34,7 @@ export function ReaderLibrary({
     announce({
       setting: 'reader.library',
       outcome: outcomeOfWrite(removed, 'clear'),
-      title: t('settings.reader.title'),
+      title: t('settings.reader.libraryTitle'),
       detail: t('settings.reader.removed', { title }),
     });
     onChanged();

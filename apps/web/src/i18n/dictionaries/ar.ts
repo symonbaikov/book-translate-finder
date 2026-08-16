@@ -387,7 +387,7 @@ export const ar: Dictionary = {
   'reader.libraryFileKept': 'الملف محفوظ',
   'reader.libraryFileGone': 'الملف غير محفوظ',
   'reader.untitled': 'كتاب بلا عنوان',
-  'settings.reader.title': 'الكتب في هذا المتصفّح',
+  'settings.reader.libraryTitle': 'الكتب في هذا المتصفّح',
   'settings.reader.kept':
     '«{title}» صار محفوظًا على هذا الجهاز ويُفتح دون تنزيله من جديد. ولا يُرفع إلى أي مكان.',
   'settings.reader.forgotten':
@@ -443,4 +443,7 @@ export const ar: Dictionary = {
   'reader.notAFileTitle': 'أرسل {host} صفحة وِب لا الملف',
   'reader.notAFileBody':
     'يقود الرابط إلى صفحة لا إلى كتاب: صفحة تنزيل أو شاشة موافقة أو تحقّق من أنك لست روبوتًا. افتحها بنفسك وستجد الملف هناك.',
+  'settings.status.session': 'لم يُحفَظ للمرّة القادمة',
+  'settings.notRemembered':
+    'لم يشأ هذا المتصفّح تذكّره، لذا سيعود كل شيء كما كان عند فتحك كتابًا في المرة القادمة.',
 };

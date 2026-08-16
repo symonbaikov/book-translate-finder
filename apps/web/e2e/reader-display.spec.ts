@@ -135,3 +135,27 @@ test('back to defaults says so, and puts the book back', async ({ page }) => {
   await expect(page.locator('[data-sonner-toast]').filter({ hasText: /defaults/i })).toBeVisible();
   await expect.poll(async () => (await bookStyle(page)).background).toBe(defaults.background);
 });
+
+test('a browser that will not remember says so, and still shows the change', async ({ page }) => {
+  await openBook(page);
+
+  // A browser in private mode, with storage switched off, or over quota accepts the call and keeps
+  // nothing. That is the case this outcome exists for, so it is simulated rather than described.
+  await page.evaluate(() => {
+    const storage = window.localStorage;
+    const original = storage.setItem.bind(storage);
+    storage.setItem = (key: string, value: string) => {
+      if (key === 'btf.reader.display') throw new DOMException('QuotaExceededError');
+      original(key, value);
+    };
+  });
+
+  await chooseTheme(page, /e-ink/i);
+
+  // Applied: refusing to show the reader what they chose would be a second, worse failure…
+  await expect.poll(async () => (await bookStyle(page)).background).toBe('rgb(255, 255, 255)');
+  // …and said, in the same popup, without pretending it was saved (CLAUDE.md, `session`).
+  const toast = page.locator('[data-sonner-toast]').filter({ hasText: /E-Ink/i });
+  await expect(toast).toContainText(/not remembered/i);
+  await expect(toast).toContainText(/next time/i);
+});

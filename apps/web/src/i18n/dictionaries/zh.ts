@@ -376,7 +376,7 @@ export const zh: Dictionary = {
   'reader.libraryFileKept': '已存文件',
   'reader.libraryFileGone': '未存文件',
   'reader.untitled': '无标题的书',
-  'settings.reader.title': '此浏览器中的书',
+  'settings.reader.libraryTitle': '此浏览器中的书',
   'settings.reader.kept': '《{title}》已留在这台设备上，无需重新下载即可打开。不会上传到任何地方。',
   'settings.reader.forgotten': '《{title}》的文件已从此浏览器删除。条目仍在，你可以再从来源打开。',
   'settings.reader.removed': '《{title}》已从此浏览器完全移除——文件和条目都删除了。',
@@ -429,4 +429,6 @@ export const zh: Dictionary = {
   'reader.notAFileTitle': '{host} 返回的是网页，不是文件',
   'reader.notAFileBody':
     '这个链接指向的是页面而不是书：下载页、同意页，或是在确认你不是机器人。你自己打开它，文件就在那里。',
+  'settings.status.session': '未记住',
+  'settings.notRemembered': '此浏览器没有记住它，下次打开书时会恢复原样。',
 };

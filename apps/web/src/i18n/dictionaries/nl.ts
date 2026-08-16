@@ -405,7 +405,7 @@ export const nl: Dictionary = {
   'reader.libraryFileKept': 'bestand bewaard',
   'reader.libraryFileGone': 'bestand niet bewaard',
   'reader.untitled': 'Boek zonder titel',
-  'settings.reader.title': 'Boeken in deze browser',
+  'settings.reader.libraryTitle': 'Boeken in deze browser',
   'settings.reader.kept':
     '“{title}” staat nu op dit apparaat en opent zonder opnieuw downloaden. Er wordt niets geüpload.',
   'settings.reader.forgotten':
@@ -464,4 +464,7 @@ export const nl: Dictionary = {
   'reader.notAFileTitle': '{host} stuurde een webpagina, niet het bestand',
   'reader.notAFileBody':
     'De link gaat naar een pagina in plaats van naar een boek: een downloadpagina, een toestemmingsscherm of een controle of je geen robot bent. Open hem zelf, dan staat het bestand er.',
+  'settings.status.session': 'Niet onthouden',
+  'settings.notRemembered':
+    'Deze browser wilde het niet onthouden: de volgende keer dat je een boek opent is alles weer als voorheen.',
 };

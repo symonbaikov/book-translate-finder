@@ -404,7 +404,7 @@ export const tr: Dictionary = {
   'reader.libraryFileKept': 'dosya saklandı',
   'reader.libraryFileGone': 'dosya saklanmadı',
   'reader.untitled': 'Adsız kitap',
-  'settings.reader.title': 'Bu tarayıcıdaki kitaplar',
+  'settings.reader.libraryTitle': 'Bu tarayıcıdaki kitaplar',
   'settings.reader.kept':
     '“{title}” artık bu cihazda saklanıyor ve yeniden indirmeden açılıyor. Hiçbir yere yüklenmiyor.',
   'settings.reader.forgotten':
@@ -463,4 +463,7 @@ export const tr: Dictionary = {
   'reader.notAFileTitle': '{host} dosya yerine bir web sayfası gönderdi',
   'reader.notAFileBody':
     'Bağlantı kitaba değil bir sayfaya gidiyor: indirme sayfası, onay ekranı ya da robot olmadığınızın kontrolü. Kendiniz açın, dosya orada olacak.',
+  'settings.status.session': 'Hatırlanmadı',
+  'settings.notRemembered':
+    'Bu tarayıcı bunu hatırlamak istemedi: bir sonraki kitabı açtığınızda her şey eskisi gibi olacak.',
 };

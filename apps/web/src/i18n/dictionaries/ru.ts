@@ -417,7 +417,7 @@ export const ru: Dictionary = {
   'reader.libraryFileKept': 'файл сохранён',
   'reader.libraryFileGone': 'файл не сохранён',
   'reader.untitled': 'Книга без названия',
-  'settings.reader.title': 'Книги в этом браузере',
+  'settings.reader.libraryTitle': 'Книги в этом браузере',
   'settings.reader.kept':
     '«{title}» теперь хранится на этом устройстве и открывается без повторной загрузки. Никуда не отправляется.',
   'settings.reader.forgotten':
@@ -476,4 +476,7 @@ export const ru: Dictionary = {
   'reader.notAFileTitle': '{host} прислал веб-страницу, а не файл',
   'reader.notAFileBody':
     'Ссылка ведёт на страницу, а не на книгу: страницу загрузки, экран согласия или проверку, что вы не робот. Откройте её сами — файл будет там.',
+  'settings.status.session': 'Не запомнено',
+  'settings.notRemembered':
+    'Браузер отказался это запомнить — в следующий раз, когда вы откроете книгу, всё вернётся как было.',
 };

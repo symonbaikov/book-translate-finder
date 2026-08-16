@@ -421,7 +421,7 @@ export const es: Dictionary = {
   'reader.libraryFileKept': 'archivo guardado',
   'reader.libraryFileGone': 'archivo no guardado',
   'reader.untitled': 'Libro sin título',
-  'settings.reader.title': 'Libros en este navegador',
+  'settings.reader.libraryTitle': 'Libros en este navegador',
   'settings.reader.kept':
     '«{title}» ahora se guarda en este dispositivo y se abre sin volver a descargarlo. No se sube a ninguna parte.',
   'settings.reader.forgotten':
@@ -481,4 +481,7 @@ export const es: Dictionary = {
   'reader.notAFileTitle': '{host} envió una página web, no el archivo',
   'reader.notAFileBody':
     'El enlace lleva a una página y no a un libro: una página de descarga, una pantalla de consentimiento o una comprobación de que no es un robot. Ábrala usted y el archivo estará allí.',
+  'settings.status.session': 'No recordado',
+  'settings.notRemembered':
+    'Este navegador no quiso recordarlo: la próxima vez que abra un libro volverá a estar como antes.',
 };

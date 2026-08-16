@@ -403,7 +403,7 @@ export const ja: Dictionary = {
   'reader.libraryFileKept': 'ファイルあり',
   'reader.libraryFileGone': 'ファイルなし',
   'reader.untitled': '無題の本',
-  'settings.reader.title': 'このブラウザーの本',
+  'settings.reader.libraryTitle': 'このブラウザーの本',
   'settings.reader.kept':
     '「{title}」はこの端末に保存され、再ダウンロードなしで開けるようになりました。どこにも送信されません。',
   'settings.reader.forgotten':
@@ -461,4 +461,7 @@ export const ja: Dictionary = {
   'reader.notAFileTitle': '{host} はファイルではなくウェブページを返しました',
   'reader.notAFileBody':
     'リンクの先は本ではなくページです — ダウンロードページ、同意画面、あるいはロボットでないことの確認。ご自身で開けば、そこにファイルがあります。',
+  'settings.status.session': '次回は戻ります',
+  'settings.notRemembered':
+    'このブラウザーは記憶しませんでした。次に本を開くときは元の状態に戻ります。',
 };

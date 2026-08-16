@@ -398,7 +398,7 @@ export const ko: Dictionary = {
   'reader.libraryFileKept': '파일 보관됨',
   'reader.libraryFileGone': '파일 없음',
   'reader.untitled': '제목 없는 책',
-  'settings.reader.title': '이 브라우저의 책',
+  'settings.reader.libraryTitle': '이 브라우저의 책',
   'settings.reader.kept':
     '「{title}」이(가) 이 기기에 보관되어 다시 내려받지 않고 열립니다. 어디에도 올라가지 않습니다.',
   'settings.reader.forgotten':
@@ -456,4 +456,7 @@ export const ko: Dictionary = {
   'reader.notAFileTitle': '{host}이(가) 파일이 아니라 웹 페이지를 보냈습니다',
   'reader.notAFileBody':
     '링크가 책이 아니라 페이지로 이어집니다 — 다운로드 페이지, 동의 화면, 또는 로봇이 아님을 확인하는 절차입니다. 직접 열면 파일이 거기 있습니다.',
+  'settings.status.session': '기억되지 않음',
+  'settings.notRemembered':
+    '이 브라우저가 기억하지 않았습니다. 다음에 책을 열면 원래대로 돌아갑니다.',
 };

@@ -1202,6 +1202,37 @@ answered "this file is not a book this reader can open". True, and useless: the 
 choose a broken file, they were handed a page. `not-a-file` is now its own outcome with its own
 sentence and the same fork in the road: open the page yourself, the file is behind it.
 
+### 11.8 was an audit, and audits are only worth what they find
+
+The popups were built as each preference arrived, so this step checked them against the rules in
+CLAUDE.md instead of writing more. Clean: no bare `toast()` anywhere, every reader preference goes
+through `useSettingChangeToast()`, and the three hand-written `'failed'` outcomes elsewhere in the
+app are correct — `outcomeOfWrite` decides what a _storage_ failure is called, and a server refusing
+a bookmark is not one. Four things were not clean:
+
+- **A fifth outcome, which this file predicted in Phase 6.** `setting-change.ts` said: "if you ever
+  add a preference that _is_ held in memory, that is a new outcome, not a reuse of this one." The
+  reading display is exactly that — refusing to _show_ readers the type size they just chose,
+  because the browser will not keep it, would be a second and worse failure. So `session` now means
+  "in effect now, and not next time": it **appends** to the caller's sentence rather than replacing
+  it, the control stays where the reader put it, and `outcomeOfSessionWrite` derives it. CLAUDE.md's
+  table and the ADR both say which settings may use it — only the display, because everything else
+  re-reads its value from storage, where a refused write really is nothing happening.
+- **An outcome named by hand.** The reading-position popup wrote `outcome: 'unstored'` directly;
+  it now derives it, because a second place that decides what a failed write is called is a second
+  place to drift from.
+- **A key that broke its own naming rule.** Three popup headings are `<area>Title`; the library's
+  was `settings.reader.title`, from when it was the only one. Renamed across fifteen dictionaries.
+- **A popup for a change that was not one.** Re-choosing the theme already chosen announced itself,
+  because a `<select>` fires whether or not the value moved.
+
+And the audit is now a test rather than an afternoon: `dictionaries.test.ts` checks that every
+translation fills the same `{placeholders}` English does, leaves nothing blank, and never echoes a
+key back as its own value — none of which the type system can see. Duplicate keys it deliberately
+does not check: an object literal collapses them before a test could look, and ESLint's
+`no-dupe-keys` already fails the build. The old outcome test listed the four outcomes by hand, which
+is how a fifth one slipped past every assertion in it; it derives them from the presentation map now.
+
 ### Decided rather than assumed
 
 - **No `rightsStatus` on an addon result, and no field to hold one.** The instance's own links carry
@@ -1636,7 +1667,7 @@ Two consequences that are easy to get wrong and are therefore written down now:
 | 11.5 | Progress, bookmarks and notes                                                    | ✅    | Position and bookmarks in the one record, keyed by content hash; resume through `renderFirstPage`; only a _refused_ write says anything                     |
 | 11.6 | Display: themes incl. E-Ink, type, layout                                        | ✅    | Four palettes from `tokens.css`, seven preferences, every one announced; E-Ink is monochrome, motionless and single-column                                  |
 | 11.7 | Surfaces: where "Read in browser" appears                                        | ✅    | On a download link and an addon source whose format this reader opens, and nowhere else; measured against this instance's real catalogue                    |
-| 11.8 | Settings popups and 15 dictionaries                                              | ⬜    | Every reader preference announces itself through `useSettingChangeToast()` with `outcomeOfWrite` (CLAUDE.md)                                                |
+| 11.8 | Settings popups and 15 dictionaries                                              | ✅    | Audited rather than written: one renamed key, one derived outcome, one no-op popup removed — and a fifth outcome the contract had predicted                 |
 | 11.9 | Zero-knowledge enforcement                                                       | ⬜    | Four `dependency-cruiser` rules plus a Playwright wire suite, `pnpm test:reader`, modelled on `addon-privacy.spec.ts`                                       |
 
 Sizing: this is five or six PRs, not one — rules.md §7 caps a PR at ~400 diff lines. The natural

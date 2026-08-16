@@ -436,7 +436,7 @@ export const en = {
   'reader.libraryFileKept': 'file kept',
   'reader.libraryFileGone': 'file not kept',
   'reader.untitled': 'Untitled book',
-  'settings.reader.title': 'Books kept in this browser',
+  'settings.reader.libraryTitle': 'Books kept in this browser',
   'settings.reader.kept':
     '“{title}” is now kept on this device, so it opens without downloading it again. It is not uploaded anywhere.',
   'settings.reader.forgotten':
@@ -494,4 +494,7 @@ export const en = {
   'reader.notAFileTitle': '{host} sent a web page, not the file',
   'reader.notAFileBody':
     'The link leads to a page rather than to a book — a download page, a consent screen, or a check that you are not a robot. Open it yourself and the file will be there.',
+  'settings.status.session': 'Not remembered',
+  'settings.notRemembered':
+    'This browser would not remember it, so it will be back to how it was next time you open a book.',
 } as const;
