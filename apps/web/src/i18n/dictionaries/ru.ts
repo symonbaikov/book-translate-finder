@@ -242,6 +242,21 @@ export const ru: Dictionary = {
   'prices.format.ebook': 'Электронная книга',
   'prices.format.audiobook': 'Аудиокнига',
   'prices.format.unknown': 'Формат не указан',
+
+  'ratings.edition': '{average} из {outOf}, оценок читателей: {votes} ({source})',
+  'ratings.lowConfidence': 'слишком мало оценок для сравнения',
+  'ratings.reviews': 'Рецензии',
+  'ratings.reviewsOn': 'Рецензии на это издание на {source}',
+  'ratings.noteNoRatings':
+    'Оценок перевода не публикует ни один открытый источник, а читательских оценок у этих изданий здесь нет.',
+  'ratings.noteReviews':
+    'Если издание известно на {sources}, ссылка ведёт к рецензиям именно на этот тираж — но известны далеко не все.',
+  'ratings.translator':
+    'Издания в переводе {name}: {average} из {outOf} по {editions} изданиям с оценками, всего оценок: {votes}.',
+  'ratings.note':
+    'Это оценки конкретного издания читателями {sources}, а не оценка самого перевода — такую никто не публикует. Смысл в сравнении: одна книга, один язык, разные переводчики — и всегда с числом голосов перед глазами.',
+  'ratings.gapWithoutIsbn': 'У {count} изданий нет ISBN, поэтому сопоставить им оценку не удалось.',
+  'ratings.gapNotLookedUp': 'Ещё {count} изданий в этом запросе не проверялись.',
   'recommend.hideGenre': 'скрыть «{genre}»',
   'recommend.hiddenList': 'Скрытые жанры (нажмите, чтобы вернуть):',
 
@@ -385,4 +400,98 @@ export const ru: Dictionary = {
   'work.descriptionFrom': 'Описание:',
   'work.descriptionNotLocalized':
     'Описание приводится так, как его написал источник, — на вашем языке для этой книги его пока нет.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Читать в браузере',
+  'reader.privacy':
+    'Книгу открывает сам ваш браузер. Ни файл, ни то, откуда он взят, ни то, докуда вы дочитали, на этот сайт не попадают.',
+  'reader.chooseFile': 'Открыть книгу с этого устройства',
+  'reader.formats': 'EPUB, FB2, MOBI и CBZ.',
+  'reader.loading': 'Открываем…',
+  'reader.failed': 'Не удалось открыть книгу: {reason}',
+  'reader.previous': 'Предыдущая страница',
+  'reader.next': 'Следующая страница',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…или перетащите книгу сюда',
+  'reader.fetching': 'Запрашиваем файл у {host}…',
+  'reader.blockedTitle': '{host} не отдал файл этой странице',
+  'reader.blockedBody':
+    'Либо он недоступен, либо не разрешает другим сайтам читать свои файлы. Этот сайт не будет скачивать его за вас: ваша книга через него не проходит — ради этого чтение здесь и устроено.',
+  'reader.blockedDownload': 'Скачать с {host}',
+  'reader.blockedOpenHere': 'и открыть здесь со своего устройства',
+  'reader.blockedAddon': 'Аддон, который отдаёт файл сам, тоже подойдёт.',
+  'reader.keepFile': 'Хранить эту книгу в этом браузере',
+  'reader.keepFileHint':
+    'По умолчанию выключено. Без этого файл исчезнет с закрытием вкладки; с ним — останется только на этом устройстве.',
+  'reader.library': 'Хранится в этом браузере',
+  'reader.libraryEmpty':
+    'Пока ничего не сохранено. Сохранённые книги остаются на этом устройстве и никуда не загружаются.',
+  'reader.libraryOpen': 'Открыть',
+  'reader.libraryRemove': 'Удалить',
+  'reader.libraryFileKept': 'файл сохранён',
+  'reader.libraryFileGone': 'файл не сохранён',
+  'reader.untitled': 'Книга без названия',
+  'settings.reader.libraryTitle': 'Книги в этом браузере',
+  'settings.reader.kept':
+    '«{title}» теперь хранится на этом устройстве и открывается без повторной загрузки. Никуда не отправляется.',
+  'settings.reader.forgotten':
+    'Файл «{title}» удалён из этого браузера. Запись осталась — книгу можно открыть из источника заново.',
+  'settings.reader.removed': '«{title}» удалена из этого браузера полностью — и файл, и запись.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Открыто с того места, где вы остановились, — {percent}%.',
+  'reader.bookmarks': 'Закладки',
+  'reader.bookmarkAdd': 'Заложить эту страницу',
+  'reader.bookmarkNone': 'В этой книге пока нет закладок.',
+  'reader.bookmarkGo': 'Перейти',
+  'reader.bookmarkRemove': 'Убрать закладку',
+  'reader.bookmarkNote': 'Заметка',
+  'reader.bookmarkNotePlaceholder': 'Ваши слова об этой странице',
+  'reader.bookmarkAt': '{percent}%',
+  'settings.reader.bookmarkTitle': 'Закладки в этом браузере',
+  'settings.reader.bookmarkAdded':
+    'Закладка на {percent}% книги «{title}». Закладки остаются на этом устройстве вместе с книгой.',
+  'settings.reader.bookmarkRemoved': 'Закладка в «{title}» удалена из этого браузера.',
+  'settings.reader.noteSaved':
+    'Ваша заметка к этой странице «{title}» сохранена на этом устройстве.',
+  'settings.reader.positionTitle': 'Позиция чтения',
+  'settings.reader.positionUnstored':
+    'Браузер не сохранил, где вы остановились в «{title}», — в следующий раз книга откроется с начала. Так бывает в приватном режиме и при заполненном диске.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Как выглядит эта книга',
+  'reader.theme': 'Цвета',
+  'reader.themeApp': 'Как на сайте',
+  'reader.themeLight': 'Бумага',
+  'reader.themeDark': 'Чернила',
+  'reader.themeSepia': 'Сепия',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Чистый чёрный на белом, без анимации, одна колонка — для экранов на электронных чернилах.',
+  'reader.fontSize': 'Размер шрифта',
+  'reader.smaller': 'Меньше',
+  'reader.larger': 'Больше',
+  'reader.lineHeight': 'Межстрочный интервал',
+  'reader.margin': 'Поля',
+  'reader.flow': 'Страницы',
+  'reader.flowPaged': 'Листать',
+  'reader.flowScrolled': 'Прокручивать',
+  'reader.justify': 'Выключка по ширине',
+  'reader.hyphenate': 'Переносы',
+  'reader.displayReset': 'Вернуть по умолчанию',
+  'settings.reader.displayTitle': 'Оформление чтения',
+  'settings.reader.displayChanged':
+    '{setting} — теперь {value}. Применяется ко всем книгам, которые вы открываете в этом браузере.',
+  'settings.reader.displayReset':
+    'Оформление чтения возвращено к значениям по умолчанию для всех книг в этом браузере.',
+  'reader.on': 'Включено',
+  'reader.off': 'Выключено',
+  'reader.openHere': 'Читать в браузере',
+  'reader.notAFileTitle': '{host} прислал веб-страницу, а не файл',
+  'reader.notAFileBody':
+    'Ссылка ведёт на страницу, а не на книгу: страницу загрузки, экран согласия или проверку, что вы не робот. Откройте её сами — файл будет там.',
+  'settings.status.session': 'Не запомнено',
+  'settings.notRemembered':
+    'Браузер отказался это запомнить — в следующий раз, когда вы откроете книгу, всё вернётся как было.',
 };

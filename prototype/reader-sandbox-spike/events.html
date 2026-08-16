@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Reader sandbox spike — do taps reach a frame without allow-scripts?</title>
+    <style>
+      body {
+        margin: 0;
+        font:
+          14px system-ui,
+          sans-serif;
+      }
+      iframe {
+        display: block;
+        width: 300px;
+        height: 150px;
+        border: 2px solid #999;
+      }
+      h2 {
+        margin: 8px 0 4px;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      A page of its own, loaded directly, because the question is narrow and nesting it inside the
+      other harness would only add coordinates to get wrong.
+
+      foliate's paginator carries a comment saying `allow-scripts` "is needed for events because of
+      WebKit bug 218086". The reader's patch removes exactly that token (ADR-0013 §3), so the cost
+      of the patch is whether a reader can still tap a page to turn it. Two frames, identical but
+      for one attribute value, clicked by a real mouse — a synthetic dispatchEvent would prove
+      nothing about what a finger does.
+    -->
+    <h2 id="label-with">with allow-scripts (upstream)</h2>
+    <iframe id="with" sandbox="allow-same-origin allow-scripts"></iframe>
+    <h2 id="label-without">without allow-scripts (what this project ships)</h2>
+    <iframe id="without" sandbox="allow-same-origin"></iframe>
+
+    <script type="module">
+      const heard = { with: [], without: [] };
+      window.__heard = heard;
+
+      const page = (label) =>
+        URL.createObjectURL(
+          new Blob(
+            [
+              `<!doctype html><meta charset="utf-8">
+               <body style="margin:0;background:#eee;height:100%">
+                 <p id="target" style="margin:0;padding:40px;text-align:center">${label}</p>
+               </body>`,
+            ],
+            { type: 'text/html' },
+          ),
+        );
+
+      for (const key of ['with', 'without']) {
+        const frame = document.getElementById(key);
+        frame.addEventListener('load', () => {
+          const doc = frame.contentDocument;
+          if (!doc) {
+            heard[key].push('no-document');
+            return;
+          }
+          // Both places a reader could be listening: the content document (what foliate does) and
+          // the frame's own window.
+          for (const type of ['click', 'pointerdown', 'touchstart', 'keydown']) {
+            doc.addEventListener(type, (event) => heard[key].push(`${type}:${event.isTrusted}`));
+          }
+          doc.body.style.background = key === 'with' ? '#dfd' : '#ddf';
+        });
+        frame.src = page(key);
+      }
+    </script>
+  </body>
+</html>

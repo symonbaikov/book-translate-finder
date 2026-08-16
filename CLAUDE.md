@@ -72,6 +72,11 @@ packages/
   contracts/      Zod schemas and DTOs shared by web and api
   plugins/        Isolated integrations that run in the browser AND in Node: OPDS client,
                   bookshop lookup, the plugin contract. Zero project dependencies (ADR-0007)
+  addons/         The reader-installed addon contract, its two transports and the sandbox.
+                  A leaf, and unreachable from anything server-side (ADR-0010)
+  reader/         Reading a book in the reader's own tab: format sniffing, acquisition,
+                  progress, and a patched, vendored foliate-js. A leaf, and likewise
+                  unreachable from anything server-side (ADR-0013)
 docs/             Project documentation
 docker/           Compose files, Dockerfiles
 ```
@@ -159,6 +164,10 @@ pnpm test:e2e
 pnpm test:sandbox
 ```
 
+```bash
+pnpm test:reader
+```
+
 `test:integration` starts Postgres and Redis via Testcontainers — a running Docker is required.
 
 ### Addons
@@ -176,6 +185,12 @@ its manifest declares, using ids discovered from its own catalog. The protocol i
 and no seeding — it starts its own `next dev` on port 3100 and drives the real
 `public/addon-sandbox.html` with its real CSP header. Keep it that way: a security suite that is
 hard to run is a security suite nobody runs.
+
+`test:reader` is the same idea for the other kind of stranger's code — a book
+([ADR-0013](docs/adr/0013-client-side-reader.md)). Its own port (3101), its own fixtures under
+`apps/web/e2e/fixtures`, no database either, and it runs in **three** browsers rather than one:
+the reader stands on two walls everywhere except WebKit, where it stands on one, and a claim about
+WebKit that is only ever tested in Chromium is a claim about nothing.
 
 ### Database
 
@@ -270,19 +285,27 @@ built on [`sonner`](https://sonner.emilkowal.ski/) and mounted once in
 Statuses live in [`lib/setting-change.ts`](apps/web/src/lib/setting-change.ts) — four, and only
 these four:
 
-| Outcome    | Means                                                  | Shown as        |
-| ---------- | ------------------------------------------------------ | --------------- |
-| `saved`    | new value in effect **and** written down               | green, "Saved"  |
-| `cleared`  | back to the default, or an entry removed               | blue, "Cleared" |
-| `unstored` | the browser refused to keep it, so nothing took effect | amber, longer   |
-| `failed`   | refused by the server or by policy; nothing changed    | red, longer     |
+| Outcome    | Means                                                    | Shown as        |
+| ---------- | -------------------------------------------------------- | --------------- |
+| `saved`    | new value in effect **and** written down                 | green, "Saved"  |
+| `cleared`  | back to the default, or an entry removed                 | blue, "Cleared" |
+| `unstored` | the browser refused to keep it, so nothing took effect   | amber, longer   |
+| `session`  | in effect **now**, and the browser would not remember it | amber, longer   |
+| `failed`   | refused by the server or by policy; nothing changed      | red, longer     |
 
-`unstored` is a real failure, not a partial success: nothing here holds a preference in memory —
-every panel re-reads the cookie or `localStorage` when it refetches — so a write that did not land
-is a change that did not happen. Its message replaces the caller's sentence rather than following
-it, and a control that moved on its own must be snapped back to the stored value (see
-[CountrySelector.tsx](apps/web/src/components/CountrySelector.tsx)). If you ever add a preference
-that _is_ held in memory, that is a new outcome, not a reuse of this one.
+`unstored` is a real failure, not a partial success: for almost every preference here nothing is
+held in memory — the panel re-reads the cookie or `localStorage` when it refetches — so a write that
+did not land is a change that did not happen. Its message replaces the caller's sentence rather than
+following it, and a control that moved on its own must be snapped back to the stored value (see
+[CountrySelector.tsx](apps/web/src/components/CountrySelector.tsx)).
+
+`session` is the exception this table predicted, and the reading display
+([ADR-0013](docs/adr/0013-client-side-reader.md)) is the only thing that may use it. Those settings
+_are_ held in memory and stay applied for the tab, so a refused write is not "nothing happened" — it
+is "not next time". Its message is **appended** to the caller's sentence rather than replacing it,
+and the control stays where the reader put it. Anything that re-reads its value from storage is
+`unstored`, not this: reporting a change that is not there is the failure both outcomes exist to
+prevent. Derive it with `outcomeOfSessionWrite`, never by hand.
 
 Rules when you touch anything a reader can set:
 

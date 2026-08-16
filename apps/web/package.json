@@ -10,12 +10,14 @@
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf .next",
     "e2e": "playwright test",
-    "e2e:sandbox": "playwright test --config=playwright.sandbox.config.ts"
+    "e2e:sandbox": "playwright test --config=playwright.sandbox.config.ts",
+    "e2e:reader": "playwright test --config=playwright.reader.config.ts"
   },
   "dependencies": {
     "@golden/addons": "workspace:*",
     "@golden/contracts": "workspace:*",
     "@golden/plugins": "workspace:*",
+    "@golden/reader": "workspace:*",
     "next": "^14.2.15",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

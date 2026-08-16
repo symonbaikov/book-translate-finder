@@ -38,7 +38,8 @@ export function useSettingChangeToast(): AnnounceSettingChange {
 
   return useCallback(
     ({ setting, outcome, title, detail }: SettingChangeNotice) => {
-      const { tone, statusKey, durationMs, storageRefused } = presentOutcome(outcome);
+      const { tone, statusKey, durationMs, storageRefused, storageForgot } =
+        presentOutcome(outcome);
 
       toast[tone](
         <span className="setting-toast__heading">
@@ -51,7 +52,11 @@ export function useSettingChangeToast(): AnnounceSettingChange {
           // A refused write replaces the caller's sentence rather than following it: `detail`
           // describes the state the reader was aiming for, and nothing in this app holds a
           // preference in memory, so that state is not the one they got.
-          description: storageRefused ? t('settings.notStored') : detail,
+          description: storageRefused
+            ? t('settings.notStored')
+            : storageForgot
+              ? `${detail} ${t('settings.notRemembered')}`
+              : detail,
         },
       );
     },

@@ -13,6 +13,11 @@ import { languageName } from '../../../lib/language-names';
 import { parseBookLanguage } from '../../../lib/book-language';
 import { readBookLanguageFromCookie } from '../../../lib/book-language.server';
 import { TranslationAnswer } from '../../../components/TranslationAnswer';
+import {
+  EditionRatingLine,
+  TranslationRatingsNote,
+  TranslationRatingsProvider,
+} from '../../../components/TranslationRatings';
 import { getLocale, getT } from '../../../i18n/server';
 import { RememberBookLanguage } from '../../../components/RememberBookLanguage';
 import { RecordVisit } from '../../../components/RecordVisit';
@@ -334,15 +339,24 @@ export default async function WorkPage({ params, searchParams }: WorkPageProps) 
         {editions.length === 0 ? (
           <p className={styles.empty}>{t('work.noEditionsMatch')}</p>
         ) : (
-          visibleEditions.map((edition) => (
-            <EditionCard
-              key={edition.id}
-              edition={edition}
-              author={work.author}
-              t={t}
-              locale={locale}
-            />
-          ))
+          // One request for the whole list, shared with every card — see TranslationRatings.tsx
+          // for why ratings are fetched per work while links and prices are per edition.
+          <TranslationRatingsProvider
+            workId={work.id}
+            language={searchParams.language ?? null}
+            editionIds={visibleEditions.map((edition) => edition.id)}
+          >
+            <TranslationRatingsNote className={styles.ratingsNote} />
+            {visibleEditions.map((edition) => (
+              <EditionCard
+                key={edition.id}
+                edition={edition}
+                author={work.author}
+                t={t}
+                locale={locale}
+              />
+            ))}
+          </TranslationRatingsProvider>
         )}
 
         {editions.length > shown ? (
@@ -407,6 +421,15 @@ function EditionCard({
           {edition.pages ? ` · ${t('work.pages', { count: edition.pages })}` : ''}
           {edition.isbn ? ` · ISBN ${edition.isbn}` : ''}
         </div>
+        {/* Under the edition it belongs to, and never behind a click: a rating a reader has to
+            ask for is a rating they never see, and comparing two translations is the whole point.
+            Silent when this printing has no rating — most do not. */}
+        <EditionRatingLine
+          editionId={edition.id}
+          translator={edition.translator}
+          language={edition.language}
+          className={styles.editionRating}
+        />
         <FreeDownloads downloads={edition.freeDownloads} t={t} />
         <EditionLinks
           editionId={edition.id}

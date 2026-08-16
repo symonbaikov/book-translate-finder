@@ -232,6 +232,22 @@ export const nl: Dictionary = {
   'prices.format.ebook': 'E-boek',
   'prices.format.audiobook': 'Luisterboek',
   'prices.format.unknown': 'Formaat niet vermeld',
+
+  'ratings.edition': '{average} van {outOf}, {votes} lezersoordelen op {source}',
+  'ratings.lowConfidence': 'te weinig stemmen om te vergelijken',
+  'ratings.reviews': 'Recensies',
+  'ratings.reviewsOn': 'Recensies van deze editie op {source}',
+  'ratings.noteNoRatings':
+    'Geen enkele open bron beoordeelt een vertaling, en voor deze edities zijn hier geen lezersoordelen.',
+  'ratings.noteReviews':
+    'Is een editie bekend op {sources}, dan gaat de link naar de recensies van precies die druk — de meeste zijn dat niet.',
+  'ratings.translator':
+    'Edities in de vertaling van {name}: {average} van {outOf} over {editions} beoordeelde edities, {votes} stemmen in totaal.',
+  'ratings.note':
+    'Dit zijn lezersoordelen over één specifieke editie op {sources}, geen oordeel over de vertaling zelf — dat publiceert niemand. Ze zijn iets waard in vergelijking: hetzelfde boek, dezelfde taal, andere vertalers — en altijd met het aantal stemmen erbij.',
+  'ratings.gapWithoutIsbn':
+    '{count} edities hebben geen ISBN, dus daar kon geen oordeel aan gekoppeld worden.',
+  'ratings.gapNotLookedUp': 'Nog eens {count} edities zijn in deze aanvraag niet opgevraagd.',
   'recommend.hideGenre': '‘{genre}’ verbergen',
   'recommend.hiddenList': 'Verborgen genres (klik om er een terug te halen):',
 
@@ -373,4 +389,98 @@ export const nl: Dictionary = {
   'work.descriptionFrom': 'Beschrijving:',
   'work.descriptionNotLocalized':
     'Deze beschrijving staat in de taal waarin de bron haar schreef — in uw taal is er voor dit boek nog geen.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Lezen in je browser',
+  'reader.privacy':
+    'Je browser opent dit boek zelf. Het bestand, waar het vandaan komt en hoe ver je bent bereiken deze site niet.',
+  'reader.chooseFile': 'Een boek van dit apparaat openen',
+  'reader.formats': 'EPUB, FB2, MOBI en CBZ.',
+  'reader.loading': 'Bezig met openen…',
+  'reader.failed': 'Dit boek kon niet worden geopend: {reason}',
+  'reader.previous': 'Vorige pagina',
+  'reader.next': 'Volgende pagina',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…of sleep een boek hierheen',
+  'reader.fetching': 'Het bestand wordt bij {host} opgevraagd…',
+  'reader.blockedTitle': '{host} gaf het bestand niet aan deze pagina',
+  'reader.blockedBody':
+    'Of de server is onbereikbaar, of hij staat andere sites niet toe zijn bestanden te lezen. Deze site haalt het niet in jouw plaats op: je boek gaat er nooit doorheen, en daar draait het hier om.',
+  'reader.blockedDownload': 'Download het bij {host}',
+  'reader.blockedOpenHere': 'en open het hier vanaf je apparaat',
+  'reader.blockedAddon': 'Een add-on die het bestand zelf levert werkt ook.',
+  'reader.keepFile': 'Dit boek in deze browser bewaren',
+  'reader.keepFileHint':
+    'Standaard uit. Zonder dit is het bestand weg als je het tabblad sluit; met dit blijft het alleen op dit apparaat.',
+  'reader.library': 'Bewaard in deze browser',
+  'reader.libraryEmpty':
+    'Nog niets bewaard. Bewaarde boeken blijven op dit apparaat en worden nergens naartoe geüpload.',
+  'reader.libraryOpen': 'Openen',
+  'reader.libraryRemove': 'Verwijderen',
+  'reader.libraryFileKept': 'bestand bewaard',
+  'reader.libraryFileGone': 'bestand niet bewaard',
+  'reader.untitled': 'Boek zonder titel',
+  'settings.reader.libraryTitle': 'Boeken in deze browser',
+  'settings.reader.kept':
+    '“{title}” staat nu op dit apparaat en opent zonder opnieuw downloaden. Er wordt niets geüpload.',
+  'settings.reader.forgotten':
+    'Het bestand van “{title}” is uit deze browser verwijderd. De vermelding blijft: je kunt het opnieuw vanaf de bron openen.',
+  'settings.reader.removed':
+    '“{title}” is volledig uit deze browser verwijderd — het bestand en de vermelding.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Geopend waar je gebleven was — op {percent}%.',
+  'reader.bookmarks': 'Bladwijzers',
+  'reader.bookmarkAdd': 'Deze pagina markeren',
+  'reader.bookmarkNone': 'Nog geen bladwijzers in dit boek.',
+  'reader.bookmarkGo': 'Ga erheen',
+  'reader.bookmarkRemove': 'Bladwijzer verwijderen',
+  'reader.bookmarkNote': 'Notitie',
+  'reader.bookmarkNotePlaceholder': 'Je eigen woorden over deze pagina',
+  'reader.bookmarkAt': 'op {percent}%',
+  'settings.reader.bookmarkTitle': 'Bladwijzers in deze browser',
+  'settings.reader.bookmarkAdded':
+    'Bladwijzer op {percent}% van “{title}”. Bladwijzers blijven met het boek op dit apparaat.',
+  'settings.reader.bookmarkRemoved': 'Die bladwijzer in “{title}” is uit deze browser verwijderd.',
+  'settings.reader.noteSaved':
+    'Je notitie bij deze pagina van “{title}” is op dit apparaat opgeslagen.',
+  'settings.reader.positionTitle': 'Leespositie',
+  'settings.reader.positionUnstored':
+    'Deze browser wilde niet bewaren waar je bent in “{title}”, dus het boek begint de volgende keer vooraan. Privémodus en een volle schijf doen dit allebei.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Hoe dit boek eruitziet',
+  'reader.theme': 'Kleuren',
+  'reader.themeApp': 'Zoals de site',
+  'reader.themeLight': 'Papier',
+  'reader.themeDark': 'Inkt',
+  'reader.themeSepia': 'Sepia',
+  'reader.themeEink': 'E-ink',
+  'reader.themeEinkHint': 'Puur zwart op wit, geen animatie, één kolom — voor e-paperschermen.',
+  'reader.fontSize': 'Tekstgrootte',
+  'reader.smaller': 'Kleiner',
+  'reader.larger': 'Groter',
+  'reader.lineHeight': 'Regelafstand',
+  'reader.margin': 'Marges',
+  'reader.flow': 'Pagina’s',
+  'reader.flowPaged': 'Bladeren',
+  'reader.flowScrolled': 'Scrollen',
+  'reader.justify': 'Uitvullen',
+  'reader.hyphenate': 'Afbreken',
+  'reader.displayReset': 'Terug naar de standaardwaarden',
+  'settings.reader.displayTitle': 'Weergave bij het lezen',
+  'settings.reader.displayChanged':
+    '{setting} is nu {value}. Dit geldt voor elk boek dat je in deze browser opent.',
+  'settings.reader.displayReset':
+    'De weergave bij het lezen staat weer op de standaardwaarden, voor elk boek in deze browser.',
+  'reader.on': 'Aan',
+  'reader.off': 'Uit',
+  'reader.openHere': 'Lezen in je browser',
+  'reader.notAFileTitle': '{host} stuurde een webpagina, niet het bestand',
+  'reader.notAFileBody':
+    'De link gaat naar een pagina in plaats van naar een boek: een downloadpagina, een toestemmingsscherm of een controle of je geen robot bent. Open hem zelf, dan staat het bestand er.',
+  'settings.status.session': 'Niet onthouden',
+  'settings.notRemembered':
+    'Deze browser wilde het niet onthouden: de volgende keer dat je een boek opent is alles weer als voorheen.',
 };

@@ -7,6 +7,7 @@ import {
   OpdsFeedSchema,
   SearchResponseSchema,
   WorkCardResponseSchema,
+  WorkRatingsResponseSchema,
   type EditionLinksResponse,
   type EditionPricesResponse,
   type EditionsResponse,
@@ -14,6 +15,7 @@ import {
   type OpdsFeedListResponse,
   type SearchResponse,
   type WorkCardResponse,
+  type WorkRatingsResponse,
 } from '@golden/contracts';
 import { webEnv } from '../config/web-env';
 
@@ -142,6 +144,28 @@ export async function getEditionPrices(
   const res = await fetchApi(url, { cache: 'no-store' });
   if (!res.ok) throw new ApiRequestError(await parseErrorBody(res), res.status);
   return EditionPricesResponseSchema.parse(await res.json());
+}
+
+/**
+ * Reader ratings for every edition of one work, in one request.
+ *
+ * Deliberately not per edition, unlike links and prices: the numbers sit under each row without
+ * anything to click, and a request per row is what pushed both of those behind a button after a
+ * single reader tripped the API's rate limit. Cached a day server-side (`AggregateTranslationRatings`).
+ */
+export async function getWorkRatings(
+  workId: string,
+  language?: string | null,
+  /** The editions on screen, in the order shown — the server cannot work them out (see the
+   *  `editions` field on `WorkRatingsQuerySchema`). */
+  editionIds?: readonly string[],
+): Promise<WorkRatingsResponse> {
+  const url = new URL(`/api/works/${encodeURIComponent(workId)}/ratings`, apiBaseUrl());
+  if (language) url.searchParams.set('language', language);
+  if (editionIds?.length) url.searchParams.set('editions', editionIds.join(','));
+  const res = await fetchApi(url, { cache: 'no-store' });
+  if (!res.ok) throw new ApiRequestError(await parseErrorBody(res), res.status);
+  return WorkRatingsResponseSchema.parse(await res.json());
 }
 
 /** The catalogs shipped with the app. A reader's own feeds never pass through the API at all. */

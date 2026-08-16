@@ -66,6 +66,15 @@ OPDS client must reach servers on the reader's private network and the bookshop 
 their coordinates off this instance entirely ([ADR-0007](adr/0007-plugin-architecture.md)). Both
 constraints are enforced in CI by `pnpm boundaries` (`plugins-is-a-leaf`).
 
+`packages/addons` and `packages/reader` are leaves for a stronger reason, and the strength is the
+point: they must be unreachable from anything that runs on a server. An addon is the reader's and
+this instance is not to learn about it ([ADR-0010](adr/0010-addon-engine.md) §6); a book the reader
+opens is theirs in exactly the same way, and its bytes, its URL and their position in it never reach
+this instance ([ADR-0013](adr/0013-client-side-reader.md) §1). `addons-never-on-the-server` and
+`reader-never-on-the-server` turn both statements into build failures rather than promises.
+`packages/reader` also carries a vendored, patched copy of foliate-js reached through exactly one
+module, because the patch is what keeps a stranger's EPUB from executing (`reader-vendor-has-one-door`).
+
 The rule is enforced automatically in CI by `pnpm boundaries` (dependency-cruiser,
 `.dependency-cruiser.mjs`), not by reviewer willpower — it resolves package imports
 (`@golden/infrastructure` etc.) to real files and fails on any violation of the dependency
@@ -122,16 +131,17 @@ non-deterministic and idempotency cannot be tested.
 Use cases — one class per scenario, a single public method `execute`. Dependencies arrive
 through the constructor as **ports**, never as concrete classes.
 
-| Use case             | Trigger                       | Idempotency                              |
-| -------------------- | ----------------------------- | ---------------------------------------- |
-| `SearchWorks`        | `GET /api/search`             | Read, N/A                                |
-| `GetWorkCard`        | `GET /api/works/:id`          | Read, N/A                                |
-| `ListEditions`       | `GET /api/works/:id/editions` | Read, N/A                                |
-| `GetEditionLinks`    | `GET /api/editions/:id/links` | Read, N/A                                |
-| `EnqueueSourceSync`  | `POST /api/sync/:source`      | Idempotency key + jobId dedup            |
-| `SyncWorkFromSource` | BullMQ job                    | Upsert by natural key + external ref     |
-| `ImportSourceDump`   | CLI / cron (Phase 2)          | Batched upsert, row-level checkpoints    |
-| `RefreshStaleWorks`  | cron                          | Selection by `synced_at`, safe to repeat |
+| Use case                      | Trigger                       | Idempotency                              |
+| ----------------------------- | ----------------------------- | ---------------------------------------- |
+| `SearchWorks`                 | `GET /api/search`             | Read, N/A                                |
+| `GetWorkCard`                 | `GET /api/works/:id`          | Read, N/A                                |
+| `ListEditions`                | `GET /api/works/:id/editions` | Read, N/A                                |
+| `GetEditionLinks`             | `GET /api/editions/:id/links` | Read, N/A                                |
+| `AggregateTranslationRatings` | `GET /api/works/:id/ratings`  | Read, N/A                                |
+| `EnqueueSourceSync`           | `POST /api/sync/:source`      | Idempotency key + jobId dedup            |
+| `SyncWorkFromSource`          | BullMQ job                    | Upsert by natural key + external ref     |
+| `ImportSourceDump`            | CLI / cron (Phase 2)          | Batched upsert, row-level checkpoints    |
+| `RefreshStaleWorks`           | cron                          | Selection by `synced_at`, safe to repeat |
 
 A use case does **not** know about HTTP statuses, Nest decorators, SQL, or Redis. It returns a
 result or a domain error; translating to HTTP is the job of the controller in `apps/api`.
@@ -210,17 +220,18 @@ not create duplicates — this is a property of the schema, not of code carefuln
 Base prefix `/api`. All responses are JSON; schemas are described in `packages/contracts` and
 exported to OpenAPI.
 
-| Route                                         | Purpose                                       | Cache             |
-| --------------------------------------------- | --------------------------------------------- | ----------------- |
-| `GET /api/search?q=&limit=`                   | Search works by title/author                  | Redis, TTL 10 min |
-| `GET /api/works/:id`                          | Card: translation languages, edition summary  | Redis, TTL 1 h    |
-| `GET /api/works/:id/editions?language=&year=` | Editions with filters                         | Redis, TTL 1 h    |
-| `GET /api/editions/:id/links`                 | Links: download / buy / borrow from a library | Redis, TTL 6 h    |
-| `GET /api/editions/:id/prices?country=`       | Prices and shops, grouped by format           | Redis, TTL 15 min |
-| `GET /api/opds/feeds`                         | The OPDS catalogs shipped with the app        | —                 |
-| `GET /api/opds/feeds/:id?href=`               | One page of a shipped catalog (relay)         | Redis, TTL 1 h    |
-| `GET /api/stores/nearby?lat=&lng=&radiusKm=`  | Bookshops near a point — **opt-in**, 404 off  | —                 |
-| `POST /api/sync/:source`                      | Service-side trigger of a source sync         | —                 |
+| Route                                            | Purpose                                                                                                      | Cache             |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ | ----------------- |
+| `GET /api/search?q=&limit=`                      | Search works by title/author                                                                                 | Redis, TTL 10 min |
+| `GET /api/works/:id`                             | Card: translation languages, edition summary                                                                 | Redis, TTL 1 h    |
+| `GET /api/works/:id/editions?language=&year=`    | Editions with filters                                                                                        | Redis, TTL 1 h    |
+| `GET /api/editions/:id/links`                    | Links: download / buy / borrow from a library                                                                | Redis, TTL 6 h    |
+| `GET /api/editions/:id/prices?country=`          | Prices and shops, grouped by format                                                                          | Redis, TTL 15 min |
+| `GET /api/works/:id/ratings?language=&editions=` | Ratings per edition (needs a Google Books key), links to an edition's reviews (keyless), translator averages | Redis, TTL 24 h   |
+| `GET /api/opds/feeds`                            | The OPDS catalogs shipped with the app                                                                       | —                 |
+| `GET /api/opds/feeds/:id?href=`                  | One page of a shipped catalog (relay)                                                                        | Redis, TTL 1 h    |
+| `GET /api/stores/nearby?lat=&lng=&radiusKm=`     | Bookshops near a point — **opt-in**, 404 off                                                                 | —                 |
+| `POST /api/sync/:source`                         | Service-side trigger of a source sync                                                                        | —                 |
 
 Three of these need a word about _why they look the way they do_
 ([ADR-0007](adr/0007-plugin-architecture.md)):

@@ -9,6 +9,11 @@ import { defineConfig } from '@playwright/test';
  * is runnable by anyone who has just cloned the repository. Coupling it to the full stack would
  * have made the security suite the hardest one to run, which is exactly backwards.
  *
+ * The reader's equivalent — a book is the other kind of stranger's code
+ * (docs/adr/0013-client-side-reader.md) — lives in `playwright.reader.config.ts` and runs under
+ * `pnpm test:reader`. Two suites rather than one because that one runs in three browsers and this
+ * one cannot: only Chromium's binary is required to run it.
+ *
  * Only Chromium is configured here because only Chromium's browser binary is installed by
  * `pnpm exec playwright install chromium`. The claims this suite makes are about CSP, opaque
  * origins and worker creation — three things engines genuinely differ on — so a green run here is

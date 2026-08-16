@@ -214,6 +214,20 @@ export const zh: Dictionary = {
   'prices.format.ebook': '电子书',
   'prices.format.audiobook': '有声书',
   'prices.format.unknown': '未注明形态',
+
+  'ratings.edition': '{outOf} 分中的 {average} 分 · {source} 上 {votes} 位读者的评分',
+  'ratings.lowConfidence': '评分人数太少，不足以比较',
+  'ratings.reviews': '书评',
+  'ratings.reviewsOn': '{source} 上这一版本的书评',
+  'ratings.noteNoRatings': '没有任何开放来源评价译文本身，这些版本在这里也没有读者评分。',
+  'ratings.noteReviews':
+    '若某个版本在 {sources} 上有记录，链接就指向该版本自身的书评——多数版本并无记录。',
+  'ratings.translator':
+    '{name} 译本：在 {editions} 个有评分的版本上为 {outOf} 分中的 {average} 分，共 {votes} 次评分。',
+  'ratings.note':
+    '这是 {sources} 上读者对某一具体版本的评分，并非对译文本身的评价——那样的数据没有人公布。它的意义在于对照：同一本书、同一种语言、不同译者，并且始终把评分人数放在眼前。',
+  'ratings.gapWithoutIsbn': '其中 {count} 个版本没有 ISBN，因此无法为它们匹配评分。',
+  'ratings.gapNotLookedUp': '本次请求还有 {count} 个版本未查询。',
   'recommend.hideGenre': '隐藏“{genre}”',
   'recommend.hiddenList': '已隐藏的体裁（点击可恢复）：',
 
@@ -346,4 +360,89 @@ export const zh: Dictionary = {
   'work.descriptionFrom': '简介：',
   'work.descriptionNotLocalized':
     '这段简介是来源撰写时所用的语言——本书暂时还没有你所用语言的简介。',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': '在浏览器中阅读',
+  'reader.privacy':
+    '这本书由你的浏览器自己打开。文件、文件的来源，以及你读到哪里，都不会传到本站。',
+  'reader.chooseFile': '从此设备打开一本书',
+  'reader.formats': 'EPUB、FB2、MOBI 和 CBZ。',
+  'reader.loading': '正在打开…',
+  'reader.failed': '无法打开这本书：{reason}',
+  'reader.previous': '上一页',
+  'reader.next': '下一页',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…或把书拖到这里',
+  'reader.fetching': '正在向 {host} 请求文件…',
+  'reader.blockedTitle': '{host} 没有把文件交给本页面',
+  'reader.blockedBody':
+    '要么无法访问，要么不允许别的网站读取它的文件。本站不会代你去取：你的书从不经过本站，这正是在这里阅读的意义。',
+  'reader.blockedDownload': '从 {host} 下载',
+  'reader.blockedOpenHere': '然后在这里从你的设备打开',
+  'reader.blockedAddon': '自行提供文件的插件同样可行。',
+  'reader.keepFile': '把这本书留在此浏览器',
+  'reader.keepFileHint': '默认关闭。关闭时关掉标签页文件就没了；打开则只留在这台设备上。',
+  'reader.library': '留在此浏览器',
+  'reader.libraryEmpty': '还没有留存任何书。留存的书只在这台设备上，不会上传到任何地方。',
+  'reader.libraryOpen': '打开',
+  'reader.libraryRemove': '移除',
+  'reader.libraryFileKept': '已存文件',
+  'reader.libraryFileGone': '未存文件',
+  'reader.untitled': '无标题的书',
+  'settings.reader.libraryTitle': '此浏览器中的书',
+  'settings.reader.kept': '《{title}》已留在这台设备上，无需重新下载即可打开。不会上传到任何地方。',
+  'settings.reader.forgotten': '《{title}》的文件已从此浏览器删除。条目仍在，你可以再从来源打开。',
+  'settings.reader.removed': '《{title}》已从此浏览器完全移除——文件和条目都删除了。',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': '从你上次停下的地方打开——{percent}%。',
+  'reader.bookmarks': '书签',
+  'reader.bookmarkAdd': '为此页加书签',
+  'reader.bookmarkNone': '这本书还没有书签。',
+  'reader.bookmarkGo': '前往',
+  'reader.bookmarkRemove': '移除书签',
+  'reader.bookmarkNote': '笔记',
+  'reader.bookmarkNotePlaceholder': '你对这一页的话',
+  'reader.bookmarkAt': '{percent}%',
+  'settings.reader.bookmarkTitle': '此浏览器中的书签',
+  'settings.reader.bookmarkAdded':
+    '已在《{title}》的 {percent}% 处加书签。书签和书一起留在这台设备上。',
+  'settings.reader.bookmarkRemoved': '《{title}》中的那个书签已从此浏览器移除。',
+  'settings.reader.noteSaved': '你对《{title}》这一页的笔记已保存在这台设备上。',
+  'settings.reader.positionTitle': '阅读位置',
+  'settings.reader.positionUnstored':
+    '此浏览器没有保存你在《{title}》中的位置，下次会从头打开。无痕模式和磁盘写满都会这样。',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': '这本书的样子',
+  'reader.theme': '配色',
+  'reader.themeApp': '跟随本站',
+  'reader.themeLight': '纸',
+  'reader.themeDark': '墨',
+  'reader.themeSepia': '褐色',
+  'reader.themeEink': '墨水屏',
+  'reader.themeEinkHint': '纯黑配纯白，无动画，单栏——为电子墨水屏而设。',
+  'reader.fontSize': '字号',
+  'reader.smaller': '更小',
+  'reader.larger': '更大',
+  'reader.lineHeight': '行距',
+  'reader.margin': '页边距',
+  'reader.flow': '翻页方式',
+  'reader.flowPaged': '翻页',
+  'reader.flowScrolled': '滚动',
+  'reader.justify': '两端对齐',
+  'reader.hyphenate': '断词连字符',
+  'reader.displayReset': '恢复默认',
+  'settings.reader.displayTitle': '阅读显示',
+  'settings.reader.displayChanged': '{setting}现在是{value}。对你在此浏览器打开的每本书都生效。',
+  'settings.reader.displayReset': '阅读显示已恢复默认，对此浏览器中的所有书生效。',
+  'reader.on': '开',
+  'reader.off': '关',
+  'reader.openHere': '在浏览器中阅读',
+  'reader.notAFileTitle': '{host} 返回的是网页，不是文件',
+  'reader.notAFileBody':
+    '这个链接指向的是页面而不是书：下载页、同意页，或是在确认你不是机器人。你自己打开它，文件就在那里。',
+  'settings.status.session': '未记住',
+  'settings.notRemembered': '此浏览器没有记住它，下次打开书时会恢复原样。',
 };

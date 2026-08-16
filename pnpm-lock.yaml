@@ -117,6 +117,9 @@ importers:
       '@golden/plugins':
         specifier: workspace:*
         version: link:../../packages/plugins
+      '@golden/reader':
+        specifier: workspace:*
+        version: link:../../packages/reader
       next:
         specifier: ^14.2.15
         version: 14.2.35(@playwright/test@1.62.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -291,6 +294,12 @@ importers:
       fast-xml-parser:
         specifier: ^5.2.5
         version: 5.10.1
+    devDependencies:
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+
+  packages/reader:
     devDependencies:
       typescript:
         specifier: ^5.6.3

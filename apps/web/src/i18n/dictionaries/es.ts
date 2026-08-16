@@ -246,6 +246,22 @@ export const es: Dictionary = {
   'prices.format.ebook': 'Libro electrónico',
   'prices.format.audiobook': 'Audiolibro',
   'prices.format.unknown': 'Formato no indicado',
+
+  'ratings.edition': '{average} de {outOf}, {votes} valoraciones de lectores en {source}',
+  'ratings.lowConfidence': 'muy pocas valoraciones para comparar',
+  'ratings.reviews': 'Reseñas',
+  'ratings.reviewsOn': 'Reseñas de esta edición en {source}',
+  'ratings.noteNoRatings':
+    'Ninguna fuente abierta valora una traducción, y estas ediciones no tienen aquí valoraciones de lectores.',
+  'ratings.noteReviews':
+    'Cuando una edición consta en {sources}, el enlace lleva a las reseñas de esa tirada concreta — la mayoría no constan.',
+  'ratings.translator':
+    'Ediciones traducidas por {name}: {average} de {outOf} en {editions} ediciones valoradas, {votes} valoraciones en total.',
+  'ratings.note':
+    'Son valoraciones de lectores sobre una edición concreta en {sources}, no una valoración de la traducción en sí: eso no lo publica nadie. Valen por la comparación: mismo libro, misma lengua, distintos traductores, y siempre con el número de votos a la vista.',
+  'ratings.gapWithoutIsbn':
+    '{count} ediciones no llevan ISBN, así que no se les pudo asociar ninguna valoración.',
+  'ratings.gapNotLookedUp': 'Otras {count} ediciones no se consultaron en esta petición.',
   'recommend.hideGenre': 'ocultar «{genre}»',
   'recommend.hiddenList': 'Géneros ocultos (haz clic para recuperar uno):',
 
@@ -389,4 +405,99 @@ export const es: Dictionary = {
   'work.descriptionFrom': 'Descripción:',
   'work.descriptionNotLocalized':
     'Esta descripción está en el idioma en que la escribió la fuente: todavía no hay ninguna en el tuyo para este libro.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Leer en el navegador',
+  'reader.privacy':
+    'Su navegador abre este libro por su cuenta. Ni el archivo, ni su procedencia, ni por dónde va leyendo llegan a este sitio.',
+  'reader.chooseFile': 'Abrir un libro desde este dispositivo',
+  'reader.formats': 'EPUB, FB2, MOBI y CBZ.',
+  'reader.loading': 'Abriendo…',
+  'reader.failed': 'No se pudo abrir este libro: {reason}',
+  'reader.previous': 'Página anterior',
+  'reader.next': 'Página siguiente',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…o arrastre un libro aquí',
+  'reader.fetching': 'Pidiendo el archivo a {host}…',
+  'reader.blockedTitle': '{host} no entregó el archivo a esta página',
+  'reader.blockedBody':
+    'O no está accesible, o no permite que otros sitios lean sus archivos. Este sitio no lo descargará por usted: su libro nunca pasa por él, y eso es justamente el sentido de leer aquí.',
+  'reader.blockedDownload': 'Descargarlo de {host}',
+  'reader.blockedOpenHere': 'y abrirlo aquí desde su dispositivo',
+  'reader.blockedAddon': 'También sirve un complemento que entregue el archivo por su cuenta.',
+  'reader.keepFile': 'Guardar este libro en este navegador',
+  'reader.keepFileHint':
+    'Desactivado por defecto. Sin esto el archivo desaparece al cerrar la pestaña; con esto queda solo en este dispositivo.',
+  'reader.library': 'Guardado en este navegador',
+  'reader.libraryEmpty':
+    'Todavía no hay nada guardado. Los libros guardados se quedan en este dispositivo y no se suben a ningún sitio.',
+  'reader.libraryOpen': 'Abrir',
+  'reader.libraryRemove': 'Quitar',
+  'reader.libraryFileKept': 'archivo guardado',
+  'reader.libraryFileGone': 'archivo no guardado',
+  'reader.untitled': 'Libro sin título',
+  'settings.reader.libraryTitle': 'Libros en este navegador',
+  'settings.reader.kept':
+    '«{title}» ahora se guarda en este dispositivo y se abre sin volver a descargarlo. No se sube a ninguna parte.',
+  'settings.reader.forgotten':
+    'El archivo de «{title}» se borró de este navegador. La entrada sigue ahí: puede abrirlo otra vez desde su fuente.',
+  'settings.reader.removed':
+    '«{title}» se quitó por completo de este navegador: el archivo y la entrada.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Abierto donde lo dejó: al {percent}%.',
+  'reader.bookmarks': 'Marcadores',
+  'reader.bookmarkAdd': 'Marcar esta página',
+  'reader.bookmarkNone': 'Todavía no hay marcadores en este libro.',
+  'reader.bookmarkGo': 'Ir',
+  'reader.bookmarkRemove': 'Quitar marcador',
+  'reader.bookmarkNote': 'Nota',
+  'reader.bookmarkNotePlaceholder': 'Sus propias palabras sobre esta página',
+  'reader.bookmarkAt': 'al {percent}%',
+  'settings.reader.bookmarkTitle': 'Marcadores en este navegador',
+  'settings.reader.bookmarkAdded':
+    'Marcador al {percent}% de «{title}». Los marcadores se quedan en este dispositivo junto al libro.',
+  'settings.reader.bookmarkRemoved': 'Ese marcador de «{title}» se quitó de este navegador.',
+  'settings.reader.noteSaved':
+    'Su nota sobre esta página de «{title}» se guardó en este dispositivo.',
+  'settings.reader.positionTitle': 'Posición de lectura',
+  'settings.reader.positionUnstored':
+    'Este navegador no quiso guardar por dónde va en «{title}», así que la próxima vez el libro se abrirá desde el principio. El modo privado y un disco lleno hacen lo mismo.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Cómo se ve este libro',
+  'reader.theme': 'Colores',
+  'reader.themeApp': 'Como el sitio',
+  'reader.themeLight': 'Papel',
+  'reader.themeDark': 'Tinta',
+  'reader.themeSepia': 'Sepia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Negro puro sobre blanco, sin animación, una columna: para pantallas de tinta electrónica.',
+  'reader.fontSize': 'Tamaño de letra',
+  'reader.smaller': 'Más pequeña',
+  'reader.larger': 'Más grande',
+  'reader.lineHeight': 'Interlineado',
+  'reader.margin': 'Márgenes',
+  'reader.flow': 'Páginas',
+  'reader.flowPaged': 'Pasar páginas',
+  'reader.flowScrolled': 'Desplazar',
+  'reader.justify': 'Justificar',
+  'reader.hyphenate': 'Partir palabras',
+  'reader.displayReset': 'Volver a los valores por defecto',
+  'settings.reader.displayTitle': 'Presentación de lectura',
+  'settings.reader.displayChanged':
+    '{setting}: ahora {value}. Se aplica a todos los libros que abra en este navegador.',
+  'settings.reader.displayReset':
+    'La presentación de lectura vuelve a sus valores por defecto para todos los libros de este navegador.',
+  'reader.on': 'Sí',
+  'reader.off': 'No',
+  'reader.openHere': 'Leer en el navegador',
+  'reader.notAFileTitle': '{host} envió una página web, no el archivo',
+  'reader.notAFileBody':
+    'El enlace lleva a una página y no a un libro: una página de descarga, una pantalla de consentimiento o una comprobación de que no es un robot. Ábrala usted y el archivo estará allí.',
+  'settings.status.session': 'No recordado',
+  'settings.notRemembered':
+    'Este navegador no quiso recordarlo: la próxima vez que abra un libro volverá a estar como antes.',
 };

@@ -230,6 +230,21 @@ export const ja: Dictionary = {
   'prices.format.ebook': '電子書籍',
   'prices.format.audiobook': 'オーディオブック',
   'prices.format.unknown': '形態の記載なし',
+
+  'ratings.edition': '{outOf} 点中 {average} 点／{source} の読者 {votes} 人の評価',
+  'ratings.lowConfidence': '比較するには評価数が少なすぎます',
+  'ratings.reviews': 'レビュー',
+  'ratings.reviewsOn': 'この版のレビュー（{source}）',
+  'ratings.noteNoRatings':
+    '翻訳そのものを評価する公開情報はなく、これらの版には読者評価もありません。',
+  'ratings.noteReviews':
+    '{sources} に登録のある版は、リンク先がその版自体のレビューです（登録のない版がほとんどです）。',
+  'ratings.translator':
+    '{name} 訳の版：評価のある {editions} 版で {outOf} 点中 {average} 点、評価数は合計 {votes} 件。',
+  'ratings.note':
+    'これは {sources} で特定の版に付けられた読者の評価であり、翻訳そのものの評価ではありません（それを公開している所はありません）。同じ本、同じ言語、別の訳者どうしを、評価数と一緒に見比べるための数字です。',
+  'ratings.gapWithoutIsbn': '{count} 版には ISBN がないため、評価を結び付けられませんでした。',
+  'ratings.gapNotLookedUp': 'さらに {count} 版は、この要求では照会していません。',
   'recommend.hideGenre': '「{genre}」を非表示にする',
   'recommend.hiddenList': '非表示のジャンル（クリックで戻せます）:',
 
@@ -371,4 +386,97 @@ export const ja: Dictionary = {
   'work.descriptionFrom': '紹介文:',
   'work.descriptionNotLocalized':
     'この紹介文は情報源が書いた言語のままです。この本については、あなたの言語のものはまだありません。',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'ブラウザーで読む',
+  'reader.privacy':
+    'この本を開くのはあなたのブラウザーだけです。ファイルも、その入手元も、どこまで読んだかも、このサイトには届きません。',
+  'reader.chooseFile': 'この端末から本を開く',
+  'reader.formats': 'EPUB、FB2、MOBI、CBZ。',
+  'reader.loading': '開いています…',
+  'reader.failed': 'この本を開けませんでした: {reason}',
+  'reader.previous': '前のページ',
+  'reader.next': '次のページ',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…またはここに本をドロップ',
+  'reader.fetching': '{host} にファイルを要求しています…',
+  'reader.blockedTitle': '{host} はこのページにファイルを渡しませんでした',
+  'reader.blockedBody':
+    '到達できないか、他のサイトからファイルを読むことを許可していないかのどちらかです。このサイトが代わりに取得することはありません。あなたの本がこのサイトを通らないこと自体が、ここで読む意味だからです。',
+  'reader.blockedDownload': '{host} からダウンロード',
+  'reader.blockedOpenHere': 'して、端末からここで開く',
+  'reader.blockedAddon': 'ファイルを自分で配信するアドオンでも構いません。',
+  'reader.keepFile': 'この本をこのブラウザーに保存する',
+  'reader.keepFileHint':
+    '既定はオフです。オフならタブを閉じるとファイルは消えます。オンならこの端末にだけ残ります。',
+  'reader.library': 'このブラウザーに保存済み',
+  'reader.libraryEmpty':
+    'まだ何も保存されていません。保存した本はこの端末に留まり、どこにもアップロードされません。',
+  'reader.libraryOpen': '開く',
+  'reader.libraryRemove': '削除',
+  'reader.libraryFileKept': 'ファイルあり',
+  'reader.libraryFileGone': 'ファイルなし',
+  'reader.untitled': '無題の本',
+  'settings.reader.libraryTitle': 'このブラウザーの本',
+  'settings.reader.kept':
+    '「{title}」はこの端末に保存され、再ダウンロードなしで開けるようになりました。どこにも送信されません。',
+  'settings.reader.forgotten':
+    '「{title}」のファイルをこのブラウザーから削除しました。記録は残るので、元の場所から開き直せます。',
+  'settings.reader.removed':
+    '「{title}」をこのブラウザーから完全に削除しました — ファイルも記録も。',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': '前回の続きから開きました — {percent}% の位置です。',
+  'reader.bookmarks': 'しおり',
+  'reader.bookmarkAdd': 'このページにしおりを挟む',
+  'reader.bookmarkNone': 'この本にはまだしおりがありません。',
+  'reader.bookmarkGo': '移動',
+  'reader.bookmarkRemove': 'しおりを外す',
+  'reader.bookmarkNote': 'メモ',
+  'reader.bookmarkNotePlaceholder': 'このページについてのあなたの言葉',
+  'reader.bookmarkAt': '{percent}%',
+  'settings.reader.bookmarkTitle': 'このブラウザーのしおり',
+  'settings.reader.bookmarkAdded':
+    '「{title}」の {percent}% にしおりを挟みました。しおりは本と一緒にこの端末に残ります。',
+  'settings.reader.bookmarkRemoved': '「{title}」のそのしおりをこのブラウザーから外しました。',
+  'settings.reader.noteSaved': '「{title}」のこのページへのメモをこの端末に保存しました。',
+  'settings.reader.positionTitle': '読書位置',
+  'settings.reader.positionUnstored':
+    'このブラウザーは「{title}」のどこまで読んだかを保存しませんでした。次回は最初から開きます。プライベートモードや空き容量不足で起こります。',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'この本の見え方',
+  'reader.theme': '配色',
+  'reader.themeApp': 'サイトに合わせる',
+  'reader.themeLight': '紙',
+  'reader.themeDark': '墨',
+  'reader.themeSepia': 'セピア',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint': '白地に純黒、アニメーションなし、一段組み — 電子ペーパー向けです。',
+  'reader.fontSize': '文字の大きさ',
+  'reader.smaller': '小さく',
+  'reader.larger': '大きく',
+  'reader.lineHeight': '行間',
+  'reader.margin': '余白',
+  'reader.flow': 'ページ',
+  'reader.flowPaged': 'ページをめくる',
+  'reader.flowScrolled': 'スクロール',
+  'reader.justify': '両端揃え',
+  'reader.hyphenate': 'ハイフネーション',
+  'reader.displayReset': '既定に戻す',
+  'settings.reader.displayTitle': '読書時の表示',
+  'settings.reader.displayChanged':
+    '{setting} を {value} にしました。このブラウザーで開くすべての本に適用されます。',
+  'settings.reader.displayReset':
+    '読書時の表示を、このブラウザーのすべての本について既定に戻しました。',
+  'reader.on': 'オン',
+  'reader.off': 'オフ',
+  'reader.openHere': 'ブラウザーで読む',
+  'reader.notAFileTitle': '{host} はファイルではなくウェブページを返しました',
+  'reader.notAFileBody':
+    'リンクの先は本ではなくページです — ダウンロードページ、同意画面、あるいはロボットでないことの確認。ご自身で開けば、そこにファイルがあります。',
+  'settings.status.session': '次回は戻ります',
+  'settings.notRemembered':
+    'このブラウザーは記憶しませんでした。次に本を開くときは元の状態に戻ります。',
 };

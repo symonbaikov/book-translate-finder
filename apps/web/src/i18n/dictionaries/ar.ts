@@ -222,6 +222,21 @@ export const ar: Dictionary = {
   'prices.format.ebook': 'كتاب إلكتروني',
   'prices.format.audiobook': 'كتاب صوتي',
   'prices.format.unknown': 'الصيغة غير مذكورة',
+
+  'ratings.edition': '{average} من {outOf}، بحسب {votes} من تقييمات القرّاء على {source}',
+  'ratings.lowConfidence': 'التقييمات أقل من أن تُقارَن',
+  'ratings.reviews': 'المراجعات',
+  'ratings.reviewsOn': 'مراجعات هذه الطبعة على {source}',
+  'ratings.noteNoRatings':
+    'لا يقيّم أي مصدر مفتوح الترجمة نفسها، ولا تتوفر هنا تقييمات قرّاء لهذه الطبعات.',
+  'ratings.noteReviews':
+    'إذا كانت الطبعة معروفة على {sources}، فالرابط يقود إلى مراجعات تلك الطبعة بالذات — ومعظم الطبعات ليست كذلك.',
+  'ratings.translator':
+    'الطبعات بترجمة {name}: {average} من {outOf} عبر {editions} طبعات مُقيَّمة، و{votes} تقييمًا في المجموع.',
+  'ratings.note':
+    'هذه تقييمات قرّاء لطبعة بعينها على {sources}، وليست حكمًا على الترجمة نفسها — فلا أحد ينشر ذلك. قيمتها في المقارنة: الكتاب نفسه واللغة نفسها ومترجمون مختلفون، مع إبقاء عدد التقييمات أمام العين دائمًا.',
+  'ratings.gapWithoutIsbn': '{count} من الطبعات بلا ردمك، فتعذّر ربط أي تقييم بها.',
+  'ratings.gapNotLookedUp': 'ولم يُستعلم عن {count} طبعة أخرى في هذا الطلب.',
   'recommend.hideGenre': 'إخفاء «{genre}»',
   'recommend.hiddenList': 'الأنواع المخفية (اضغط لاستعادة واحد):',
 
@@ -355,4 +370,95 @@ export const ar: Dictionary = {
   'work.descriptionFrom': 'الوصف:',
   'work.descriptionNotLocalized':
     'هذا الوصف باللغة التي كتبه بها المصدر — ولا يوجد بعد وصف بلغتك لهذا الكتاب.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'اقرأ في المتصفّح',
+  'reader.privacy':
+    'متصفّحك وحده هو من يفتح هذا الكتاب. لا الملف ولا مصدره ولا الموضع الذي بلغته في القراءة يصل إلى هذا الموقع.',
+  'reader.chooseFile': 'افتح كتابًا من هذا الجهاز',
+  'reader.formats': 'EPUB وFB2 وMOBI وCBZ.',
+  'reader.loading': 'جارٍ الفتح…',
+  'reader.failed': 'تعذّر فتح هذا الكتاب: {reason}',
+  'reader.previous': 'الصفحة السابقة',
+  'reader.next': 'الصفحة التالية',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…أو أفلِت كتابًا هنا',
+  'reader.fetching': 'يُطلب الملف من {host}…',
+  'reader.blockedTitle': 'لم يُسلّم {host} الملف إلى هذه الصفحة',
+  'reader.blockedBody':
+    'إمّا أنه غير متاح، وإمّا أنه لا يسمح للمواقع الأخرى بقراءة ملفاته. ولن يجلبه هذا الموقع نيابةً عنك: كتابك لا يمرّ به أبدًا، وهذا هو معنى القراءة هنا.',
+  'reader.blockedDownload': 'نزِّله من {host}',
+  'reader.blockedOpenHere': 'ثم افتحه هنا من جهازك',
+  'reader.blockedAddon': 'وتفي بالغرض أيضًا إضافةٌ تقدّم الملف بنفسها.',
+  'reader.keepFile': 'احتفظ بهذا الكتاب في هذا المتصفّح',
+  'reader.keepFileHint':
+    'معطَّل افتراضيًا. بدونه يزول الملف عند إغلاق التبويب؛ ومعه يبقى على هذا الجهاز وحده.',
+  'reader.library': 'محفوظ في هذا المتصفّح',
+  'reader.libraryEmpty':
+    'لا شيء محفوظ بعد. الكتب التي تحفظها تبقى على هذا الجهاز ولا تُرفع إلى أي مكان.',
+  'reader.libraryOpen': 'افتح',
+  'reader.libraryRemove': 'أزل',
+  'reader.libraryFileKept': 'الملف محفوظ',
+  'reader.libraryFileGone': 'الملف غير محفوظ',
+  'reader.untitled': 'كتاب بلا عنوان',
+  'settings.reader.libraryTitle': 'الكتب في هذا المتصفّح',
+  'settings.reader.kept':
+    '«{title}» صار محفوظًا على هذا الجهاز ويُفتح دون تنزيله من جديد. ولا يُرفع إلى أي مكان.',
+  'settings.reader.forgotten':
+    'حُذف ملف «{title}» من هذا المتصفّح. بقي السجل، فيمكنك فتحه من مصدره مرة أخرى.',
+  'settings.reader.removed': 'أُزيل «{title}» من هذا المتصفّح تمامًا — الملف والسجل معًا.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'فُتح من حيث توقّفت — عند {percent}%.',
+  'reader.bookmarks': 'العلامات',
+  'reader.bookmarkAdd': 'ضع علامة على هذه الصفحة',
+  'reader.bookmarkNone': 'لا علامات في هذا الكتاب بعد.',
+  'reader.bookmarkGo': 'انتقل',
+  'reader.bookmarkRemove': 'أزل العلامة',
+  'reader.bookmarkNote': 'ملاحظة',
+  'reader.bookmarkNotePlaceholder': 'كلماتك عن هذه الصفحة',
+  'reader.bookmarkAt': 'عند {percent}%',
+  'settings.reader.bookmarkTitle': 'العلامات في هذا المتصفّح',
+  'settings.reader.bookmarkAdded':
+    'وُضعت علامة عند {percent}% من «{title}». تبقى العلامات على هذا الجهاز مع الكتاب.',
+  'settings.reader.bookmarkRemoved': 'أُزيلت تلك العلامة في «{title}» من هذا المتصفّح.',
+  'settings.reader.noteSaved': 'حُفظت ملاحظتك على هذه الصفحة من «{title}» على هذا الجهاز.',
+  'settings.reader.positionTitle': 'موضع القراءة',
+  'settings.reader.positionUnstored':
+    'لم يحفظ هذا المتصفّح موضعك في «{title}»، لذا سيُفتح الكتاب من البداية في المرة القادمة. يحدث هذا في الوضع الخاص وعند امتلاء القرص.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'شكل هذا الكتاب',
+  'reader.theme': 'الألوان',
+  'reader.themeApp': 'مثل الموقع',
+  'reader.themeLight': 'ورق',
+  'reader.themeDark': 'حبر',
+  'reader.themeSepia': 'بنّي داكن',
+  'reader.themeEink': 'حبر إلكتروني',
+  'reader.themeEinkHint': 'أسود خالص على أبيض، بلا حركة، عمود واحد — لشاشات الحبر الإلكتروني.',
+  'reader.fontSize': 'حجم الخط',
+  'reader.smaller': 'أصغر',
+  'reader.larger': 'أكبر',
+  'reader.lineHeight': 'تباعد الأسطر',
+  'reader.margin': 'الهوامش',
+  'reader.flow': 'الصفحات',
+  'reader.flowPaged': 'تقليب الصفحات',
+  'reader.flowScrolled': 'تمرير',
+  'reader.justify': 'ضبط النص',
+  'reader.hyphenate': 'فصل الكلمات',
+  'reader.displayReset': 'العودة إلى الوضع الافتراضي',
+  'settings.reader.displayTitle': 'عرض القراءة',
+  'settings.reader.displayChanged':
+    '{setting}: صار {value}. ينطبق على كل كتاب تفتحه في هذا المتصفّح.',
+  'settings.reader.displayReset': 'عاد عرض القراءة إلى الوضع الافتراضي لكل الكتب في هذا المتصفّح.',
+  'reader.on': 'مفعّل',
+  'reader.off': 'معطّل',
+  'reader.openHere': 'اقرأ في المتصفّح',
+  'reader.notAFileTitle': 'أرسل {host} صفحة وِب لا الملف',
+  'reader.notAFileBody':
+    'يقود الرابط إلى صفحة لا إلى كتاب: صفحة تنزيل أو شاشة موافقة أو تحقّق من أنك لست روبوتًا. افتحها بنفسك وستجد الملف هناك.',
+  'settings.status.session': 'لم يُحفَظ للمرّة القادمة',
+  'settings.notRemembered':
+    'لم يشأ هذا المتصفّح تذكّره، لذا سيعود كل شيء كما كان عند فتحك كتابًا في المرة القادمة.',
 };

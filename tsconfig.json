@@ -7,6 +7,7 @@
     { "path": "packages/contracts" },
     { "path": "packages/plugins" },
     { "path": "packages/addons" },
+    { "path": "packages/reader" },
     { "path": "apps/api" },
     { "path": "apps/worker" }
   ]

@@ -890,10 +890,11 @@ decides how much of each can honestly be built.
 
 ### Blocked, and why
 
-| #    | Item                   | Blocker                                                                                                                                                                                                                                                                                                                                                                            |
-| ---- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 4.10 | Prices in shop links   | Google Books `saleInfo` carries a real `listPrice`/`retailPrice`, but only for Google Play and only with a `GOOGLE_BOOKS_API_KEY` (the keyless quota is zero — confirmed live: `RESOURCE_EXHAUSTED`). Every other retailer requires an affiliate agreement with prior sales. So: a Google Play price where a key is configured, and no price anywhere else — never an invented one |
-| 4.11 | Price filter in search | Follows 4.10. A filter over a field known for a small minority of editions silently hides everything else, so it can only ship as "only show books with a known price", clearly labeled                                                                                                                                                                                            |
+| #    | Item                   | Blocker                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ---- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 4.10 | Prices in shop links   | Google Books `saleInfo` carries a real `listPrice`/`retailPrice`, but only for Google Play and only with a `GOOGLE_BOOKS_API_KEY` (the keyless quota is zero — confirmed live: `RESOURCE_EXHAUSTED`). Every other retailer requires an affiliate agreement with prior sales. So: a Google Play price where a key is configured, and no price anywhere else — never an invented one                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| 4.11 | Price filter in search | Follows 4.10. A filter over a field known for a small minority of editions silently hides everything else, so it can only ship as "only show books with a known price", clearly labeled                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| 4.12 | Ratings under editions | Shipped in two halves, and the halves have different prices. **Nobody publishes a rating of a translation** — Open Library rates only works (`/books/OL…M/ratings.json` → `notfound`, verified live), Goodreads closed its API in December 2020, LiveLib and Babelio rate editions but have no API and scraping is barred (I-3). **With a `GOOGLE_BOOKS_API_KEY`:** `volumeInfo.averageRating` + `ratingsCount` per ISBN, shown as a reader rating **of an edition** with its source and vote count, plus a per-translator average where a language has rival translators. How many translated editions really carry `averageRating` is **unmeasured** — no key was available to sample it, and the keyless quota is zero. **Without a key:** Open Library's `api/books?bibkeys=` (keyless, batched) carries a per-edition Goodreads id, so the page links to the reviews of that exact printing instead of showing a number — measured at **21 of 120** real translated editions (17%); 110 of the 120 were known to Open Library at all. LibraryThing ids are in the same block and are deliberately **not** used: `11883` came back for two different printings of `Le Petit Prince`, so it names a work, and a link identical under every translation is the thing this feature exists not to do. Editions without an ISBN are never looked up and are counted in the response |
 
 The rule that keeps these honest is unchanged: the app may show what a source actually states, and
 must not present a guess as a fact. A shop lookup is a lookup, not a stock check; a nearby shop is
@@ -1064,6 +1065,220 @@ read a response the target refuses to share with the browser, which is most publ
 | 7.6 | Zero-knowledge enforcement                        | ✅\*  | Boundary rules, plus three Playwright tests that watch the wire while an addon is installed and used. Same Chromium caveat as 7.3                |
 | 7.7 | Protocol spec, example addon, validator           | ✅    | [addon-protocol.md](addon-protocol.md), `examples/addon-template`, `pnpm addon:validate`. No npm SDK — see below                                 |
 | 7.8 | Fold the custom-OPDS-feed form into the engine    | ✅\*  | One list, one removal path, credentials intact. The asterisk is navigation, which stayed in the shelf — see below                                |
+
+### Found by running 11.3 in a browser, not by writing it
+
+Four things, none of which any amount of design review had produced, and each cheap only because a
+real book was opened on the real route:
+
+- **A static CSP could not have worked at all.** Next injects its own inline scripts for hydration,
+  so `script-src 'self'` without a nonce refuses the framework along with the book. The policy is
+  therefore built per request in `middleware.ts`, scoped to `/read` — and scoped deliberately, so
+  that nobody tunes it later while thinking about analytics.
+- **Development needs a different shape, and only one.** `'strict-dynamic'` disables host-based
+  allowlisting, and Next's dev-only fallback chunks carry no nonce — with it, a dev page is a wall
+  of refusals. Dev drops `'strict-dynamic'` and adds `'unsafe-eval'`; neither shape contains
+  `'unsafe-inline'` or `blob:`, so the hostile fixture is testing the real wall either way.
+- **Dropping `pdf.js` from the vendored tree was not enough.** `view.js` reaches it through a
+  dynamic import, which a bundler resolves whether or not a PDF is ever opened — Next refused to
+  build the reader at all. The branch is now patched out, which says what deleting the files meant
+  to say in the one place that is also true at build time.
+- **`open()` renders nothing.** Upstream's own reader calls `renderer.next()` afterwards; without
+  an equivalent the view sits there, correctly loaded and entirely blank, which is a hard thing to
+  read backwards from. It is now `renderFirstPage()`, named and commented, and it is where resuming
+  a stored position will go in 11.5.
+
+Two more that would have shipped silently. The engine probe **answered `false` in Chromium** the
+first time it ran, because it settled on the frame's initial `about:blank` instead of polling for
+its document — quietly dropping every reader to one wall, which is exactly the failure mode ADR-0013
+warns about. And `hidden={state !== 'open'}` rendered as `hidden="false"` on the custom element,
+because React stringifies props there and HTML's `hidden` hides on presence.
+
+### What 11.4 settled about getting a book in
+
+- **The handoff carries the address in `sessionStorage` or the URL fragment, never a query string.**
+  Both are invisible to the server; a query string would be in the access log before any of this
+  code ran. The fragment form exists for a pasted link and is erased with `replaceState` on arrival,
+  so the address does not outlive the moment it was useful.
+- **The dead end has no "try through this site" button, and the test asserts its absence.** A source
+  that refuses the browser gets an explanation, a download link, and the suggestion to open the file
+  from the device. The only thing a retry button could do is call a route this project does not have.
+- **The message still does not say "CORS".** It cannot: a refused cross-origin read and an
+  unreachable host arrive at `fetch` as the same opaque `TypeError`. That is not a limitation to
+  route around — the reader's next step is identical either way.
+- **A record per book, bytes only on request.** Opening a book writes a few hundred bytes so the
+  reader can find it again; keeping the file is a separate switch, off by default, and the checkbox
+  follows what IndexedDB _did_ rather than what was clicked. On a browser that refuses the write it
+  never moves, and the popup says the browser refused rather than claiming success.
+- **Two object stores rather than one.** Listing the library must not deserialize a 40 MB EPUB per
+  row, which one store would.
+
+Two things the tests learned the hard way. Playwright's `route.fulfill` **skips the CORS check**, so
+a "refused" response arrived intact and the dead-end test passed the book through instead — the
+faithful simulation is `route.abort()`, for the same reason the message does not name CORS. And
+`check()` on the keep-file checkbox fails: it is controlled by what storage did, not by the click,
+so it flips a few milliseconds later — which is exactly the property that makes a refused write
+visible.
+
+### What 11.5 settled about remembering
+
+- **One record, after briefly being two.** 11.2 wrote `ReadingRecord` before there was anywhere to
+  put it and 11.4 wrote `LibraryEntry` when the storage arrived — two shapes for one thing,
+  overlapping in four fields. They are one type again, and the bytes stay in their own store because
+  a list must not deserialize a 40 MB EPUB per row.
+- **Only a refused write says anything.** A position that stored correctly is not news: nobody asked
+  for it and there is nothing to confirm. A position that did _not_ store is a book that opens at
+  page one tomorrow, so that one gets a popup — once per book rather than once per page turn, since
+  the reason does not change and a popup on every turn is wallpaper.
+- **A stored locator is tried and not trusted.** `renderFirstPage` falls back to the beginning if a
+  CFI no longer resolves. Landing on page one is a small disappointment; an exception there would
+  mean the book does not open at all.
+- **Notes save on blur, not on keystroke.** Each save is a write and a popup.
+
+Three things found by running it. Reading a record written by the **previous build** threw on
+`position.cfi` for every book already in the library — storage outlives deployments, so
+`reviveEntry` now upgrades an older shape instead of dropping somebody's shelf (the trade 7.8
+already refused once). `goTo` at open time emits no `relocate`, so after resuming, "bookmark this
+page" stayed disabled until the reader turned one — the current position is now seeded from the
+record. And the button read a ref, which cannot re-render anything; the locator is held twice on
+purpose, once for the listener and once for the button.
+
+**Highlights over selected text are not in this phase, and the reason is 11.1b.** A highlight needs
+to know what the reader selected, which needs `selectionchange` inside the book's frame — and that
+is the frame WebKit delivers no events to. Building it would mean a feature that works in two engines
+and silently does nothing in Safari, or moving selection handling somewhere it does not belong. A
+bookmark with a note does what most of the need is, works everywhere, and does not pretend.
+
+### What 11.6 settled about how a book looks
+
+- **`packages/reader` decides no colour.** It takes a palette and writes CSS text into the book's
+  own document — a document `tokens.css` can never reach. The four palettes live in `tokens.css`
+  with the rest of the project's colours (ADR-0008), the host resolves them, and a test asserts the
+  package emits no hex value it was not given.
+- **`app` is not a fifth palette.** It means "whatever `--surface-1` and `--text` are right now", so
+  it follows the site's light/dark switch with no second set of values to keep in step.
+- **E-Ink is not dark mode inverted.** Pure `#000` on `#fff` — an e-paper panel has no greys worth
+  trusting — plus one column, no transition, no shadow, no gradient, and images desaturated. It is
+  the only theme that removes motion unconditionally: elsewhere that stays inside
+  `prefers-reduced-motion`, because there the reader's system has already answered.
+- **Every control is discrete.** Steps and choices, no sliders: each change announces itself, and a
+  slider means either a popup per pixel or a rule about when a drag has "finished". Values show as
+  numbers — 130%, 1.5, 6% — so the interface does not invent a word for every step and translate it
+  fifteen times.
+- **A refused write still applies on screen.** Refusing to show the reader what they just chose,
+  because the browser will not remember it for next time, would be a second and worse failure. The
+  popup says it will not last; the page does what was asked.
+
+Two found by looking at it. The type-size stepper is three controls in one grid cell, and at
+`minmax(11rem)` its last button overlapped the next column — invisible until a real book was on
+screen behind it. And the two new toggles broke four older tests that asked for "the checkbox";
+they now name the one they mean, which they should have done from the start.
+
+### 11.7 met the real catalogue, and the catalogue had opinions
+
+The button is offered where a row has a file whose format this reader opens: a `download` link on
+the work page, and an addon source that is not flagged `externalPage`. Nowhere else. The free shelf
+has no button because it has no file — its cards carry a "downloadable" badge and link to the work
+page, where the URLs actually are, and adding one would mean a request per card for data the free
+shelf's contract does not carry.
+
+Then it was pointed at this instance's own database, and three things came out of that:
+
+- **`readableFormatOf` has to be conservative, and the data says why.** The `format` column here
+  holds `epub` (468 links) and `mobi` (96) — and also `abbyy gz`, `animated gif`,
+  `archive bittorrent`, `64kbps mp3` and `additional text pdf`. It is a guess about whether to show
+  a button, never about how to parse a file; the bytes decide that later, in `sniffFormat`.
+- **Most download links here have no format at all** (422 of them), and most are Internet Archive
+  `/stream/…` addresses, which are reading pages rather than files. No format, no button — which is
+  the right answer twice over.
+- **The CORS dead end is the common case for the big sources.** Measured with `Origin:` set:
+  `standardebooks.org` answers `Access-Control-Allow-Origin: *`; `gutenberg.org` and `archive.org`
+  send no such header at all. So on this catalogue the direct fetch usually ends at the honest dead
+  end, and the file picker carries the feature — exactly the risk this phase wrote down in advance,
+  now with numbers instead of a guess.
+
+**And a fourth thing, which was a bug.** Following the button to a real Standard Ebooks URL got
+`200 OK` with `text/html` — a landing page or an anti-bot check, not the EPUB — and the reader
+answered "this file is not a book this reader can open". True, and useless: the reader did not
+choose a broken file, they were handed a page. `not-a-file` is now its own outcome with its own
+sentence and the same fork in the road: open the page yourself, the file is behind it.
+
+### 11.8 was an audit, and audits are only worth what they find
+
+The popups were built as each preference arrived, so this step checked them against the rules in
+CLAUDE.md instead of writing more. Clean: no bare `toast()` anywhere, every reader preference goes
+through `useSettingChangeToast()`, and the three hand-written `'failed'` outcomes elsewhere in the
+app are correct — `outcomeOfWrite` decides what a _storage_ failure is called, and a server refusing
+a bookmark is not one. Four things were not clean:
+
+- **A fifth outcome, which this file predicted in Phase 6.** `setting-change.ts` said: "if you ever
+  add a preference that _is_ held in memory, that is a new outcome, not a reuse of this one." The
+  reading display is exactly that — refusing to _show_ readers the type size they just chose,
+  because the browser will not keep it, would be a second and worse failure. So `session` now means
+  "in effect now, and not next time": it **appends** to the caller's sentence rather than replacing
+  it, the control stays where the reader put it, and `outcomeOfSessionWrite` derives it. CLAUDE.md's
+  table and the ADR both say which settings may use it — only the display, because everything else
+  re-reads its value from storage, where a refused write really is nothing happening.
+- **An outcome named by hand.** The reading-position popup wrote `outcome: 'unstored'` directly;
+  it now derives it, because a second place that decides what a failed write is called is a second
+  place to drift from.
+- **A key that broke its own naming rule.** Three popup headings are `<area>Title`; the library's
+  was `settings.reader.title`, from when it was the only one. Renamed across fifteen dictionaries.
+- **A popup for a change that was not one.** Re-choosing the theme already chosen announced itself,
+  because a `<select>` fires whether or not the value moved.
+
+And the audit is now a test rather than an afternoon: `dictionaries.test.ts` checks that every
+translation fills the same `{placeholders}` English does, leaves nothing blank, and never echoes a
+key back as its own value — none of which the type system can see. Duplicate keys it deliberately
+does not check: an object literal collapses them before a test could look, and ESLint's
+`no-dupe-keys` already fails the build. The old outcome test listed the four outcomes by hand, which
+is how a fifth one slipped past every assertion in it; it derives them from the presentation map now.
+
+### 11.9: what running it in three browsers was worth
+
+`pnpm test:reader` is its own suite with its own port and its own fixtures, and unlike the addon
+sandbox it runs in **Chromium, Firefox and WebKit** — because ADR-0013 §3 makes a claim specifically
+about WebKit, and a claim about WebKit only ever tested in Chromium is a claim about nothing.
+
+The headline check passes:
+
+```
+git diff --stat main -- apps/api apps/worker packages/domain packages/application packages/infrastructure
+```
+
+prints nothing. Across the whole phase — 116 files, ~15 600 lines — not one of them is server-side.
+No route, no contract, no migration.
+
+**Four things the suite found, none of which the Chromium-only version could have.**
+
+- **A comic the reader kept could not be reopened.** A CBZ and an FBZ are ZIPs that describe
+  themselves nowhere, so stored bytes with no filename sniffed as `null`. The record knows the
+  format; `acquireFromStored` takes it now, as the filename it does not have.
+- **WebKit really does get one wall, and the test said two.** The hostile-book test hard-coded
+  `data-content-frame-walls="2"` — Chromium's answer, asserted about every engine. It now reads what
+  the engine chose and checks the _matching_ frame attribute, with the containment assertions the
+  same in both branches. In WebKit: one wall, `allow-scripts` present, and the book's two `<script>`
+  elements still never run.
+- **Two tests were measuring the viewport.** "Reopening comes back to the page it was left on"
+  compared the words on screen — but eight page turns inside one chapter leave the document's text
+  identical, and how many turns leave a chapter depends on the window. It compares the position now.
+- **A refused write was not being refused.** The private-mode simulation assigned
+  `localStorage.setItem` as an own property, which Firefox and WebKit quietly ignore; the popup duly
+  said "Saved". It patches `Storage.prototype` before the app loads now.
+
+**And a fifth, in the suite's own config.** `testMatch: /reader-.*\.spec\.ts/` is unanchored, and
+this worktree lives in a directory called `client-side-reader-foliate-…` — so it matched every spec
+in the repository, ran the ones that need a database, and reported 77 passing tests as if that were
+good news. Anchored to the file name now.
+
+### MOBI is not verified, and that is a gap rather than an omission
+
+EPUB, FB2 and CBZ each open, paginate, keep a position across a reload and refuse a hostile payload,
+with fixtures built by `apps/web/e2e/fixtures/make-fixtures.py`. MOBI has none: a valid one needs a
+PalmDB container, a MOBI header and PalmDOC-compressed text records, which is a file format
+generator rather than a fixture. The reader still offers MOBI — the renderer supports it and
+`readableFormatOf` recognises `azw3`/`mobipocket` — so the honest statement is that this format is
+supported and **untested**, and the way to close it is one real MOBI file committed as a fixture.
 
 ### Decided rather than assumed
 
@@ -1443,6 +1658,290 @@ and `covers.openlibrary.org.evil.com` all answer 404 without a request being mad
   worth arguing about.
 - **Wikidata-only books have no editions**, so their card shows the book and nothing to hold. That
   is honest, and the catalogues fill it in whenever they have the book.
+
+---
+
+## Phase 11 — the reader that never uploads a book (planned)
+
+_The number is 11 because it was asked for; there is no Phase 10 in this document, and the gap is
+left rather than papered over._
+
+A reader who has just been shown a legal free copy has to leave the site to read it. This phase
+gives them a reader in the tab they are already in, built on
+[foliate-js](https://github.com/johnfactotum/foliate-js) (MIT, vendored, no build step of its own),
+and it gives it to them **without this instance learning that they opened anything**.
+
+That last clause is the whole phase. It is not a privacy feature bolted onto a reader; it is the
+constraint that decides the architecture, and it is the same constraint as ADR-0010 §6 applied to a
+different object. There the thing the server must not learn was _which addons the reader installed_.
+Here it is _which file the reader opened, from where, and how far they got_. The mechanisms
+therefore rhyme deliberately: a leaf package, code the server cannot import, storage that lives in
+the browser, and `pnpm boundaries` making "the server does not do this" a build failure rather than
+a promise. They stop rhyming at the sandbox, and 11.1 is where that was found out — see below.
+
+**What this phase does not touch:** `packages/domain`'s `LinkPolicy`, the `/api` surface, the
+database, or the addon protocol. If a diff in this phase changes a file under `apps/api`,
+`apps/worker`, `packages/domain`, `packages/application` or `packages/infrastructure`, the design
+went wrong somewhere upstream of the diff.
+
+### The invariant, stated so it can be tested
+
+> The bytes of a book, the URL they came from, any hash or identifier derived from them, and the
+> reader's position in them **never reach this instance's origin** — not in a path, not in a query
+> string, not in a header, not in a body, and not in a request that merely fails.
+
+Two consequences that are easy to get wrong and are therefore written down now:
+
+- **No proxy, in any disguise.** Not `GET /api/fetch?url=`, not "just for CORS", not "only for
+  allowlisted hosts". `/api/covers` exists and is the closest thing to a counter-example, which is
+  exactly why it is worth naming: it fetches an _image_ the instance itself put in its own database,
+  under a host allowlist it owns (Phase 8). A book file is chosen by the reader, and a route that
+  fetches what the reader points it at is a different animal wearing the same coat.
+- **No query parameter, either.** `/read?src=https://…` would hand the book's URL to this instance
+  in the request line of a normal navigation, and Next.js would see it before a line of our code
+  ran. The handoff is the URL **fragment** (never sent to a server) or `sessionStorage`, and a test
+  asserts the request line is clean.
+
+### Tasks
+
+| #    | Item                                                                             | State | Notes                                                                                                                                                       |
+| ---- | -------------------------------------------------------------------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 11.0 | [ADR-0013](adr/0013-client-side-reader.md) — the reader, and the book's own code | ✅    | Carries 11.1's answer rather than the design that lost: same-origin route, two walls, the spike as its evidence base                                        |
+| 11.1 | Pagination spike inside an opaque origin                                         | ✅    | **Answered: no, in all three engines.** [reader-sandbox-spike.md](research/reader-sandbox-spike.md) — and it found a default-on escape while it was there   |
+| 11.2 | `packages/reader` — a fifth leaf package                                         | ✅    | Sniffing, acquisition, progress, hashing, content-frame policy; foliate vendored, pinned, patched, with a test that fails when the patch lapses             |
+| 11.3 | The `/read` route's CSP and the content-frame policy                             | ✅    | Nonce-based `script-src 'self'` from middleware, the engine probe wired in, and four tests that open a hostile book on the real route (`pnpm test:sandbox`) |
+| 11.4 | Acquisition: fetch, file picker, drag-and-drop, IndexedDB                        | ✅    | Four ways in, one path out; the CORS dead end offers the download and nothing else; kept files live in IndexedDB and are the reader's own opt-in            |
+| 11.5 | Progress, bookmarks and notes                                                    | ✅    | Position and bookmarks in the one record, keyed by content hash; resume through `renderFirstPage`; only a _refused_ write says anything                     |
+| 11.6 | Display: themes incl. E-Ink, type, layout                                        | ✅    | Four palettes from `tokens.css`, seven preferences, every one announced; E-Ink is monochrome, motionless and single-column                                  |
+| 11.7 | Surfaces: where "Read in browser" appears                                        | ✅    | On a download link and an addon source whose format this reader opens, and nowhere else; measured against this instance's real catalogue                    |
+| 11.8 | Settings popups and 15 dictionaries                                              | ✅    | Audited rather than written: one renamed key, one derived outcome, one no-op popup removed — and a fifth outcome the contract had predicted                 |
+| 11.9 | Zero-knowledge enforcement                                                       | ✅    | `pnpm test:reader` — 66 tests in **three** browsers, four formats, a hostile book per format, and a server-side diff that is empty                          |
+
+Sizing: this is five or six PRs, not one — rules.md §7 caps a PR at ~400 diff lines. The natural
+cuts are 11.0–11.3 (the box), 11.4 (getting a file into it), 11.5–11.6 (living in it), 11.7–11.8
+(the surfaces), 11.9 (the proof). 11.9 is not a PR that can be skipped for time: without it the
+phase has shipped a promise.
+
+### 11.1 ran first, and it took the preferred design off the table
+
+The question was whether foliate-js can paginate on an opaque origin. It paginates by loading each
+spine document into an iframe and **measuring it** — `contentDocument`, CSS columns, scroll widths —
+and that needs same-origin access to a frame nested inside a document the sandbox has already made
+originless.
+
+**It cannot, in Chromium, Firefox and WebKit alike**, and the reason is the platform rather than the
+library: a nested frame inherits its parent's sandbox flags, cannot re-grant `allow-same-origin`, and
+therefore lands on its _own_ opaque origin. `blob:`, no attribute at all, `srcdoc` — all three read
+back `null` in all three engines. Numbers, probes and the engines' own error messages are in
+[reader-sandbox-spike.md](research/reader-sandbox-spike.md).
+
+So the phase takes the fallback branch, and says so in the ADR rather than presenting it as the
+plan: **the reader is an ordinary same-origin route**, and the isolation moves down one level onto
+the book's own frames. That is weaker than four layers, it is written down as weaker, and it changes
+nothing about the invariant above — the invariant was never enforced by the opaque origin, it is
+enforced by there being no route to send a book to.
+
+**The spike also found the thing that actually mattered.** foliate sets
+`sandbox="allow-same-origin allow-scripts"` on its content frames: it runs the book's JavaScript on
+purpose. Against a hostile fixture on an unhardened route, in every engine, the book's inline script,
+its external script, an `onerror` handler and `top.postMessage` all got out. A reader built on
+defaults would have shipped a code-execution surface fed by files strangers publish. Two independent
+walls were then measured, and **both** ship:
+
+- `allow-scripts` stripped from the content frames (a one-line vendor patch) — nothing ran,
+  pagination byte-identical;
+- a route CSP of `script-src 'self'`, no `'unsafe-inline'`, no `blob:` — `blob:` documents inherit
+  the creating context's policy in all three engines, so the book's scripts have no source they can
+  be served from even if the attribute regresses.
+
+Two things follow that shrink the rest of the phase: there is no `blob:` module bundling to build
+(the reader imports normally, so foliate's lazy `import()` of `epub.js`/`mobi.js`/`fb2.js`/
+`comic-book.js` keeps working), and there is no RPC surface — storage is reachable directly.
+
+**And one thing that came from reading the patched line's own comment.** Upstream wanted
+`allow-scripts` "for events because of WebKit bug 218086". Measured with a real mouse and keyboard
+(11.1b, same document): Chromium and Firefox deliver input to a frame without it; **WebKit delivers
+none at all** — no click, no key, nothing. A book in such a frame is a page nobody can tap, on the
+engine that is Safari. Since the two walls are independently sufficient, the frame keeps
+`allow-scripts` **only** where the engine would otherwise swallow input, and there the CSP is the
+wall; everywhere else both stand. The branch is chosen by probing the engine, never by a user-agent
+string, and it disappears if WebKit fixes the bug. ADR-0013 §3 carries this as an amendment rather
+than a quiet edit, because it is a real reduction from two walls to one for some readers.
+
+### Decided rather than assumed
+
+- **A book file is untrusted code, and is treated as such.** EPUB is HTML, CSS and — unless something
+  stops it — JavaScript, delivered by whoever the reader got it from. 11.1 measured what "unless
+  something stops it" is worth: on defaults the hostile fixture escaped four ways in three engines.
+  So scripts are off twice over — `allow-scripts` stripped from the content frames, and a route CSP
+  whose `script-src` the book's blob-served scripts cannot match — and the hostile fixture is a
+  build artifact that every format is run against, not a test somebody remembers to write.
+- **No `rightsStatus` on anything the reader opens.** Same reasoning as ADR-0009's for addon
+  results, and it now applies to a second path: a file the reader picked off their own disk has no
+  provenance this instance can speak to. The reader shows the book; the badge stays on the link that
+  produced it, where the instance's own pipeline can back it up (ADR-0011).
+- **"Read in browser" appears only where there is a file.** A public domain _reading page_ is not a
+  file (the free shelf already makes this distinction, `FreeBooks.tsx`), and a `buy` or `borrow`
+  link certainly is not. The button follows `download`/`open` links with a supported format, and
+  addon sources with a `format` hint — attributed to the addon, as always.
+- **CORS gets an honest dead end.** When the direct fetch is refused, the panel says so in the
+  reader's language, and offers the three real paths: download the file to the device and open it
+  from there, use an addon that serves the file itself, or ask the source's operator. It does not
+  offer to try again "through the site", because there is nothing behind that button but the route
+  this phase exists not to build.
+- **Keeping the file is opt-in and it is a preference.** Progress is a few hundred bytes and is kept
+  always; a 40 MB EPUB is not, and putting one in IndexedDB without asking is a decision about
+  somebody's disk. Off by default, per book, and — like every other preference here — it announces
+  itself, including when the browser refuses the write (`unstored`).
+- **The key is a content hash, not a URL and not a work id.** `sha-256` of the `ArrayBuffer`, via
+  WebCrypto, in the tab. The same book opened tomorrow from a different mirror resumes where it was
+  left; the same URL serving a different file does not silently inherit somebody's bookmarks. The
+  hash is a client-side identifier and stays one — it is on the list of things that must never reach
+  the origin, because a hash of a file is an identifier for that file.
+- **The reader's theme is the reader's, not the site's.** The app follows the system today
+  (`prefers-color-scheme`, `tokens.css`) and has no theme switch. Adding a site-wide one is a
+  larger decision than this phase; adding one **scoped to the reading surface** is not, and reading
+  is where it actually matters. E-Ink is a fifth mode rather than a checkbox on the others: pure
+  black on white, no transitions, no shadows, no fade, paged only, heavier stems — the things that
+  make an e-paper panel usable are the things a normal theme is built to avoid.
+- **PDF is out of scope, and this is a real limitation.** foliate-js supports it experimentally
+  through PDF.js, which is a second vendored engine and a dynamic import that a `blob:` module
+  cannot resolve. EPUB, FB2, MOBI/AZW3 and CBZ are the four in scope, as asked. A PDF link keeps
+  behaving exactly as it does today.
+- **Vendored, pinned, and checked.** foliate-js is not published to npm and is meant to be a
+  submodule; it is vendored under `packages/reader/vendor/foliate/` with its `LICENSE`, the upstream
+  commit SHA in a `VENDOR.md` next to it, and a CI step that recomputes the tree hash. An
+  unpinned copy of somebody else's renderer is a supply-chain change nobody will notice.
+
+### Rules for `dependency-cruiser`
+
+Four rules go into `.dependency-cruiser.mjs`, in the same shape and for the same reason as
+`addons-never-on-the-server`. Together they say: the reader is a browser-only leaf, the server
+cannot reach it, it cannot reach the server, and its vendored renderer is reachable from one place.
+
+```js
+{
+  name: 'reader-is-a-leaf',
+  comment:
+    'packages/reader is bundled into the browser (and injected into a sandbox as a blob:), so it ' +
+    'must depend on no other workspace package — same rule, same reason, as packages/addons and ' +
+    'packages/plugins (docs/adr/0007, 0010, 0013).',
+  severity: 'error',
+  from: { path: '^packages/reader/src' },
+  to: { path: '^(packages/(domain|application|infrastructure|contracts|plugins|addons)|apps)/' },
+},
+{
+  name: 'reader-never-on-the-server',
+  comment:
+    'The book is the reader\'s and never reaches this instance (docs/adr/0013 §1). Nothing that ' +
+    'executes server-side may import packages/reader — that is what makes "the server cannot open ' +
+    'a book" a build failure rather than a promise.',
+  severity: 'error',
+  from: { path: '^(apps/(api|worker)|packages/(domain|application|infrastructure))/' },
+  to: { path: '^packages/reader/' },
+},
+{
+  name: 'reader-surface-never-calls-this-instance',
+  comment:
+    'The reading surface talks to the book and to browser storage, and to nothing else. An import ' +
+    'of the API client here is how a "just resume-position sync" endpoint gets born.',
+  severity: 'error',
+  from: { path: '^apps/web/src/(app/read|components/reader)/' },
+  to: { path: '^apps/web/src/lib/(api-client|auth-client)' },
+},
+{
+  name: 'reader-vendor-has-one-door',
+  comment:
+    'Vendored foliate-js is reached through packages/reader only. A direct import from apps/web ' +
+    'would put an unpinned third-party renderer in the app bundle with no wrapper to hold the ' +
+    'sandbox contract.',
+  severity: 'error',
+  from: { pathNot: '^packages/reader/(src|vendor)/' },
+  to: { path: '^packages/reader/vendor/' },
+},
+```
+
+`pnpm boundaries` already runs in CI, so these need no new plumbing. Note what they cannot catch: a
+`fetch('/api/…')` written as a string literal inside the reader. That is 11.9's job, and it is why
+11.9 exists.
+
+### What the wire suite must prove (`pnpm test:reader`)
+
+Modelled on `addon-privacy.spec.ts` and, like `test:sandbox`, standing on its own — no database, no
+API, no seed; its own `next dev`, its own fixtures, runnable by anyone who just cloned the
+repository. Four assertions, each about the network log after a real reading session:
+
+1. Open a fixture EPUB from a local fixture origin, turn ten pages, bookmark, reload, resume. Every
+   request to **this** origin is a document, an asset or nothing at all — none carries the book's
+   URL, its bytes, its hash or a position, in path, query, header or body.
+2. Repeat with a file chosen through the picker. Same assertion, and additionally: no request leaves
+   the tab at all beyond the app's own assets.
+3. Repeat with the fetch failing on CORS. The failure path is where an error report would quietly
+   undo the property, which is exactly why Phase 7 tested the same case for addons.
+4. The hostile fixture EPUB runs no script, reaches no network, and cannot see the host document.
+
+Chromium-only, stated as Chromium-only. The Firefox/WebKit gap from 7.3 applies here for the same
+three reasons and is not re-litigated by a green tick.
+
+### Definition of Done
+
+Beyond the standard checklist in [rules.md §8](rules.md#8-definition-of-done-for-a-task):
+
+- [ ] `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm boundaries`, `pnpm build` green.
+- [x] `pnpm test:reader` green in **Chromium, Firefox and WebKit** — 66 tests, including the
+      WebKit-specific one-wall branch of ADR-0013 §3 in WebKit itself.
+- [x] **The server-side diff of the whole phase is empty** — `git diff --stat main --` over
+      `apps/api`, `apps/worker`, `packages/domain`, `packages/application` and
+      `packages/infrastructure` prints nothing. No new route, no new contract, no migration.
+- [x] An EPUB, an FB2 and a CBZ each open, paginate and remember a position across a reload, in
+      three engines. **MOBI/AZW3 is supported and untested** — see above for what that costs.
+- [x] The hostile fixture fails at all four attempts (script, network, host DOM, form post) in
+      Chromium, Firefox and WebKit, and a second one in FB2 — the format with no `<script>` at all,
+      where the payload has to survive a conversion — reaches nothing either.
+- [x] The content-frame patch covers both places foliate creates frames — `paginator.js` and
+      `fixed-layout.js` — and `test/vendor.test.ts` fails if a vendor bump reintroduces
+      `allow-scripts`. The route CSP is verified as a wall in its own right, with the frame's
+      `allow-scripts` forced back on, so "two walls" is a measurement and not a paragraph.
+- [x] Every reader preference — theme, type size, line height, margins, paged/scrolling, keep-file —
+      announces through `useSettingChangeToast()` and derives its outcome rather than naming one.
+      A refused write shows `unstored`, or `session` for the display settings, which are the one
+      thing here held in memory (11.8).
+- [x] Every new string exists in all 15 dictionaries; `dictionaries.test.ts` additionally checks
+      what the type system cannot see — the `{placeholders}` inside them.
+- [ ] E-Ink mode is verified against `prefers-reduced-motion` and at 1-bit rendering: no animation,
+      no gradient, no shadow, contrast measured rather than eyeballed (ADR-0008's method).
+- [ ] ADR-0013 merged; `architecture.md` §2 package table, CLAUDE.md's repository structure and the
+      README's feature list updated in the same PR.
+- [x] `packages/reader` unit tests cover format sniffing (including a mislabelled extension), the
+      progress model, hashing determinism, the display CSS and the acquisition contract; the
+      vendored tree is excluded from lint and prettier, and pinned by SHA and tree hash.
+- [ ] A large-file number is measured and published in this document: a ~60 MB CBZ on a mid-range
+      phone either opens or is refused with a stated limit. "It works on my laptop" is not a result.
+
+### Risks, and what each one costs
+
+- ~~**The pagination spike fails (11.1).**~~ It did, in week one as intended. Cost paid: one
+  isolation layer, a longer ADR, and a vendor patch to carry. What it bought back was the discovery
+  that the renderer runs book scripts by default, which no amount of design review had noticed.
+- **CORS is the common case, not the edge case.** Plausible: Gutenberg and Archive.org are usually
+  fine, an arbitrary mirror is usually not. If measurement shows the direct fetch mostly fails, the
+  feature's centre of gravity moves to the file picker and the local library, and the button's
+  wording has to move with it. What does not happen is a proxy.
+- **MOBI/AZW3 fidelity.** foliate-js reads them; "reads" and "renders the way Kindle does" are
+  different claims. Each format gets a fixture and an honest note, not a checkbox.
+- **Memory.** The design holds the whole file in an `ArrayBuffer` by construction — that is what
+  "never touches the server" means. Mobile Safari will kill a tab over this at some size, and the
+  DoD above requires finding that size instead of hoping.
+- **Scope creep into sync.** "Read position on my phone and my laptop" is the first thing anyone
+  will ask for, and it is a server feature wearing a reader's clothes. It would need an account, a
+  route and a database column — and it would end this phase's invariant. If it is ever built, it is
+  a different ADR that says so out loud.
+
+### Explicitly not in scope
+
+Text-to-speech, dictionary lookup, translation inside the reader, annotation export, cross-device
+sync, PDF, DRM of any kind (there is no path here that could open a DRM-protected file, and none
+will be added), and any reading statistic that leaves the tab.
 
 ---
 

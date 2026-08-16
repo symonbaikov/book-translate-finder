@@ -66,5 +66,5 @@ already enforce.
 **Costs, honestly.** A custom source's URL is exactly what the reader typed and this instance does
 not vet it, matching the stance ADR-0009 already took for OPDS catalogs a reader adds — the caption
 next to the rendered links says so. Two different names that slugify to the same id are
-disambiguated silently (`my-shop-2`); two sources under the *same* name are rejected outright, so the
+disambiguated silently (`my-shop-2`); two sources under the _same_ name are rejected outright, so the
 per-edition chip list and the management list never show two entries a reader cannot tell apart.
