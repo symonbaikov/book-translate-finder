@@ -38,6 +38,8 @@ export interface FoliateView extends HTMLElement {
   readonly book?: { metadata?: FoliateBookMetadata; sections?: readonly unknown[] };
 }
 
+import { filenameForFormat, isSupportedFormat } from './format.js';
+
 let loading: Promise<void> | undefined;
 
 /**
@@ -81,12 +83,12 @@ export function titleOf(metadata: FoliateBookMetadata | undefined): string | nul
  * through and letting two detectors disagree. A MOBI named `.epub` then opens as a MOBI, which is
  * the whole reason our sniffing believes bytes over names.
  */
-const FOLIATE_NAMING: Record<string, { extension: string; type: string }> = {
-  epub: { extension: '.epub', type: 'application/epub+zip' },
-  fb2: { extension: '.fb2', type: 'application/x-fictionbook+xml' },
-  fbz: { extension: '.fb2.zip', type: 'application/x-zip-compressed-fb2' },
-  mobi: { extension: '.mobi', type: 'application/x-mobipocket-ebook' },
-  cbz: { extension: '.cbz', type: 'application/vnd.comicbook+zip' },
+const FOLIATE_MEDIA_TYPES: Record<string, string> = {
+  epub: 'application/epub+zip',
+  fb2: 'application/x-fictionbook+xml',
+  fbz: 'application/x-zip-compressed-fb2',
+  mobi: 'application/x-mobipocket-ebook',
+  cbz: 'application/vnd.comicbook+zip',
 };
 
 /**
@@ -96,8 +98,10 @@ const FOLIATE_NAMING: Record<string, { extension: string; type: string }> = {
  * confusing way to learn that a `Blob` is not a `File`.
  */
 export function asFoliateFile(book: { bytes: ArrayBuffer; format: string }): File {
-  const naming = FOLIATE_NAMING[book.format] ?? { extension: '', type: 'application/octet-stream' };
-  return new File([book.bytes], `book${naming.extension}`, { type: naming.type });
+  const name = isSupportedFormat(book.format) ? filenameForFormat(book.format) : 'book';
+  return new File([book.bytes], name, {
+    type: FOLIATE_MEDIA_TYPES[book.format] ?? 'application/octet-stream',
+  });
 }
 
 /**

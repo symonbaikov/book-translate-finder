@@ -26,16 +26,6 @@ async function waitForRenderedBook(page: Page): Promise<void> {
   );
 }
 
-/** What the page on screen actually says — the only honest answer to "did it resume". */
-async function firstWords(page: Page): Promise<string> {
-  return page.evaluate(() => {
-    const view = document.querySelector('foliate-view') as unknown as {
-      renderer?: { getContents?: () => { doc?: Document }[] };
-    } | null;
-    return view?.renderer?.getContents?.()[0]?.doc?.body?.textContent?.trim().slice(0, 40) ?? '';
-  });
-}
-
 async function openAndKeep(page: Page): Promise<void> {
   await page.goto('/read');
   await page.locator('input[type=file]').setInputFiles(PLAIN);
@@ -44,26 +34,35 @@ async function openAndKeep(page: Page): Promise<void> {
   await expect(keepFileCheckbox(page)).toBeChecked();
 }
 
+/** How far through the book the renderer says the reader is. */
+async function position(page: Page): Promise<number> {
+  return page.evaluate(() => {
+    const view = document.querySelector('foliate-view') as unknown as {
+      lastLocation?: { fraction?: number };
+    } | null;
+    return view?.lastLocation?.fraction ?? 0;
+  });
+}
+
 test('reopening a book comes back to the page it was left on', async ({ page }) => {
   await openAndKeep(page);
-  const opening = await firstWords(page);
 
   for (let turn = 0; turn < 8; turn += 1) {
     await page.getByRole('button', { name: /next/i }).click();
     await page.waitForTimeout(200);
   }
-  const left = await firstWords(page);
-  // Asserted against the opening page rather than against a chapter number: how many turns reach
-  // chapter two depends on the viewport, and a test that encodes that is testing the window size.
-  expect(left).not.toBe(opening);
+  const left = await position(page);
+  expect(left).toBeGreaterThan(0);
 
   await page.reload();
   await page.getByRole('button', { name: /^open$/i }).click();
   await waitForRenderedBook(page);
 
-  // Not "a position was stored" — the page in front of the reader is the one they left.
-  expect(await firstWords(page)).toBe(left);
+  // The position, not the words on the page: eight turns inside one chapter leave the document's
+  // text identical, and how many turns leave a chapter is a matter of viewport geometry — which is
+  // how this test first passed in Chromium and failed in the other two for no real reason.
   await expect(page.getByText(/where you left off/i)).toBeVisible();
+  await expect.poll(() => position(page)).toBeCloseTo(left, 1);
 });
 
 test('a bookmark and its note survive a reload', async ({ page }) => {

@@ -26,6 +26,7 @@ import {
   withoutBookmark,
   AcquisitionError,
   DEFAULT_DISPLAY,
+  isSupportedFormat,
   type AcquiredBook,
   type DisplaySettings,
   type Bookmark,
@@ -33,6 +34,7 @@ import {
   type FoliateRelocateDetail,
   type FoliateView,
   type LibraryEntry,
+  type ReaderFormat,
 } from '@golden/reader';
 import { useT } from '../../i18n/I18nProvider';
 import { outcomeOfSessionWrite, outcomeOfWrite } from '../../lib/setting-change';
@@ -236,7 +238,7 @@ export function BookReader() {
         // A browser under storage pressure evicts silently, so "the entry says kept" and "the bytes
         // are still there" are two different facts.
         if (!bytes) throw new Error('this browser no longer has the file');
-        await render(await acquireFromStored(bytes, entry.hash));
+        await render(await acquireFromStored(bytes, entry.hash, readableFormat(entry.format)));
       } catch (error) {
         setState({ kind: 'failed', reason: describe(error) });
       }
@@ -595,6 +597,11 @@ function hostOf(url: string): string {
   } catch {
     return url;
   }
+}
+
+/** The record's format, if this build still knows it — a stored string outlives an enum. */
+function readableFormat(format: string): ReaderFormat | undefined {
+  return isSupportedFormat(format) ? format : undefined;
 }
 
 function describe(error: unknown): string {

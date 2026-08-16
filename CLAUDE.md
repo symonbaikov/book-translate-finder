@@ -164,6 +164,10 @@ pnpm test:e2e
 pnpm test:sandbox
 ```
 
+```bash
+pnpm test:reader
+```
+
 `test:integration` starts Postgres and Redis via Testcontainers — a running Docker is required.
 
 ### Addons
@@ -181,6 +185,12 @@ its manifest declares, using ids discovered from its own catalog. The protocol i
 and no seeding — it starts its own `next dev` on port 3100 and drives the real
 `public/addon-sandbox.html` with its real CSP header. Keep it that way: a security suite that is
 hard to run is a security suite nobody runs.
+
+`test:reader` is the same idea for the other kind of stranger's code — a book
+([ADR-0013](docs/adr/0013-client-side-reader.md)). Its own port (3101), its own fixtures under
+`apps/web/e2e/fixtures`, no database either, and it runs in **three** browsers rather than one:
+the reader stands on two walls everywhere except WebKit, where it stands on one, and a claim about
+WebKit that is only ever tested in Chromium is a claim about nothing.
 
 ### Database
 

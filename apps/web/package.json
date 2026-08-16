@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf .next",
     "e2e": "playwright test",
-    "e2e:sandbox": "playwright test --config=playwright.sandbox.config.ts"
+    "e2e:sandbox": "playwright test --config=playwright.sandbox.config.ts",
+    "e2e:reader": "playwright test --config=playwright.reader.config.ts"
   },
   "dependencies": {
     "@golden/addons": "workspace:*",

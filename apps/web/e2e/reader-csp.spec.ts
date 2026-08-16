@@ -81,10 +81,15 @@ test('a hostile book is contained, and the frame it runs in refuses scripts', as
 
   await page.locator('input[type=file]').setInputFiles(HOSTILE);
   await waitForRenderedBook(page);
-  await expect(page.locator('[data-content-frame-walls]')).toHaveAttribute(
-    'data-content-frame-walls',
-    '2',
-  );
+
+  // How many walls this engine gets is *measured*, not assumed: WebKit delivers no input to a frame
+  // without `allow-scripts` (bug 218086), so there the frame keeps the token and the route CSP is
+  // the only thing left (ADR-0013 §3). Hard-coding 2 here asserted Chromium's answer everywhere,
+  // and WebKit duly reported 1.
+  const walls = await page
+    .locator('[data-content-frame-walls]')
+    .getAttribute('data-content-frame-walls');
+  expect(['1', '2']).toContain(walls);
 
   const contents = await page.evaluate(() => {
     const view = document.querySelector('foliate-view') as unknown as {
@@ -99,7 +104,11 @@ test('a hostile book is contained, and the frame it runs in refuses scripts', as
     };
   });
 
-  expect(contents.sandbox).toBe('allow-same-origin');
+  // Two walls means the frame refuses scripts outright; one means it does not, and the CSP is what
+  // refuses them. Either way the book does not run — which is the claim that matters.
+  expect(contents.sandbox).toBe(
+    walls === '2' ? 'allow-same-origin' : 'allow-same-origin allow-scripts',
+  );
   expect(contents.scripts).toBeGreaterThan(0); // the fixture really does contain scripts
   expect(contents.title).toBe('Hostile'); // …and none of them ran
   expect(attempted).toEqual([]);

@@ -13,7 +13,7 @@
  */
 import { AcquisitionError, UnsupportedFormatError } from './errors.js';
 import { contentHashOf } from './identity.js';
-import { isSupportedFormat, sniffFormat, type ReaderFormat } from './format.js';
+import { filenameForFormat, isSupportedFormat, sniffFormat, type ReaderFormat } from './format.js';
 
 /** Where a book came from. Kept for the interface's wording, never for a request. */
 export type BookOrigin =
@@ -182,9 +182,18 @@ export async function acquireFromFile(
 export async function acquireFromStored(
   bytes: ArrayBuffer,
   expectedHash: string,
+  /**
+   * What the record says this is.
+   *
+   * Not trust — the bytes still decide, and the hash still has to match. It stands in for the
+   * filename the storage path does not have, which a CBZ and an FBZ need: both are ZIPs that say
+   * nothing about themselves, so without it a book the reader chose to keep cannot be reopened.
+   */
+  knownFormat?: ReaderFormat,
   options: AcquireOptions = {},
 ): Promise<AcquiredBook> {
-  const book = await finish(bytes, '', { kind: 'stored' }, options);
+  const filename = knownFormat ? filenameForFormat(knownFormat) : '';
+  const book = await finish(bytes, filename, { kind: 'stored' }, options);
   if (book.hash !== expectedHash) {
     throw new AcquisitionError(
       'The stored copy of this book does not match what was stored. It has been discarded.',

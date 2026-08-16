@@ -30,6 +30,7 @@
     "clean": "pnpm -r run clean && rm -rf node_modules",
     "db:seed:catalog": "pnpm --filter @golden/worker run seed:catalog",
     "test:sandbox": "pnpm --filter @golden/web run e2e:sandbox",
+    "test:reader": "pnpm --filter @golden/web run e2e:reader",
     "addon:validate": "node tools/addon-validate.mjs"
   },
   "devDependencies": {

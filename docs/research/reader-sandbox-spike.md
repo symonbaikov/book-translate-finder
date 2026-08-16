@@ -115,6 +115,14 @@ in all three engines, which is what makes the cheap version usable at startup.
 
 The exception ends by itself if WebKit fixes 218086 — the probe would simply stop selecting it.
 
+**Verified in the engine it is about (Phase 11.9).** `pnpm test:reader` runs the reader's suites in
+Chromium, Firefox and WebKit. In WebKit the probe selects one wall and the page says so
+(`data-content-frame-walls="1"`, frame `allow-same-origin allow-scripts`), and the hostile book's
+two `<script>` elements still do not run: no beacon, no `postMessage`, `document.title` untouched.
+In the other two the probe selects two walls and the frame refuses scripts outright. The first
+version of that test hard-coded `2`, which is how an assertion about Chromium came to be made about
+every engine.
+
 ## Consequences for the phase
 
 1. **11.3 changes meaning.** There is no `/reader-sandbox.html` on an opaque origin. The reader is a

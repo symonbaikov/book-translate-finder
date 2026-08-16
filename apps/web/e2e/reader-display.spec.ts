@@ -137,18 +137,19 @@ test('back to defaults says so, and puts the book back', async ({ page }) => {
 });
 
 test('a browser that will not remember says so, and still shows the change', async ({ page }) => {
-  await openBook(page);
-
   // A browser in private mode, with storage switched off, or over quota accepts the call and keeps
-  // nothing. That is the case this outcome exists for, so it is simulated rather than described.
-  await page.evaluate(() => {
-    const storage = window.localStorage;
-    const original = storage.setItem.bind(storage);
-    storage.setItem = (key: string, value: string) => {
+  // nothing. That is the case this outcome exists for, so it is simulated rather than described —
+  // on `Storage.prototype`, because assigning to `localStorage.setItem` as an own property is
+  // quietly ignored in Firefox and WebKit, where this test first "passed" by not refusing anything.
+  await page.addInitScript(() => {
+    const original = Storage.prototype.setItem;
+    Storage.prototype.setItem = function setItem(key: string, value: string) {
       if (key === 'btf.reader.display') throw new DOMException('QuotaExceededError');
-      original(key, value);
+      original.call(this, key, value);
     };
   });
+
+  await openBook(page);
 
   await chooseTheme(page, /e-ink/i);
 

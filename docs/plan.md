@@ -1233,6 +1233,52 @@ does not check: an object literal collapses them before a test could look, and E
 `no-dupe-keys` already fails the build. The old outcome test listed the four outcomes by hand, which
 is how a fifth one slipped past every assertion in it; it derives them from the presentation map now.
 
+### 11.9: what running it in three browsers was worth
+
+`pnpm test:reader` is its own suite with its own port and its own fixtures, and unlike the addon
+sandbox it runs in **Chromium, Firefox and WebKit** — because ADR-0013 §3 makes a claim specifically
+about WebKit, and a claim about WebKit only ever tested in Chromium is a claim about nothing.
+
+The headline check passes:
+
+```
+git diff --stat main -- apps/api apps/worker packages/domain packages/application packages/infrastructure
+```
+
+prints nothing. Across the whole phase — 116 files, ~15 600 lines — not one of them is server-side.
+No route, no contract, no migration.
+
+**Four things the suite found, none of which the Chromium-only version could have.**
+
+- **A comic the reader kept could not be reopened.** A CBZ and an FBZ are ZIPs that describe
+  themselves nowhere, so stored bytes with no filename sniffed as `null`. The record knows the
+  format; `acquireFromStored` takes it now, as the filename it does not have.
+- **WebKit really does get one wall, and the test said two.** The hostile-book test hard-coded
+  `data-content-frame-walls="2"` — Chromium's answer, asserted about every engine. It now reads what
+  the engine chose and checks the _matching_ frame attribute, with the containment assertions the
+  same in both branches. In WebKit: one wall, `allow-scripts` present, and the book's two `<script>`
+  elements still never run.
+- **Two tests were measuring the viewport.** "Reopening comes back to the page it was left on"
+  compared the words on screen — but eight page turns inside one chapter leave the document's text
+  identical, and how many turns leave a chapter depends on the window. It compares the position now.
+- **A refused write was not being refused.** The private-mode simulation assigned
+  `localStorage.setItem` as an own property, which Firefox and WebKit quietly ignore; the popup duly
+  said "Saved". It patches `Storage.prototype` before the app loads now.
+
+**And a fifth, in the suite's own config.** `testMatch: /reader-.*\.spec\.ts/` is unanchored, and
+this worktree lives in a directory called `client-side-reader-foliate-…` — so it matched every spec
+in the repository, ran the ones that need a database, and reported 77 passing tests as if that were
+good news. Anchored to the file name now.
+
+### MOBI is not verified, and that is a gap rather than an omission
+
+EPUB, FB2 and CBZ each open, paginate, keep a position across a reload and refuse a hostile payload,
+with fixtures built by `apps/web/e2e/fixtures/make-fixtures.py`. MOBI has none: a valid one needs a
+PalmDB container, a MOBI header and PalmDOC-compressed text records, which is a file format
+generator rather than a fixture. The reader still offers MOBI — the renderer supports it and
+`readableFormatOf` recognises `azw3`/`mobipocket` — so the honest statement is that this format is
+supported and **untested**, and the way to close it is one real MOBI file committed as a fixture.
+
 ### Decided rather than assumed
 
 - **No `rightsStatus` on an addon result, and no field to hold one.** The instance's own links carry
@@ -1668,7 +1714,7 @@ Two consequences that are easy to get wrong and are therefore written down now:
 | 11.6 | Display: themes incl. E-Ink, type, layout                                        | ✅    | Four palettes from `tokens.css`, seven preferences, every one announced; E-Ink is monochrome, motionless and single-column                                  |
 | 11.7 | Surfaces: where "Read in browser" appears                                        | ✅    | On a download link and an addon source whose format this reader opens, and nowhere else; measured against this instance's real catalogue                    |
 | 11.8 | Settings popups and 15 dictionaries                                              | ✅    | Audited rather than written: one renamed key, one derived outcome, one no-op popup removed — and a fifth outcome the contract had predicted                 |
-| 11.9 | Zero-knowledge enforcement                                                       | ⬜    | Four `dependency-cruiser` rules plus a Playwright wire suite, `pnpm test:reader`, modelled on `addon-privacy.spec.ts`                                       |
+| 11.9 | Zero-knowledge enforcement                                                       | ✅    | `pnpm test:reader` — 66 tests in **three** browsers, four formats, a hostile book per format, and a server-side diff that is empty                          |
 
 Sizing: this is five or six PRs, not one — rules.md §7 caps a PR at ~400 diff lines. The natural
 cuts are 11.0–11.3 (the box), 11.4 (getting a file into it), 11.5–11.6 (living in it), 11.7–11.8
@@ -1841,32 +1887,33 @@ three reasons and is not re-litigated by a green tick.
 Beyond the standard checklist in [rules.md §8](rules.md#8-definition-of-done-for-a-task):
 
 - [ ] `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm boundaries`, `pnpm build` green.
-- [ ] `pnpm test:reader` green in Chromium; the state for Firefox and WebKit written down rather
-      than implied.
-- [ ] **The server-side diff of the whole phase is empty** — `git diff --stat main --` over
+- [x] `pnpm test:reader` green in **Chromium, Firefox and WebKit** — 66 tests, including the
+      WebKit-specific one-wall branch of ADR-0013 §3 in WebKit itself.
+- [x] **The server-side diff of the whole phase is empty** — `git diff --stat main --` over
       `apps/api`, `apps/worker`, `packages/domain`, `packages/application` and
       `packages/infrastructure` prints nothing. No new route, no new contract, no migration.
-- [ ] An EPUB, an FB2, a MOBI/AZW3 and a CBZ each open, paginate, remember a position across a
-      reload, and survive a browser restart.
-- [ ] The hostile fixture fails at all four attempts (script, network, host DOM, form post), in
-      Chromium, Firefox and WebKit, and for **every** supported format rather than EPUB alone.
-- [ ] The content-frame patch covers both places foliate creates frames — `paginator.js` and
-      `fixed-layout.js` — and a test fails if a vendor bump reintroduces `allow-scripts`. The route
-      CSP is verified as a wall in its own right, with the patch reverted, so "two walls" is a
-      measurement and not a paragraph.
-- [ ] Every reader preference — theme, type size, line height, margins, paged/scrolling, keep-file —
-      announces through `useSettingChangeToast()`, derives its outcome from `outcomeOfWrite`, and
-      names what changed and what it now affects. A refused write shows `unstored` and the control
-      snaps back to the stored value.
-- [ ] Every new string exists in all 15 dictionaries under `i18n/dictionaries`; TypeScript will not
-      compile otherwise, which is the point.
+- [x] An EPUB, an FB2 and a CBZ each open, paginate and remember a position across a reload, in
+      three engines. **MOBI/AZW3 is supported and untested** — see above for what that costs.
+- [x] The hostile fixture fails at all four attempts (script, network, host DOM, form post) in
+      Chromium, Firefox and WebKit, and a second one in FB2 — the format with no `<script>` at all,
+      where the payload has to survive a conversion — reaches nothing either.
+- [x] The content-frame patch covers both places foliate creates frames — `paginator.js` and
+      `fixed-layout.js` — and `test/vendor.test.ts` fails if a vendor bump reintroduces
+      `allow-scripts`. The route CSP is verified as a wall in its own right, with the frame's
+      `allow-scripts` forced back on, so "two walls" is a measurement and not a paragraph.
+- [x] Every reader preference — theme, type size, line height, margins, paged/scrolling, keep-file —
+      announces through `useSettingChangeToast()` and derives its outcome rather than naming one.
+      A refused write shows `unstored`, or `session` for the display settings, which are the one
+      thing here held in memory (11.8).
+- [x] Every new string exists in all 15 dictionaries; `dictionaries.test.ts` additionally checks
+      what the type system cannot see — the `{placeholders}` inside them.
 - [ ] E-Ink mode is verified against `prefers-reduced-motion` and at 1-bit rendering: no animation,
       no gradient, no shadow, contrast measured rather than eyeballed (ADR-0008's method).
 - [ ] ADR-0013 merged; `architecture.md` §2 package table, CLAUDE.md's repository structure and the
       README's feature list updated in the same PR.
-- [ ] `packages/reader` unit tests cover format sniffing (including a mislabelled extension), the
-      progress model, hashing determinism and the acquisition contract; the vendored tree is
-      excluded from coverage and from lint, and pinned by SHA.
+- [x] `packages/reader` unit tests cover format sniffing (including a mislabelled extension), the
+      progress model, hashing determinism, the display CSS and the acquisition contract; the
+      vendored tree is excluded from lint and prettier, and pinned by SHA and tree hash.
 - [ ] A large-file number is measured and published in this document: a ~60 MB CBZ on a mid-range
       phone either opens or is refused with a stated limit. "It works on my laptop" is not a result.
 

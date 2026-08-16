@@ -77,6 +77,26 @@ export function sniffFormat(bytes: Uint8Array, filename?: string): ReaderFormat 
   return null;
 }
 
+/**
+ * The name a file of this format would have, for the paths that have bytes but no filename.
+ *
+ * Reading a kept book out of storage is the one that matters: a comic and a compressed FB2 are both
+ * ZIPs that say nothing about themselves, so without a name they sniff as `null` and a book the
+ * reader deliberately kept cannot be reopened. That is not hypothetical — it is what the format
+ * suite caught the first time it kept a CBZ and reloaded.
+ */
+const EXTENSIONS: Record<ReaderFormat, string> = {
+  epub: '.epub',
+  fb2: '.fb2',
+  fbz: '.fb2.zip',
+  mobi: '.mobi',
+  cbz: '.cbz',
+};
+
+export function filenameForFormat(format: ReaderFormat): string {
+  return `book${EXTENSIONS[format]}`;
+}
+
 /** Whether this reader can render the format — the negative case for `sniffFormat`'s callers. */
 export function isSupportedFormat(format: string | null): format is ReaderFormat {
   return format !== null && (READER_FORMATS as readonly string[]).includes(format);

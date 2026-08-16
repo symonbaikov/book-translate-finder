@@ -6,6 +6,7 @@ import {
   isFetchableBookUrl,
 } from './acquisition.js';
 import { AcquisitionError, UnsupportedFormatError } from './errors.js';
+import { contentHashOf } from './identity.js';
 
 // The platform's own Web Crypto — Node 20 exposes the same global the browser does,
 // so these tests exercise the production path rather than a Node-only import.
@@ -189,6 +190,23 @@ describe('acquireFromFile', () => {
 });
 
 describe('acquireFromStored', () => {
+  it('uses the format the record remembers, for the archives that cannot say', async () => {
+    // A CBZ and an FBZ are ZIPs that describe themselves nowhere, so stored bytes with no filename
+    // sniff as `null` — which is how a comic the reader deliberately kept became unopenable.
+    const zip = new Uint8Array(64);
+    zip.set([0x50, 0x4b, 0x03, 0x04]);
+    const hash = await contentHashOf(zip.buffer.slice(0) as ArrayBuffer, subtle);
+
+    const comic = await acquireFromStored(zip.buffer.slice(0) as ArrayBuffer, hash, 'cbz', {
+      subtle,
+    });
+    expect(comic.format).toBe('cbz');
+
+    await expect(
+      acquireFromStored(zip.buffer.slice(0) as ArrayBuffer, hash, undefined, { subtle }),
+    ).rejects.toBeInstanceOf(UnsupportedFormatError);
+  });
+
   it('re-hashes what came out of storage instead of trusting it', async () => {
     const bytes = epubBytes();
     const { hash } = await acquireFromFile(
@@ -200,11 +218,13 @@ describe('acquireFromStored', () => {
       { subtle },
     );
 
-    const good = await acquireFromStored(bytes.buffer.slice(0) as ArrayBuffer, hash, { subtle });
+    const good = await acquireFromStored(bytes.buffer.slice(0) as ArrayBuffer, hash, 'epub', {
+      subtle,
+    });
     expect(good.origin).toEqual({ kind: 'stored' });
 
     await expect(
-      acquireFromStored(bytes.buffer.slice(0) as ArrayBuffer, `sha256-${'0'.repeat(64)}`, {
+      acquireFromStored(bytes.buffer.slice(0) as ArrayBuffer, `sha256-${'0'.repeat(64)}`, 'epub', {
         subtle,
       }),
     ).rejects.toBeInstanceOf(AcquisitionError);
