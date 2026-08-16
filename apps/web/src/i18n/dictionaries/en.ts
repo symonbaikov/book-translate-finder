@@ -4,7 +4,7 @@
  * Japanese page.
  *
  * Keys are named for where the string appears, not for the English text, so rewording the English
- * does not orphan fifteen translations.
+ * does not orphan every other translation.
  */
 export const en = {
   // --- Chrome -------------------------------------------------------------

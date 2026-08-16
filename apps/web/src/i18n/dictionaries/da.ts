@@ -1,0 +1,376 @@
+import type { Dictionary } from '../dictionary';
+
+export const da: Dictionary = {
+  'nav.savedBooks': 'Gemte bøger',
+  'nav.signIn': 'Log ind',
+  'nav.signOut': 'Log ud',
+  'nav.language': 'Sprog',
+  'nav.skipToContent': 'Gå til indholdet',
+  'footer.legal':
+    'Kun lovlige kilder: direkte download udelukkende for værker i public domain og med åbne licenser; ophavsretligt beskyttede bøger — køb eller lån på biblioteket. Hvert link har en udtrykkelig rettighedsstatus.',
+  'footer.openSource': 'Åben kildekode',
+  'footer.openSourceRest': '— MIT-licenseret, kan hostes selv. Se koden på GitHub.',
+  'home.title': 'Golden Library',
+  'home.subtitle': 'En åben aggregator for bogoversættelser: sprog, udgaver og lovlige kilder.',
+  'home.searchLabel': 'Titel og forfatter',
+  'home.searchPlaceholder': 'Krig og fred Tolstoj',
+  'home.searchButton': 'Søg',
+  'search.searching': 'Søger…',
+  'search.backfilling':
+    'Ikke noget her endnu — vi henter bogen fra kilderne. Det tager et par sekunder.',
+  'search.notFound': 'Intet fundet til denne søgning.',
+  'search.retry': 'Prøv igen',
+  'search.signInPrompt':
+    'for at gemme de bøger, du finder her, og vende tilbage til dem — og for at sammenligne udgaver fra forskellige år side om side, før du vælger.',
+  'featured.yearHeading': 'Årets bøger',
+  'featured.yearBlurb':
+    'Bemærkelsesværdige bøger fra hvert af de seneste år. En håndplukket liste, ikke en salgsliste — sådan en udgiver ingen åben kilde.',
+  'featured.popularHeading': 'Meget læst, meget oversat',
+  'featured.popularBlurb':
+    'Bøger, der findes på mange sprog — hvilket er hele pointen med dette site.',
+  'featured.filling':
+    'Nogle af dem hentes stadig i baggrunden. Genindlæs om et minut for at se resten.',
+  'featured.freeCopy': 'Gratis eksemplar',
+
+  // --- Free books ---------------------------------------------------------
+  'free.homeHeading': 'Gratis at læse med det samme',
+  'free.homeBlurb':
+    'Bøger i public domain og med åben licens, som denne kopi af sitet kan give dig direkte.',
+  'free.seeAll': 'Se flere',
+  'free.downloadable': 'Download',
+  'free.pageTitle': 'Gratis bøger',
+  'free.pageBlurb':
+    'Hver bog her har mindst ét lovligt gratis eksemplar — public domain eller foræret af rettighedshaveren. Intet køb, intet lånerkort.',
+  'free.empty':
+    'Ikke noget gratis her endnu. Gratis eksemplarer dukker op, efterhånden som denne instans henter bøger, så søg efter en og kom tilbage.',
+  'free.emptyForLanguage':
+    'Ingen gratis eksemplarer på {language} endnu. Fjern filteret ovenfor for at se hele hylden.',
+  'free.showMore': 'Vis flere',
+  'free.shown': 'Viser {shown} af {total}.',
+  'free.allLanguages': 'Gratis eksemplarer på alle sprog.',
+  'free.filteredByLanguage': 'Kun gratis eksemplarer på {language}.',
+  'free.filterByLanguage': 'Vis kun de gratis eksemplarer på {language}.',
+  'free.dropLanguageFilter': 'vis alle sprog',
+  'free.loadFailed': 'De gratis bøger kunne ikke indlæses lige nu.',
+  'work.original': 'original',
+  'work.dataSources': 'Datakilder',
+  'work.about': 'Om denne bog',
+  'work.translatedInto': 'Oversat til',
+  'work.availableIn': 'Findes på',
+  'work.languagesNote':
+    'Kun det, vores kilder oplyser — en oversættelse, der mangler her, kan sagtens findes alligevel.',
+  'work.noTranslations': 'Ingen oversættelser fundet endnu.',
+  'work.yourLanguage.title': 'På dit sprog',
+  'work.yourLanguage.yes': 'Der findes en oversættelse til {language}.',
+  'work.yourLanguage.original': 'Denne bog blev skrevet på {language}.',
+  'work.yourLanguage.no': 'Ingen oversættelse til {language} blandt de udgaver, der kendes her.',
+  'work.yourLanguage.show': 'Vis udgaver på {language}',
+  'work.editions': 'Udgaver ({shown} af {total})',
+  'work.filterLanguage': 'Sprog',
+  'work.filterAllLanguages': 'Alle sprog',
+  'work.filterYear': 'År',
+  'work.filterApply': 'Filtrér',
+  'work.filterReset': 'Nulstil',
+  'work.noEditionsMatch': 'Ingen udgaver passer til disse filtre.',
+  'work.showMoreEditions': 'Vis flere udgaver ({remaining} tilbage)',
+  'work.badgeFreeDownload': 'gratis download',
+  'work.freeDownloadFormat': 'Download {format}',
+  'work.freeDownloadNote': '{rights}. Gratis fra {provider} — ingen konto, ingen betaling.',
+  'work.badgeReadBorrow': 'læs eller lån',
+  'work.badgeInBookstores': 'i boghandlen',
+  'work.translatedBy': 'oversat af {name}',
+  'work.pages': '{count} sider',
+  'bookmark.save': 'Gem denne bog',
+  'bookmark.saved': 'Gemt',
+  'bookmark.signInToSave': 'Log ind for at gemme',
+  'bookmark.failed': 'Kunne ikke gemme. Prøv igen.',
+  'links.show': 'Vis links',
+  'links.hide': 'Skjul links',
+  'links.loading': 'Indlæser links',
+  'links.none': 'Ingen lovlige links til denne udgave endnu.',
+  'links.viaOtherEdition': 'gratis eksemplar fra udgaven {label}',
+  'links.failed': 'Kunne ikke indlæse links.',
+  'links.storesHeading': 'Find i en boghandel',
+  'links.storesInCountry': 'I {country}',
+  'links.storesYourCountry': 'dit land',
+  'links.storesLanguageMarket': 'Hvor bøger på {language} sælges',
+  'links.storesLanguageMarketGeneric': 'Hvor denne udgaves sprog sælges',
+  'links.storesWorldwide': 'Sender til hele verden',
+  'links.storesCaption':
+    'Hvert link søger i butikkens eget katalog — tilgængelighed og pris vises af butikken selv.',
+  'linkType.download': 'Download',
+  'linkType.buy': 'Køb',
+  'linkType.borrow': 'Lån på biblioteket',
+  'linkType.listen': 'Lyt (lydbog)',
+  'rights.public_domain': 'Public domain',
+  'rights.open_license': 'Åben licens',
+  'rights.copyrighted': 'Ophavsretligt beskyttet',
+  'rights.unknown': 'Ukendt status',
+  'compare.heading': 'Sammenlign udgaver',
+  'compare.blurb': 'Vælg to eller tre udgaver for at se, hvad der faktisk adskiller dem.',
+  'compare.selected': 'Valgt: {count} af mindst 2.',
+  'compare.editSelection': 'Skift udgaver',
+  'compare.showAllEditions': 'Vis alle {count} udgaver',
+  'compare.columnDifference': 'Forskel',
+  'compare.identical': 'Disse udgaver er ens i alt, kilderne registrerer.',
+  'compare.rowLanguage': 'Sprog',
+  'compare.rowPublished': 'Udgivet',
+  'compare.rowPublisher': 'Forlag',
+  'compare.rowTranslator': 'Oversætter',
+  'compare.rowTranslatedFrom': 'Oversat fra',
+  'compare.rowBinding': 'Indbinding',
+  'compare.rowPages': 'Sider',
+  'compare.rowIsbn': 'ISBN',
+  'compare.rowFreeCopy': 'Gratis eksemplar eller til udlån',
+  'compare.yes': 'ja ({count})',
+  'compare.no': 'ikke fundet',
+  'country.label': 'Hvor køber du bøger?',
+  'country.worldwideOnly': 'Kun butikker, der sender til hele verden',
+  'auth.signInTitle': 'Log ind',
+  'auth.registerTitle': 'Opret en konto',
+  'auth.blurb':
+    'En konto findes af én grund: at gemme bøger, du finder, og vende tilbage til dem — med de sprog, de er oversat til, de udgaver der findes, og hvor du får fat i hver enkelt lovligt. Intet nyhedsbrev, ingen profil, ingen sporing.',
+  'auth.name': 'Navn (valgfrit)',
+  'auth.email': 'E-mail',
+  'auth.password': 'Adgangskode',
+  'auth.passwordHint':
+    'Mindst {min} tegn. Kun længden bliver tjekket — en lang sætning, du kan huske, slår en kort med tegnsætning i.',
+  'auth.submitSignIn': 'Log ind',
+  'auth.submitRegister': 'Opret konto',
+  'auth.working': 'Arbejder…',
+  'auth.google': 'Fortsæt med Google',
+  'auth.toRegister': 'Ingen konto endnu? Opret en',
+  'auth.toSignIn': 'Har du allerede en konto? Log ind',
+  'auth.backToSearch': 'Tilbage til søgningen',
+  'auth.errorGoogleState':
+    'Det login-link er udløbet eller blev åbnet i en anden browser. Prøv igen.',
+  'auth.errorGoogleFailed':
+    'Login med Google blev ikke gennemført. Du kan bruge e-mail og adgangskode i stedet.',
+  'auth.errorGeneric': 'Noget gik galt.',
+  'bookmarks.title': 'Gemte bøger',
+  'bookmarks.signedOut':
+    'for at beholde de bøger, du finder — og senere sammenligne udgaver af den samme bog side om side.',
+  'bookmarks.loading': 'Indlæser…',
+  'bookmarks.empty': 'Intet gemt endnu. Find en bog, og brug “Gem denne bog” på dens kort.',
+  'bookmarks.searchLink': 'Søg',
+  'bookmarks.remove': 'Fjern',
+  'bookmarks.loadFailed': 'Kunne ikke indlæse dine gemte bøger.',
+  'search.failed': 'Søgningen mislykkedes.',
+  'search.pending': 'Ikke i vores database endnu — vi tjekker kilderne',
+  'search.pendingLong':
+    'Søger stadig: den første forespørgsel på en bog samler data fra kilderne, hvilket kan tage op til et par minutter',
+  'search.notFoundHint': 'Intet fundet. Prøv at præcisere titlen eller forfatteren.',
+  'search.timedOut':
+    'Kilderne svarer langsomt, og vi har ingen data endnu. Baggrundssynkroniseringen er måske allerede færdig — prøv igen.',
+  'search.freeOnlyToggle': 'Gratis at downloade',
+  'search.noFreeResults': 'Ingen af dem har en gratis download endnu — prøv at slå filteret fra.',
+  'home.tagline': 'Find dit næste magnum opus',
+  'subject.allLanguages': 'Alle sprog.',
+  'subject.filteredByLanguage': 'Kun bøger med en udgave på {language}.',
+  'subject.dropLanguageFilter': 'vis alle sprog',
+  'subject.empty':
+    'Ikke noget under dette tag endnu. Tags kommer fra de bøger, denne instans allerede har hentet.',
+  'featured.year': '{year}',
+  'nav.browse': 'Gennemse efter genre',
+  'recommend.heading': 'Ud fra det, du har læst',
+  'recommend.becauseOf': 'Du åbnede “{title}”, så her er bøger med de samme genrer.',
+  'recommend.blurb': 'Bøger i de genrer, du har åbnet.',
+  'recommend.privacy':
+    'Det regnes ud i din browser — serveren får genrerne at vide, aldrig hvem du er.',
+  'recommend.forget': 'glem min historik',
+
+  // --- Shelf: OPDS catalogs (Module A) -------------------------------------
+  'nav.shelf': 'Hylde',
+  'shelf.title': 'Hylde',
+  'shelf.intro':
+    'Åbne kataloger og enhver biblioteksserver, du selv kører. Kataloger, du tilføjer, bliver i denne browser og sendes aldrig til dette site.',
+  'shelf.openCatalogs': 'Åbne kataloger',
+  'shelf.yourCatalogs': 'Dine kataloger',
+  'shelf.addCatalog': 'Tilføj et katalog',
+  'shelf.name': 'Navn',
+  'shelf.address': 'OPDS-adresse',
+  'shelf.username': 'Brugernavn (valgfrit)',
+  'shelf.password': 'Adgangskode (valgfri)',
+  'shelf.credentialsNote': 'Adressen og eventuelle loginoplysninger gemmes kun i denne browser.',
+  'shelf.add': 'Tilføj',
+  'shelf.remove': 'Fjern',
+  'shelf.loading': 'Indlæser katalog…',
+  'shelf.empty': 'Dette katalog har ingen poster.',
+  'shelf.noCatalogs':
+    'Ingen af dine egne endnu. Tilføj en Calibre-Web-, COPS-, Kavita- eller Audiobookshelf-adresse nedenfor.',
+  'shelf.unreachable':
+    'Din browser kunne ikke læse dette katalog. En server på dit eget netværk virker; offentlige sites afviser ofte forespørgsler på tværs af oprindelser.',
+  'shelf.nextPage': 'Næste side',
+  'shelf.previousPage': 'Forrige side',
+  'shelf.drm': 'Kræver en DRM-app',
+  'shelf.notFree': 'Ikke en gratis download',
+  'shelf.download': 'Download',
+
+  // --- Bookshops nearby (Module B) -----------------------------------------
+  'stores.title': 'Boghandlere i nærheden',
+  'stores.useMyLocation': 'Brug min placering',
+  'stores.placeLabel': 'By eller postnummer',
+  'stores.find': 'Find',
+  'stores.locating': 'Leder…',
+  'stores.failed': 'Placeringen er ikke tilgængelig. Skriv en by eller et postnummer i stedet.',
+  'stores.none': 'Ingen boghandlere er kortlagt inden for {radius} km.',
+  'stores.distance': '{distance} km herfra',
+  'stores.stockUnknown': 'Kun kortdata — ingen offentliggør, hvad en butik har på lager.',
+  'stores.lookupFailed': 'Kunne ikke nå OpenStreetMap lige nu. Prøv igen om lidt.',
+  'stores.privacy':
+    'Din placering rundes af til omkring 100 m og sendes kun til OpenStreetMap — aldrig til dette site.',
+
+  // --- Prices across shops (Module C) --------------------------------------
+  'prices.title': 'Priser og butikker',
+  'prices.loading': 'Spørger butikkerne…',
+  'prices.unknown': 'Prisen er ikke offentliggjort',
+  'prices.degraded': 'Intet svar fra: {providers}',
+  'prices.format.hardcover': 'Indbundet',
+  'prices.format.paperback': 'Paperback',
+  'prices.format.ebook': 'E-bog',
+  'prices.format.audiobook': 'Lydbog',
+  'prices.format.unknown': 'Format ikke angivet',
+  'recommend.hideGenre': 'skjul “{genre}”',
+  'recommend.hiddenList': 'Skjulte genrer (klik for at få en tilbage):',
+
+  // --- Settings popups ------------------------------------------------------
+  'settings.status.saved': 'Gemt',
+  'settings.status.cleared': 'Ryddet',
+  'settings.status.unstored': 'Ikke gemt',
+  'settings.status.failed': 'Uændret',
+  'settings.notStored':
+    'Denne browser nægtede at gemme ændringen, så der skete ingenting — den værdi, du havde før, gælder stadig.',
+  'settings.language.title': 'Grænsefladens sprog',
+  'settings.language.changed':
+    'Ændret fra {from} til {to}. Grænsefladen genindlæses på {to}; bogtitler og forfatternavne bliver på deres egne sprog.',
+  'settings.country.title': 'Købsland',
+  'settings.country.changed':
+    'Sat til {country}. Boghandelslinks tilbyder nu butikker, der leverer dertil, ved siden af de verdensomspændende.',
+  'settings.country.cleared':
+    'Intet land valgt. Kun boghandlere, der sender til hele verden, bliver tilbudt.',
+  'settings.bookLanguage.title': 'Bogsprog',
+  'settings.bookLanguage.changed':
+    'Sat til {language}. Genresider viser først bøger med en udgave på {language}, indtil du nulstiller filteret.',
+  'settings.bookLanguage.cleared': 'Ryddet. Genresider viser igen bøger på alle sprog.',
+  'settings.hiddenGenres.title': 'Skjulte genrer',
+  'settings.hiddenGenres.hidden':
+    '“{genre}” er skjult. Den sendes ikke længere til serveren, når forslag hentes, og i alt er {count} genrer skjult.',
+  'settings.hiddenGenres.restored':
+    '“{genre}” er tilbage i dine forslag. {count} genrer er stadig skjult.',
+  'settings.history.title': 'Læsehistorik',
+  'settings.history.cleared':
+    'De bøger, du havde åbnet, er slettet fra denne browser. Forslag holder sig væk, indtil du åbner en ny bog.',
+  'settings.bookmarks.title': 'Gemte bøger',
+  'settings.bookmarks.added': '“{title}” blev føjet til dine gemte bøger.',
+  'settings.bookmarks.removed': '“{title}” blev fjernet fra dine gemte bøger.',
+  'settings.bookmarks.failed':
+    'Serveren accepterede ikke ændringen, så dine gemte bøger er, som de var.',
+  'settings.catalogs.title': 'Dine kataloger',
+  'settings.catalogs.added':
+    '“{name}” blev tilføjet på {url}. Adressen bliver i denne browser og sendes aldrig til dette site.',
+  'settings.catalogs.addedWithCredentials':
+    '“{name}” blev tilføjet på {url}, med det brugernavn og den adgangskode, du skrev. Det hele bliver i denne browser, og intet af det sendes til dette site.',
+  'settings.catalogs.removed':
+    '“{name}” blev fjernet fra denne browser sammen med de loginoplysninger, der var gemt til det.',
+  'settings.catalogs.rejected': 'Der blev ikke tilføjet noget: {reason}',
+
+  // --- Addons ---------------------------------------------------------------
+  'nav.addons': 'Tilføjelser',
+  'addons.title': 'Tilføjelser',
+  'addons.intro':
+    'En tilføjelse bringer sine egne kilder med. Du installerer den ved at indsætte dens adresse; den kører enten på din enhed, i en sandkasse, eller på forfatterens server. Golden Library leverer ingen, viser ingen liste og tjekker ikke, hvad de returnerer.',
+  'addons.addressLabel': 'Tilføjelsens adresse',
+  'addons.addressHint': 'Den manifest-URL, tilføjelsens forfatter gav dig.',
+  'addons.continue': 'Fortsæt',
+  'addons.fromServer': 'Fra en server',
+  'addons.fromFile': 'Fra en fil på din enhed',
+  'addons.bundleLabel': 'Adresse på tilføjelsens kode',
+  'addons.bundleHint': 'URL’en til tilføjelsens kode. Den kører på denne enhed, ikke på en server.',
+  'addons.integrityLabel': 'Integritetshash',
+  'addons.integrityHint':
+    'Oplyses af tilføjelsens forfatter som sha256-… . Påkrævet: uden den kunne kode, du engang har godkendt, ændre sig bagefter, uden at du nogensinde fik det at vide.',
+  'addons.checking': 'Læser tilføjelsen…',
+  'addons.installedHeading': 'Installeret',
+  'addons.none':
+    'Ingen tilføjelser endnu. Alt på dette site indtil videre kommer fra instansen selv.',
+  'addons.priorityHint': 'Rækkefølgen er prioritet: den første tilføjelse svarer først.',
+  'addons.enable': 'Slå til',
+  'addons.disable': 'Slå fra',
+  'addons.off': 'Fra',
+  'addons.remove': 'Fjern',
+  'addons.moveUp': 'Flyt op',
+  'addons.moveDown': 'Flyt ned',
+  'addons.configure': 'Konfigurér',
+  'addons.failedToStart': '“{name}” startede ikke: {reason}',
+  'addons.consentTitle': 'Installér “{name}”?',
+  'addons.consentHosts': 'Den vil kontakte: {hosts}',
+  'addons.consentNoHosts': 'Den har ikke bedt om at kontakte noget.',
+  'addons.consentSeesYou':
+    'Denne tilføjelse kører på forfatterens server. De ser din adresse og alt, du søger efter gennem den.',
+  'addons.consentSandboxed':
+    'Denne tilføjelse kører på din enhed i en sandkasse. Den kan ikke læse dine cookies, dette sites data eller noget andet, du har åbent.',
+  'addons.consentNotVetted':
+    'Golden Library tjekker ikke, hvad en tilføjelse returnerer, og har ikke anbefalet denne. Hvad du installerer, er dit eget valg.',
+  'addons.install': 'Installér',
+  'addons.cancel': 'Annullér',
+  'addons.via': 'via {name}',
+  'addons.sourcesTitle': 'Fra dine tilføjelser',
+  'addons.searchTitle': 'Fundet af dine tilføjelser',
+  'addons.showLinks': 'Vis downloadlinks',
+  'addons.unreadable': '{count} poster fra denne tilføjelse kunne ikke læses.',
+  'addons.browse': 'Gennemse katalog',
+  'addons.browseTitle': 'Kataloget fra {name}',
+  'addons.browseNoCatalog': 'Denne tilføjelse tilbyder ikke et katalog at gennemse.',
+  'addons.browseEmpty': 'Denne tilføjelses katalog er tomt lige nu.',
+  'addons.browseFailed': 'Kataloget fra “{name}” kunne ikke indlæses: {reason}',
+  'addons.loadMore': 'Indlæs flere',
+  'addons.notInstalled': 'Denne tilføjelse er ikke installeret.',
+
+  'settings.addons.title': 'Dine tilføjelser',
+  'settings.addons.installed':
+    '“{name}” er installeret. Den bliver spurgt sammen med de andre og kan kontakte {hosts}.',
+  'settings.addons.removed':
+    '“{name}” blev fjernet. Dens resultater er væk fra denne browser, og det samme er alt, den havde gemt her.',
+  'settings.addons.enabled': '“{name}” er slået til igen og bliver spurgt sammen med de andre.',
+  'settings.addons.disabled':
+    '“{name}” er slået fra. Den forbliver installeret med sine indstillinger, men intet af det, den returnerer, bliver vist.',
+  'settings.addons.reordered': '“{name}” svarer nu som nummer {position} af {total}.',
+  'settings.addons.rejected': 'Der blev ikke installeret noget: {reason}',
+
+  // --- Custom sources ---------------------------------------------------------
+  'nav.customSources': 'Egne kilder',
+  'customSources.title': 'Egne kilder',
+  'customSources.intro':
+    'Tilføj din egen butik eller dit eget katalog ved at give det et navn og en søge-URL med {isbn}, {query}, {title}, {author} eller {language} i. Linket bygges på denne enhed, og dette site henter det aldrig.',
+  'customSources.nameLabel': 'Navn',
+  'customSources.templateLabel': 'URL-skabelon',
+  'customSources.templateHint':
+    'En absolut https://-adresse. {isbn}, {query}, {title}, {author} og {language} udfyldes fra udgaven; en pladsholder, der står tom, betyder at linket springes over for den udgave.',
+  'customSources.add': 'Tilføj kilde',
+  'customSources.listHeading': 'Dine kilder',
+  'customSources.none': 'Ingen egne kilder endnu.',
+  'customSources.off': 'Fra',
+  'customSources.enable': 'Slå til',
+  'customSources.disable': 'Slå fra',
+  'customSources.remove': 'Fjern',
+  'customSources.heading': 'Dine kilder',
+  'customSources.caption':
+    'Links, du selv har sat op. Denne instans tjekker ikke, hvor de fører hen.',
+
+  'settings.customSources.title': 'Dine egne kilder',
+  'settings.customSources.added': '“{name}” blev tilføjet og bliver tilbudt sammen med de andre.',
+  'settings.customSources.removed': '“{name}” blev fjernet fra denne browser.',
+  'settings.customSources.enabled': '“{name}” er slået til igen.',
+  'settings.customSources.disabled':
+    '“{name}” er slået fra. Den forbliver konfigureret, men dens link bliver ikke vist.',
+  'settings.customSources.rejected': 'Der blev ikke tilføjet noget: {reason}',
+
+  // --- Books in the reader's own language, and localized descriptions -------
+  'featured.inLanguageHeading': 'Bøger på dit sprog',
+  'featured.inLanguageBlurb':
+    'Bøger skrevet på det sprog, du læser dette site på, de mest udgivne først — Open Librarys egen rækkefølge, ikke en bestsellerliste.',
+  'work.newSearch': 'Ny søgning',
+  'work.descriptionFrom': 'Beskrivelse:',
+  'work.descriptionNotLocalized':
+    'Denne beskrivelse er på det sprog, kilden skrev den på — der er ingen på dit sprog til denne bog endnu.',
+};
