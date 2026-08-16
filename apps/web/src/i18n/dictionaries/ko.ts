@@ -163,6 +163,9 @@ export const ko: Dictionary = {
   'search.noFreeResults':
     '이 결과 중에는 아직 무료로 받을 수 있는 책이 없습니다 — 필터를 꺼 보세요.',
   'home.tagline': '다음에 읽을 역작을 찾아보세요',
+  'home.genres': '인기 장르',
+  'home.genresBlurb':
+    '가장 많은 책이 모여 있는 태그입니다. 각 태그를 누르면 해당 카탈로그가 열립니다.',
   'subject.allLanguages': '모든 언어.',
   'subject.filteredByLanguage': '{language} 판본이 있는 책만.',
   'subject.dropLanguageFilter': '모든 언어 보기',

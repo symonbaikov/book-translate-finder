@@ -179,6 +179,8 @@ export const es: Dictionary = {
   'search.noFreeResults':
     'Ninguno de estos tiene descarga gratuita todavía — prueba a desactivar el filtro.',
   'home.tagline': 'Encuentra tu próximo magnum opus',
+  'home.genres': 'Géneros populares',
+  'home.genresBlurb': 'Las etiquetas con más libros detrás. Cada una abre su catálogo.',
   'subject.allLanguages': 'Todos los idiomas.',
   'subject.filteredByLanguage': 'Solo libros con una edición en {language}.',
   'subject.dropLanguageFilter': 'mostrar todos los idiomas',

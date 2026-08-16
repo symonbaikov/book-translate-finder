@@ -165,6 +165,8 @@ export const nl: Dictionary = {
   'search.noFreeResults':
     'Geen van deze heeft nog een gratis download — probeer het filter uit te zetten.',
   'home.tagline': 'Vind uw volgende magnum opus',
+  'home.genres': 'Populaire genres',
+  'home.genresBlurb': 'De labels met de meeste boeken erachter. Elk opent zijn catalogus.',
   'subject.allLanguages': 'Alle talen.',
   'subject.filteredByLanguage': 'Alleen boeken met een editie in het {language}.',
   'subject.dropLanguageFilter': 'alle talen tonen',

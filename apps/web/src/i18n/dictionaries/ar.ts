@@ -158,6 +158,8 @@ export const ar: Dictionary = {
   'search.freeOnlyToggle': 'نسخة مجانية',
   'search.noFreeResults': 'لا توجد نسخة مجانية بين هذه النتائج بعد — جرّب إيقاف الفلتر.',
   'home.tagline': 'اعثر على تحفتك القادمة',
+  'home.genres': 'أنواع شائعة',
+  'home.genresBlurb': 'الوسوم التي تقف خلفها أكبر عدد من الكتب. كل وسم يفتح فهرسه.',
   'subject.allLanguages': 'كل اللغات.',
   'subject.filteredByLanguage': 'الكتب التي لها طبعة بلغة {language} فقط.',
   'subject.dropLanguageFilter': 'إظهار كل اللغات',

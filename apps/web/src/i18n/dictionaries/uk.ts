@@ -175,6 +175,8 @@ export const uk: Dictionary = {
   'search.noFreeResults':
     'Серед цих результатів поки немає безкоштовних — спробуйте вимкнути фільтр.',
   'home.tagline': 'Знайдіть свій наступний magnum opus',
+  'home.genres': 'Популярні жанри',
+  'home.genresBlurb': 'Теги, за якими стоїть найбільше книжок. Кожен відкриває свій каталог.',
   'subject.allLanguages': 'Усі мови.',
   'subject.filteredByLanguage': 'Лише книжки з виданням мовою: {language}.',
   'subject.dropLanguageFilter': 'показати всі мови',

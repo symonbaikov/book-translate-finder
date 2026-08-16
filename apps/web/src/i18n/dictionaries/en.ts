@@ -189,6 +189,8 @@ export const en = {
   'search.freeOnlyToggle': 'Free to download',
   'search.noFreeResults': 'None of these have a free download yet — try turning the filter off.',
   'home.tagline': 'Find your next magnum opus',
+  'home.genres': 'Popular genres',
+  'home.genresBlurb': 'The tags with the most books behind them. Each one opens its catalogue.',
   'subject.allLanguages': 'All languages.',
   'subject.filteredByLanguage': 'Only books with a {language} edition.',
   'subject.dropLanguageFilter': 'show all languages',
