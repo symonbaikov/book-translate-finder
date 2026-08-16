@@ -1489,18 +1489,18 @@ Two consequences that are easy to get wrong and are therefore written down now:
 
 ### Tasks
 
-| #    | Item                                                                             | State | Notes                                                                                                                                                        |
-| ---- | -------------------------------------------------------------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 11.0 | [ADR-0013](adr/0013-client-side-reader.md) — the reader, and the book's own code | ✅    | Carries 11.1's answer rather than the design that lost: same-origin route, two walls, the spike as its evidence base                                         |
-| 11.1 | Pagination spike inside an opaque origin                                         | ✅    | **Answered: no, in all three engines.** [reader-sandbox-spike.md](research/reader-sandbox-spike.md) — and it found a default-on escape while it was there    |
-| 11.2 | `packages/reader` — a fifth leaf package                                         | ⬜    | Format sniffing, the acquisition contract, the progress model, content hashing. Vendored foliate under `vendor/`, pinned by SHA                              |
-| 11.3 | The `/read` route's CSP and the content-frame patch                              | ⬜    | Was "a sandbox document on an opaque origin" until 11.1 ruled it out. Now: `script-src 'self'` on the route, `allow-scripts` stripped from the book's frames |
-| 11.4 | Acquisition: fetch, file picker, drag-and-drop, IndexedDB                        | ⬜    | Four ways in, one `BookSource`. CORS gets an honest dead end, not a workaround                                                                               |
-| 11.5 | Progress, bookmarks and annotations                                              | ⬜    | IndexedDB in the host origin, keyed by content hash; reached from the sandbox only through the RPC surface                                                   |
-| 11.6 | Display: themes incl. E-Ink, type, layout                                        | ⬜    | Tokens are read in the host and passed in as values (ADR-0008 stays true); E-Ink is monochrome, motionless and paged                                         |
-| 11.7 | Surfaces: where "Read in browser" appears                                        | ⬜    | Work page, free shelf, addon sources, `/read`. Shown only where there is a file to open — see below                                                          |
-| 11.8 | Settings popups and 15 dictionaries                                              | ⬜    | Every reader preference announces itself through `useSettingChangeToast()` with `outcomeOfWrite` (CLAUDE.md)                                                 |
-| 11.9 | Zero-knowledge enforcement                                                       | ⬜    | Four `dependency-cruiser` rules plus a Playwright wire suite, `pnpm test:reader`, modelled on `addon-privacy.spec.ts`                                        |
+| #    | Item                                                                             | State | Notes                                                                                                                                                     |
+| ---- | -------------------------------------------------------------------------------- | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 11.0 | [ADR-0013](adr/0013-client-side-reader.md) — the reader, and the book's own code | ✅    | Carries 11.1's answer rather than the design that lost: same-origin route, two walls, the spike as its evidence base                                      |
+| 11.1 | Pagination spike inside an opaque origin                                         | ✅    | **Answered: no, in all three engines.** [reader-sandbox-spike.md](research/reader-sandbox-spike.md) — and it found a default-on escape while it was there |
+| 11.2 | `packages/reader` — a fifth leaf package                                         | ✅    | Sniffing, acquisition, progress, hashing, content-frame policy; foliate vendored, pinned, patched, with a test that fails when the patch lapses           |
+| 11.3 | The `/read` route's CSP and the content-frame policy                             | ⬜    | Was "a sandbox document on an opaque origin" until 11.1 ruled it out. Now: `script-src 'self'` on the route, plus the engine probe 11.1b made necessary   |
+| 11.4 | Acquisition: fetch, file picker, drag-and-drop, IndexedDB                        | ⬜    | Four ways in, one `BookSource`. CORS gets an honest dead end, not a workaround                                                                            |
+| 11.5 | Progress, bookmarks and annotations                                              | ⬜    | IndexedDB in the host origin, keyed by content hash; reached from the sandbox only through the RPC surface                                                |
+| 11.6 | Display: themes incl. E-Ink, type, layout                                        | ⬜    | Tokens are read in the host and passed in as values (ADR-0008 stays true); E-Ink is monochrome, motionless and paged                                      |
+| 11.7 | Surfaces: where "Read in browser" appears                                        | ⬜    | Work page, free shelf, addon sources, `/read`. Shown only where there is a file to open — see below                                                       |
+| 11.8 | Settings popups and 15 dictionaries                                              | ⬜    | Every reader preference announces itself through `useSettingChangeToast()` with `outcomeOfWrite` (CLAUDE.md)                                              |
+| 11.9 | Zero-knowledge enforcement                                                       | ⬜    | Four `dependency-cruiser` rules plus a Playwright wire suite, `pnpm test:reader`, modelled on `addon-privacy.spec.ts`                                     |
 
 Sizing: this is five or six PRs, not one — rules.md §7 caps a PR at ~400 diff lines. The natural
 cuts are 11.0–11.3 (the box), 11.4 (getting a file into it), 11.5–11.6 (living in it), 11.7–11.8
@@ -1542,6 +1542,16 @@ walls were then measured, and **both** ship:
 Two things follow that shrink the rest of the phase: there is no `blob:` module bundling to build
 (the reader imports normally, so foliate's lazy `import()` of `epub.js`/`mobi.js`/`fb2.js`/
 `comic-book.js` keeps working), and there is no RPC surface — storage is reachable directly.
+
+**And one thing that came from reading the patched line's own comment.** Upstream wanted
+`allow-scripts` "for events because of WebKit bug 218086". Measured with a real mouse and keyboard
+(11.1b, same document): Chromium and Firefox deliver input to a frame without it; **WebKit delivers
+none at all** — no click, no key, nothing. A book in such a frame is a page nobody can tap, on the
+engine that is Safari. Since the two walls are independently sufficient, the frame keeps
+`allow-scripts` **only** where the engine would otherwise swallow input, and there the CSP is the
+wall; everywhere else both stand. The branch is chosen by probing the engine, never by a user-agent
+string, and it disappears if WebKit fixes the bug. ADR-0013 §3 carries this as an amendment rather
+than a quiet edit, because it is a real reduction from two walls to one for some readers.
 
 ### Decided rather than assumed
 

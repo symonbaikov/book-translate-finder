@@ -81,6 +81,40 @@ version changes that rule back. Note the shape of B3's policy — `script-src 's
 `'unsafe-inline'` and **no** `blob:`. Adding either to placate some unrelated widget re-opens the
 book's inline scripts, which is a footgun worth a comment at the line where the header is written.
 
+## 11.1b — what the patch costs, found by reading upstream's comment
+
+The line the patch edits has a comment above it:
+
+> `allow-scripts` is needed for events because of WebKit bug
+> https://bugs.webkit.org/show_bug.cgi?id=218086
+
+That is a claim about the reader's hands, not about rendering, and B2 above did not test it: it turned
+pages by calling `view.next()`, which is not what a reader does. So a second harness
+(`events.html` + `run-events.mjs`) puts two otherwise identical frames on a page, one with the token
+and one without, and clicks them with a **real** mouse and keyboard — `isTrusted` is recorded for
+exactly that reason.
+
+| engine   | `allow-same-origin allow-scripts` | `allow-same-origin`         |
+| -------- | --------------------------------- | --------------------------- |
+| Chromium | pointerdown, click, keydown       | pointerdown, click, keydown |
+| Firefox  | pointerdown, click, keydown       | pointerdown, click, keydown |
+| WebKit   | pointerdown, click, keydown       | **nothing at all**          |
+
+The bug is live. On WebKit a frame without `allow-scripts` receives no input events of any kind, so
+a book rendered inside one is a page nobody can tap, swipe, or key through — and WebKit is Safari,
+which is most of the mobile reading this feature exists for.
+
+**The resolution, and it is not "give up a wall everywhere".** The two walls were measured to be
+_independently_ sufficient (B2 and B3 above). So the frame keeps `allow-scripts` only on an engine
+that would otherwise deliver no input, and there the route CSP is what stops the book — measured
+blocking it in WebKit too. Everywhere else the frame refuses scripts and the CSP stands behind it.
+Two walls where two are possible, one where one is, and the difference stated rather than averaged
+away. `packages/reader/src/content-frame.ts` is where that choice is made, from a probe of the
+running engine rather than from a user-agent string; the same synthetic probe agreed with real input
+in all three engines, which is what makes the cheap version usable at startup.
+
+The exception ends by itself if WebKit fixes 218086 — the probe would simply stop selecting it.
+
 ## Consequences for the phase
 
 1. **11.3 changes meaning.** There is no `/reader-sandbox.html` on an opaque origin. The reader is a

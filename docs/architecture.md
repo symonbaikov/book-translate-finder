@@ -66,6 +66,15 @@ OPDS client must reach servers on the reader's private network and the bookshop 
 their coordinates off this instance entirely ([ADR-0007](adr/0007-plugin-architecture.md)). Both
 constraints are enforced in CI by `pnpm boundaries` (`plugins-is-a-leaf`).
 
+`packages/addons` and `packages/reader` are leaves for a stronger reason, and the strength is the
+point: they must be unreachable from anything that runs on a server. An addon is the reader's and
+this instance is not to learn about it ([ADR-0010](adr/0010-addon-engine.md) §6); a book the reader
+opens is theirs in exactly the same way, and its bytes, its URL and their position in it never reach
+this instance ([ADR-0013](adr/0013-client-side-reader.md) §1). `addons-never-on-the-server` and
+`reader-never-on-the-server` turn both statements into build failures rather than promises.
+`packages/reader` also carries a vendored, patched copy of foliate-js reached through exactly one
+module, because the patch is what keeps a stranger's EPUB from executing (`reader-vendor-has-one-door`).
+
 The rule is enforced automatically in CI by `pnpm boundaries` (dependency-cruiser,
 `.dependency-cruiser.mjs`), not by reviewer willpower — it resolves package imports
 (`@golden/infrastructure` etc.) to real files and fails on any violation of the dependency

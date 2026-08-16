@@ -72,6 +72,11 @@ packages/
   contracts/      Zod schemas and DTOs shared by web and api
   plugins/        Isolated integrations that run in the browser AND in Node: OPDS client,
                   bookshop lookup, the plugin contract. Zero project dependencies (ADR-0007)
+  addons/         The reader-installed addon contract, its two transports and the sandbox.
+                  A leaf, and unreachable from anything server-side (ADR-0010)
+  reader/         Reading a book in the reader's own tab: format sniffing, acquisition,
+                  progress, and a patched, vendored foliate-js. A leaf, and likewise
+                  unreachable from anything server-side (ADR-0013)
 docs/             Project documentation
 docker/           Compose files, Dockerfiles
 ```

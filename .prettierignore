@@ -4,3 +4,7 @@ pnpm-lock.yaml
 **/.next/
 **/coverage/
 docs/source/
+
+# Vendored third-party code is kept byte-for-byte as upstream published it, plus a recorded
+# patch. Reformatting it would break the tree hash that proves exactly that.
+packages/*/vendor/

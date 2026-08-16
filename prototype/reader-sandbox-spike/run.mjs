@@ -109,6 +109,7 @@ for (const row of results) {
     console.log(`   origin              ${result.origin} (opaque: ${result.opaqueOrigin})`);
     console.log(`   localStorage        ${result.storage}`);
     console.log(`   nested frame        ${JSON.stringify(result.nestedFrame, null, 0)}`);
+    console.log(`   frame events        ${result.contentFrameEvents ?? '—'}`);
     console.log(`   foliate opened      ${foliate?.opened} (sections: ${foliate?.sections})`);
     console.log(`   foliate error       ${foliate?.error ?? '—'}`);
     console.log(`   relocations         ${turns.length} → fractions ${JSON.stringify(fractions)}`);

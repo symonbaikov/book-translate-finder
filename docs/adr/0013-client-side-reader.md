@@ -92,6 +92,29 @@ scripts, so the line that emits it carries that warning next to it.
 a real, standardised part of EPUB 3, and this reader refuses all of them. A reader that cannot run a
 quiz is a smaller loss than a reader that runs a stranger's fetch loop.
 
+#### Amendment, 2026-08-16: WebKit gets one wall, and is told so
+
+Upstream's comment above the patched line says `allow-scripts` "is needed for events because of
+WebKit bug 218086". Spike 11.1b tested that claim with real mouse and keyboard input rather than a
+programmatic page turn, and it holds: **on WebKit, a frame without `allow-scripts` receives no input
+events at all** — no click, no pointerdown, no keydown — while Chromium and Firefox deliver all of
+them. A book rendered in such a frame is a page nobody can tap, and WebKit is Safari, which is most
+of the mobile reading this feature is for.
+
+Since the two walls were measured to be **independently** sufficient, the resolution is not to give
+one up everywhere:
+
+| engine                                 | frame                             | walls | what stops the book          |
+| -------------------------------------- | --------------------------------- | ----- | ---------------------------- |
+| delivers input without `allow-scripts` | `allow-same-origin`               | 2     | the frame, and the CSP       |
+| does not (WebKit today)                | `allow-same-origin allow-scripts` | 1     | the CSP — measured there too |
+
+The branch is chosen by **probing the running engine**, never by a user-agent string
+(`packages/reader/src/content-frame.ts`), and it disappears by itself if WebKit fixes the bug. What
+this costs is stated plainly rather than averaged into a claim of "two walls": on Safari a CSP edit
+that adds `'unsafe-inline'` or `blob:` to `script-src` would also re-enable a stranger's JavaScript,
+and that is the line the warning comment belongs on.
+
 ### 4. Everything the reader accumulates stays in their browser
 
 Progress, bookmarks and annotations live in IndexedDB in the reader's own browser, keyed by the
@@ -113,6 +136,11 @@ promise. Four `dependency-cruiser` rules carry it — the package imports no wor
 server-side imports the package, the reading surface may not import the API client, and the vendored
 renderer is reachable through one door. The third is the unusual one and it is deliberate: an import
 of `api-client` into the reading surface is how a "just the resume position" endpoint gets born.
+
+All four were checked by writing the violation and watching it fail, not by reading them. One
+subtlety came out of that: `reader-never-on-the-server` matches an import the resolver can follow,
+which means an import plus a declared dependency — an import without one is unresolvable and also
+would not run, so the rule catches every violation that could actually exist.
 
 ### 6. Nothing the reader opens carries a rights status
 

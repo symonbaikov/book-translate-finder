@@ -95,6 +95,51 @@ function stripAllowScriptsFromContentFrames() {
   };
 }
 
+/**
+ * Probe C — the cost of the patch, per upstream's own warning.
+ *
+ * `paginator.js` carries a comment saying `allow-scripts` "is needed for events because of WebKit
+ * bug 218086". Probe B turns pages by calling `view.next()`, which is not what a reader does: they
+ * tap the page. So this probe dispatches a real click inside the content frame and asks whether the
+ * host hears it — if it does not, tap-to-turn is dead in that engine and the reader needs input
+ * handling that never depends on the frame.
+ */
+function contentFrameEventProbe() {
+  return new Promise((resolve) => {
+    const iframe = document.createElement('iframe');
+    iframe.setAttribute('sandbox', 'allow-same-origin');
+    iframe.style.cssText = 'width:200px;height:200px;position:absolute;left:-9999px';
+    iframe.addEventListener('load', () => {
+      const doc = iframe.contentDocument;
+      if (!doc) {
+        iframe.remove();
+        resolve('no document to click in');
+        return;
+      }
+      const heard = [];
+      // Both ways the reader could hear a tap: a listener the host installs on the content
+      // document, and one on the frame's own window.
+      doc.addEventListener('click', () => heard.push('document'));
+      iframe.contentWindow?.addEventListener('pointerdown', () => heard.push('window'));
+      const target = doc.getElementById('marker') ?? doc.body;
+      const view = doc.defaultView;
+      target.dispatchEvent(new view.MouseEvent('click', { bubbles: true }));
+      const PointerCtor = view.PointerEvent ?? view.MouseEvent;
+      target.dispatchEvent(new PointerCtor('pointerdown', { bubbles: true }));
+      setTimeout(() => {
+        iframe.remove();
+        resolve(heard.length ? `heard: ${[...new Set(heard)].join(', ')}` : 'no events heard');
+      }, 200);
+    });
+    document.body.append(iframe);
+    iframe.src = URL.createObjectURL(
+      new Blob(['<!doctype html><meta charset="utf-8"><p id="marker">click me</p>'], {
+        type: 'text/html',
+      }),
+    );
+  });
+}
+
 /** Probe B. Opens the fixture and asks the renderer to move. */
 async function foliateProbe(buffer) {
   const result = {
@@ -155,6 +200,7 @@ addEventListener('message', async (event) => {
     })(),
     bookBytes: event.data.buffer.byteLength,
     nestedFrame: {},
+    contentFrameEvents: null,
     foliate: null,
     violations,
   };
@@ -169,6 +215,7 @@ addEventListener('message', async (event) => {
     report.nestedFrame[label] = await withTimeout(nestedFrameProbe(kind, attr), 8000, label);
   }
 
+  report.contentFrameEvents = await withTimeout(contentFrameEventProbe(), 8000, 'events');
   report.foliate = await withTimeout(foliateProbe(event.data.buffer), 20_000, 'foliate');
 
   parent.postMessage({ type: 'spike-report', report }, '*');
