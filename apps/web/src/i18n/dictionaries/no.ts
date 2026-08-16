@@ -484,4 +484,7 @@ export const no: Dictionary = {
   'settings.status.session': 'Ikke husket',
   'settings.notRemembered':
     'Denne nettleseren ville ikke huske det, så det er tilbake slik det var neste gang du åpner en bok.',
+  'compare.rowEditionStatement': 'Utgave',
+  'home.genres': 'Populære sjangre',
+  'home.genresBlurb': 'Merkelappene med flest bøker bak seg. Hver av dem åpner katalogen sin.',
 };

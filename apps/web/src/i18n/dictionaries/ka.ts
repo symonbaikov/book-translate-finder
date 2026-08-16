@@ -484,4 +484,7 @@ export const ka: Dictionary = {
   'settings.status.session': 'არ დამახსოვრდა',
   'settings.notRemembered':
     'ამ ბრაუზერს ეს არ დაუმახსოვრებია, ამიტომ შემდეგ ჯერზე, როცა წიგნს გახსნით, ყველაფერი ისე იქნება, როგორც იყო.',
+  'compare.rowEditionStatement': 'გამოცემა',
+  'home.genres': 'პოპულარული ჟანრები',
+  'home.genresBlurb': 'ტეგები, რომელთა უკან ყველაზე მეტი წიგნია. თითოეული ხსნის თავის კატალოგს.',
 };

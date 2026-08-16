@@ -486,4 +486,7 @@ export const lv: Dictionary = {
   'settings.status.session': 'Neatcerējās',
   'settings.notRemembered':
     'Šis pārlūks to neatcerējās, tāpēc nākamreiz, kad atvērsiet grāmatu, viss būs kā iepriekš.',
+  'compare.rowEditionStatement': 'Izdevums',
+  'home.genres': 'Populāri žanri',
+  'home.genresBlurb': 'Birkas, aiz kurām ir visvairāk grāmatu. Katra atver savu katalogu.',
 };

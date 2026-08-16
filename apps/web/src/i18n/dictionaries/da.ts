@@ -482,4 +482,7 @@ export const da: Dictionary = {
   'settings.status.session': 'Ikke husket',
   'settings.notRemembered':
     'Denne browser ville ikke huske det, så det er tilbage, som det var, næste gang du åbner en bog.',
+  'compare.rowEditionStatement': 'Udgave',
+  'home.genres': 'Populære genrer',
+  'home.genresBlurb': 'De tags med flest bøger bag sig. Hvert af dem åbner sit katalog.',
 };

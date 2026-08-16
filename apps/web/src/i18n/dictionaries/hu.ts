@@ -491,4 +491,8 @@ export const hu: Dictionary = {
   'settings.status.session': 'Nincs megjegyezve',
   'settings.notRemembered':
     'Ez a böngésző nem jegyezte meg, így a következő könyv megnyitásakor minden úgy lesz, ahogy volt.',
+  'compare.rowEditionStatement': 'Kiadás',
+  'home.genres': 'Népszerű műfajok',
+  'home.genresBlurb':
+    'Azok a címkék, amelyek mögött a legtöbb könyv áll. Mindegyik megnyitja a saját katalógusát.',
 };

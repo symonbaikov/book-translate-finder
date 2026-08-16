@@ -487,4 +487,7 @@ export const et: Dictionary = {
   'settings.status.session': 'Ei jäetud meelde',
   'settings.notRemembered':
     'See brauser ei jätnud seda meelde, nii et järgmisel korral, kui raamatu avad, on kõik nagu enne.',
+  'compare.rowEditionStatement': 'Väljaanne',
+  'home.genres': 'Populaarsed žanrid',
+  'home.genresBlurb': 'Sildid, mille taga on kõige rohkem raamatuid. Igaüks avab oma kataloogi.',
 };

@@ -489,4 +489,8 @@ export const hy: Dictionary = {
   'settings.status.session': 'Չհիշվեց',
   'settings.notRemembered':
     'Այս դիտարկիչը չհիշեց դա, ուստի հաջորդ անգամ գիրք բացելիս ամեն ինչ կլինի ինչպես առաջ։',
+  'compare.rowEditionStatement': 'Հրատարակություն',
+  'home.genres': 'Հանրաճանաչ ժանրեր',
+  'home.genresBlurb':
+    'Այն պիտակները, որոնց հետևում ամենաշատ գրքերն են։ Յուրաքանչյուրը բացում է իր ցանկը։',
 };

@@ -491,4 +491,8 @@ export const lb: Dictionary = {
   'settings.status.session': 'Net gemierkt',
   'settings.notRemembered':
     'Dëse Browser wollt sech dat net mierken, dofir ass alles nees wéi virdrun, wann Dir déi nächst Kéier e Buch opmaacht.',
+  'compare.rowEditionStatement': 'Editioun',
+  'home.genres': 'Populär Genren',
+  'home.genresBlurb':
+    'D’Tags mat de meeschte Bicher hannendrun. All eenzelen mécht säi Katalog op.',
 };

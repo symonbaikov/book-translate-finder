@@ -487,4 +487,7 @@ export const sv: Dictionary = {
   'settings.status.session': 'Inte ihågkommet',
   'settings.notRemembered':
     'Den här webbläsaren ville inte komma ihåg det, så det är tillbaka som det var nästa gång du öppnar en bok.',
+  'compare.rowEditionStatement': 'Utgåva',
+  'home.genres': 'Populära genrer',
+  'home.genresBlurb': 'De etiketter som har flest böcker bakom sig. Var och en öppnar sin katalog.',
 };

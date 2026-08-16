@@ -488,4 +488,8 @@ export const ro: Dictionary = {
   'settings.status.session': 'Nereținut',
   'settings.notRemembered':
     'Acest navigator nu a reținut, deci data viitoare când deschizi o carte totul va fi cum era.',
+  'compare.rowEditionStatement': 'Ediție',
+  'home.genres': 'Genuri populare',
+  'home.genresBlurb':
+    'Etichetele cu cele mai multe cărți în spate. Fiecare își deschide catalogul.',
 };

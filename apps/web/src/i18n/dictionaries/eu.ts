@@ -494,4 +494,8 @@ export const eu: Dictionary = {
   'settings.status.session': 'Ez da gogoratu',
   'settings.notRemembered':
     'Nabigatzaile honek ez du gogoratu nahi izan, beraz hurrengoan liburu bat irekitzean dena lehen bezala egongo da.',
+  'compare.rowEditionStatement': 'Edizioa',
+  'home.genres': 'Genero ezagunak',
+  'home.genresBlurb':
+    'Atzean liburu gehien dituzten etiketak. Bakoitzak bere katalogoa irekitzen du.',
 };

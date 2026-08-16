@@ -488,4 +488,7 @@ export const cs: Dictionary = {
   'settings.status.session': 'Nezapamatováno',
   'settings.notRemembered':
     'Tenhle prohlížeč si to odmítl zapamatovat, takže až příště otevřete knihu, bude všechno jako dřív.',
+  'compare.rowEditionStatement': 'Vydání',
+  'home.genres': 'Oblíbené žánry',
+  'home.genresBlurb': 'Štítky, za nimiž stojí nejvíc knih. Každý z nich otevře svůj katalog.',
 };

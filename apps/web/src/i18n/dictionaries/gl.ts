@@ -489,4 +489,7 @@ export const gl: Dictionary = {
   'settings.status.session': 'Non lembrado',
   'settings.notRemembered':
     'Este navegador non quixo lembralo, así que a próxima vez que abras un libro todo estará como antes.',
+  'compare.rowEditionStatement': 'Edición',
+  'home.genres': 'Xéneros populares',
+  'home.genresBlurb': 'As etiquetas con máis libros detrás. Cada unha abre o seu catálogo.',
 };

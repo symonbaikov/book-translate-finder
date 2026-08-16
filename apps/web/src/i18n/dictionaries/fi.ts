@@ -489,4 +489,8 @@ export const fi: Dictionary = {
   'settings.status.session': 'Ei muistettu',
   'settings.notRemembered':
     'Tämä selain ei suostunut muistamaan sitä, joten se on ennallaan, kun seuraavan kerran avaat kirjan.',
+  'compare.rowEditionStatement': 'Laitos',
+  'home.genres': 'Suositut lajityypit',
+  'home.genresBlurb':
+    'Ne tunnisteet, joiden takana on eniten kirjoja. Kukin avaa oman luettelonsa.',
 };

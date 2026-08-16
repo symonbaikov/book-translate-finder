@@ -487,4 +487,7 @@ export const sr: Dictionary = {
   'settings.status.session': 'Није запамћено',
   'settings.notRemembered':
     'Овај прегледач то није запамтио, па ће следећи пут кад отворите књигу све бити као пре.',
+  'compare.rowEditionStatement': 'Издање',
+  'home.genres': 'Популарни жанрови',
+  'home.genresBlurb': 'Ознаке иза којих стоји највише књига. Свака отвара свој каталог.',
 };

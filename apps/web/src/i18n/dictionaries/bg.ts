@@ -487,4 +487,7 @@ export const bg: Dictionary = {
   'settings.status.session': 'Незапомнено',
   'settings.notRemembered':
     'Този браузър отказа да го запомни, така че следващия път, когато отворите книга, всичко ще е както преди.',
+  'compare.rowEditionStatement': 'Издание',
+  'home.genres': 'Популярни жанрове',
+  'home.genresBlurb': 'Етикетите с най-много книги зад тях. Всеки от тях отваря своя каталог.',
 };

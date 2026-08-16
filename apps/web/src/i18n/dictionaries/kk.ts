@@ -485,4 +485,7 @@ export const kk: Dictionary = {
   'settings.status.session': 'Есте сақталмады',
   'settings.notRemembered':
     'Бұл браузер мұны есте сақтамады, сондықтан келесі жолы кітап ашқанда бәрі бұрынғыдай болады.',
+  'compare.rowEditionStatement': 'Басылым',
+  'home.genres': 'Танымал жанрлар',
+  'home.genresBlurb': 'Артында ең көп кітап тұрған тегтер. Әрқайсысы өз каталогын ашады.',
 };

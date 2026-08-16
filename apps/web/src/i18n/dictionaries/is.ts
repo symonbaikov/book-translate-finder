@@ -483,4 +483,7 @@ export const is: Dictionary = {
   'settings.status.session': 'Ekki munað',
   'settings.notRemembered':
     'Þessi vafri vildi ekki muna það, svo það verður eins og áður næst þegar þú opnar bók.',
+  'compare.rowEditionStatement': 'Útgáfa',
+  'home.genres': 'Vinsælar tegundir',
+  'home.genresBlurb': 'Þau merki sem hafa flestar bækur að baki. Hvert um sig opnar sína skrá.',
 };

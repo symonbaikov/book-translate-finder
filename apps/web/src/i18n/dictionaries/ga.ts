@@ -497,4 +497,8 @@ export const ga: Dictionary = {
   'settings.status.session': 'Gan cuimhneamh',
   'settings.notRemembered':
     'Ní chuimhneodh an brabhsálaí seo air, mar sin beidh sé ar ais mar a bhí an chéad uair eile a osclaíonn tú leabhar.',
+  'compare.rowEditionStatement': 'Eagrán',
+  'home.genres': 'Seánraí coitianta',
+  'home.genresBlurb':
+    'Na clibeanna a bhfuil an líon is mó leabhar taobh thiar díobh. Osclaíonn gach ceann a chatalóg féin.',
 };

@@ -487,4 +487,7 @@ export const sq: Dictionary = {
   'settings.status.session': 'Nuk u mbajt mend',
   'settings.notRemembered':
     'Ky shfletues nuk e mbajti mend, prandaj herës tjetër që hapni një libër gjithçka do të jetë si më parë.',
+  'compare.rowEditionStatement': 'Botim',
+  'home.genres': 'Zhanre të njohura',
+  'home.genresBlurb': 'Etiketat me më shumë libra pas tyre. Secila hap katalogun e vet.',
 };

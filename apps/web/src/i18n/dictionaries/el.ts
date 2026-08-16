@@ -497,4 +497,8 @@ export const el: Dictionary = {
   'settings.status.session': 'Δεν αποθηκεύτηκε',
   'settings.notRemembered':
     'Αυτό το πρόγραμμα περιήγησης δεν το θυμήθηκε, οπότε την επόμενη φορά που θα ανοίξετε βιβλίο όλα θα είναι όπως πριν.',
+  'compare.rowEditionStatement': 'Έκδοση',
+  'home.genres': 'Δημοφιλή είδη',
+  'home.genresBlurb':
+    'Οι ετικέτες με τα περισσότερα βιβλία πίσω τους. Καθεμιά ανοίγει τον κατάλογό της.',
 };

@@ -490,4 +490,7 @@ export const mk: Dictionary = {
   'settings.status.session': 'Не е запаметено',
   'settings.notRemembered':
     'Овој прелистувач не го запамети тоа, па следниот пат кога ќе отворите книга сè ќе биде како порано.',
+  'compare.rowEditionStatement': 'Издание',
+  'home.genres': 'Популарни жанрови',
+  'home.genresBlurb': 'Ознаките зад кои стојат најмногу книги. Секоја го отвора својот каталог.',
 };

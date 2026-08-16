@@ -491,4 +491,7 @@ export const ca: Dictionary = {
   'settings.status.session': 'No recordat',
   'settings.notRemembered':
     'Aquest navegador no ho ha volgut recordar, així que tornarà a ser com era la propera vegada que obris un llibre.',
+  'compare.rowEditionStatement': 'Edició',
+  'home.genres': 'Gèneres populars',
+  'home.genresBlurb': 'Les etiquetes amb més llibres al darrere. Cadascuna obre el seu catàleg.',
 };

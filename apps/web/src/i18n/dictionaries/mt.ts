@@ -487,4 +487,8 @@ export const mt: Dictionary = {
   'settings.status.session': 'Ma ġiex miftakar',
   'settings.notRemembered':
     'Dan il-browser ma riedx jiftakru, għalhekk id-darba li jmiss li tiftaħ ktieb kollox ikun kif kien.',
+  'compare.rowEditionStatement': 'Edizzjoni',
+  'home.genres': 'Ġeneri popolari',
+  'home.genresBlurb':
+    'It-tikketti bl-akbar għadd ta’ kotba warajhom. Kull waħda tiftaħ il-katalgu tagħha.',
 };

@@ -491,4 +491,8 @@ export const cy: Dictionary = {
   'settings.status.session': 'Heb ei gofio',
   'settings.notRemembered':
     'Ni fyddai’r porwr hwn yn ei gofio, felly bydd yn ôl fel yr oedd y tro nesaf i chi agor llyfr.',
+  'compare.rowEditionStatement': 'Argraffiad',
+  'home.genres': 'Genres poblogaidd',
+  'home.genresBlurb':
+    'Y tagiau sydd â’r mwyaf o lyfrau y tu ôl iddynt. Mae pob un yn agor ei gatalog.',
 };

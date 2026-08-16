@@ -489,4 +489,7 @@ export const hr: Dictionary = {
   'settings.status.session': 'Nije zapamćeno',
   'settings.notRemembered':
     'Ovaj preglednik to nije zapamtio, pa će sljedeći put kad otvorite knjigu sve biti kao prije.',
+  'compare.rowEditionStatement': 'Izdanje',
+  'home.genres': 'Popularni žanrovi',
+  'home.genresBlurb': 'Oznake iza kojih stoji najviše knjiga. Svaka otvara svoj katalog.',
 };

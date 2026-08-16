@@ -489,4 +489,7 @@ export const sk: Dictionary = {
   'settings.status.session': 'Nezapamätané',
   'settings.notRemembered':
     'Tento prehliadač si to odmietol zapamätať, takže keď nabudúce otvoríte knihu, bude všetko ako predtým.',
+  'compare.rowEditionStatement': 'Vydanie',
+  'home.genres': 'Obľúbené žánre',
+  'home.genresBlurb': 'Štítky, za ktorými stojí najviac kníh. Každý z nich otvorí svoj katalóg.',
 };

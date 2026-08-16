@@ -488,4 +488,7 @@ export const lt: Dictionary = {
   'settings.status.session': 'Neįsiminta',
   'settings.notRemembered':
     'Ši naršyklė to neįsiminė, tad kitą kartą atvėrus knygą viskas bus kaip buvo.',
+  'compare.rowEditionStatement': 'Leidimas',
+  'home.genres': 'Populiarūs žanrai',
+  'home.genresBlurb': 'Žymos, už kurių yra daugiausia knygų. Kiekviena atveria savo katalogą.',
 };

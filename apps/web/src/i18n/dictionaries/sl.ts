@@ -488,4 +488,7 @@ export const sl: Dictionary = {
   'settings.status.session': 'Ni zapomnjeno',
   'settings.notRemembered':
     'Ta brskalnik si tega ni zapomnil, zato bo naslednjič, ko odprete knjigo, vse tako, kot je bilo.',
+  'compare.rowEditionStatement': 'Izdaja',
+  'home.genres': 'Priljubljeni žanri',
+  'home.genresBlurb': 'Oznake, za katerimi stoji največ knjig. Vsaka odpre svoj katalog.',
 };
