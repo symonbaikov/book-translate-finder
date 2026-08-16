@@ -376,4 +376,100 @@ export const it: Dictionary = {
   'work.descriptionFrom': 'Descrizione:',
   'work.descriptionNotLocalized':
     'Questa descrizione è nella lingua in cui l’ha scritta la fonte: nella tua, per questo libro, non ce n’è ancora una.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Leggi nel browser',
+  'reader.privacy':
+    'È il tuo browser ad aprire questo libro. Né il file, né la sua provenienza, né il punto in cui sei arrivato raggiungono questo sito.',
+  'reader.chooseFile': 'Apri un libro da questo dispositivo',
+  'reader.formats': 'EPUB, FB2, MOBI e CBZ.',
+  'reader.loading': 'Apertura…',
+  'reader.failed': 'Non è stato possibile aprire questo libro: {reason}',
+  'reader.previous': 'Pagina precedente',
+  'reader.next': 'Pagina successiva',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…oppure trascina un libro qui',
+  'reader.fetching': 'Richiesta del file a {host}…',
+  'reader.blockedTitle': '{host} non ha consegnato il file a questa pagina',
+  'reader.blockedBody':
+    'O è irraggiungibile, o non permette ad altri siti di leggere i suoi file. Questo sito non lo scaricherà al posto tuo: il tuo libro non passa mai da qui, ed è esattamente il senso di leggere qui.',
+  'reader.blockedDownload': 'Scaricarlo da {host}',
+  'reader.blockedOpenHere': 'e aprirlo qui dal tuo dispositivo',
+  'reader.blockedAddon': 'Va bene anche un addon che serva il file da sé.',
+  'reader.keepFile': 'Tieni questo libro in questo browser',
+  'reader.keepFileHint':
+    'Disattivato di default. Senza, il file sparisce chiudendo la scheda; con, resta solo su questo dispositivo.',
+  'reader.library': 'Tenuti in questo browser',
+  'reader.libraryEmpty':
+    'Ancora nulla. I libri che tieni restano su questo dispositivo e non vengono mai caricati altrove.',
+  'reader.libraryOpen': 'Apri',
+  'reader.libraryRemove': 'Rimuovi',
+  'reader.libraryFileKept': 'file tenuto',
+  'reader.libraryFileGone': 'file non tenuto',
+  'reader.untitled': 'Libro senza titolo',
+  'settings.reader.libraryTitle': 'Libri in questo browser',
+  'settings.reader.kept':
+    '«{title}» ora è tenuto su questo dispositivo e si apre senza riscaricarlo. Non viene caricato da nessuna parte.',
+  'settings.reader.forgotten':
+    'Il file di «{title}» è stato cancellato da questo browser. La voce resta: puoi riaprirlo dalla sua fonte.',
+  'settings.reader.removed':
+    '«{title}» è stato rimosso del tutto da questo browser — il file e la voce.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Aperto dove avevi lasciato — al {percent}%.',
+  'reader.bookmarks': 'Segnalibri',
+  'reader.bookmarkAdd': 'Metti un segnalibro qui',
+  'reader.bookmarkNone': 'In questo libro non ci sono ancora segnalibri.',
+  'reader.bookmarkGo': 'Vai',
+  'reader.bookmarkRemove': 'Togli il segnalibro',
+  'reader.bookmarkNote': 'Nota',
+  'reader.bookmarkNotePlaceholder': 'Le tue parole su questa pagina',
+  'reader.bookmarkAt': 'al {percent}%',
+  'settings.reader.bookmarkTitle': 'Segnalibri in questo browser',
+  'settings.reader.bookmarkAdded':
+    'Segnalibro al {percent}% di «{title}». I segnalibri restano su questo dispositivo insieme al libro.',
+  'settings.reader.bookmarkRemoved':
+    'Quel segnalibro in «{title}» è stato tolto da questo browser.',
+  'settings.reader.noteSaved':
+    'La tua nota su questa pagina di «{title}» è stata salvata su questo dispositivo.',
+  'settings.reader.positionTitle': 'Punto di lettura',
+  'settings.reader.positionUnstored':
+    'Questo browser non ha voluto salvare a che punto sei di «{title}»: la prossima volta il libro si aprirà dall’inizio. Succede in navigazione privata e con il disco pieno.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Come si vede questo libro',
+  'reader.theme': 'Colori',
+  'reader.themeApp': 'Come il sito',
+  'reader.themeLight': 'Carta',
+  'reader.themeDark': 'Inchiostro',
+  'reader.themeSepia': 'Seppia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Nero pieno su bianco, nessuna animazione, una colonna: per schermi a inchiostro elettronico.',
+  'reader.fontSize': 'Dimensione del testo',
+  'reader.smaller': 'Più piccolo',
+  'reader.larger': 'Più grande',
+  'reader.lineHeight': 'Interlinea',
+  'reader.margin': 'Margini',
+  'reader.flow': 'Pagine',
+  'reader.flowPaged': 'Sfogliare',
+  'reader.flowScrolled': 'Scorrere',
+  'reader.justify': 'Giustifica',
+  'reader.hyphenate': 'Sillabazione',
+  'reader.displayReset': 'Torna ai valori predefiniti',
+  'settings.reader.displayTitle': 'Aspetto della lettura',
+  'settings.reader.displayChanged':
+    '{setting}: ora {value}. Vale per ogni libro che apri in questo browser.',
+  'settings.reader.displayReset':
+    'L’aspetto della lettura è tornato ai valori predefiniti per tutti i libri in questo browser.',
+  'reader.on': 'Attivo',
+  'reader.off': 'Disattivo',
+  'reader.openHere': 'Leggi nel browser',
+  'reader.notAFileTitle': '{host} ha risposto con una pagina web, non con il file',
+  'reader.notAFileBody':
+    'Il link porta a una pagina e non a un libro: una pagina di download, una schermata di consenso o un controllo che tu non sia un robot. Aprila tu e il file sarà lì.',
+  'settings.status.session': 'Non ricordato',
+  'settings.notRemembered':
+    'Questo browser non ha voluto ricordarlo: alla prossima apertura di un libro sarà di nuovo com’era.',
 };

@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    // Empty for the same reason as packages/addons: this package runs in the reader's browser and
+    // must never acquire a Node-only API. It is also forbidden from being imported by anything
+    // server-side at all (docs/adr/0013-client-side-reader.md §5), which `pnpm boundaries` enforces.
+    "types": [],
+    // `crypto.subtle`, `fetch`, `File` and `Blob` are declared by lib.dom once "types" is empty.
+    "lib": ["ES2022", "DOM"]
+  },
+  // `vendor/` is deliberately outside the program: it is somebody else's untyped JavaScript, shipped
+  // as-is, and reached through one door (src/foliate.ts). Compiling it would mean owning it.
+  "include": ["src"]
+}

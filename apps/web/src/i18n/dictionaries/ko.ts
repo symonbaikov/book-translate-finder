@@ -366,4 +366,97 @@ export const ko: Dictionary = {
   'work.descriptionFrom': '소개:',
   'work.descriptionNotLocalized':
     '이 소개는 출처가 쓴 언어 그대로입니다. 이 책에 대한 당신의 언어로 된 소개는 아직 없습니다.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': '브라우저에서 읽기',
+  'reader.privacy':
+    '이 책은 브라우저가 혼자 엽니다. 파일도, 파일을 가져온 곳도, 어디까지 읽었는지도 이 사이트에는 전해지지 않습니다.',
+  'reader.chooseFile': '이 기기에서 책 열기',
+  'reader.formats': 'EPUB, FB2, MOBI, CBZ.',
+  'reader.loading': '여는 중…',
+  'reader.failed': '이 책을 열지 못했습니다: {reason}',
+  'reader.previous': '이전 쪽',
+  'reader.next': '다음 쪽',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…또는 여기에 책을 놓으세요',
+  'reader.fetching': '{host}에 파일을 요청하는 중…',
+  'reader.blockedTitle': '{host}이(가) 이 페이지에 파일을 주지 않았습니다',
+  'reader.blockedBody':
+    '연결할 수 없거나, 다른 사이트가 자기 파일을 읽는 것을 허용하지 않는 것입니다. 이 사이트가 대신 받아오지는 않습니다. 책이 이 사이트를 거치지 않는 것이 여기서 읽는 이유이기 때문입니다.',
+  'reader.blockedDownload': '{host}에서 내려받기',
+  'reader.blockedOpenHere': '그런 다음 기기에서 여기로 열기',
+  'reader.blockedAddon': '파일을 직접 제공하는 애드온도 괜찮습니다.',
+  'reader.keepFile': '이 책을 이 브라우저에 보관',
+  'reader.keepFileHint':
+    '기본은 꺼짐입니다. 끄면 탭을 닫을 때 파일이 사라지고, 켜면 이 기기에만 남습니다.',
+  'reader.library': '이 브라우저에 보관됨',
+  'reader.libraryEmpty':
+    '아직 보관한 것이 없습니다. 보관한 책은 이 기기에 남고 어디에도 올라가지 않습니다.',
+  'reader.libraryOpen': '열기',
+  'reader.libraryRemove': '삭제',
+  'reader.libraryFileKept': '파일 보관됨',
+  'reader.libraryFileGone': '파일 없음',
+  'reader.untitled': '제목 없는 책',
+  'settings.reader.libraryTitle': '이 브라우저의 책',
+  'settings.reader.kept':
+    '「{title}」이(가) 이 기기에 보관되어 다시 내려받지 않고 열립니다. 어디에도 올라가지 않습니다.',
+  'settings.reader.forgotten':
+    '「{title}」의 파일을 이 브라우저에서 지웠습니다. 목록은 남아 있으니 원본에서 다시 열 수 있습니다.',
+  'settings.reader.removed':
+    '「{title}」을(를) 이 브라우저에서 완전히 지웠습니다 — 파일과 기록 모두.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': '읽던 곳에서 열었습니다 — {percent}% 지점.',
+  'reader.bookmarks': '책갈피',
+  'reader.bookmarkAdd': '이 쪽에 책갈피',
+  'reader.bookmarkNone': '이 책에는 아직 책갈피가 없습니다.',
+  'reader.bookmarkGo': '이동',
+  'reader.bookmarkRemove': '책갈피 삭제',
+  'reader.bookmarkNote': '메모',
+  'reader.bookmarkNotePlaceholder': '이 쪽에 대한 당신의 말',
+  'reader.bookmarkAt': '{percent}% 지점',
+  'settings.reader.bookmarkTitle': '이 브라우저의 책갈피',
+  'settings.reader.bookmarkAdded':
+    '「{title}」의 {percent}% 지점에 책갈피를 두었습니다. 책갈피는 책과 함께 이 기기에 남습니다.',
+  'settings.reader.bookmarkRemoved': '「{title}」의 그 책갈피를 이 브라우저에서 지웠습니다.',
+  'settings.reader.noteSaved': '「{title}」의 이 쪽에 대한 메모를 이 기기에 저장했습니다.',
+  'settings.reader.positionTitle': '읽던 위치',
+  'settings.reader.positionUnstored':
+    '이 브라우저가 「{title}」에서 어디까지 읽었는지를 저장하지 않았습니다. 다음에는 처음부터 열립니다. 시크릿 모드나 디스크가 가득 찬 경우에 그렇습니다.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': '이 책의 모습',
+  'reader.theme': '색',
+  'reader.themeApp': '사이트와 동일',
+  'reader.themeLight': '종이',
+  'reader.themeDark': '먹',
+  'reader.themeSepia': '세피아',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint': '흰 바탕에 순수한 검정, 애니메이션 없음, 한 단 — 전자잉크 화면용입니다.',
+  'reader.fontSize': '글자 크기',
+  'reader.smaller': '작게',
+  'reader.larger': '크게',
+  'reader.lineHeight': '줄 간격',
+  'reader.margin': '여백',
+  'reader.flow': '쪽',
+  'reader.flowPaged': '쪽 넘기기',
+  'reader.flowScrolled': '스크롤',
+  'reader.justify': '양쪽 정렬',
+  'reader.hyphenate': '하이픈 넣기',
+  'reader.displayReset': '기본값으로',
+  'settings.reader.displayTitle': '읽기 화면',
+  'settings.reader.displayChanged':
+    '{setting}을(를) {value}(으)로 바꿨습니다. 이 브라우저에서 여는 모든 책에 적용됩니다.',
+  'settings.reader.displayReset':
+    '읽기 화면을 이 브라우저의 모든 책에 대해 기본값으로 되돌렸습니다.',
+  'reader.on': '켬',
+  'reader.off': '끔',
+  'reader.openHere': '브라우저에서 읽기',
+  'reader.notAFileTitle': '{host}이(가) 파일이 아니라 웹 페이지를 보냈습니다',
+  'reader.notAFileBody':
+    '링크가 책이 아니라 페이지로 이어집니다 — 다운로드 페이지, 동의 화면, 또는 로봇이 아님을 확인하는 절차입니다. 직접 열면 파일이 거기 있습니다.',
+  'settings.status.session': '기억되지 않음',
+  'settings.notRemembered':
+    '이 브라우저가 기억하지 않았습니다. 다음에 책을 열면 원래대로 돌아갑니다.',
 };

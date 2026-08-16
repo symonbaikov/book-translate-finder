@@ -372,4 +372,98 @@ export const tr: Dictionary = {
   'work.descriptionFrom': 'Açıklama:',
   'work.descriptionNotLocalized':
     'Bu açıklama, kaynağın yazdığı dilde — bu kitap için kendi dilinizde henüz bir açıklama yok.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Tarayıcıda oku',
+  'reader.privacy':
+    'Bu kitabı tarayıcınız kendisi açar. Ne dosya, ne nereden geldiği, ne de nereye kadar okuduğunuz bu siteye ulaşır.',
+  'reader.chooseFile': 'Bu cihazdan bir kitap aç',
+  'reader.formats': 'EPUB, FB2, MOBI ve CBZ.',
+  'reader.loading': 'Açılıyor…',
+  'reader.failed': 'Bu kitap açılamadı: {reason}',
+  'reader.previous': 'Önceki sayfa',
+  'reader.next': 'Sonraki sayfa',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…ya da bir kitabı buraya bırakın',
+  'reader.fetching': 'Dosya {host} adresinden isteniyor…',
+  'reader.blockedTitle': '{host} dosyayı bu sayfaya vermedi',
+  'reader.blockedBody':
+    'Ya erişilemiyor ya da dosyalarını başka sitelerin okumasına izin vermiyor. Bu site onu sizin yerinize indirmeyecek: kitabınız buradan hiç geçmez, zaten burada okumanın anlamı da bu.',
+  'reader.blockedDownload': '{host} adresinden indirin',
+  'reader.blockedOpenHere': 've burada kendi cihazınızdan açın',
+  'reader.blockedAddon': 'Dosyayı kendisi sunan bir eklenti de olur.',
+  'reader.keepFile': 'Bu kitabı bu tarayıcıda sakla',
+  'reader.keepFileHint':
+    'Varsayılan olarak kapalı. Kapalıyken dosya sekmeyi kapatınca kaybolur; açıkken yalnızca bu cihazda kalır.',
+  'reader.library': 'Bu tarayıcıda saklananlar',
+  'reader.libraryEmpty':
+    'Henüz bir şey saklanmadı. Sakladığınız kitaplar bu cihazda kalır ve hiçbir yere yüklenmez.',
+  'reader.libraryOpen': 'Aç',
+  'reader.libraryRemove': 'Kaldır',
+  'reader.libraryFileKept': 'dosya saklandı',
+  'reader.libraryFileGone': 'dosya saklanmadı',
+  'reader.untitled': 'Adsız kitap',
+  'settings.reader.libraryTitle': 'Bu tarayıcıdaki kitaplar',
+  'settings.reader.kept':
+    '“{title}” artık bu cihazda saklanıyor ve yeniden indirmeden açılıyor. Hiçbir yere yüklenmiyor.',
+  'settings.reader.forgotten':
+    '“{title}” dosyası bu tarayıcıdan silindi. Kayıt duruyor: kitabı kaynağından yeniden açabilirsiniz.',
+  'settings.reader.removed': '“{title}” bu tarayıcıdan tamamen kaldırıldı — dosya da kayıt da.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Bıraktığınız yerden açıldı — %{percent}.',
+  'reader.bookmarks': 'Yer imleri',
+  'reader.bookmarkAdd': 'Bu sayfaya yer imi koy',
+  'reader.bookmarkNone': 'Bu kitapta henüz yer imi yok.',
+  'reader.bookmarkGo': 'Git',
+  'reader.bookmarkRemove': 'Yer imini kaldır',
+  'reader.bookmarkNote': 'Not',
+  'reader.bookmarkNotePlaceholder': 'Bu sayfa hakkında kendi sözleriniz',
+  'reader.bookmarkAt': '%{percent}',
+  'settings.reader.bookmarkTitle': 'Bu tarayıcıdaki yer imleri',
+  'settings.reader.bookmarkAdded':
+    '“{title}” kitabının %{percent} kısmına yer imi konuldu. Yer imleri kitapla birlikte bu cihazda kalır.',
+  'settings.reader.bookmarkRemoved': '“{title}” içindeki o yer imi bu tarayıcıdan kaldırıldı.',
+  'settings.reader.noteSaved':
+    '“{title}” kitabının bu sayfasına dair notunuz bu cihaza kaydedildi.',
+  'settings.reader.positionTitle': 'Okuma yeri',
+  'settings.reader.positionUnstored':
+    'Bu tarayıcı “{title}” içinde nerede kaldığınızı saklamadı; kitap bir dahaki sefere baştan açılacak. Gizli mod ve dolu disk bunu yapar.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Bu kitabın görünümü',
+  'reader.theme': 'Renkler',
+  'reader.themeApp': 'Site gibi',
+  'reader.themeLight': 'Kâğıt',
+  'reader.themeDark': 'Mürekkep',
+  'reader.themeSepia': 'Sepya',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Beyaz üzerine saf siyah, animasyon yok, tek sütun — e-mürekkep ekranlar için.',
+  'reader.fontSize': 'Yazı boyutu',
+  'reader.smaller': 'Küçült',
+  'reader.larger': 'Büyüt',
+  'reader.lineHeight': 'Satır aralığı',
+  'reader.margin': 'Kenar boşlukları',
+  'reader.flow': 'Sayfalar',
+  'reader.flowPaged': 'Sayfa çevir',
+  'reader.flowScrolled': 'Kaydır',
+  'reader.justify': 'İki yana yasla',
+  'reader.hyphenate': 'Heceleme',
+  'reader.displayReset': 'Varsayılanlara dön',
+  'settings.reader.displayTitle': 'Okuma görünümü',
+  'settings.reader.displayChanged':
+    '{setting} artık {value}. Bu tarayıcıda açtığınız her kitap için geçerlidir.',
+  'settings.reader.displayReset':
+    'Okuma görünümü, bu tarayıcıdaki tüm kitaplar için varsayılanlara döndü.',
+  'reader.on': 'Açık',
+  'reader.off': 'Kapalı',
+  'reader.openHere': 'Tarayıcıda oku',
+  'reader.notAFileTitle': '{host} dosya yerine bir web sayfası gönderdi',
+  'reader.notAFileBody':
+    'Bağlantı kitaba değil bir sayfaya gidiyor: indirme sayfası, onay ekranı ya da robot olmadığınızın kontrolü. Kendiniz açın, dosya orada olacak.',
+  'settings.status.session': 'Hatırlanmadı',
+  'settings.notRemembered':
+    'Bu tarayıcı bunu hatırlamak istemedi: bir sonraki kitabı açtığınızda her şey eskisi gibi olacak.',
 };

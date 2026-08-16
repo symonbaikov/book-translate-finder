@@ -1,4 +1,30 @@
+import { fileURLToPath } from 'node:url';
 import { defineWorkspace } from 'vitest/config';
+
+/**
+ * Every workspace package, resolved to its **source** rather than to its build output.
+ *
+ * Without this, `pnpm test` works only after `pnpm build`: each package's `main` points at
+ * `dist/index.js`, which does not exist in a fresh clone, and 33 test files fail to load with
+ * "Failed to resolve entry for package @golden/…" before a single assertion runs. That is what CI
+ * had been reporting — on `main` as well as on branches — and it is why the failure looks like 33
+ * broken files rather than one broken assumption.
+ *
+ * Source, not `dist`, is also the right target for unit tests: they should fail on the code that was
+ * written, not on the last build somebody happened to have lying around.
+ */
+const workspaceSource = (name: string): string =>
+  fileURLToPath(new URL(`./packages/${name}/src/index.ts`, import.meta.url));
+
+const alias = {
+  '@golden/addons': workspaceSource('addons'),
+  '@golden/application': workspaceSource('application'),
+  '@golden/contracts': workspaceSource('contracts'),
+  '@golden/domain': workspaceSource('domain'),
+  '@golden/infrastructure': workspaceSource('infrastructure'),
+  '@golden/plugins': workspaceSource('plugins'),
+  '@golden/reader': workspaceSource('reader'),
+};
 
 // Three projects mirror docs/rules.md §5 test levels (E2E is Playwright, run separately via
 // `pnpm test:e2e`, not part of this workspace).
@@ -29,6 +55,7 @@ export default defineWorkspace([
       ],
       environment: 'node',
     },
+    resolve: { alias },
   },
   {
     test: {
@@ -37,6 +64,7 @@ export default defineWorkspace([
       exclude: ['**/node_modules/**', '**/dist/**'],
       environment: 'node',
     },
+    resolve: { alias },
   },
   {
     test: {
@@ -49,5 +77,6 @@ export default defineWorkspace([
       hookTimeout: 60_000,
       fileParallelism: false,
     },
+    resolve: { alias },
   },
 ]);

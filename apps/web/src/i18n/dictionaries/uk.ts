@@ -384,4 +384,98 @@ export const uk: Dictionary = {
   'work.descriptionFrom': 'Опис:',
   'work.descriptionNotLocalized':
     'Опис подано так, як його написало джерело, — вашою мовою для цієї книжки його поки немає.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Читати у браузері',
+  'reader.privacy':
+    'Книжку відкриває сам ваш браузер. Ані файл, ані те, звідки він узятий, ані те, доки ви дочитали, на цей сайт не потрапляють.',
+  'reader.chooseFile': 'Відкрити книжку з цього пристрою',
+  'reader.formats': 'EPUB, FB2, MOBI та CBZ.',
+  'reader.loading': 'Відкриваємо…',
+  'reader.failed': 'Не вдалося відкрити книжку: {reason}',
+  'reader.previous': 'Попередня сторінка',
+  'reader.next': 'Наступна сторінка',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…або перетягніть книжку сюди',
+  'reader.fetching': 'Запитуємо файл у {host}…',
+  'reader.blockedTitle': '{host} не віддав файл цій сторінці',
+  'reader.blockedBody':
+    'Або він недоступний, або не дозволяє іншим сайтам читати свої файли. Цей сайт не завантажуватиме його за вас: ваша книжка крізь нього не проходить — саме заради цього читання тут і влаштоване.',
+  'reader.blockedDownload': 'Завантажити з {host}',
+  'reader.blockedOpenHere': 'і відкрити тут зі свого пристрою',
+  'reader.blockedAddon': 'Аддон, який віддає файл сам, теж підійде.',
+  'reader.keepFile': 'Зберігати цю книжку в цьому браузері',
+  'reader.keepFileHint':
+    'Типово вимкнено. Без цього файл зникне із закриттям вкладки; з ним — залишиться лише на цьому пристрої.',
+  'reader.library': 'Зберігається в цьому браузері',
+  'reader.libraryEmpty':
+    'Поки нічого не збережено. Збережені книжки залишаються на цьому пристрої й нікуди не завантажуються.',
+  'reader.libraryOpen': 'Відкрити',
+  'reader.libraryRemove': 'Видалити',
+  'reader.libraryFileKept': 'файл збережено',
+  'reader.libraryFileGone': 'файл не збережено',
+  'reader.untitled': 'Книжка без назви',
+  'settings.reader.libraryTitle': 'Книжки в цьому браузері',
+  'settings.reader.kept':
+    '«{title}» тепер зберігається на цьому пристрої й відкривається без повторного завантаження. Нікуди не надсилається.',
+  'settings.reader.forgotten':
+    'Файл «{title}» видалено з цього браузера. Запис лишився — книжку можна відкрити з джерела знову.',
+  'settings.reader.removed': '«{title}» видалено з цього браузера повністю — і файл, і запис.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Відкрито з того місця, де ви спинилися, — {percent}%.',
+  'reader.bookmarks': 'Закладки',
+  'reader.bookmarkAdd': 'Закласти цю сторінку',
+  'reader.bookmarkNone': 'У цій книжці поки немає закладок.',
+  'reader.bookmarkGo': 'Перейти',
+  'reader.bookmarkRemove': 'Прибрати закладку',
+  'reader.bookmarkNote': 'Нотатка',
+  'reader.bookmarkNotePlaceholder': 'Ваші слова про цю сторінку',
+  'reader.bookmarkAt': '{percent}%',
+  'settings.reader.bookmarkTitle': 'Закладки в цьому браузері',
+  'settings.reader.bookmarkAdded':
+    'Закладка на {percent}% книжки «{title}». Закладки залишаються на цьому пристрої разом із книжкою.',
+  'settings.reader.bookmarkRemoved': 'Закладку в «{title}» видалено з цього браузера.',
+  'settings.reader.noteSaved':
+    'Вашу нотатку до цієї сторінки «{title}» збережено на цьому пристрої.',
+  'settings.reader.positionTitle': 'Позиція читання',
+  'settings.reader.positionUnstored':
+    'Браузер не зберіг, де ви спинилися в «{title}», — наступного разу книжка відкриється спочатку. Так буває в приватному режимі та при заповненому диску.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'Як виглядає ця книжка',
+  'reader.theme': 'Кольори',
+  'reader.themeApp': 'Як на сайті',
+  'reader.themeLight': 'Папір',
+  'reader.themeDark': 'Чорнило',
+  'reader.themeSepia': 'Сепія',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint':
+    'Чистий чорний на білому, без анімації, одна колонка — для екранів на електронному чорнилі.',
+  'reader.fontSize': 'Розмір шрифту',
+  'reader.smaller': 'Менше',
+  'reader.larger': 'Більше',
+  'reader.lineHeight': 'Міжрядковий інтервал',
+  'reader.margin': 'Поля',
+  'reader.flow': 'Сторінки',
+  'reader.flowPaged': 'Гортати',
+  'reader.flowScrolled': 'Прокручувати',
+  'reader.justify': 'Вирівнювання за шириною',
+  'reader.hyphenate': 'Переноси',
+  'reader.displayReset': 'Повернути типові',
+  'settings.reader.displayTitle': 'Оформлення читання',
+  'settings.reader.displayChanged':
+    '{setting} — тепер {value}. Застосовується до всіх книжок, які ви відкриваєте в цьому браузері.',
+  'settings.reader.displayReset':
+    'Оформлення читання повернуто до типових значень для всіх книжок у цьому браузері.',
+  'reader.on': 'Увімкнено',
+  'reader.off': 'Вимкнено',
+  'reader.openHere': 'Читати у браузері',
+  'reader.notAFileTitle': '{host} надіслав вебсторінку, а не файл',
+  'reader.notAFileBody':
+    'Посилання веде на сторінку, а не на книжку: сторінку завантаження, екран згоди або перевірку, що ви не робот. Відкрийте її самі — файл буде там.',
+  'settings.status.session': 'Не запам’ятано',
+  'settings.notRemembered':
+    'Браузер відмовився це запам’ятати — наступного разу, коли ви відкриєте книжку, усе повернеться як було.',
 };

@@ -25,3 +25,8 @@ Thumbs.db
 
 playwright-report/
 test-results/
+
+# The reader spike fetches its own copy of foliate-js and generates its fixtures
+# (prototype/reader-sandbox-spike/vendor.sh, fixture/make-epub.py).
+prototype/reader-sandbox-spike/vendor/
+prototype/reader-sandbox-spike/fixture/*.epub

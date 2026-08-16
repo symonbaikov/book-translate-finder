@@ -2,9 +2,9 @@
 
   <img src="docs/images/logo.svg" alt="Golden Library Logo" width="80" height="80">
 
-  # Golden Library
+# Golden Library
 
-  _Find your next magnum opus._
+_Find your next magnum opus._
 
 </div>
 
@@ -15,14 +15,9 @@ under copyright.
 
 The project is designed for self-hosting: deploy your own copy on your own server or home NAS.
 
-
-
-
-
 https://github.com/user-attachments/assets/c40bea3a-45d8-4d47-a307-cf80b05f7d39
 
 <img width="1920" height="948" alt="Screenshot_20260816_074838" src="https://github.com/user-attachments/assets/00c7330b-7419-4db0-99ee-f64f5b4c5911" />
-
 
 > ⚠️ The demo video and screenshots are based on **v1** and will be updated soon.
 
@@ -41,12 +36,11 @@ https://github.com/user-attachments/assets/c40bea3a-45d8-4d47-a307-cf80b05f7d39
 
 ### 🌐 Access Any Digital Archive
 
-Golden Library acts as an open, universal front-end for global digital archives, public domains, and community-curated book repositories. 
+Golden Library acts as an open, universal front-end for global digital archives, public domains, and community-curated book repositories.
 
-* **No Paywalls or Walled Gardens:** Bring your own search mirrors (e.g., Anna's Archive, LibGen, OpenLibrary) to index millions of public domain and open-access books instantly.
-* **Uncensored Search Engine:** You control where the search queries go. Bypasses restricted regional catalog views by letting you use your preferred domain mirrors.
-* **Community Presets Available:** Don't want to configure sources manually? Grab ready-to-use search templates directly from our [Telegram Channel](https://t.me/YOUR_CHANNEL).
-
+- **No Paywalls or Walled Gardens:** Bring your own search mirrors (e.g., Anna's Archive, LibGen, OpenLibrary) to index millions of public domain and open-access books instantly.
+- **Uncensored Search Engine:** You control where the search queries go. Bypasses restricted regional catalog views by letting you use your preferred domain mirrors.
+- **Community Presets Available:** Don't want to configure sources manually? Grab ready-to-use search templates directly from our [Telegram Channel](https://t.me/YOUR_CHANNEL).
 
 ## Legal policy
 

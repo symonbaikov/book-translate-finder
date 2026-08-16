@@ -404,4 +404,97 @@ export const en = {
   'work.descriptionFrom': 'Description:',
   'work.descriptionNotLocalized':
     'This description is in the language the source wrote it in — there is none in your language for this book yet.',
+
+  // --- Reading a book in this browser (ADR-0013) ----------------------------
+  'reader.title': 'Read in your browser',
+  'reader.privacy':
+    'Your browser opens this book on its own. The file, the place it came from, and how far you have read never reach this site.',
+  'reader.chooseFile': 'Open a book from this device',
+  'reader.formats': 'EPUB, FB2, MOBI and CBZ.',
+  'reader.loading': 'Opening…',
+  'reader.failed': 'This book could not be opened: {reason}',
+  'reader.previous': 'Previous page',
+  'reader.next': 'Next page',
+
+  // --- Getting a book into the reader (ADR-0013 §7) --------------------------
+  'reader.dropHere': '…or drop a book here',
+  'reader.fetching': 'Asking {host} for the file…',
+  'reader.blockedTitle': '{host} did not hand the file to this page',
+  'reader.blockedBody':
+    'Either it is unreachable, or it does not allow other sites to read its files. This site will not fetch it for you instead: your book never passes through it, and that is the whole point of reading here.',
+  'reader.blockedDownload': 'Download it from {host}',
+  'reader.blockedOpenHere': 'then open it here from your device',
+  'reader.blockedAddon': 'An addon that serves the file itself will also work.',
+  'reader.keepFile': 'Keep this book in this browser',
+  'reader.keepFileHint':
+    'Off by default. Without it the file is gone when you close the tab; with it, it stays on this device only.',
+  'reader.library': 'Kept in this browser',
+  'reader.libraryEmpty':
+    'Nothing kept yet. Books you keep stay on this device and are never uploaded.',
+  'reader.libraryOpen': 'Open',
+  'reader.libraryRemove': 'Remove',
+  'reader.libraryFileKept': 'file kept',
+  'reader.libraryFileGone': 'file not kept',
+  'reader.untitled': 'Untitled book',
+  'settings.reader.libraryTitle': 'Books kept in this browser',
+  'settings.reader.kept':
+    '“{title}” is now kept on this device, so it opens without downloading it again. It is not uploaded anywhere.',
+  'settings.reader.forgotten':
+    'The file for “{title}” was deleted from this browser. It stays in the list, so you can open it again from its source.',
+  'settings.reader.removed':
+    '“{title}” was removed from this browser entirely — the file and the entry.',
+
+  // --- Where the reader got to, and what they marked (ADR-0013 §4) -----------
+  'reader.resumed': 'Opened where you left off — {percent}% in.',
+  'reader.bookmarks': 'Bookmarks',
+  'reader.bookmarkAdd': 'Bookmark this page',
+  'reader.bookmarkNone': 'No bookmarks in this book yet.',
+  'reader.bookmarkGo': 'Go to',
+  'reader.bookmarkRemove': 'Remove bookmark',
+  'reader.bookmarkNote': 'Note',
+  'reader.bookmarkNotePlaceholder': 'Your own words about this page',
+  'reader.bookmarkAt': '{percent}% in',
+  'settings.reader.bookmarkTitle': 'Bookmarks in this browser',
+  'settings.reader.bookmarkAdded':
+    'Bookmarked {percent}% into “{title}”. Bookmarks stay on this device with the book.',
+  'settings.reader.bookmarkRemoved': 'That bookmark in “{title}” was removed from this browser.',
+  'settings.reader.noteSaved': 'Your note on this page of “{title}” was saved on this device.',
+  'settings.reader.positionTitle': 'Reading position',
+  'settings.reader.positionUnstored':
+    'This browser would not store where you are in “{title}”, so it will open at the beginning next time. Private mode and a full disk both do this.',
+
+  // --- How the book looks (ADR-0013, ADR-0008) -------------------------------
+  'reader.display': 'How this book looks',
+  'reader.theme': 'Colours',
+  'reader.themeApp': 'Follow the site',
+  'reader.themeLight': 'Paper',
+  'reader.themeDark': 'Ink',
+  'reader.themeSepia': 'Sepia',
+  'reader.themeEink': 'E-Ink',
+  'reader.themeEinkHint': 'Pure black on white, no animation, one column — for e-paper screens.',
+  'reader.fontSize': 'Type size',
+  'reader.smaller': 'Smaller',
+  'reader.larger': 'Larger',
+  'reader.lineHeight': 'Line spacing',
+  'reader.margin': 'Margins',
+  'reader.flow': 'Pages',
+  'reader.flowPaged': 'Turn pages',
+  'reader.flowScrolled': 'Scroll',
+  'reader.justify': 'Justify text',
+  'reader.hyphenate': 'Hyphenate',
+  'reader.displayReset': 'Back to defaults',
+  'settings.reader.displayTitle': 'Reading display',
+  'settings.reader.displayChanged':
+    '{setting} is now {value}. It applies to every book you open in this browser.',
+  'settings.reader.displayReset':
+    'Reading display is back to its defaults for every book in this browser.',
+  'reader.on': 'On',
+  'reader.off': 'Off',
+  'reader.openHere': 'Read in your browser',
+  'reader.notAFileTitle': '{host} sent a web page, not the file',
+  'reader.notAFileBody':
+    'The link leads to a page rather than to a book — a download page, a consent screen, or a check that you are not a robot. Open it yourself and the file will be there.',
+  'settings.status.session': 'Not remembered',
+  'settings.notRemembered':
+    'This browser would not remember it, so it will be back to how it was next time you open a book.',
 } as const;

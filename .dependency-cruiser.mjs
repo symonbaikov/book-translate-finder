@@ -58,6 +58,44 @@ export default {
       to: { path: '^packages/addons/' },
     },
     {
+      name: 'reader-is-a-leaf',
+      comment:
+        'packages/reader is bundled into the browser and must depend on no other workspace package — same rule, and the same reason, as packages/addons and packages/plugins (docs/adr/0013-client-side-reader.md §5).',
+      severity: 'error',
+      from: { path: '^packages/reader/src' },
+      to: {
+        path: '^(packages/(domain|application|infrastructure|contracts|plugins|addons)|apps)/',
+      },
+    },
+    {
+      name: 'reader-never-on-the-server',
+      comment:
+        "The book is the reader's: their browser fetches it, their browser renders it, and this instance never learns that it exists (docs/adr/0013-client-side-reader.md §1). Nothing that executes server-side may import packages/reader, which is what makes that a build failure rather than a promise.",
+      severity: 'error',
+      from: { path: '^(apps/(api|worker)|packages/(domain|application|infrastructure))/' },
+      to: { path: '^packages/reader/' },
+    },
+    {
+      name: 'reader-surface-never-calls-this-instance',
+      comment:
+        'The reading surface talks to the book and to browser storage, and to nothing else. An import of the API client here is how a "just the resume position" endpoint gets born, and that endpoint would end ADR-0013 §1.',
+      severity: 'error',
+      from: { path: '^apps/web/src/(app/read|components/reader)/' },
+      to: { path: '^apps/web/src/lib/(api-client|auth-client)' },
+    },
+    {
+      name: 'reader-vendor-has-one-door',
+      comment:
+        'The vendored copy of foliate-js carries a patch the reader depends on for its safety (packages/reader/vendor/VENDOR.md). It is reached through packages/reader/src/foliate.ts and nowhere else — a second import path is a second place to pick up an unpatched or differently-configured renderer.',
+      severity: 'error',
+      // `dist` is in the list because a workspace import of `@golden/reader` resolves to the built
+      // entry point, so the compiled `src/foliate.ts` appears here as `dist/foliate.js` — the same
+      // allowed import, seen after compilation. Excluding `dist` from the cruise instead would have
+      // been worse: it is also where `addons-never-on-the-server` and its siblings catch things.
+      from: { pathNot: '^packages/reader/(src|vendor|dist)/' },
+      to: { path: '^packages/reader/vendor/' },
+    },
+    {
       name: 'infrastructure-no-apps',
       comment:
         'packages/infrastructure must not depend on apps/* (composition root is downstream of it).',
