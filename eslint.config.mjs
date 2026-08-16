@@ -21,6 +21,10 @@ export default tseslint.config(
       '**/*.tsbuildinfo',
       'docs/source/**',
       'pnpm-lock.yaml',
+      // Throwaway spikes (docs/plan.md 11.1). They are browser code, they carry a fetched copy of
+      // somebody else's library, and they are deleted once the decision they exist for is taken —
+      // linting them would mean maintaining code whose whole point is not to be maintained.
+      'prototype/**',
     ],
   },
   js.configs.recommended,

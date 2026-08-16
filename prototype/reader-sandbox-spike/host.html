@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Reader sandbox spike — host</title>
+    <style>
+      body {
+        font:
+          14px/1.5 system-ui,
+          sans-serif;
+        margin: 1rem;
+      }
+      iframe {
+        width: 820px;
+        height: 620px;
+        border: 1px solid #999;
+      }
+      pre {
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Reader sandbox spike</h1>
+    <p id="status">starting…</p>
+    <pre id="out"></pre>
+
+    <script type="module">
+      // The host plays the part `apps/web` would play: it is the only party that touches the
+      // network, and the book crosses into the frame as bytes over postMessage — never as a URL the
+      // frame fetches for itself. That is the shape the phase's invariant requires, so the spike
+      // measures it rather than something simpler.
+      const params = new URLSearchParams(location.search);
+      const mode = params.get('frame') ?? 'sandboxed';
+      const csp = params.get('csp') ?? '';
+      const book = params.get('book') === 'hostile' ? 'hostile' : 'spike';
+      // `off` makes the probe strip `allow-scripts` from the content frames foliate creates — the
+      // fallback branch's proposed hardening, measured rather than assumed.
+      const scripts = params.get('scripts') === 'off' ? 'off' : 'default';
+
+      // A book that manages to postMessage its way out lands here, and the report says so.
+      const hostileMessages = [];
+      window.addEventListener('message', (event) => {
+        if (event.data?.hostile) hostileMessages.push(event.data.hostile);
+      });
+
+      const status = document.getElementById('status');
+      const out = document.getElementById('out');
+
+      const report = (result) => {
+        window.__spikeResult = { book, scripts, hostileMessages, ...result };
+        status.textContent = `done (${mode}${csp ? `, ${csp} csp` : ''})`;
+        out.textContent = JSON.stringify(window.__spikeResult, null, 2);
+      };
+
+      const timeout = setTimeout(
+        () => report({ mode, csp, fatal: 'host timed out waiting for the sandbox report' }),
+        30_000,
+      );
+
+      window.addEventListener('message', (event) => {
+        if (event.source !== frame.contentWindow) return;
+        if (event.data?.type !== 'spike-report') return;
+        clearTimeout(timeout);
+        report({ mode, csp, frameOrigin: event.origin, ...event.data.report });
+      });
+
+      const frame = document.createElement('iframe');
+      // `sandboxed` is the design under test: no `allow-same-origin`, so the document lands on an
+      // opaque origin exactly as an addon does. `same-origin` is the control — same code, same
+      // fixture, ordinary origin — so that a failure can be attributed to the opaque origin rather
+      // than to the harness.
+      if (mode === 'sandboxed') frame.setAttribute('sandbox', 'allow-scripts');
+      else if (mode === 'same-origin')
+        frame.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+      // `plain` sets no sandbox attribute at all: an ordinary same-origin document, which is what
+      // the fallback branch's `/read` route would be.
+      frame.src = `/sandbox.html${csp ? `?csp=${csp}` : ''}`;
+      document.body.append(frame);
+
+      const buffer = await (await fetch(`/fixture/${book}.epub`)).arrayBuffer();
+      status.textContent = `fetched ${buffer.byteLength} bytes; waiting for the frame…`;
+
+      frame.addEventListener('load', () => {
+        frame.contentWindow.postMessage({ type: 'spike-book', buffer, scripts }, '*', [buffer]);
+      });
+    </script>
+  </body>
+</html>
